@@ -246,5 +246,116 @@
   
   <footer class="footer"><div class="container footer-top"><div><a href="#home" class="brand"><span class="brand-mark">✿</span><span>Drosie's <em>World</em></span></a><p>Tiny fly. Big discoveries.<br>Free science learning for curious minds.</p></div><div class="footer-nav"><a href="#book">The Book</a><a href="#lessons">Lessons</a><a href="#activities">Activities</a><a href="#about">About</a></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> Drosie's World. Created with curiosity.</span><span>For educational use · Please credit the creator when sharing.</span></div></footer><script src="script.js" defer></script>
 
+<!-- Tiny fruit flies buzzing ONLY in the homepage hero -->
+<style>
+  #home {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #home .hero-fly {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    animation: hero-fly-path var(--duration) linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  #home .hero-fly svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    animation: hero-fly-wiggle .35s ease-in-out infinite alternate;
+  }
+
+  #home .hero-fly .wing {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: hero-wing-flap .14s ease-in-out infinite alternate;
+  }
+
+  @keyframes hero-wing-flap {
+    from { transform: rotate(-18deg); }
+    to { transform: rotate(18deg); }
+  }
+
+  @keyframes hero-fly-wiggle {
+    from { transform: rotate(-7deg) translateY(-2px); }
+    to { transform: rotate(7deg) translateY(2px); }
+  }
+
+  @keyframes hero-fly-path {
+    0% {
+      transform: translate(-30px, var(--y1)) scale(var(--size));
+      opacity: 0;
+    }
+    10% { opacity: .65; }
+    25% {
+      transform: translate(25vw, var(--y2)) scale(var(--size));
+    }
+    50% {
+      transform: translate(50vw, var(--y3)) scale(var(--size));
+    }
+    75% {
+      transform: translate(75vw, var(--y2)) scale(var(--size));
+    }
+    90% { opacity: .65; }
+    100% {
+      transform: translate(calc(100vw + 30px), var(--y1))
+        scale(var(--size));
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #home .hero-fly { display: none; }
+  }
+</style>
+
+<script>
+(function () {
+  const hero = document.getElementById("home");
+  if (!hero || hero.querySelector(".hero-fly")) return;
+
+  const flyArt = `
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <ellipse class="wing" cx="13" cy="12" rx="10" ry="6"
+        fill="#b9e5e4" stroke="#518d89" stroke-width="1"/>
+      <ellipse class="wing" cx="27" cy="12" rx="10" ry="6"
+        fill="#b9e5e4" stroke="#518d89" stroke-width="1"/>
+      <ellipse cx="20" cy="25" rx="9" ry="11"
+        fill="#e5ae52" stroke="#805a2d" stroke-width="1"/>
+      <circle cx="20" cy="17" r="8" fill="#e7bd6b"/>
+      <circle cx="14" cy="16" r="4" fill="#d95d58"/>
+      <circle cx="26" cy="16" r="4" fill="#d95d58"/>
+      <path d="M16 30 Q20 34 24 30"
+        fill="none" stroke="#805a2d" stroke-width="1.5"/>
+    </svg>
+  `;
+
+  for (let i = 0; i < 3; i++) {
+    const fly = document.createElement("div");
+    fly.className = "hero-fly";
+    fly.setAttribute("aria-hidden", "true");
+    fly.innerHTML = flyArt;
+
+    fly.style.setProperty("--y1", (15 + Math.random() * 45) + "%");
+    fly.style.setProperty("--y2", (15 + Math.random() * 45) + "%");
+    fly.style.setProperty("--y3", (15 + Math.random() * 45) + "%");
+    fly.style.setProperty("--duration", (22 + Math.random() * 12) + "s");
+    fly.style.setProperty("--delay", (-Math.random() * 30) + "s");
+    fly.style.setProperty("--size", 0.7 + Math.random() * 0.3);
+
+    hero.appendChild(fly);
+  }
+})();
+</script>
+<!-- End of homepage fruit fly animation -->
+
 
 </body></html>
