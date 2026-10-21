@@ -398,7 +398,7 @@
 (function () {
   "use strict";
 
-  const TOTAL_PAGES = 57;
+  const TOTAL_PAGES = 56;
 
   const bookElement = document.getElementById("book");
   const stage = document.getElementById("book-stage");
@@ -418,8 +418,7 @@
   }
 
   // Create all 57 pages from the numbered PNG files.
-  for (let i = 1; i <= TOTAL_PAGES; i++) {
-   if (i === 56) continue;
+for (let i = 1; i <= TOTAL_PAGES; i++) {
     const page = document.createElement("div");
     page.className = "page";
 
@@ -466,16 +465,15 @@
 
  function updateReader() {
   const current = pageFlip.getCurrentPageIndex();
-  const actualPages = TOTAL_PAGES - 1;
 
   pageNumber.textContent =
-    "Page " + (current + 1) + " of " + actualPages;
+    "Page " + (current + 1) + " of " + TOTAL_PAGES;
 
   progress.style.width =
-    ((current + 1) / actualPages * 100) + "%";
+    ((current + 1) / TOTAL_PAGES * 100) + "%";
 
   previous.disabled = current === 0;
-  next.disabled = current >= actualPages - 1;
+  next.disabled = current >= TOTAL_PAGES - 1;
 
   status.textContent = "";
 }
