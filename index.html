@@ -18,7 +18,172 @@
 <section class="quote-band"><div class="container"><span>✳</span><p>“You don't have to be big to make a big discovery.”</p><span>✳</span></div></section>
 <section id="about" class="section about-section"><div class="container about-grid"><div class="about-art"><div class="about-art-inner"><span class="about-big-icon">🔬</span><span class="about-small-note">from a real research lab to your reading corner</span></div></div><div><span class="section-kicker">✳ THE STORY BEHIND DROSIE</span><h2>Science belongs<br><em>to everyone.</em></h2><p>Drosie was inspired by a simple question from a child: <strong>“What do you do in your lab?”</strong></p><p>Created by <strong>Shahira Helal Arzoo</strong>, a biology doctoral researcher and science outreach educator, Drosie brings the fascinating world of fruit flies into the hands of young readers. The project combines storytelling, real biology, and playful learning to help more children imagine themselves as scientists.</p><p>Whether you're a parent, teacher, museum educator, or simply a curious explorer, you're welcome here.</p><a class="button button-light" href="#lessons">Discover the lessons ↗</a></div></div></section>
 <section class="newsletter-section"><div class="container newsletter-inner"><div><span class="section-kicker">KEEP EXPLORING</span><h2>Ready for your next<br><em>little discovery?</em></h2><p>Start with a free activity sheet and share Drosie's World with a fellow curious mind.</p></div><div class="newsletter-actions"><a href="#lessons" class="button button-dark">Browse free resources ↗</a><button class="button button-light" id="shareButton" type="button">Share this website ↗</button><p id="shareMessage" role="status" aria-live="polite"></p></div></div></section>
-</main><footer class="footer"><div class="container footer-top"><div><a href="#home" class="brand"><span class="brand-mark">✿</span><span>Drosie's <em>World</em></span></a><p>Tiny fly. Big discoveries.<br>Free science learning for curious minds.</p></div><div class="footer-nav"><a href="#book">The Book</a><a href="#lessons">Lessons</a><a href="#activities">Activities</a><a href="#about">About</a></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> Drosie's World. Created with curiosity.</span><span>For educational use · Please credit the creator when sharing.</span></div></footer><script src="script.js" defer></script>
+</main>
+  
+<!-- DROSIE'S BZZZZTASTIC FRUIT BOWL -->
+
+<section class="fruit-bowl-section" aria-label="Drosie's fruit bowl">
+  <div class="fruit-bowl-scene">
+
+    <!-- Drosie's signature catchphrase -->
+    <div class="buzz-bubble">
+      BZZZZTASTIC! ✨
+    </div>
+
+    <!-- Your original fruit bowl PNG -->
+    <div class="fruit-bowl-art">
+      <img
+        src="fruit%20bowl.png"
+        alt="A colorful bowl of fresh fruits"
+        class="fruit-bowl-image"
+        loading="lazy"
+      >
+
+      <!-- Tiny buzzing fruit flies -->
+      <span class="bowl-fly bowl-fly-1" aria-hidden="true">🪰</span>
+      <span class="bowl-fly bowl-fly-2" aria-hidden="true">🪰</span>
+      <span class="bowl-fly bowl-fly-3" aria-hidden="true">🪰</span>
+      <span class="bowl-fly bowl-fly-4" aria-hidden="true">🪰</span>
+    </div>
+
+    <p class="fruit-bowl-caption">
+      Even the tiniest creatures can lead to the biggest discoveries!
+    </p>
+
+  </div>
+</section>
+
+<style>
+/* Fruit bowl section */
+.fruit-bowl-section {
+  background: #eaf5ea;
+  padding: 65px 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.fruit-bowl-scene {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* BZZZZTASTIC speech bubble */
+.buzz-bubble {
+  display: inline-block;
+  background: #fffdf5;
+  color: #d77a57;
+  border: 2px solid #f0d69a;
+  border-radius: 40px;
+  padding: 14px 30px;
+  font-size: clamp(22px, 5vw, 36px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  transform: rotate(-4deg);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+}
+
+/* Fruit bowl image */
+.fruit-bowl-art {
+  position: relative;
+  width: min(100%, 450px);
+  margin: 20px auto 0;
+}
+
+.fruit-bowl-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Tiny buzzing fruit flies */
+.bowl-fly {
+  position: absolute;
+  font-size: 17px;
+  pointer-events: none;
+  z-index: 2;
+  animation: bowl-buzz 3s ease-in-out infinite alternate;
+}
+
+/* Each fly has a different position */
+.bowl-fly-1 {
+  top: 15%;
+  left: 10%;
+  animation-delay: -0.4s;
+}
+
+.bowl-fly-2 {
+  top: 8%;
+  right: 15%;
+  animation-delay: -1.2s;
+}
+
+.bowl-fly-3 {
+  top: 43%;
+  left: 5%;
+  animation-delay: -2s;
+}
+
+.bowl-fly-4 {
+  top: 30%;
+  right: 8%;
+  animation-delay: -0.8s;
+}
+
+/* Gentle buzzing animation */
+@keyframes bowl-buzz {
+  0% {
+    transform: translate(0, 0) rotate(-15deg);
+  }
+
+  30% {
+    transform: translate(12px, -15px) rotate(12deg);
+  }
+
+  65% {
+    transform: translate(-8px, 8px) rotate(-8deg);
+  }
+
+  100% {
+    transform: translate(16px, -10px) rotate(15deg);
+  }
+}
+
+/* Caption */
+.fruit-bowl-caption {
+  margin-top: 15px;
+  color: #38644e;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .fruit-bowl-section {
+    padding: 45px 15px;
+  }
+
+  .fruit-bowl-art {
+    width: min(100%, 320px);
+  }
+
+  .bowl-fly {
+    font-size: 14px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .bowl-fly {
+    animation: none;
+  }
+}
+</style>
+
+<!-- END OF FRUIT BOWL SECTION -->
+
+  
+  <footer class="footer"><div class="container footer-top"><div><a href="#home" class="brand"><span class="brand-mark">✿</span><span>Drosie's <em>World</em></span></a><p>Tiny fly. Big discoveries.<br>Free science learning for curious minds.</p></div><div class="footer-nav"><a href="#book">The Book</a><a href="#lessons">Lessons</a><a href="#activities">Activities</a><a href="#about">About</a></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> Drosie's World. Created with curiosity.</span><span>For educational use · Please credit the creator when sharing.</span></div></footer><script src="script.js" defer></script>
 
 <!-- Drosie's tiny flying friends -->
 <style>
