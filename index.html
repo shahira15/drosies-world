@@ -18,4 +18,113 @@
 <section class="quote-band"><div class="container"><span>✳</span><p>“You don't have to be big to make a big discovery.”</p><span>✳</span></div></section>
 <section id="about" class="section about-section"><div class="container about-grid"><div class="about-art"><div class="about-art-inner"><span class="about-big-icon">🔬</span><span class="about-small-note">from a real research lab to your reading corner</span></div></div><div><span class="section-kicker">✳ THE STORY BEHIND DROSIE</span><h2>Science belongs<br><em>to everyone.</em></h2><p>Drosie was inspired by a simple question from a child: <strong>“What do you do in your lab?”</strong></p><p>Created by <strong>Shahira Helal Arzoo</strong>, a biology doctoral researcher and science outreach educator, Drosie brings the fascinating world of fruit flies into the hands of young readers. The project combines storytelling, real biology, and playful learning to help more children imagine themselves as scientists.</p><p>Whether you're a parent, teacher, museum educator, or simply a curious explorer, you're welcome here.</p><a class="button button-light" href="#lessons">Discover the lessons ↗</a></div></div></section>
 <section class="newsletter-section"><div class="container newsletter-inner"><div><span class="section-kicker">KEEP EXPLORING</span><h2>Ready for your next<br><em>little discovery?</em></h2><p>Start with a free activity sheet and share Drosie's World with a fellow curious mind.</p></div><div class="newsletter-actions"><a href="#lessons" class="button button-dark">Browse free resources ↗</a><button class="button button-light" id="shareButton" type="button">Share this website ↗</button><p id="shareMessage" role="status" aria-live="polite"></p></div></div></section>
-</main><footer class="footer"><div class="container footer-top"><div><a href="#home" class="brand"><span class="brand-mark">✿</span><span>Drosie's <em>World</em></span></a><p>Tiny fly. Big discoveries.<br>Free science learning for curious minds.</p></div><div class="footer-nav"><a href="#book">The Book</a><a href="#lessons">Lessons</a><a href="#activities">Activities</a><a href="#about">About</a></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> Drosie's World. Created with curiosity.</span><span>For educational use · Please credit the creator when sharing.</span></div></footer><script src="script.js" defer></script></body></html>
+</main><footer class="footer"><div class="container footer-top"><div><a href="#home" class="brand"><span class="brand-mark">✿</span><span>Drosie's <em>World</em></span></a><p>Tiny fly. Big discoveries.<br>Free science learning for curious minds.</p></div><div class="footer-nav"><a href="#book">The Book</a><a href="#lessons">Lessons</a><a href="#activities">Activities</a><a href="#about">About</a></div></div><div class="container footer-bottom"><span>© <span id="year">2026</span> Drosie's World. Created with curiosity.</span><span>For educational use · Please credit the creator when sharing.</span></div></footer><script src="script.js" defer></script>
+
+<!-- Drosie's tiny flying friends -->
+<style>
+  .tiny-fly {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 25px;
+    height: 25px;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0;
+    will-change: transform;
+    animation: fly-around var(--duration) linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  .tiny-fly svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    animation: fly-wiggle 0.25s ease-in-out infinite alternate;
+  }
+
+  .tiny-fly .wing {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: wing-flap 0.12s ease-in-out infinite alternate;
+  }
+
+  @keyframes wing-flap {
+    from { transform: rotate(-18deg) scaleX(0.8); }
+    to { transform: rotate(18deg) scaleX(1.1); }
+  }
+
+  @keyframes fly-wiggle {
+    from { transform: rotate(-8deg) translateY(-3px); }
+    to { transform: rotate(8deg) translateY(3px); }
+  }
+
+  @keyframes fly-around {
+    0% {
+      transform: translate(-60px, var(--y1)) scale(var(--size));
+      opacity: 0;
+    }
+    8% { opacity: 0.85; }
+    25% {
+      transform: translate(25vw, var(--y2)) scale(var(--size));
+    }
+    50% {
+      transform: translate(50vw, var(--y3)) scale(var(--size));
+    }
+    75% {
+      transform: translate(75vw, var(--y2)) scale(var(--size));
+    }
+    92% { opacity: 0.85; }
+    100% {
+      transform: translate(calc(100vw + 60px), var(--y1))
+        scale(var(--size));
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tiny-fly { display: none; }
+  }
+</style>
+
+<script>
+(function () {
+  const flyArt = `
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <ellipse class="wing" cx="13" cy="12" rx="10" ry="6"
+        fill="#b9e5e4" stroke="#518d89" stroke-width="1"/>
+      <ellipse class="wing" cx="27" cy="12" rx="10" ry="6"
+        fill="#b9e5e4" stroke="#518d89" stroke-width="1"/>
+      <ellipse cx="20" cy="25" rx="9" ry="11"
+        fill="#e5ae52" stroke="#805a2d" stroke-width="1"/>
+      <circle cx="20" cy="17" r="8" fill="#e7bd6b"/>
+      <circle cx="14" cy="16" r="4" fill="#d95d58"/>
+      <circle cx="26" cy="16" r="4" fill="#d95d58"/>
+      <path d="M16 30 Q20 34 24 30"
+        fill="none" stroke="#805a2d" stroke-width="1.5"/>
+    </svg>
+  `;
+
+  const totalFlies = 5;
+
+  for (let i = 0; i < totalFlies; i++) {
+    const fly = document.createElement("div");
+    fly.className = "tiny-fly";
+    fly.innerHTML = flyArt;
+
+    const y1 = 12 + Math.random() * 70;
+    const y2 = 12 + Math.random() * 70;
+    const y3 = 12 + Math.random() * 70;
+
+    fly.style.setProperty("--y1", y1 + "vh");
+    fly.style.setProperty("--y2", y2 + "vh");
+    fly.style.setProperty("--y3", y3 + "vh");
+    fly.style.setProperty("--duration", (15 + Math.random() * 12) + "s");
+    fly.style.setProperty("--delay", (-Math.random() * 25) + "s");
+    fly.style.setProperty("--size", 0.6 + Math.random() * 0.5);
+
+    document.body.appendChild(fly);
+  }
+})();
+</script>
+</body></html>
