@@ -1,1 +1,542 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f3f6ec">
+<title>Drosie's Magical Storybook | Drosie's World</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --forest: #285a43;
+    --sage: #dce9d9;
+    --cream: #fffaf0;
+    --gold: #e5b969;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--forest);
+    background:
+      radial-gradient(circle at 12% 20%, #ffffffa8, transparent 35%),
+      radial-gradient(circle at 90% 80%, #d3e7d4, transparent 40%),
+      linear-gradient(145deg, #f9f8ee, #e5efe2);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px clamp(16px, 4vw, 50px);
+    font-family: Arial, sans-serif;
+  }
+
+  .brand {
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--forest);
+    text-decoration: none;
+  }
+
+  .back-link {
+    text-decoration: none;
+    color: var(--forest);
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid #b5cdb6;
+    border-radius: 30px;
+    padding: 10px 15px;
+    background: #ffffffaa;
+  }
+
+  .reader-heading {
+    text-align: center;
+    padding: 12px 18px 5px;
+  }
+
+  .eyebrow {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #6d9476;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.15;
+    margin: 13px 0 8px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    color: #68816d;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .reader-shell {
+    position: relative;
+    max-width: 1120px;
+    margin: 18px auto 0;
+    padding: 25px 15px 12px;
+  }
+
+  .sparkle {
+    position: absolute;
+    font-size: 24px;
+    color: #b9a96d;
+    opacity: .7;
+    pointer-events: none;
+  }
+
+  .sparkle.one {
+    top: 12%;
+    left: 5%;
+  }
+
+  .sparkle.two {
+    top: 35%;
+    right: 4%;
+  }
+
+  .sparkle.three {
+    bottom: 15%;
+    left: 8%;
+  }
+
+  .book-stage {
+    position: relative;
+    width: 100%;
+    min-height: 390px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0 28px;
+    overflow: hidden;
+  }
+
+  .book-stage::after {
+    content: "";
+    position: absolute;
+    bottom: 13px;
+    left: 18%;
+    width: 64%;
+    height: 20px;
+    background: #31563a25;
+    filter: blur(17px);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  #book {
+    margin: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page {
+    background: #fffdf6;
+    overflow: hidden;
+    border: 1px solid #e5dfcf;
+  }
+
+  .page img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #fffdf6;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .page.hard {
+    background: #f8f1e3;
+  }
+
+  .reader-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 5px auto 0;
+    padding: 12px;
+    font-family: Arial, sans-serif;
+  }
+
+  .control-btn {
+    background: var(--forest);
+    border: 0;
+    color: white;
+    padding: 13px 19px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    transition: background .2s, transform .2s;
+  }
+
+  .control-btn:hover:not(:disabled) {
+    background: #397d5b;
+    transform: translateY(-2px);
+  }
+
+  .control-btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+
+  .control-btn:focus-visible,
+  .back-link:focus-visible {
+    outline: 3px solid #d3a750;
+    outline-offset: 3px;
+  }
+
+  .page-number {
+    min-width: 110px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .progress-track {
+    width: min(350px, 75vw);
+    height: 6px;
+    border-radius: 10px;
+    background: #d5e3d2;
+    margin: 10px auto 18px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #60966e;
+    border-radius: 10px;
+    transition: width .35s;
+  }
+
+  .extra-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 auto 18px;
+  }
+
+  .soft-btn {
+    background: #ffffffbb;
+    color: var(--forest);
+    border: 1px solid #bfd1bc;
+    border-radius: 25px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .soft-btn:hover {
+    background: #e1efdf;
+  }
+
+  .reader-note {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #738b77;
+    font-size: 12px;
+    padding: 0 15px 25px;
+  }
+
+  #status {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #68816d;
+    min-height: 20px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 18px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #7c927e;
+  }
+
+  @media (max-width: 600px) {
+    .topbar {
+      padding: 14px;
+    }
+
+    .brand {
+      font-size: 15px;
+    }
+
+    .back-link {
+      font-size: 11px;
+      padding: 9px 11px;
+    }
+
+    .reader-shell {
+      padding: 8px 4px;
+    }
+
+    .book-stage {
+      min-height: 330px;
+    }
+
+    .sparkle {
+      display: none;
+    }
+
+    .control-btn {
+      padding: 12px 15px;
+      font-size: 12px;
+    }
+
+    .page-number {
+      min-width: 85px;
+      font-size: 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .control-btn,
+    .progress-fill {
+      transition: none;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html">✿ Drosie's World</a>
+  <a class="back-link" href="index.html">← Back to the World</a>
+</header>
+
+<main>
+
+  <div class="reader-heading">
+    <div class="eyebrow">A LITTLE STORYTIME MAGIC</div>
+    <h1>📖 Drosie's Storybook</h1>
+    <p class="subtitle">
+      Little wings. Big discoveries. A whole world waiting inside.
+    </p>
+  </div>
+
+  <section class="reader-shell" aria-label="Interactive storybook">
+
+    <span class="sparkle one" aria-hidden="true">✦</span>
+    <span class="sparkle two" aria-hidden="true">✳</span>
+    <span class="sparkle three" aria-hidden="true">✧</span>
+
+    <div class="book-stage" id="book-stage">
+      <div id="book"></div>
+    </div>
+
+    <p id="status" role="status" aria-live="polite">
+      Preparing Drosie's adventure...
+    </p>
+
+    <div class="reader-controls">
+      <button class="control-btn" id="previous" type="button">
+        ← Previous
+      </button>
+
+      <span class="page-number" id="page-number">
+        Loading...
+      </span>
+
+      <button class="control-btn" id="next" type="button">
+        Next →
+      </button>
+    </div>
+
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="extra-controls">
+      <button class="soft-btn" id="first-page" type="button">
+        ↺ Start Over
+      </button>
+
+      <button class="soft-btn" id="fullscreen" type="button">
+        ⛶ Fullscreen
+      </button>
+    </div>
+
+    <p class="reader-note">
+      ✨ Click a page corner, use the arrows, or swipe to turn pages.
+    </p>
+
+  </section>
+
+</main>
+
+<footer>
+  Made with curiosity ♡ Drosie's World
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  const TOTAL_PAGES = 57;
+
+  const bookElement = document.getElementById("book");
+  const stage = document.getElementById("book-stage");
+  const status = document.getElementById("status");
+  const pageNumber = document.getElementById("page-number");
+  const progress = document.getElementById("progress");
+  const previous = document.getElementById("previous");
+  const next = document.getElementById("next");
+  const firstPage = document.getElementById("first-page");
+  const fullscreen = document.getElementById("fullscreen");
+
+  if (!window.St || !window.St.PageFlip) {
+    status.textContent =
+      "The book reader could not load. Please refresh the page.";
+    pageNumber.textContent = "Unavailable";
+    return;
+  }
+
+  // Create all 57 pages from the numbered PNG files.
+  for (let i = 1; i <= TOTAL_PAGES; i++) {
+    const page = document.createElement("div");
+    page.className = "page";
+
+    // The front and back covers feel more rigid.
+    if (i === 1 || i === TOTAL_PAGES) {
+      page.classList.add("hard");
+      page.dataset.density = "hard";
+    }
+
+    const image = document.createElement("img");
+    image.src = "book-pages/" + i + ".png";
+    image.alt = "Drosie's Storybook, page " + i;
+    image.draggable = false;
+    image.loading = i <= 4 ? "eager" : "lazy";
+
+    page.appendChild(image);
+    bookElement.appendChild(page);
+  }
+
+  const pageFlip = new St.PageFlip(bookElement, {
+    width: 400,
+    height: 550,
+    size: "stretch",
+    minWidth: 180,
+    maxWidth: 400,
+    minHeight: 248,
+    maxHeight: 550,
+    showCover: true,
+    usePortrait: true,
+    flippingTime: 1100,
+    drawShadow: true,
+    maxShadowOpacity: 0.6,
+    mobileScrollSupport: false,
+    autoSize: true,
+    clickEventForward: true,
+    swipeDistance: 30,
+    showPageCorners: true,
+    disableFlipByClick: false
+  });
+
+  pageFlip.loadFromHTML(
+    document.querySelectorAll("#book .page")
+  );
+
+  function updateReader() {
+    const current = pageFlip.getCurrentPageIndex();
+
+    pageNumber.textContent =
+      "Page " + (current + 1) + " of " + TOTAL_PAGES;
+
+    progress.style.width =
+      ((current + 1) / TOTAL_PAGES * 100) + "%";
+
+    previous.disabled = current === 0;
+    next.disabled = current >= TOTAL_PAGES - 1;
+
+    status.textContent = "";
+  }
+
+  previous.addEventListener("click", function () {
+    pageFlip.flipPrev();
+  });
+
+  next.addEventListener("click", function () {
+    pageFlip.flipNext();
+  });
+
+  firstPage.addEventListener("click", function () {
+    pageFlip.flip(0);
+  });
+
+  fullscreen.addEventListener("click", async function () {
+    try {
+      if (!document.fullscreenElement) {
+        await stage.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      status.textContent =
+        "Fullscreen is not available in this browser.";
+    }
+  });
+
+  // Keyboard navigation.
+  document.addEventListener("keydown", function (event) {
+    if (event.target.matches("input, textarea, select")) {
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      pageFlip.flipNext();
+    }
+
+    if (event.key === "ArrowLeft") {
+      pageFlip.flipPrev();
+    }
+  });
+
+  pageFlip.on("flip", updateReader);
+  pageFlip.on("changeState", function (event) {
+    if (event.data === "read") {
+      updateReader();
+    }
+  });
+
+  updateReader();
+
+})();
+</script>
+
+<!-- GoatCounter page analytics -->
+<script
+  data-goatcounter="https://drosiesworld.goatcounter.com/count"
+  async
+  src="https://gc.zgo.at/count.js">
+</script>
+
+</body>
+</html>
+
