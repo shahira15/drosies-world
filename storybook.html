@@ -419,6 +419,7 @@
 
   // Create all 57 pages from the numbered PNG files.
   for (let i = 1; i <= TOTAL_PAGES; i++) {
+   if (i === 56) continue;
     const page = document.createElement("div");
     page.className = "page";
 
@@ -463,20 +464,21 @@
     document.querySelectorAll("#book .page")
   );
 
-  function updateReader() {
-    const current = pageFlip.getCurrentPageIndex();
+ function updateReader() {
+  const current = pageFlip.getCurrentPageIndex();
+  const actualPages = TOTAL_PAGES - 1;
 
-    pageNumber.textContent =
-      "Page " + (current + 1) + " of " + TOTAL_PAGES;
+  pageNumber.textContent =
+    "Page " + (current + 1) + " of " + actualPages;
 
-    progress.style.width =
-      ((current + 1) / TOTAL_PAGES * 100) + "%";
+  progress.style.width =
+    ((current + 1) / actualPages * 100) + "%";
 
-    previous.disabled = current === 0;
-    next.disabled = current >= TOTAL_PAGES - 1;
+  previous.disabled = current === 0;
+  next.disabled = current >= actualPages - 1;
 
-    status.textContent = "";
-  }
+  status.textContent = "";
+}
 
   previous.addEventListener("click", function () {
     pageFlip.flipPrev();
