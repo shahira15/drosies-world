@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>The Team | Drosie's World</title>
-
   <meta name="description"
-        content="Meet the author, illustrator, mentor, reviewers, educators, and community supporters behind Drosie's World.">
+        content="Meet the author, illustrator, mentor, reviewers, educators, and supporters behind Drosie's World.">
 
   <link rel="stylesheet" href="styles.css">
 
@@ -23,7 +22,7 @@
       --body-green: #476a56;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
     }
 
@@ -192,6 +191,43 @@
       border-color: #d3e6d0;
     }
 
+    /* Author's clickable social links */
+
+    .author-social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .author-social-links a {
+      display: inline-block;
+      padding: 11px 19px;
+      border: 1px solid #c9dfc4;
+      border-radius: 30px;
+      background: white;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .author-social-links a:hover {
+      background: #dcefd8;
+      transform: translateY(-2px);
+    }
+
+    .author-social-links a:focus-visible,
+    .team-back:focus-visible,
+    .team-nav-links a:focus-visible,
+    .team-menu-button:focus-visible {
+      outline: 3px solid var(--green);
+      outline-offset: 3px;
+    }
+
+    /* Jennifer Girón's featured section */
+
     .team-jennifer {
       background:
         radial-gradient(
@@ -339,6 +375,12 @@
         padding: 40px 22px;
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .author-social-links a {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
@@ -448,6 +490,33 @@
           educational platform designed to encourage
           curiosity and early engagement with science.
         </p>
+
+        <!-- SOCIAL LINKS: PHOTO CAN BE ADDED ABOVE LATER -->
+
+        <div class="author-social-links">
+
+          <a href="https://www.linkedin.com/in/shahira-a-1833511aa/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Shahira Helal Arzoo on LinkedIn">
+            LinkedIn
+          </a>
+
+          <a href="https://scholar.google.com/citations?user=xpHouoUAAAAJ"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Shahira Helal Arzoo on Google Scholar">
+            Google Scholar
+          </a>
+
+          <a href="https://www.instagram.com/shahiiiiirraaaaa/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Shahira Helal Arzoo on Instagram">
+            Instagram
+          </a>
+
+        </div>
 
       </div>
 
@@ -792,14 +861,12 @@
       </div>
 
       <div class="team-note">
-
         Drosie's World also recognizes the
         teachers, children, scientists, and
         reviewers who contributed ideas,
         participated in outreach activities,
         and provided feedback throughout
         the project's development.
-
       </div>
 
     </section>
@@ -847,8 +914,7 @@
     if (!button || !nav) return;
 
     button.addEventListener("click", function () {
-      const isOpen =
-        nav.classList.toggle("is-open");
+      const isOpen = nav.classList.toggle("is-open");
 
       button.setAttribute(
         "aria-expanded",
@@ -857,13 +923,10 @@
 
       button.setAttribute(
         "aria-label",
-        isOpen
-          ? "Close navigation"
-          : "Open navigation"
+        isOpen ? "Close navigation" : "Open navigation"
       );
 
-      button.textContent =
-        isOpen ? "✕" : "☰";
+      button.textContent = isOpen ? "✕" : "☰";
     });
 
     nav.querySelectorAll("a").forEach(function (link) {
