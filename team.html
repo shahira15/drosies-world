@@ -190,6 +190,20 @@
       border-color: #d3e6d0;
     }
 
+    /* Side-by-side author profile */
+    .author-profile {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
+    }
+
+    .author-details { min-width: 0; }
+
+    @media (max-width: 650px) {
+      .author-profile { grid-template-columns: 1fr; gap: 20px; }
+    }
+
     /* Author portrait */
     .author-portrait {
       display: block;
@@ -200,7 +214,7 @@
       border-radius: 22px;
       border: 5px solid white;
       box-shadow: 0 8px 24px rgba(40, 90, 67, 0.14);
-      margin: 0 0 24px;
+      margin: 0;
     }
 
     @media (max-width: 650px) {
@@ -479,10 +493,11 @@
       </div>
 
       <div class="team-card team-featured">
+        <div class="author-profile">
 
-        <!-- Upload shahira-photo.png alongside team.html in GitHub -->
+        <!-- Upload shahira-photo.jpg alongside team.html in GitHub -->
         <img
-          src="shahira-photo.png"
+          src="shahira-photo.jpg"
           alt="Shahira Helal Arzoo, author and creator of Drosie's World"
           class="author-portrait"
           loading="lazy"
@@ -490,6 +505,7 @@
           height="245"
         >
 
+        <div class="author-details">
         <h3>Shahira Helal Arzoo</h3>
 
         <div class="team-role">
@@ -549,6 +565,8 @@
 
         </div>
 
+        </div> <!-- end author-details -->
+        </div> <!-- end author-profile -->
       </div>
 
     </section>
