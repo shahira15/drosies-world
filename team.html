@@ -204,6 +204,11 @@
       .author-profile { grid-template-columns: 1fr; gap: 20px; }
     }
 
+    /* Illustrator portrait and side-by-side profile */
+    .illustrator-profile { display: grid; grid-template-columns: 205px minmax(0, 1fr); gap: 32px; align-items: start; }
+    .illustrator-details { min-width: 0; }
+    @media (max-width: 650px) { .illustrator-profile { grid-template-columns: 1fr; gap: 20px; } }
+
     /* Illustrator portrait */
     .illustrator-portrait {
       display: block;
@@ -214,7 +219,7 @@
       border-radius: 22px;
       border: 5px solid white;
       box-shadow: 0 8px 24px rgba(40, 90, 67, 0.14);
-      margin: 0 0 22px;
+      margin: 0;
     }
     @media (max-width: 650px) {
       .illustrator-portrait { width: 175px; height: 210px; margin-left: auto; margin-right: auto; }
@@ -627,6 +632,7 @@
       </div>
 
       <div class="team-card">
+        <div class="illustrator-profile">
 
         <img src="illustrator.jpeg"
              alt="Letícia Cavalcanti, illustrator of Drosie, the Fruit Fly"
@@ -635,27 +641,25 @@
              width="205"
              height="245">
 
+        <div class="illustrator-details">
         <h3>Letícia Cavalcanti</h3>
 
         <div class="team-role">
-          Illustration &amp; Visual Storytelling
+          Illustrator
         </div>
 
         <p>
-          Letícia Cavalcanti illustrated
-          Drosie, the Fruit Fly, creating
-          the colorful artwork that gives
-          Drosie and her surroundings their
-          visual identity.
+          Letícia Cavalcanti created the illustrations
+          for <em>Drosie, the Fruit Fly</em>, bringing
+          the author's storyboards and detailed
+          visual directions to life through her artwork.
         </p>
 
         <p>
-          Her illustrations transform
-          scientific concepts and storytelling
-          into expressive, child-friendly
-          visuals that help young readers
-          connect with the characters and
-          the biological world they explore.
+          Her colorful, child-friendly artwork
+          helps young readers connect with
+          Drosie and the biological world
+          introduced in the story.
         </p>
 
         <div class="author-social-links" aria-label="Illustrator social links">
@@ -666,6 +670,8 @@
             📷 Instagram · @amonita.bugs
           </a>
         </div>
+        </div> <!-- illustrator-details -->
+        </div> <!-- illustrator-profile -->
 
       </div>
 
