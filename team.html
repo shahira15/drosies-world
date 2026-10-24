@@ -204,6 +204,22 @@
       .author-profile { grid-template-columns: 1fr; gap: 20px; }
     }
 
+    /* Illustrator portrait */
+    .illustrator-portrait {
+      display: block;
+      width: 205px;
+      height: 245px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 22px;
+      border: 5px solid white;
+      box-shadow: 0 8px 24px rgba(40, 90, 67, 0.14);
+      margin: 0 0 22px;
+    }
+    @media (max-width: 650px) {
+      .illustrator-portrait { width: 175px; height: 210px; margin-left: auto; margin-right: auto; }
+    }
+
     /* Author portrait */
     .author-portrait {
       display: block;
@@ -612,6 +628,13 @@
 
       <div class="team-card">
 
+        <img src="illustrator.jpeg"
+             alt="Letícia Cavalcanti, illustrator of Drosie, the Fruit Fly"
+             class="illustrator-portrait"
+             loading="lazy"
+             width="205"
+             height="245">
+
         <h3>Letícia Cavalcanti</h3>
 
         <div class="team-role">
@@ -634,6 +657,15 @@
           connect with the characters and
           the biological world they explore.
         </p>
+
+        <div class="author-social-links" aria-label="Illustrator social links">
+          <a href="https://www.instagram.com/amonita.bugs/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Letícia Cavalcanti on Instagram, @amonita.bugs">
+            📷 Instagram · @amonita.bugs
+          </a>
+        </div>
 
       </div>
 
