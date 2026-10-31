@@ -390,6 +390,173 @@
 </style>
 <!-- END DROSIE'S INSTAGRAM -->
 
+
+<!-- DROSIE FEEDBACK SECTION -->
+<section id="drosie-feedback" class="drosie-feedback" aria-labelledby="drosie-feedback-heading">
+  <div class="drosie-feedback-inner">
+    <span class="section-kicker">✳ VOICES FROM OUR COMMUNITY</span>
+    <h2 id="drosie-feedback-heading">Drosie's Wall of Love ♡</h2>
+    <p>Did Drosie spark curiosity in your classroom or home? Share your experience and help more little scientists discover her world!</p>
+    <div id="drosie-approved-reviews" class="drosie-reviews" aria-live="polite">
+      <p>Community stories are coming soon. Be among the first to share yours!</p>
+    </div>
+    <form id="drosie-feedback-form" class="drosie-feedback-form">
+      <h3>Share your experience</h3>
+      <label for="drosie-role">I am a…</label>
+      <select id="drosie-role" required>
+        <option value="">Choose one</option>
+        <option>Teacher</option><option>Parent or caregiver</option>
+        <option>Student</option><option>Scientist</option><option>Other</option>
+      </select>
+      <label for="drosie-rating">Your rating</label>
+      <select id="drosie-rating" required>
+        <option value="">Choose a rating</option>
+        <option value="5">★★★★★ — Loved it!</option>
+        <option value="4">★★★★☆ — Great!</option>
+        <option value="3">★★★☆☆ — Good</option>
+        <option value="2">★★☆☆☆ — Could be better</option>
+        <option value="1">★☆☆☆☆ — Needs improvement</option>
+      </select>
+      <label for="drosie-country">Country (optional)</label>
+      <input id="drosie-country" maxlength="60" autocomplete="country-name" placeholder="e.g., United States">
+      <label for="drosie-comment">Your feedback</label>
+      <textarea id="drosie-comment" maxlength="1000" minlength="10" rows="4" required placeholder="What did you enjoy or learn?"></textarea>
+      <div id="drosie-turnstile"></div>
+      <p class="drosie-feedback-note">No account needed. Please don't include children's names or personal information. Feedback appears publicly only after review.</p>
+      <button type="submit" class="button button-dark" id="drosie-submit">Send feedback ♡</button>
+      <p id="drosie-feedback-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+<style>
+.drosie-feedback{background:#fff9ee;padding:70px 20px;color:#285a43}
+.drosie-feedback-inner{max-width:900px;margin:auto;text-align:center}
+.drosie-feedback h2{font-size:clamp(30px,5vw,45px);margin:12px 0}
+.drosie-feedback-inner>p{line-height:1.7;color:#476a56}
+.drosie-reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:30px 0}
+.drosie-review{background:white;border:1px solid #d6e5d5;border-radius:18px;padding:20px;text-align:left;overflow-wrap:anywhere}
+.drosie-review .stars{color:#b77616;letter-spacing:2px}
+.drosie-review p{white-space:pre-wrap;line-height:1.6}
+.drosie-review small{color:#476a56}
+.drosie-feedback-form{max-width:580px;margin:30px auto 0;background:#eaf5ea;border-radius:22px;padding:26px;text-align:left;display:grid;gap:11px}
+.drosie-feedback-form h3{margin:0 0 8px}
+.drosie-feedback-form label{font-weight:700}
+.drosie-feedback-form input,.drosie-feedback-form select,.drosie-feedback-form textarea{width:100%;box-sizing:border-box;border:1px solid #a9c5ad;border-radius:10px;padding:12px;font:inherit;background:white;color:#234a38}
+.drosie-feedback-form :focus-visible{outline:3px solid #285a43;outline-offset:2px}
+.drosie-feedback-note{font-size:13px;line-height:1.6;color:#476a56}
+#drosie-feedback-status{font-weight:600}
+</style>
+<script>
+/* PUBLIC configuration only. Never paste a service_role or secret key here. */
+const DROSIE_FEEDBACK_CONFIG = {
+  supabaseUrl: "https://azhzxspojxihdrenjakb.supabase.co/rest/v1/",
+  publishableKey: "sb_publishable_HijfydhPAyuol39mwxOuuw_plLCZAix",
+  turnstileSiteKey: "0x4AAAAAAFtnqaxUbliVKdiq"
+};
+(function () {
+  const cfg = DROSIE_FEEDBACK_CONFIG;
+  const form = document.getElementById("drosie-feedback-form");
+  const status = document.getElementById("drosie-feedback-status");
+  const reviews = document.getElementById("drosie-approved-reviews");
+  const button = document.getElementById("drosie-submit");
+  const ready = !Object.values(cfg).some(v => v.startsWith("YOUR_") || v.includes("YOUR-PROJECT"));
+  let widgetId = null;
+  let lastSubmit = 0;
+  const apiBase = cfg.supabaseUrl.replace(/\/$/, "");
+  const apiHeaders = { apikey: cfg.publishableKey };
+  const say = message => { status.textContent = message; };
+
+  function showReview(item) {
+    const card = document.createElement("article");
+    card.className = "drosie-review";
+    const stars = document.createElement("div");
+    stars.className = "stars";
+    stars.setAttribute("aria-label", item.rating + " out of 5 stars");
+    const rating = Math.max(1, Math.min(5, Number(item.rating) || 1));
+    stars.textContent = "★".repeat(rating) + "☆".repeat(5-rating);
+    const body = document.createElement("p");
+    body.textContent = item.comment || "";
+    const attribution = document.createElement("small");
+    attribution.textContent = [item.role, item.country].filter(Boolean).join(" · ");
+    card.append(stars, body, attribution);
+    reviews.appendChild(card);
+  }
+
+  async function loadReviews() {
+    if (!ready) return;
+    try {
+      const url = apiBase + "/rest/v1/drosie_feedback?select=role,rating,comment,country,created_at&approved=eq.true&order=created_at.desc&limit=12";
+      const response = await fetch(url, { headers: apiHeaders });
+      if (!response.ok) throw new Error("Could not load reviews");
+      const items = await response.json();
+      if (items.length) {
+        reviews.replaceChildren();
+        items.forEach(showReview);
+      }
+    } catch (error) {
+      console.warn("Approved feedback is temporarily unavailable.");
+    }
+  }
+
+  function startTurnstile() {
+    if (!ready || !window.turnstile) return;
+    widgetId = window.turnstile.render("#drosie-turnstile", {
+      sitekey: cfg.turnstileSiteKey,
+      theme: "auto"
+    });
+  }
+  window.drosieStartTurnstile = startTurnstile;
+  if (ready) {
+    loadReviews();
+    if (window.turnstile) startTurnstile();
+  } else {
+    button.disabled = true;
+    say("Feedback will open soon.");
+  }
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!ready || !window.turnstile || widgetId === null) {
+      say("Verification is not ready. Please refresh and try again.");
+      return;
+    }
+    if (Date.now() - lastSubmit < 60000) {
+      say("Please wait a minute before sending another message.");
+      return;
+    }
+    const token = window.turnstile.getResponse(widgetId);
+    if (!token) { say("Please complete the verification first."); return; }
+    button.disabled = true;
+    say("Sending your feedback…");
+    try {
+      const response = await fetch(apiBase + "/functions/v1/submit-drosie-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: cfg.publishableKey },
+        body: JSON.stringify({
+          role: document.getElementById("drosie-role").value,
+          rating: Number(document.getElementById("drosie-rating").value),
+          comment: document.getElementById("drosie-comment").value.trim(),
+          country: document.getElementById("drosie-country").value.trim(),
+          turnstileToken: token
+        })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success) throw new Error(result.error || "Submission failed");
+      lastSubmit = Date.now();
+      form.reset();
+      say("Thank you! Your feedback was received and is awaiting approval. ♡");
+    } catch (error) {
+      say("Couldn't send feedback: " + error.message + ". Please try again.");
+    } finally {
+      button.disabled = false;
+      window.turnstile.reset(widgetId);
+    }
+  });
+})();
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=drosieStartTurnstile&render=explicit" async defer></script>
+<!-- END DROSIE FEEDBACK SECTION -->
+
 </main>
   
 
