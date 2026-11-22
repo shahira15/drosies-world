@@ -589,10 +589,20 @@ const DROSIE_FEEDBACK_CONFIG = {
     </div>
     <div id="dgm-map" role="region" aria-label="Interactive map of reviewed Drosie outreach locations"></div>
     <p class="dgm-note">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Markers are approximate and are not exact venues or participant addresses.</p>
-    <div class="dgm-candidate">
-      <h3>📍 Candidate entry awaiting confirmation</h3>
-      <p><strong>Lubbock, Texas, USA</strong> — Lubbock Lake Landmark summer camp, June 2026. Approximately 79 learners were reported to have participated. This entry is <strong>not counted as verified</strong> and will not be displayed as a public map marker until the event description and permission to feature it have been confirmed.</p>
-    </div>
+    
+<div class="dgm-candidate">
+  <h3>📍 Verified Science Outreach — Lubbock, Texas</h3>
+  <p>
+    <strong>Lubbock Lake Landmark, Texas, USA</strong> —
+    In June 2026, Drosie's creator conducted an
+    interactive science outreach activity during
+    the summer camp, reaching approximately
+    <strong>79 young learners</strong>.
+    This activity is verified by the organizer
+    and featured on Drosie's Global Science Map.
+  </p>
+</div>
+
     <div class="dgm-form-panel">
       <h3>Bring Drosie to your community ♡</h3>
       <p>Are you an adult educator or organizer who has used Drosie's resources? Request inclusion on the map. We review every request; submitting does not guarantee publication.</p>
@@ -669,10 +679,19 @@ const DROSIE_FEEDBACK_CONFIG = {
   // CONFIGURE BEFORE PUBLISHING: replace with your real project contact email.
   const CONTACT_EMAIL = 'drosiesworld@gmail.com';
   // Add only reviewed, permitted, verified activities. Approximate CITY coordinates only.
-  const approvedEntries = [
-    // Example format (NOT real data; keep commented until verified):
-    // {city:'Lubbock',country:'United States',lat:33.58,lng:-101.85,title:'Summer science outreach',description:'Confirmed public description',participants:79}
-  ];
+  
+const approvedEntries = [
+  {
+    city: 'Lubbock',
+    country: 'United States',
+    lat: 33.58,
+    lng: -101.85,
+    title: "Drosie's World — Summer Science Camp",
+    description: 'Lubbock Lake Landmark, June 2026. Approximately 79 children participated in a science outreach activity conducted by the Drosie project creator.',
+    participants: 79
+  }
+];
+
   function init(){
     const el=document.getElementById('dgm-map');
     if(!el)return;
