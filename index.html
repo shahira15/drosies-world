@@ -709,7 +709,15 @@ const approvedEntries = [
         const place=document.createElement('p');place.textContent=entry.city+', '+entry.country;
         const desc=document.createElement('p');desc.textContent=entry.description;
         popup.append(title,place,desc);
-        L.marker([entry.lat,entry.lng]).addTo(map).bindPopup(popup);
+      
+L.circleMarker([entry.lat, entry.lng], {
+  radius: 10,
+  color: '#ffffff',
+  weight: 3,
+  fillColor: '#e05252',
+  fillOpacity: 1
+}).addTo(map).bindPopup(popup);
+
       });
     }
     document.getElementById('dgm-country-count').textContent=new Set(approvedEntries.map(x=>x.country)).size;
