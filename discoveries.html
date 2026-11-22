@@ -27,11 +27,21 @@
 <script>
 (function () {
   // GoatCounter automatically counts this page view. These are additional anonymous events.
-  function recordEvent(path, title) {
-    if (window.goatcounter && typeof window.goatcounter.count === 'function') {
-      window.goatcounter.count({path: path, title: title, event: true});
+  var pendingEvents = [];
+  function flushEvents() {
+    if (!window.goatcounter || typeof window.goatcounter.count !== 'function') return;
+    while (pendingEvents.length) {
+      var item = pendingEvents.shift();
+      window.goatcounter.count({path: item.path, title: item.title, event: true});
     }
   }
+  function recordEvent(path, title) {
+    pendingEvents.push({path: path, title: title});
+    flushEvents();
+  }
+  var analyticsScript = document.querySelector('script[data-goatcounter]');
+  if (analyticsScript) analyticsScript.addEventListener('load', flushEvents);
+  window.addEventListener('load', flushEvents);
   var quizStarted = false;
   var quizCompleted = false;
   document.querySelectorAll('.dl-quiz-options button').forEach(function (button) {
