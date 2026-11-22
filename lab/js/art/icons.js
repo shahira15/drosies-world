@@ -42,6 +42,26 @@
     female: '<circle cx="12" cy="8.500" r="5"/><path d="M12 13.500V21M8.500 17.500h7"/>',
     male: '<circle cx="10" cy="14" r="5"/><path d="M13.500 10.500L20 4M14.500 4H20v5.500"/>',
   };
+  Object.assign(P, {
+    shield: '<path d="M12 3l7.5 3v5.5c0 4.800-3.200 8.500-7.500 10-4.300-1.500-7.500-5.200-7.500-10V6z"/><path d="M8.500 12l2.500 2.500 4.500-5"/>',
+    goggles: '<path d="M3 10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3.500a3.500 3.500 0 0 1-3.500 3.500H14l-2-1.500L10 17H6.500A3.500 3.500 0 0 1 3 13.500z"/><path d="M3 11H1.500M21 11h1.500"/>',
+    glove: '<path d="M7 21v-4.500L4.500 12a1.500 1.500 0 0 1 2.500-1.600L8.500 12V5a1.300 1.300 0 0 1 2.600 0v5M11.100 4a1.300 1.300 0 0 1 2.600 0v6M13.700 5a1.300 1.300 0 0 1 2.600 0v6.500M16.300 8a1.300 1.300 0 0 1 2.400.7V16a5 5 0 0 1-5 5z"/>',
+    coat: '<path d="M8 3l4 3 4-3 4 4-2.500 3L16 9v12H8V9l-1.500 1L4 7z"/><path d="M12 6v15"/>',
+    boot: '<path d="M6 3h6v7l6 3a3 3 0 0 1 3 3v2H4V3z"/><path d="M6 8h6"/>',
+    alert: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
+    drop: '<path d="M12 3s6 6.500 6 11a6 6 0 0 1-12 0c0-4.500 6-11 6-11z"/>',
+    flame: '<path d="M12 3c1 4 5 5.500 5 10a5 5 0 0 1-10 0c0-2 1-3.500 2-4.500 0 2 1 3 2 3 0-3-1-5 1-8.500z"/>',
+    exit: '<path d="M10 4H5v16h5M14 8l4 4-4 4M8 12h10"/>',
+    siren: '<path d="M7 18v-6a5 5 0 0 1 10 0v6M5 18h14v3H5zM12 3v2M4.500 6l1.500 1.500M19.500 6L18 7.500"/>',
+    print: '<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.500 3.500-7 8-7s8 2.500 8 7"/>',
+    clipboard: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.500 11l1.500 1.500 3-3M8.500 17h7"/>',
+    map: '<path d="M3 6l6-2.500 6 2.500 6-2.500V18l-6 2.500L9 18l-6 2.500z"/><path d="M9 3.500V18M15 6v14.500"/>',
+    soap: '<path d="M9 9h6v3H9zM12 4v5M12 4h4M8 12h8v8H8z"/>',
+    walk: '<circle cx="13" cy="4.500" r="1.800"/><path d="M12 8l-2 4 3 3v5M12 8l3 3 3 1M10 12l-3 2"/>',
+    hand2: '<path d="M7 12V6a1.500 1.500 0 0 1 3 0v5M10 5a1.500 1.500 0 0 1 3 0v6M13 6a1.500 1.500 0 0 1 3 0v6M16 9a1.500 1.500 0 0 1 3 0v5a7 7 0 0 1-7 7c-3 0-5-1.500-6-4l-2-4a1.500 1.500 0 0 1 2.400-1.600L7 14"/>',
+    question: '<circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01"/>',
+  });
   DW.icon = function (name, size) {
     const s = size || 22;
     return '<svg class="ic" viewBox="0 0 24 24" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[name] || '') + '</svg>';

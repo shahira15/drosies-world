@@ -36,6 +36,7 @@
     linear: (t) => t,
   };
 
+  DW.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   DW.paused = false;
 
   /** Pause-aware sleep. */
@@ -50,6 +51,7 @@
 
   /** Animate 0..1 over ms. fn(easedT). */
   DW.tween = (ms, fn, ease = DW.ease.inOut) => new Promise((res) => {
+    if (DW.reduced) ms = Math.min(ms, 60);
     const t0 = performance.now();
     (function f(now) {
       const t = Math.min(1, (now - t0) / ms);

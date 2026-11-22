@@ -46,5 +46,13 @@
     anatomy: 'anatomy-exploration-completed',
     detective: 'fly-detective-completed',
     complete: 'game-completed',
+    // Lab 0 (Safety Academy): anonymous milestone names only, each sent once per session
+    l0started: 'lab0-started',
+    l0mission: (n) => 'lab0-mission-' + n + '-completed',
+    assessStart: 'lab0-assessment-started',
+    assessDone: 'lab0-assessment-completed',
+    l0complete: 'lab0-completed',
+    lab1unlocked: 'lab1-unlocked',
+    refresher: 'lab0-refresher-taken',
   };
 })();

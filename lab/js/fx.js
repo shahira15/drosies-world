@@ -73,6 +73,7 @@
     fx.burst(r.left + r.width / 2, r.top + r.height / 2, { n: n || 18, speed: 4, life: 50, size: 5 });
   };
   fx.confetti = function (big) {
+    if (DW.reduced) { fx.burst(fx.w / 2, fx.h * 0.35, { n: 10, speed: 3, life: 40, size: 4 }); return; }
     const cols = ['#ffd36b', '#7df0cf', '#ff8c7a', '#8ec9ff', '#ffffff', '#c9a7ff'];
     const shots = big ? 6 : 3;
     for (let k = 0; k < shots; k++) {

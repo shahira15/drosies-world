@@ -127,8 +127,8 @@
     Lab.show(true); Lab.enable(false); Lab.free = false; Lab.snapTo(1200);
     ui.setHudVisible(false); ui.fade(false, 700);
     const el = h('div', { class: 'title' },
-      h('div', { class: 't-logo' }, h('small', null, "DROSIE'S WORLD PRESENTS"), h('h1', null, 'The Secret', h('br'), 'Fly Lab'), h('p', null, 'Lab 1 · Meet Your Fruit Fly')),
-      h('button', { class: 'primary big', id: 'playBtn', html: icon('play', 24) + ' <span>Play</span>' }),
+      h('div', { class: 't-logo' }, h('small', null, "DROSIE'S WORLD PRESENTS"), h('h1', null, 'The Secret', h('br'), 'Fly Lab'), h('p', null, 'Lab 0 · Safety Academy', h('br'), 'Lab 1 · Meet Your Fruit Fly')),
+      h('button', { class: 'primary big', id: 'playBtn', html: icon('play', 24) + ' <span>' + (sessionStorage.getItem('dw.hub') ? 'Back to the Lab Entrance' : 'Play') + '</span>' }),
       h('div', { class: 't-opts' },
         h('button', { class: 'chipbtn', id: 'tFs', html: icon('full', 18) + ' Fullscreen' }),
         h('button', { class: 'chipbtn', id: 'tSnd', 'aria-pressed': String(A.on.sfx), html: icon('sound', 18) + ' Sound' })),
@@ -142,13 +142,13 @@
     el.querySelector('#playBtn').addEventListener('click', async () => {
       alive = false; A.init(); A.play('success');
       el.classList.add('out'); setTimeout(() => el.remove(), 700);
-      DW.track(DW.EVENTS.start, 'Game started');
-      try { await play(); } catch (err) { console.error(err); ui.toast('Oops, something went wrong. Try Restart in the menu.', 'bulb', 6000); }
+      try { await DW.hub.open(); } catch (err) { console.error(err); ui.toast('Oops, something went wrong. Try Restart in the menu.', 'bulb', 6000); }
     });
     el.querySelector('#playBtn').focus();
   }
 
-  /* ---------- the game ---------- */
+  /* ---------- the game (Lab 1) ---------- */
+  DW.startLab1 = () => { ui.btnHome.style.display = ''; play().catch((err) => { console.error(err); ui.toast('Oops, something went wrong. Try Restart in the menu.', 'bulb', 6000); }); };
   async function play() {
     await intro();
     await mission1(); await mission2(); await mission3(); await mission4();
@@ -343,7 +343,7 @@
     ui.hideDlg(); await ui.fade(true, 500);
     if (ctx.screen) ctx.screen.el.classList.remove('in', 'on');
     ui.setProgress(M[6].objs.length, 'Lab 1 complete!');
-    DW.track(DW.EVENTS.complete, 'Game completed');
+    DW.track(DW.EVENTS.complete, 'Game completed'); DW.save.lab1Complete();
     const el = h('div', { class: 'finale' });
     const row = h('div', { class: 'f-badges' });
     DW.data.badges.forEach((b) => { if (b.id !== 'scientist') row.append(h('div', { class: 'f-b' + (ST.badges.has(b.id) ? '' : ' locked'), html: ui.badgeSVG(b, !ST.badges.has(b.id)) + '<span>' + b.name + '</span>' })); });
@@ -357,6 +357,7 @@
         h('div', { class: 'f-btns' },
           h('button', { class: 'primary', html: icon('restart', 20) + ' Play again', onclick: () => DW.bus.emit('restart') }),
           h('button', { class: 'secondary', html: icon('book', 20) + ' Journal', onclick: () => ui.openJournal('badge') }),
+          h('button', { class: 'secondary', html: icon('exit', 20) + ' Lab Entrance', onclick: () => { try { sessionStorage.setItem('dw.hub', '1'); } catch (e) { /* ignore */ } window.location.reload(); } }),
           h('a', { class: 'secondary', href: 'https://drosiesworld.com', target: '_blank', rel: 'noopener', html: icon('fly', 20) + ' More at drosiesworld.com' }))));
     ui.game.append(el); Lab.show(false);
     ui.awardBadge('scientist'); // fanfare + confetti

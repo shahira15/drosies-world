@@ -44,7 +44,9 @@
     if (!ui.fullscreenOK) ui.btnFull.style.display = 'none';
     ui.btnMenu = btn('gear', 'Settings', () => ui.openMenu('Settings'));
     ui.btnPause = btn('pause', 'Pause', () => ui.openMenu('Paused'));
-    ui.hudBtns = h('div', { class: 'hud-btns' }, ui.btnHint, ui.btnJournal, ui.btnFull, ui.btnMenu, ui.btnPause);
+    ui.btnHome = btn('exit', 'Back to the Lab Entrance', () => DW.bus.emit('home'), 'homebtn');
+    ui.btnHome.style.display = 'none';
+    ui.hudBtns = h('div', { class: 'hud-btns' }, ui.btnHome, ui.btnHint, ui.btnJournal, ui.btnFull, ui.btnMenu, ui.btnPause);
 
     ui.vsLab = h('button', { class: 'vs on', html: icon('home', 18) + '<span>Lab</span>', onclick: () => { DW.audio.play('click'); DW.bus.emit('nav', 'lab'); } });
     ui.vsScope = h('button', { class: 'vs', html: icon('scope', 18) + '<span>Microscope</span>', disabled: true, onclick: () => { DW.audio.play('click'); DW.bus.emit('nav', 'scope'); } });
@@ -60,7 +62,7 @@
     ui.dlgName = h('div', { class: 'dlg-name' });
     ui.dlgText = h('div', { class: 'dlg-text' });
     ui.dlgNext = h('div', { class: 'dlg-next', html: icon('down', 18) });
-    ui.dlg = h('div', { class: 'dlg', role: 'status', onclick: () => ui._adv && ui._adv() },
+    ui.dlg = h('div', { class: 'dlg', role: 'status', onclick: () => { if (ui._adv) ui._adv(); else if (ui.game.classList.contains('l0')) ui.hideDlg(); } },
       ui.dlgPortrait, h('div', { class: 'dlg-body' }, ui.dlgName, ui.dlgText, ui.dlgNext));
 
     ui.toasts = h('div', { class: 'toasts', 'aria-live': 'polite' });
@@ -90,7 +92,7 @@
 
   /* ---------- mission card ---------- */
   ui.setMission = function (m, done) {
-    ui.mTag.textContent = 'MISSION ' + m.n + ' OF 7';
+    ui.mTag.textContent = m.tag || ('MISSION ' + m.n + ' OF 7');
     ui.mTitle.textContent = m.title;
     ui._objs = m.objs;
     ui.setProgress(done || 0);
@@ -216,7 +218,7 @@
     const body = h('div', { class: 'journal' });
     const tabs = h('div', { class: 'tabs', role: 'tablist' });
     const pane = h('div', { class: 'jpane' });
-    const names = [['disc', 'Discoveries', 'sparkle'], ['gear', 'Equipment', 'bag'], ['badge', 'Badges', 'medal']];
+    const names = [['disc', 'Discoveries', 'sparkle'], ['gear', 'Equipment', 'bag'], ['safety', 'Safety', 'shield'], ['badge', 'Badges', 'medal']];
     function show(k) {
       DW.$$('button', tabs).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
       pane.innerHTML = '';
@@ -236,10 +238,19 @@
           grid.append(h('div', { class: 'jcard ' + (has ? '' : 'locked'), html: '<div class="jic">' + icon(has ? it.icon : 'lock', 24) + '</div><div><b>' + (has ? it.name : '???') + '</b><p>' + (has ? it.text : 'Not collected yet.') + '</p></div>' }));
         });
         pane.append(grid);
+      } else if (k === 'safety') {
+        const J = DW.data0.journal, ids = Object.keys(J), got = ids.filter((i) => S.sJournal && S.sJournal.has(i));
+        pane.append(h('p', { class: 'jhint' }, 'Safety Journal: ' + got.length + ' of ' + ids.length + ' notes. Play the Safety Academy missions to unlock more.'));
+        const grid = h('div', { class: 'jgrid' });
+        ids.forEach((id) => {
+          const d = J[id], has = S.sJournal && S.sJournal.has(id);
+          grid.append(h('div', { class: 'jcard ' + (has ? '' : 'locked'), html: '<div class="jic">' + icon(has ? d.icon : 'lock', 24) + '</div><div><b>' + (has ? d.title : '???') + '</b><p>' + (has ? d.text : 'Not unlocked yet.') + '</p></div>' }));
+        });
+        pane.append(grid);
       } else {
         const grid = h('div', { class: 'bgrid' });
-        D.badges.forEach((b) => {
-          const has = S.badges.has(b.id);
+        D.badges.concat(DW.data0.badges).forEach((b) => {
+          const has = (b.lab === 0 ? S.sBadges : S.badges).has(b.id);
           grid.append(h('div', { class: 'bcard' + (has ? '' : ' locked'), html: ui.badgeSVG(b, !has) + '<b>' + (has ? b.name : 'Locked') + '</b><p>' + (has ? b.text : b.text) + '</p>' }));
         });
         pane.append(grid);
@@ -266,6 +277,7 @@
         h('button', { class: 'primary', html: icon('play', 20) + ' Resume', onclick: () => { A.play('click'); ui.closeModal(); } }),
         ui.fullscreenOK ? h('button', { class: 'secondary', html: icon('full', 20) + ' Fullscreen', onclick: () => ui.toggleFullscreen() }) : null,
         h('button', { class: 'secondary', html: icon('book', 20) + ' Journal', onclick: () => ui.openJournal() }),
+        h('button', { class: 'secondary', html: icon('exit', 20) + ' Lab Entrance', onclick: () => { ui.closeModal(); DW.bus.emit('home'); } }),
         h('button', { class: 'danger', html: icon('restart', 20) + ' Restart game', onclick: () => ui.confirmRestart() })));
     ui.openModal(title || 'Paused', body, { cls: 'small' });
   };
@@ -280,12 +292,13 @@
 
   /* ---------- badge celebration ---------- */
   ui.awardBadge = function (id) {
-    const S = DW.state, b = DW.data.badges.find((x) => x.id === id);
-    if (!b || S.badges.has(id)) return Promise.resolve();
-    S.badges.add(id);
+    const S = DW.state, b = DW.data.badges.concat(DW.data0 ? DW.data0.badges : []).find((x) => x.id === id);
+    const set = b && b.lab === 0 ? S.sBadges : S.badges;
+    if (!b || set.has(id)) return Promise.resolve();
+    set.add(id); if (b.lab === 0 && DW.save) DW.save.addBadge(id);
     return new Promise((resolve) => {
-      DW.audio.play(id === 'detective' || id === 'scientist' ? 'fanfare' : 'success');
-      DW.fx.confetti(id === 'detective' || id === 'scientist');
+      DW.audio.play(id === 'detective' || id === 'scientist' || id === 'safety' ? 'fanfare' : 'success');
+      DW.fx.confetti(id === 'detective' || id === 'scientist' || id === 'safety');
       const card = h('div', { class: 'badge-pop' },
         h('div', { class: 'ray' }), h('div', { class: 'bsvg', html: ui.badgeSVG(b) }),
         h('div', { class: 'bt' }, 'NEW BADGE'), h('h3', null, b.name), h('p', null, b.text),
