@@ -637,6 +637,30 @@ const DROSIE_FEEDBACK_CONFIG = {
 #dgm-request-form button{background:#285a43;color:white;border:0;border-radius:30px;padding:14px 22px;font:inherit;font-weight:700;cursor:pointer;justify-self:start}
 #dgm-request-form :focus-visible{outline:3px solid #2c7754;outline-offset:3px}
 @media(max-width:550px){#drosie-global-map .dgm-stats{gap:6px}#drosie-global-map .dgm-stats>div{padding:10px 5px}#drosie-global-map .dgm-stats strong{font-size:24px}#drosie-global-map .dgm-stats span{font-size:11px}#dgm-map{height:330px}}
+
+/* Fix Leaflet map tiles escaping the container */
+#dgm-map {
+  position: relative !important;
+  height: 380px !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+#dgm-map .leaflet-pane,
+#dgm-map .leaflet-map-pane,
+#dgm-map .leaflet-tile-pane {
+  position: absolute !important;
+}
+
+#dgm-map .leaflet-tile {
+  position: absolute !important;
+  max-width: none !important;
+}
+
+#dgm-map img {
+  max-width: none !important;
+}
 </style>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
