@@ -575,6 +575,125 @@ const DROSIE_FEEDBACK_CONFIG = {
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=drosieStartTurnstile&render=explicit" async defer></script>
 <!-- END DROSIE FEEDBACK SECTION -->
 
+<!-- START DROSIE GLOBAL MAP: paste immediately before </main> -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyo5DkU9Q+3o6f2w=" crossorigin="">
+<section id="drosie-global-map" aria-labelledby="dgm-heading">
+  <div class="dgm-wrap">
+    <span class="dgm-kicker">✳ TINY WINGS, GLOBAL DISCOVERIES</span>
+    <h2 id="dgm-heading">Drosie Around the World 🌍</h2>
+    <p>Explore places where Drosie's science outreach has been documented. Entries are reviewed before publication; markers show approximate city locations, never children's locations.</p>
+    <div class="dgm-stats" aria-label="Verified participation statistics">
+      <div><strong id="dgm-country-count">0</strong><span>Verified countries</span></div>
+      <div><strong id="dgm-event-count">0</strong><span>Verified activities</span></div>
+      <div><strong id="dgm-learner-count">0</strong><span>Reported participants</span></div>
+    </div>
+    <div id="dgm-map" role="region" aria-label="Interactive map of reviewed Drosie outreach locations"></div>
+    <p class="dgm-note">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Markers are approximate and are not exact venues or participant addresses.</p>
+    <div class="dgm-candidate">
+      <h3>📍 Candidate entry awaiting confirmation</h3>
+      <p><strong>Lubbock, Texas, USA</strong> — Lubbock Lake Landmark summer camp, June 2026. Approximately 79 learners were reported to have participated. This entry is <strong>not counted as verified</strong> and will not be displayed as a public map marker until the event description and permission to feature it have been confirmed.</p>
+    </div>
+    <div class="dgm-form-panel">
+      <h3>Bring Drosie to your community ♡</h3>
+      <p>Are you an adult educator or organizer who has used Drosie's resources? Request inclusion on the map. We review every request; submitting does not guarantee publication.</p>
+      <form id="dgm-request-form">
+        <label for="dgm-contact">Your email (adult contact only)</label>
+        <input id="dgm-contact" type="email" autocomplete="email" maxlength="150" required>
+        <label for="dgm-role">Your role</label>
+        <select id="dgm-role" required><option value="">Select one</option><option>Teacher</option><option>Museum educator</option><option>Community organizer</option><option>Parent/caregiver</option><option>Other adult</option></select>
+        <label for="dgm-city">City or region (no street address)</label>
+        <input id="dgm-city" type="text" maxlength="80" required placeholder="e.g., Lubbock, Texas">
+        <label for="dgm-country">Country</label>
+        <input id="dgm-country" type="text" maxlength="80" required placeholder="e.g., United States">
+        <label for="dgm-activity">How did you use Drosie's resources?</label>
+        <textarea id="dgm-activity" maxlength="700" rows="4" required placeholder="Briefly describe the activity; do not include children's names, photos, or personal information."></textarea>
+        <label class="dgm-check"><input id="dgm-consent" type="checkbox" required> I am 18 or older, and I consent to being contacted about this submission. I understand nothing will be published without further review and permission.</label>
+        <button type="submit">Prepare participation request ↗</button>
+        <p id="dgm-status" role="status" aria-live="polite"></p>
+      </form>
+      <p class="dgm-note">This form opens your email application with a prepared message. You must press Send in your email app. No submission is automatically saved to the website.</p>
+    </div>
+  </div>
+</section>
+<style>
+#drosie-global-map{background:#eaf5ea;padding:70px 20px;color:#285a43;font-family:inherit}
+#drosie-global-map .dgm-wrap{max-width:1100px;margin:auto}
+#drosie-global-map .dgm-kicker{font-size:12px;letter-spacing:2px;font-weight:800;color:#598365}
+#drosie-global-map h2{font-size:clamp(30px,5vw,46px);margin:12px 0 16px}
+#drosie-global-map p{line-height:1.7}
+#drosie-global-map .dgm-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:28px 0}
+#drosie-global-map .dgm-stats>div{background:#fffdf7;border:1px solid #c9dfc4;border-radius:16px;padding:18px;text-align:center}
+#drosie-global-map .dgm-stats strong{display:block;font-size:30px}
+#drosie-global-map .dgm-stats span{font-size:13px}
+#dgm-map{height:420px;min-height:300px;border-radius:18px;border:2px solid #c9dfc4;z-index:0;background:#dceadf}
+#drosie-global-map .dgm-note{font-size:12px;color:#476a56}
+#drosie-global-map .dgm-candidate,#drosie-global-map .dgm-form-panel{background:#fffdf7;border:1px solid #c9dfc4;border-radius:18px;padding:24px;margin-top:24px}
+#drosie-global-map h3{margin-top:0}
+#dgm-request-form{display:grid;gap:9px;max-width:680px}
+#dgm-request-form label{font-weight:700;font-size:14px;margin-top:8px}
+#dgm-request-form input:not([type=checkbox]),#dgm-request-form select,#dgm-request-form textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #a9c5ad;border-radius:9px;font:inherit;background:white;color:#234934}
+#dgm-request-form .dgm-check{display:flex;gap:10px;align-items:flex-start;font-weight:400;line-height:1.5}
+#dgm-request-form .dgm-check input{margin-top:5px}
+#dgm-request-form button{background:#285a43;color:white;border:0;border-radius:30px;padding:14px 22px;font:inherit;font-weight:700;cursor:pointer;justify-self:start}
+#dgm-request-form :focus-visible{outline:3px solid #2c7754;outline-offset:3px}
+@media(max-width:550px){#drosie-global-map .dgm-stats{gap:6px}#drosie-global-map .dgm-stats>div{padding:10px 5px}#drosie-global-map .dgm-stats strong{font-size:24px}#drosie-global-map .dgm-stats span{font-size:11px}#dgm-map{height:330px}}
+</style>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(function(){
+  'use strict';
+  // CONFIGURE BEFORE PUBLISHING: replace with your real project contact email.
+  const CONTACT_EMAIL = 'drosiesworld@gmail.com';
+  // Add only reviewed, permitted, verified activities. Approximate CITY coordinates only.
+  const approvedEntries = [
+    // Example format (NOT real data; keep commented until verified):
+    // {city:'Lubbock',country:'United States',lat:33.58,lng:-101.85,title:'Summer science outreach',description:'Confirmed public description',participants:79}
+  ];
+  function init(){
+    const el=document.getElementById('dgm-map');
+    if(!el)return;
+    if(typeof L==='undefined'){
+      el.textContent='Map unavailable right now. Please refresh or try again later.';
+    }else{
+      const map=L.map(el,{scrollWheelZoom:false}).setView([20,0],2);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',maxZoom:18
+      }).addTo(map);
+      approvedEntries.forEach(function(entry){
+        if(!Number.isFinite(entry.lat)||!Number.isFinite(entry.lng))return;
+        const popup=document.createElement('div');
+        const title=document.createElement('strong');title.textContent=entry.title;
+        const place=document.createElement('p');place.textContent=entry.city+', '+entry.country;
+        const desc=document.createElement('p');desc.textContent=entry.description;
+        popup.append(title,place,desc);
+        L.marker([entry.lat,entry.lng]).addTo(map).bindPopup(popup);
+      });
+    }
+    document.getElementById('dgm-country-count').textContent=new Set(approvedEntries.map(x=>x.country)).size;
+    document.getElementById('dgm-event-count').textContent=approvedEntries.length;
+    document.getElementById('dgm-learner-count').textContent=approvedEntries.reduce((n,x)=>n+(Number.isFinite(x.participants)?x.participants:0),0).toLocaleString();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  const form=document.getElementById('dgm-request-form');
+  if(!form)return;
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    const status=document.getElementById('dgm-status');
+    if(!form.reportValidity())return;
+    if(CONTACT_EMAIL.includes('REPLACE_WITH_YOUR_EMAIL')){
+      status.textContent='The site owner needs to configure the contact email before this form can send requests.';return;
+    }
+    const val=id=>document.getElementById(id).value.trim();
+    const subject='Drosie Global Map participation request';
+    const body=['Adult contact: '+val('dgm-contact'),'Role: '+val('dgm-role'),'City/region: '+val('dgm-city'),'Country: '+val('dgm-country'),'Activity: '+val('dgm-activity'),'Adult consent: Yes','Please review and contact me before publishing any information.'].join('\n\n');
+    const url='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    status.textContent='Your email app should open now. Please review the message and press Send. If nothing opens, email the project directly.';
+    window.location.href=url;
+  });
+})();
+</script>
+<!-- END DROSIE GLOBAL MAP -->
+
 </main>
   
 
