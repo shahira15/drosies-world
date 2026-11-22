@@ -1,0 +1,17 @@
+body { font: 15px/1.55 Georgia, "Iowan Old Style", serif; color: #14212c; background: #eef2f5; margin: 0; }
+nav { position: sticky; top: 0; background: #0d1a26; color: #fff; padding: 10px 18px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font: 700 14px system-ui, sans-serif; z-index: 2; }
+nav a { color: #ffc861; text-decoration: none; } nav button { font: inherit; background: #ffc861; border: 0; border-radius: 8px; padding: 6px 12px; cursor: pointer; } .hint { font-weight: 400; color: #b9cddd; }
+.sheet, .page { background: #fff; max-width: 820px; margin: 18px auto; padding: 28px 36px; border-radius: 10px; box-shadow: 0 4px 18px rgba(0,0,0,.08); }
+h1 { font: 800 1.35rem system-ui, sans-serif; color: #0d3550; margin: 0 0 4px; } h1 small { display: block; font-size: .8rem; color: #8a5a00; font-weight: 700; }
+h2 { font: 800 1.1rem system-ui, sans-serif; color: #0d3550; }
+header p { color: #555; } li { margin: 10px 0; }
+table { border-collapse: collapse; margin: 8px 0; } th, td { border: 1px solid #9aa8b4; padding: 6px 12px; min-width: 70px; height: 28px; text-align: left; }
+table.punnett td { width: 80px; height: 50px; }
+.box { border: 1.5px dashed #9aa8b4; border-radius: 8px; height: 90px; margin: 6px 0; } .box.tall { height: 150px; }
+code { font: .9em ui-monospace, Menlo, monospace; background: #f1ece0; padding: 1px 4px; border-radius: 4px; }
+.key { display: none; margin-top: 14px; background: #fff7e0; border-left: 4px solid #e0a92b; padding: 8px 12px; font-size: .92rem; }
+.show-keys .key { display: block; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.cards a { display: block; background: #f7f3ea; border-radius: 10px; padding: 14px; color: #0d3550; text-decoration: none; border: 1px solid #e2dccd; }
+.cards a b { display: block; font-family: system-ui, sans-serif; } .cards a span { color: #555; font-size: .92rem; }
+@media print { nav, .noprint { display: none; } body { background: #fff; } .sheet, .page { box-shadow: none; margin: 0; padding: 10mm 12mm; page-break-after: always; max-width: none; } }

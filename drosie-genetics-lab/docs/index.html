@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drosie Genetics Lab — Documentation</title>
+<style>
+body{font:16px/1.6 Georgia,"Iowan Old Style",serif;background:#f7f3ea;color:#1c2a36;margin:0}
+nav{background:#0d1a26;padding:12px 20px;font:700 14px system-ui,sans-serif}nav a{color:#ffc861;margin-right:16px;text-decoration:none}
+main{max-width:980px;margin:0 auto;padding:24px}h1,h2,h3{font-family:system-ui,sans-serif;color:#0d3550}
+table{border-collapse:collapse;width:100%;font:14px/1.4 system-ui,sans-serif;margin:12px 0;display:block;overflow-x:auto}th,td{border:1px solid #cdd6df;padding:6px 8px;text-align:left;vertical-align:top}th{background:#e6eef5}
+code{background:#e9e3d6;padding:1px 5px;border-radius:4px;font-size:.9em}pre{background:#0d1a26;color:#e9f2ec;padding:12px;border-radius:8px;overflow:auto}
+blockquote{border-left:4px solid #ffc861;margin:0;padding:4px 14px;background:#fff8e6}
+@media print{nav{display:none}}
+</style></head><body>
+<nav><a href="../">← Lab</a><a href="?f=SCIENTIFIC_REFERENCE.md">Scientific reference</a><a href="?f=MODEL_SPECIFICATION.md">Model specification</a><a href="?f=TEACHER_GUIDE.md">Teacher guide</a><a href="?f=INSTRUCTOR_GUIDE.md">Instructor guide</a><a href="?f=QA_REPORT.md">QA report</a><a href="?f=INTEGRATION.md">Integration</a><a href="?f=REMAINING_WORK.md">Remaining work</a></nav>
+<main id="doc">Loading…</main>
+<script>
+// Minimal, dependency-free Markdown renderer for the project's own docs (headings, lists, tables, code, links, emphasis, quotes).
+const ALLOWED=['SCIENTIFIC_REFERENCE.md','MODEL_SPECIFICATION.md','TEACHER_GUIDE.md','INSTRUCTOR_GUIDE.md','QA_REPORT.md','INTEGRATION.md','REMAINING_WORK.md'];
+const f=new URLSearchParams(location.search).get('f')||'SCIENTIFIC_REFERENCE.md';
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const inline=s=>esc(s).replace(/&lt;(\/?)(sup|sub|b|i|em|strong)&gt;/g,'<$1$2>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\s][^*]*)\*/g,'<em>$1</em>').replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,t,u)=>`<a href="${/^https?:/.test(u)?u:'?f='+u}">${t}</a>`);
+function md(src){const L=src.split('\n');let h='',i=0;while(i<L.length){let l=L[i];
+ if(/^```/.test(l)){let c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(esc(L[i++]));h+=`<pre>${c.join('\n')}</pre>`;i++;continue}
+ let m=l.match(/^(#{1,4})\s+(.*)/);if(m){h+=`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`;i++;continue}
+ if(/^\|/.test(l)){let rows=[];while(i<L.length&&/^\|/.test(L[i]))rows.push(L[i++]);const cells=r=>r.replace(/^\||\|$/g,'').split('|').map(c=>c.trim());h+='<table><thead><tr>'+cells(rows[0]).map(c=>`<th>${inline(c)}</th>`).join('')+'</tr></thead><tbody>'+rows.slice(2).map(r=>'<tr>'+cells(r).map(c=>`<td>${inline(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table>';continue}
+ if(/^\s*([-*]|\d+\.)\s/.test(l)){const ord=/^\s*\d+\./.test(l);let it=[];while(i<L.length&&/^\s*([-*]|\d+\.)\s/.test(L[i]))it.push(L[i++].replace(/^\s*([-*]|\d+\.)\s/,''));h+=`<${ord?'ol':'ul'}>${it.map(x=>`<li>${inline(x)}</li>`).join('')}</${ord?'ol':'ul'}>`;continue}
+ if(/^>\s?/.test(l)){let q=[];while(i<L.length&&/^>\s?/.test(L[i]))q.push(L[i++].replace(/^>\s?/,''));h+=`<blockquote>${inline(q.join(' '))}</blockquote>`;continue}
+ if(!l.trim()){i++;continue}let p=[];while(i<L.length&&L[i].trim()&&!/^(#|\||```|>|\s*([-*]|\d+\.)\s)/.test(L[i]))p.push(L[i++]);h+=`<p>${inline(p.join(' '))}</p>`}return h}
+if(!ALLOWED.includes(f)){document.getElementById('doc').textContent='Unknown document.'}else fetch(f).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{document.getElementById('doc').innerHTML=md(t);document.title=f.replace('.md','').replace(/_/g,' ')+' — Drosie Genetics Lab'}).catch(()=>{document.getElementById('doc').innerHTML='Could not load this document. If you opened the file directly from disk, serve the folder over HTTP (see README).'});
+</script></body></html>

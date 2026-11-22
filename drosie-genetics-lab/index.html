@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Drosie Genetics Lab — Breed. Predict. Discover.</title>
+  <meta name="description" content="A free, scientifically validated Drosophila genetics simulator. Breed fruit flies, predict offspring with Punnett squares, map genes and test your data with chi-square.">
+  <meta name="theme-color" content="#0d1a26">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#station-nav">Skip to stations</a>
+  <header class="hud">
+    <a class="brand" href="./" aria-label="Drosie Genetics Lab home">
+      <img src="assets/favicon.svg" alt="" width="34" height="34">
+      <span><b>Drosie Genetics Lab</b><small>Breed. Predict. Discover.</small></span>
+    </a>
+    <button id="mission-chip" class="mission-chip" hidden></button>
+    <div class="hud-right">
+      <button id="parent-chip" class="parent-chip" title="Current parents — open Breeding Station"></button>
+      <button id="mode-btn" class="btn ghost" aria-label="Change level"></button>
+      <button id="help-btn" class="icon-btn" aria-label="Talk to Dr. Maya" title="Talk to Dr. Maya">?</button>
+      <button id="ach-btn" class="icon-btn" aria-label="Achievements" title="Achievements">🏅<span id="ach-count" class="count">0</span></button>
+      <button id="settings-btn" class="icon-btn" aria-label="Settings and accessibility" title="Settings & accessibility">⚙</button>
+      <a class="icon-btn" href="teacher/" aria-label="Teacher and instructor resources" title="Teacher & instructor resources">🎓</a>
+    </div>
+  </header>
+
+  <main>
+    <div id="room" class="room"></div>
+    <nav id="station-nav" class="station-nav" aria-label="Laboratory stations"></nav>
+    <section id="station" class="station-panel" hidden aria-labelledby="station-title">
+      <header class="station-head">
+        <button id="station-close" class="btn ghost" aria-label="Back to the lab">‹ Lab</button>
+        <h1 id="station-title" class="station-title" tabindex="-1"></h1>
+      </header>
+      <div class="station-body"></div>
+    </section>
+  </main>
+
+  <div id="dialog" class="dialog" hidden role="dialog" aria-live="polite" aria-label="Dialogue"></div>
+  <div id="modal" class="modal" hidden></div>
+  <div id="toasts" class="toasts" aria-hidden="true"></div>
+  <div id="live" class="sr-only" aria-live="polite"></div>
+  <div id="print-area" class="print-area"></div>
+  <noscript><p class="noscript">Drosie Genetics Lab needs JavaScript. Please enable it and reload.</p></noscript>
+  <footer class="credits"><span>All offspring data are <b>simulated</b>. Alleles verified against <a href="https://flybase.org" target="_blank" rel="noopener">FlyBase</a>.</span>
+    <a href="docs/">Scientific reference</a> · <a href="tests/">Test suite</a> · <a href="https://drosiesworld.com">Drosie's World</a></footer>
+
+  <script type="module">
+    import { boot } from './js/ui.js';
+    boot();
+  </script>
+</body>
+</html>

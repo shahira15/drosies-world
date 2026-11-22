@@ -1,0 +1,1 @@
+{"type":"module","private":true,"name":"drosie-genetics-lab","scripts":{"test":"node tests/run-tests.mjs"}}
