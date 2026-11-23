@@ -248,6 +248,9 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   #printRoot{display:block!important}
   body{background:#fff}
   .poster{box-shadow:none;min-width:0;width:100%;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pg .cert{min-height:6.9in;display:flex;flex-direction:column;justify-content:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pg .cert .nm{align-self:center}
+  .pg .cert h3{font-size:38pt}.pg .cert .nm{font-size:32pt}.pg .cert p{font-size:16pt}.pg .cert p.kicker{font-size:11pt}.pg .cert .sm{font-size:10.5pt}
   .pg{page-break-after:always}
   .pg:last-child{page-break-after:auto}
 }
