@@ -1,73 +1,269 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Grow Your Own Fruit Fly | Free Virtual Life Cycle Lab for Kids</title>
-<style>
-:root{--green:#285a43;--dark:#19402f;--sage:#598365;--cream:#f7f6ee;--pale:#eaf5ea;--line:#dce9da;--ink:#244735;--gold:#f3c66e}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #ca7e26;outline-offset:3px}.top{background:#fff;border-bottom:1px solid var(--line);padding:14px max(18px,calc((100vw - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:900;font-size:20px;color:var(--green);text-decoration:none}.small{font-size:13px;color:#58715f}.shell{max-width:1100px;margin:auto;padding:24px 18px 60px}.hero{background:linear-gradient(125deg,#e2f0d9,#f9f6e9);padding:24px;border-radius:22px;margin-bottom:18px}.hero h1{margin:4px 0;font-size:clamp(26px,4vw,40px);line-height:1.15}.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:18px}.panel{background:white;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 7px 24px #285a430b}.guide{position:sticky;top:14px;align-self:start}.guide-face{text-align:center;display:flex;justify-content:center;align-items:center;min-height:170px}.drosie-mascot{width:min(100%,210px);max-height:230px;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(40,90,67,.16))}.voice-setting{margin-top:12px}.voice-setting label{display:block;font-size:13px;font-weight:700}.voice-setting select{width:100%;max-width:100%;border:1px solid #bcd7bf;border-radius:10px;padding:9px;background:#fff;color:#285a43}.guide p{margin:10px 0}.btn{border:0;background:var(--green);color:white;border-radius:12px;padding:12px 18px;font-weight:750;min-height:46px}.btn:hover:not(:disabled){background:var(--dark)}.btn.alt{background:#edf5ec;color:var(--green);border:1px solid #bcd7bf}.btn.alt:hover:not(:disabled){background:#dcebd9}.btn.ghost{background:transparent;color:var(--green);border:1px solid #c5d7c6}.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.progress{display:flex;gap:5px;margin:14px 0 0}.progress span{height:8px;flex:1;background:#d6e1d5;border-radius:9px}.progress span.on{background:#458e64}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}.choice{border:2px solid #d8e8d8;background:#fbfdfa;border-radius:14px;text-align:left;padding:13px;min-height:56px;color:var(--ink)}.choice:hover{border-color:#71a67c}.choice.selected{border-color:var(--green);background:#e6f2e3}.choice.correct{border-color:#2e8d54}.choice.wrong{border-color:#c57244}.muted{color:#57715f}.notice{background:#eef7e8;border-left:4px solid #5c9663;padding:12px 14px;border-radius:9px;margin:14px 0}.warning{background:#fff4e6;border-left-color:#c77b36}.ingredients{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.ingredient{border:2px solid #dbe8d8;border-radius:15px;background:#fff;padding:12px 8px;min-height:105px;text-align:center}.ingredient strong{display:block}.ingredient .emoji{display:block;font-size:29px}.ingredient.selected{background:#eaf5ea;border-color:#397d56}.recipe{display:flex;gap:15px;align-items:center;flex-wrap:wrap;background:#f7faf4;padding:14px;border-radius:15px}.bowl{font-size:64px}.station{background:#eef4ed;border:2px solid #ccdece;border-radius:18px;padding:16px;margin:16px 0}.station label{display:block;font-weight:700;margin:12px 0 3px}.station input[type=range]{width:100%;accent-color:var(--green)}.readout{display:flex;gap:10px;flex-wrap:wrap}.digital{background:#223c35;color:#e6fbe8;border-radius:10px;padding:10px 16px;font-weight:800;font-variant-numeric:tabular-nums}.door{background:linear-gradient(125deg,#bfd8d0,#e9f4f1);border:7px solid #789a91;border-radius:17px;padding:18px;text-align:center;min-height:230px;display:grid;place-items:center;position:relative}.door.open{border-style:dashed;background:#f7fbf8}.vial{width:112px;height:175px;border:5px solid #93b9c4;border-radius:12px 12px 20px 20px;background:#ffffff88;position:relative;margin:auto;overflow:hidden}.vial:before{content:'';position:absolute;top:0;left:0;right:0;height:17px;background:#e2e7e2;border-bottom:2px solid #aab8b3}.medium{position:absolute;bottom:0;left:0;right:0;height:49px;background:#d4a45e;border-top:5px solid #e8c48c}.specimen{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-size:40px;white-space:nowrap}.stagepic{display:grid;place-items:center;min-height:210px;background:radial-gradient(circle,#f5f5e6,#e3f0e5);border-radius:16px;margin:12px 0}.stagepic .art{font-size:100px;filter:drop-shadow(0 8px 5px #0001)}.stagepic small{display:block}.stages{display:flex;gap:5px;flex-wrap:wrap}.stagechip{background:#edf3e9;padding:6px 9px;border-radius:20px;font-size:12px}.stagechip.active{background:#2f7150;color:#fff}.stagechip.past{background:#cce9cf}.notebook{width:100%;min-height:80px;border:1px solid #aac7ad;border-radius:10px;padding:10px;resize:vertical}.qhead{font-size:20px;font-weight:800;margin:14px 0}.status{font-weight:700;color:var(--green)}.hidden{display:none!important}.footer{text-align:center;padding:20px;color:#59705e}.results{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.score{background:#eef6e9;border-radius:15px;padding:20px;text-align:center}.score b{display:block;font-size:35px;color:var(--green)}@media(max-width:760px){.layout{grid-template-columns:1fr}.guide{position:static}.ingredients{grid-template-columns:repeat(2,1fr)}.panel{padding:16px}.hero{padding:18px}}@media(prefers-reduced-motion:no-preference){.guide-face{animation:bob 2.8s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-5px)}}}@media print{.top,.guide,.btnrow,.progress{display:none!important}.layout{display:block}.panel{box-shadow:none}}
-
-.stage-illustration{display:block;width:min(100%,290px);height:210px;object-fit:contain;margin:0 auto;filter:drop-shadow(0 8px 12px rgba(0,0,0,.1))}.stage-fallback{font-size:90px}.stagepic .art{display:flex;align-items:center;justify-content:center;min-height:215px}
-</style>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#245f55">
+<title>Grow Your Own Fruit Fly | Free Virtual Fly Lab for Kids</title>
 <link rel="canonical" href="https://drosiesworld.com/grow-your-own-fruit-fly.html">
-<meta name="description" content="A free virtual lab: prepare food, set up an incubator and watch six stages of fruit fly development in a classroom simulation. No sign-up.">
+<meta name="description" content="A free virtual fruit fly laboratory for ages 5–10: prepare fly food, set up a culture in an incubator, observe development from egg to adult and make a lab report. No sign-up.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Grow Your Own Fruit Fly | Free Virtual Life Cycle Lab for Kids">
-<meta property="og:description" content="A free virtual lab: prepare food, set up an incubator and watch six stages of fruit fly development in a classroom simulation. No sign-up.">
+<meta property="og:title" content="Grow Your Own Fruit Fly | Free Virtual Fly Lab for Kids">
+<meta property="og:description" content="A free virtual fruit fly laboratory for ages 5–10: prepare fly food, set up a culture in an incubator, observe development from egg to adult and make a lab report. No sign-up.">
 <meta property="og:url" content="https://drosiesworld.com/grow-your-own-fruit-fly.html">
 <meta property="og:site_name" content="Drosie's World">
 <meta property="og:image" content="https://drosiesworld.com/drosie-book-cover.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-</head><body>
-<header class="top"><a class="brand" href="index.html">✿ Drosie's World</a><span class="small">Virtual Biology Lab • No login • No data sent to a server</span></header>
-<main class="shell"><div class="hero"><div class="small">SCIENCE ARCADE / GROW YOUR OWN FRUIT FLY</div><h1>Grow Your Own Fruit Fly</h1><div>Prepare food. Set up an incubator. Observe six developmental stages. Think like a scientist!</div><div class="progress" id="progress" aria-label="Activity progress"></div></div>
-<div class="layout"><section class="panel" id="game" aria-live="polite"></section><aside class="panel guide"><div class="guide-face"><img class="drosie-mascot" src="drosie.png.png" alt="Drosie, your illustrated fruit fly science guide" onerror="this.alt='Drosie image unavailable. Place drosie.png.png next to this HTML file.'"></div><h2 style="margin:0;text-align:center">Drosie says...</h2><p id="speech" aria-live="polite">Welcome to my lab! Ready to grow a fruit fly?</p><div class="btnrow"><button class="btn alt" id="speak" type="button">🔊 Read aloud</button><button class="btn ghost" id="mute" type="button">🔇 Stop</button></div><div class="voice-setting"><label for="voiceChoice">Drosie’s voice</label><select id="voiceChoice" aria-label="Choose Drosie voice"><option value="auto">Cute, cheerful voice (recommended)</option></select><label for="voiceSpeed" style="margin-top:8px">Talking speed</label><input type="range" id="voiceSpeed" min="0.75" max="1.1" step="0.05" value="0.9" style="width:100%" aria-label="Talking speed"></div><p class="small">Drosie is a scripted science guide, not a generative AI chatbot. Captions are always visible.</p><hr style="border:0;border-top:1px solid #e0ebe0"><div class="small"><strong>Real science:</strong> At about 25°C, fruit flies usually develop from egg to adult in roughly 9–10 days. This game is an accelerated classroom simulation.</div></aside></div>
-</main><footer class="footer">© 2026 Drosie's World • Explore, predict, observe, explain.</footer>
-<style>.dw-more{max-width:960px;margin:2rem auto 1rem;padding:1.25rem 16px;font-family:system-ui,-apple-system,Segoe UI,sans-serif;text-align:center;color:#1f2a1f}.dw-more h2{font-size:1.15rem;margin:0 0 .75rem}.dw-more ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}.dw-more a{display:inline-block;padding:.55rem .9rem;border-radius:999px;background:#f3f6ec;border:1px solid #cfd8c0;color:#1f2a1f;text-decoration:none;font-weight:600;min-height:44px;line-height:1.7}.dw-more a:hover,.dw-more a:focus-visible{background:#e3ecd2;outline:2px solid #5a7d3a}.dw-more--sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style><nav class="dw-more" aria-label="More from Drosie's World"><h2>Keep exploring Drosie's World</h2><ul><li><a href="/science-activities/">🌟 All Science Activities</a></li><li><a href="/storybook.html">📖 Read the Storybook</a></li><li><a href="/life-cycle-game.html">🔬 Life Cycle Game</a></li><li><a href="/climbing-game.html">🪜 Climbing Challenge</a></li><li><a href="/lab/">🧪 Secret Fly Lab</a></li><li><a href="/drosie-genetics-lab/">🧬 Genetics Lab</a></li><li><a href="/letters/">💌 Letters from Drosie</a></li><li><a href="/discoveries.html">🔭 Discovery Library</a></li><li><a href="/#lessons">🍎 Lessons &amp; Printables for Teachers</a></li><li><a href="/">🏠 Drosie's World Home</a></li></ul></nav>
-<script>
-'use strict';
-(function(){
-const $=id=>document.getElementById(id);const game=$('game');
-const quiz=[{q:'Which animal is a fruit fly?',options:['An insect','A spider','A worm','A fish'],correct:0,why:'An adult fruit fly is an insect with six legs.'},{q:'Which ingredient helps provide proteins and vitamins in typical fly food?',options:['Plastic','Yeast','Sand','Soap'],correct:1,why:'Yeast supplies important nutrients.'},{q:'What comes after a fruit fly egg hatches?',options:['An adult fly','A pupa','A larva','A butterfly'],correct:2,why:'An egg hatches into a first-instar larva.'},{q:'Which stage comes just before an adult fruit fly emerges?',options:['Egg','Pupa','First-instar larva','Seed'],correct:1,why:'The adult emerges from the puparium after metamorphosis.'},{q:'Does temperature affect how quickly fruit flies develop?',options:['No, never','Yes, temperature matters','Only at night','Only after adulthood'],correct:1,why:'Developmental rate depends on temperature; extreme temperatures can be harmful.'}];
-const foods=[{id:'water',label:'Water',icon:'💧',why:'Water provides moisture and helps make the medium.'},{id:'yeast',label:'Yeast',icon:'🧫',why:'Yeast provides protein, vitamins and other nutrients.'},{id:'sugar',label:'Sugar',icon:'🍬',why:'Sugar provides a carbohydrate energy source.'},{id:'cornmeal',label:'Cornmeal',icon:'🌽',why:'Cornmeal contributes nutrients and bulk.'},{id:'agar',label:'Agar',icon:'🧪',why:'Agar helps the medium set into a gel.'},{id:'soap',label:'Soap',icon:'🧼',why:'Soap does not belong in this food recipe.'}];
-const stages=[{name:'Egg',art:'🥚',image:'drosie egg.png',day:'Day 0–1',text:'The egg contains a developing embryo. A first-instar larva will hatch from it.',question:'What do you predict will hatch from the egg?',answers:['A larva','A fully grown adult','A seed'],correct:0},{name:'Larva L1',art:'🐛',image:'drosie larva1.png',day:'About day 1–2',text:'The tiny first-instar larva begins feeding. Fruit fly larvae have no legs like adult flies.',question:'What does the larva need to grow?',answers:['Suitable nutrients','A pair of shoes','Sunlight alone'],correct:0},{name:'Larva L2',art:'🐛',image:'drosie larva.png',day:'About day 2–3',text:'After molting, the larva enters its second instar and grows larger.',question:'What is a molt?',answers:['Shedding the old outer covering','Flying out of the vial','Turning into an egg'],correct:0},{name:'Larva L3',art:'🐛',image:'drosie larva.png',day:'About day 3–5',text:'The third-instar larva is larger. Later, it leaves the food and finds a suitable place to pupariate.',question:'How many larval instars does a fruit fly have?',answers:['One','Three','Seven'],correct:1},{name:'Pupa',art:'🟤',image:'drosie pupa.png',day:'About day 5–9',text:'Inside the puparium, the insect undergoes metamorphosis. It does not feed during this stage.',question:'Does the pupa need to eat?',answers:['Yes, every hour','No, it does not feed'],correct:1},{name:'Adult',art:'🪰',day:'About day 9–10',text:'Eclosion! An adult fruit fly emerges. It has six legs, two wings and three main body regions.',question:'How many legs does the adult fruit fly have?',answers:['Four','Six','Eight'],correct:1}];
-const state={screen:'intro',pre:[],post:[],quizIndex:0,selection:null,food:new Set(),mixed:false,temp:21,humidity:60,doorOpen:false,vialIn:false,stage:0,stageAnswer:null,observations:[],stageAnswers:[],notebook:'',review:false};
-let voiceEnabled=false;
-let availableVoices=[];
-function chooseVoice(){
-  if(!('speechSynthesis' in window))return;
-  availableVoices=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith('en'));
-  const picker=$('voiceChoice');const current=picker.value;
-  picker.innerHTML='<option value="auto">Cute, cheerful voice (recommended)</option>';
-  availableVoices.forEach((v,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=v.name+' ('+v.lang+')';picker.appendChild(o);});
-  if(current!=='auto'&&Number(current)<availableVoices.length)picker.value=current;
-}
-function say(s){$('speech').textContent=s;if(voiceEnabled)speak();}
-function speak(){
-  if(!('speechSynthesis' in window)){$('speech').textContent+=' (Speech playback is unavailable in this browser.)';return;}
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance($('speech').textContent);
-  const chosen=$('voiceChoice').value;
-  const preferred=availableVoices.find(v=>/female|samantha|zira|aria|jenny|ava|victoria|karen|moira|serena|google us english/i.test(v.name));
-  const voice=chosen==='auto'?(preferred||availableVoices.find(v=>v.lang.toLowerCase()==='en-us')||availableVoices[0]):availableVoices[Number(chosen)];
-  if(voice){u.voice=voice;u.lang=voice.lang;}else{u.lang='en-US';}
-  u.rate=Number($('voiceSpeed').value);u.pitch=1.3;u.volume=1;
-  speechSynthesis.speak(u);
-}
-if('speechSynthesis' in window){chooseVoice();speechSynthesis.addEventListener?.('voiceschanged',chooseVoice);}
-$('speak').addEventListener('click',()=>{voiceEnabled=true;speak();$('speak').textContent='🔊 Voice on · Replay';});
-$('mute').addEventListener('click',()=>{voiceEnabled=false;if('speechSynthesis' in window)speechSynthesis.cancel();$('speak').textContent='🔊 Read aloud';});
-function btn(text,id,cls='',disabled=false){return `<button type="button" class="btn ${cls}" id="${id}" ${disabled?'disabled':''}>${text}</button>`}
-function bind(id,fn){const el=$(id);if(el)el.addEventListener('click',fn);}
-function go(screen){state.screen=screen;state.selection=null;render();window.scrollTo({top:0,behavior:'instant'});}
-function progress(){const order=['intro','pre','food','incubator','lifecycle','post','results'];const idx=order.indexOf(state.screen);$('progress').innerHTML=order.map((_,i)=>`<span class="${i<=idx?'on':''}"></span>`).join('');}
-function render(){progress();if(state.screen==='intro')intro();else if(state.screen==='pre'||state.screen==='post')renderQuiz();else if(state.screen==='food')renderFood();else if(state.screen==='incubator')renderIncubator();else if(state.screen==='lifecycle')renderLifecycle();else results();}
-function intro(){say('Hello, scientist! I am Drosie, your laboratory guide. We will raise a separate fruit fly, not me! First, tell me what you already know.');game.innerHTML=`<h2>Welcome, young scientist! 🔬</h2><p>You are in charge of a virtual fruit fly laboratory. You will prepare a food medium, care for an egg-containing culture vial, and watch a fruit fly grow.</p><div class="notice"><strong>Important:</strong> This is a fast-forward simulation of approximately 9–10 days of development at 25°C. No real insects or cooking are needed.</div><p><strong>Our lab rules:</strong> Make a prediction, test your ideas, and observe closely. It's okay to get questions wrong—scientists learn by investigating!</p><div class="btnrow">${btn('Start the pre-lesson quiz →','start')}</div>`;bind('start',()=>{state.quizIndex=0;go('pre');});}
-function renderQuiz(){const pre=state.screen==='pre';const answers=pre?state.pre:state.post;const i=state.quizIndex;const q=quiz[i];state.selection=answers[i]===undefined?null:answers[i];say(pre?'These questions help us see what you already know. I will not tell you the answers yet.':'You have finished the lab! Let us see what you learned.');game.innerHTML=`<div class="small">${pre?'BEFORE THE LAB':'AFTER THE LAB'} • QUESTION ${i+1} OF ${quiz.length}</div><h2>${pre?'Pre-lesson quiz':'Post-lesson quiz'}</h2><div class="qhead">${q.q}</div><div class="choices">${q.options.map((o,j)=>`<button class="choice ${state.selection===j?'selected':''}" id="q${j}" type="button" aria-pressed="${state.selection===j}">${o}</button>`).join('')}</div><div class="btnrow">${btn('← Back','back','alt',i===0)}${btn(i===4?'Finish quiz →':'Next question →','next','',state.selection===null)}</div><p class="small">Answers are not revealed during the quiz so the before-and-after comparison stays fair.</p>`;q.options.forEach((_,j)=>bind('q'+j,()=>{state.selection=j;answers[i]=j;renderQuiz();}));bind('back',()=>{state.quizIndex=Math.max(0,i-1);renderQuiz();});bind('next',()=>{if(answers[i]===undefined)return;if(i<4){state.quizIndex++;renderQuiz();}else{state.quizIndex=0;go(pre?'food':'results');}});}
-function renderFood(){say('Fruit fly larvae need a nutritious food medium. Select water, yeast, sugar, cornmeal and agar. Soap is not food!');const complete=foods.filter(x=>x.id!=='soap').every(x=>state.food.has(x.id))&&!state.food.has('soap');game.innerHTML=`<div class="small">LAB STATION 1 OF 3</div><h2>🥣 Prepare the fly food</h2><p>In a typical cornmeal-based laboratory medium, ingredients have different jobs. Choose the five ingredients for our example recipe.</p><div class="ingredients">${foods.map(f=>`<button type="button" class="ingredient ${state.food.has(f.id)?'selected':''}" id="food-${f.id}" aria-pressed="${state.food.has(f.id)}"><span class="emoji">${f.icon}</span><strong>${f.label}</strong><span class="small">${state.food.has(f.id)?'✓ Added':'Tap to add'}</span></button>`).join('')}</div><div class="recipe"><div class="bowl" aria-hidden="true">${state.mixed?'🍮':'🥣'}</div><div><strong>${state.food.size} ingredients selected</strong><div class="small">${state.mixed?'The prepared medium is ready for the vial.':'Tap ingredients to place them in your mixing bowl.'}</div></div></div><div class="notice ${!complete?'warning':''}" id="foodinfo">${complete?'Great! Your ingredients match this example laboratory medium.':state.food.has('soap')?'Soap is not an ingredient in our fly food. Remove it and try again.':'Hint: Yeast provides nutrients, sugar provides energy, cornmeal contributes nutrients, agar helps the food set, and water provides moisture.'}</div><div class="btnrow">${btn('Mix and prepare medium','mix','',!complete||state.mixed)}${btn('Next: Incubator →','next','',!state.mixed)}</div><p class="small">Real laboratories may use different recipes and additional ingredients. Food preparation is simulated; children should not prepare laboratory media without adult supervision.</p>`;foods.forEach(f=>bind('food-'+f.id,()=>{if(state.mixed)return;state.food.has(f.id)?state.food.delete(f.id):state.food.add(f.id);renderFood();}));bind('mix',()=>{state.mixed=true;say('Excellent! You have prepared an example fly food medium. The egg-containing vial is ready for the incubator.');renderFood();});bind('next',()=>go('incubator'));}
-function renderIncubator(){const tempOK=state.temp>=24&&state.temp<=26;const humidityOK=state.humidity>=50&&state.humidity<=70;const ready=tempOK&&humidityOK;const msg=!tempOK?'Set the incubator near 25°C for our reference development timeline.':!humidityOK?'For this game, follow the humidity target of 50–70%. Actual labs monitor food moisture and use varied environmental settings.':!state.doorOpen&&!state.vialIn?'Open the incubator door to place the vial inside.':state.doorOpen&&!state.vialIn?'Now place the egg-containing vial inside.':state.doorOpen?'Close the incubator door to begin.':'Your incubator is ready. Start observing!';say('Incubator time! Try 25 degrees Celsius. The humidity slider is a simplified classroom exercise, not a universal fly-culture requirement.');game.innerHTML=`<div class="small">LAB STATION 2 OF 3</div><h2>🌡️ Set up the incubator</h2><p>Your food is prepared, and the culture vial already contains an egg. Set the environment, open the door, and put the vial inside.</p><div class="station"><div class="readout"><div class="digital">🌡️ <span id="tempnum">${state.temp}</span>°C</div><div class="digital">💧 <span id="humnum">${state.humidity}</span>% RH</div></div><label for="temp">Temperature (°C)</label><input id="temp" type="range" min="16" max="30" step="1" value="${state.temp}"><label for="humidity">Relative humidity (%), simplified game target</label><input id="humidity" type="range" min="30" max="80" step="5" value="${state.humidity}"><div class="door ${state.doorOpen?'open':''}"><div><div class="small">${state.doorOpen?'INCUBATOR DOOR OPEN':'INCUBATOR DOOR CLOSED'}</div>${state.vialIn?`<div class="vial" role="img" aria-label="Culture vial with food and fruit fly egg"><div class="medium"></div><div class="specimen"><img src="drosie%20egg.png" alt="Fruit fly egg" style="width:36px;height:36px;object-fit:contain" onerror="this.replaceWith(document.createTextNode('🥚'))"></div></div>`:'<div style="font-size:60px">🧫</div><div class="small">The culture vial is on the bench</div>'}</div></div></div><div class="notice ${ready?'':'warning'}" id="incmsg">${msg}</div><div class="btnrow">${btn(state.doorOpen?'Close door':'Open door','door','alt')}${btn('Place vial inside','place','alt',!state.doorOpen||!ready||state.vialIn)}${btn('Start observation →','observe','',!state.vialIn||state.doorOpen||!ready)}</div><p class="small">Scientific note: Temperature strongly affects developmental timing. Relative humidity is simplified here; adequate medium moisture is especially important, and 50–70% RH is not a universal laboratory requirement.</p>`;
-$('temp').addEventListener('input',e=>{state.temp=Number(e.target.value);$('tempnum').textContent=state.temp;});$('temp').addEventListener('change',renderIncubator);$('humidity').addEventListener('input',e=>{state.humidity=Number(e.target.value);$('humnum').textContent=state.humidity;});$('humidity').addEventListener('change',renderIncubator);bind('door',()=>{state.doorOpen=!state.doorOpen;renderIncubator();});bind('place',()=>{state.vialIn=true;renderIncubator();});bind('observe',()=>go('lifecycle'));}
-function renderLifecycle(){const s=stages[state.stage];const i=state.stage;const chosen=state.stageAnswer;const correct=chosen===s.correct;const isAdult=i===5;const canAdvance=correct&&state.notebook.trim().length>=3;say(s.text+' Now make a prediction, answer the question, and write an observation in your notebook.');game.innerHTML=`<div class="small">LAB STATION 3 OF 3 • ACCELERATED TIME-LAPSE</div><h2>🔍 Observe your fruit fly</h2><div class="stages">${stages.map((x,j)=>`<span class="stagechip ${j===i?'active':j<i?'past':''}">${x.name}</span>`).join('')}</div><div class="stagepic" role="img" aria-label="Illustrative icon representing ${s.name}"><div style="text-align:center"><div class="art">${s.image?`<img class="stage-illustration" src="${encodeURI(s.image)}" alt="Illustration of fruit fly ${s.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="stage-fallback" style="display:none">${s.art}</span>`:`<span class="stage-fallback">${s.art}</span>`}</div><strong>${s.name}</strong><small class="muted">${s.day} at approximately 25°C</small></div></div><div class="notice"><strong>Magnified observation:</strong> ${s.text}</div><div class="qhead">${s.question}</div><div class="choices">${s.answers.map((a,j)=>`<button type="button" id="stageans${j}" class="choice ${chosen===j?'selected':''}" aria-pressed="${chosen===j}">${a}</button>`).join('')}</div>${chosen!==null?`<div class="notice ${correct?'':'warning'}">${correct?'✓ Nice scientific thinking!':'Try again. Read Drosie’s observation carefully.'}</div>`:''}<label for="note"><strong>📝 Lab notebook: What do you observe?</strong></label><textarea class="notebook" id="note" maxlength="500" placeholder="I notice...">${escapeHTML(state.notebook)}</textarea><div class="small">Write at least a few words. Your notes stay in this browser until you leave or download the report.</div><div class="btnrow">${btn(isAdult?'Finish observation →':'Fast-forward to next stage →','advance','',!canAdvance)}</div><p class="small">Your uploaded illustrations appear for the egg, larval, and pupal stages. L2 and L3 currently share the larva illustration; the adult stage uses a temporary icon until you add a separate adult specimen image.</p>`;s.answers.forEach((_,j)=>bind('stageans'+j,()=>{state.stageAnswer=j;renderLifecycle();}));$('note').addEventListener('input',e=>{state.notebook=e.target.value;$('advance').disabled=!(state.stageAnswer===s.correct&&state.notebook.trim().length>=3);});bind('advance',()=>{if(state.stageAnswer!==s.correct||state.notebook.trim().length<3)return;state.observations[i]=state.notebook.trim();state.stageAnswers[i]=state.stageAnswer;state.notebook='';state.stageAnswer=null;if(isAdult){state.quizIndex=0;go('post');}else{state.stage++;renderLifecycle();}});}
-function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function results(){const pre=state.pre.reduce((n,a,i)=>n+(a===quiz[i].correct),0);const post=state.post.reduce((n,a,i)=>n+(a===quiz[i].correct),0);say('Congratulations, scientist! You raised a virtual fruit fly from egg to adult. Thank you for making careful observations.');game.innerHTML=`<h2>🎉 Your fruit fly has emerged!</h2><p>You prepared a culture medium, set up the incubator, observed all three larval instars, and watched an adult emerge.</p><div class="results"><div class="score">Before the lab<b>${pre}/5</b></div><div class="score">After the lab<b>${post}/5</b></div></div><div class="notice">${post>pre?'You improved your quiz score!':post===pre?'You completed the investigation! Review what you discovered below.':'Science takes practice! Review the answers and try again anytime.'} These scores are for learning feedback, not a research-grade assessment.</div><h3>Answer explanations</h3>${quiz.map((q,i)=>`<p><strong>${i+1}. ${q.q}</strong><br>${q.why}</p>`).join('')}<h3>Your lab notebook</h3>${stages.map((s,i)=>`<p><strong>${s.name}:</strong> ${escapeHTML(state.observations[i]||'No observation')}</p>`).join('')}<div class="btnrow">${btn('⬇ Download my lab report','download')}${btn('Play again ↻','restart','alt')}</div><p class="small">The game does not upload quiz answers, notes, or personal information. Downloading saves a text file directly on your device.</p>`;bind('download',downloadReport);bind('restart',()=>{Object.assign(state,{screen:'intro',pre:[],post:[],quizIndex:0,selection:null,food:new Set(),mixed:false,temp:21,humidity:60,doorOpen:false,vialIn:false,stage:0,stageAnswer:null,observations:[],stageAnswers:[],notebook:''});render();});}
-function downloadReport(){const lines=['DROSIE’S WORLD — VIRTUAL FRUIT FLY LAB REPORT','',`Pre-lesson score: ${state.pre.reduce((n,a,i)=>n+(a===quiz[i].correct),0)}/5`,`Post-lesson score: ${state.post.reduce((n,a,i)=>n+(a===quiz[i].correct),0)}/5`,'','QUIZ RESPONSES',...quiz.flatMap((q,i)=>[q.q,`Before: ${q.options[state.pre[i]]||'Not answered'}`,`After: ${q.options[state.post[i]]||'Not answered'}`,`Correct: ${q.options[q.correct]}`,'']),'OBSERVATIONS',...stages.map((s,i)=>`${s.name}: ${state.observations[i]||''}`),'','This was an accelerated educational simulation.'];const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='drosie-fruit-fly-lab-report.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
-render();
-})();
-</script></body></html>
+<link rel="stylesheet" href="life-cycle-assets/adventure.css">
+<link rel="stylesheet" href="fly-lab-assets/lab.css">
+</head>
+<body>
+<a class="skip" href="#panel">Skip to the activity</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d3ebe0"/><stop offset="1" stop-color="#eaf2e2"/></linearGradient>
+    <linearGradient id="gBench" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a76e"/><stop offset="1" stop-color="#a96d41"/></linearGradient>
+    <linearGradient id="gBenchTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0cc98"/><stop offset="1" stop-color="#d9a76e"/></linearGradient>
+    <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3f2"/><stop offset="1" stop-color="#eaf6e8"/></linearGradient>
+    <linearGradient id="gGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d4ecec" stop-opacity=".95"/><stop offset=".5" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#c9e5e5" stop-opacity=".95"/></linearGradient>
+    <linearGradient id="gTeal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3f8f86"/><stop offset=".5" stop-color="#58aaa0"/><stop offset="1" stop-color="#357d75"/></linearGradient>
+    <linearGradient id="gInside" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7fbf5"/><stop offset="1" stop-color="#dcecdf"/></linearGradient>
+    <linearGradient id="gFood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5e3a7"/><stop offset="1" stop-color="#e3c476"/></linearGradient>
+    <linearGradient id="gCotton" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f1e7d2"/><stop offset=".5" stop-color="#fffaf0"/><stop offset="1" stop-color="#e5d8bd"/></linearGradient>
+    <radialGradient id="gVig" cx=".5" cy=".45" r=".78"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1c4a40" stop-opacity=".2"/></radialGradient>
+    <radialGradient id="gLamp" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff3b0" stop-opacity=".9"/><stop offset="1" stop-color="#fff3b0" stop-opacity="0"/></radialGradient>
+    <clipPath id="vialClip"><path d="M-18 -50H18V44Q18 60 0 60Q-18 60 -18 44Z"/></clipPath>
+    <clipPath id="beakerClip"><path d="M-46 -62H46L50 56Q50 66 40 66H-40Q-50 66 -50 56Z"/></clipPath>
+  </defs>
+</svg>
+
+<div class="gm" id="gm" data-ch="welcome">
+  <header class="top">
+    <a class="brand" href="/" aria-label="Drosie's World home"><i aria-hidden="true">✿</i><span>Drosie's <em>World</em></span></a>
+    <nav class="trail" id="trail" aria-label="Mission map"></nav>
+    <div class="tools">
+      <button class="icon" id="notesBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 11h7M9 15h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Science notes</span></button>
+      <button class="icon" id="prefBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Settings</span></button>
+      <button class="icon" id="restartBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Restart</span></button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="stage" id="stage" aria-label="Laboratory scene">
+
+      <!-- WELCOME: Drosie's lab -->
+      <svg class="scene" id="scene-welcome" viewBox="0 0 480 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Drosie's Fly Lab: a bright laboratory with a window, shelves of jars, a microscope, an incubator and Drosie the fruit fly waving hello.">
+        <rect x="-600" y="-200" width="1700" height="900" fill="url(#gWall)"/>
+        <g transform="translate(26 36)"><rect x="-8" y="-8" width="132" height="132" rx="10" fill="#c98b5a"/><rect width="116" height="116" rx="5" fill="url(#gSky)"/><circle cx="84" cy="30" r="14" fill="#fbe6a2"/><path d="M0 92Q34 66 66 88T116 82V116H0Z" fill="#a8d3a4"/><path d="M58 0V116M0 58H116" stroke="#e7c299" stroke-width="5"/>
+          <g transform="translate(8 108)"><rect x="0" y="-6" width="44" height="14" rx="3" fill="#d9825f"/><path d="M22 -6C14 -30 6 -34 0 -44C16 -42 22 -28 22 -6ZM22 -6C30 -34 42 -34 48 -46C34 -44 24 -30 22 -6Z" fill="#6fae7a"/></g></g>
+        <g transform="translate(300 46)"><rect y="70" width="150" height="9" rx="3" fill="#b47a4a"/><rect x="12" y="24" width="30" height="46" rx="9" fill="#fff" fill-opacity=".7" stroke="#b9d0c4" stroke-width="2"/><rect x="15" y="42" width="24" height="25" rx="7" fill="#f2c25e"/><rect x="52" y="34" width="26" height="36" rx="8" fill="#fff" fill-opacity=".7" stroke="#b9d0c4" stroke-width="2"/><rect x="55" y="48" width="20" height="19" rx="6" fill="#9ccfa2"/><rect x="92" y="30" width="28" height="40" rx="8" fill="#fff" fill-opacity=".7" stroke="#b9d0c4" stroke-width="2"/><rect x="95" y="46" width="22" height="21" rx="6" fill="#e9a58c"/></g>
+        <g transform="translate(322 148)"><rect width="132" height="92" rx="12" fill="url(#gTeal)"/><rect x="12" y="22" width="90" height="62" rx="8" fill="url(#gInside)"/><rect x="12" y="22" width="90" height="62" rx="8" fill="url(#gGlass)" opacity=".6"/><rect x="106" y="34" width="14" height="38" rx="6" fill="#2d6e67"/><rect x="14" y="6" width="56" height="12" rx="6" fill="#143f3a"/><text x="42" y="16" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="10" fill="#9bf0c2">25°C</text></g>
+        <rect x="-600" y="262" width="1700" height="120" fill="url(#gBench)"/><rect x="-600" y="262" width="1700" height="8" fill="#f0cc98"/>
+        <image href="climbing-game-assets/microscope.webp" x="40" y="168" width="104" height="116" preserveAspectRatio="xMidYMax meet"/>
+        <image href="climbing-game-assets/drosie.webp" x="176" y="120" width="150" height="140" class="bob"/>
+        <g transform="translate(152 232)"><rect width="16" height="30" rx="5" fill="#fff" fill-opacity=".6" stroke="#9dc6c9" stroke-width="2"/><rect y="16" width="16" height="14" rx="5" fill="#e3c476"/></g>
+        <rect x="-600" y="-200" width="1700" height="900" fill="url(#gVig)" pointer-events="none"/>
+      </svg>
+
+      <!-- CHAPTERS 1 & 5: the notebook (HTML so it is fully accessible) -->
+      <div class="scene nbwrap" id="scene-notebook" hidden>
+        <div class="book" id="book" data-open="0">
+          <div class="cover" id="cover">
+            <img src="climbing-game-assets/drosie.webp" alt="Drosie waving" width="120" height="112">
+            <h2>Scientist's Notebook</h2>
+            <p>Drosie's Fly Lab</p>
+          </div>
+          <div class="pages" id="pages">
+            <div class="spiral" aria-hidden="true"></div>
+            <div class="sheet" id="sheet"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER 2: the food station -->
+      <svg class="scene" id="scene-food" viewBox="0 0 480 360" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Lab bench with six ingredient containers: water, yeast, sugar, cornmeal, agar and soap. A glass beaker in the middle holds the food you are preparing." hidden>
+        <rect x="-600" y="-200" width="1700" height="900" fill="url(#gWall)"/>
+        <g opacity=".55" stroke="#b7d6c6" stroke-width="2"><path d="M-600 190H1100"/></g>
+        <rect x="-600" y="190" width="1700" height="90" fill="#cfe4d6" opacity=".4"/>
+        <g transform="translate(14 14)"><rect width="120" height="16" rx="4" fill="#b47a4a" opacity="0"/></g>
+        <rect x="-600" y="284" width="1700" height="120" fill="url(#gBench)"/><rect x="-600" y="284" width="1700" height="8" fill="#f0cc98"/>
+        <!-- shelf for the ingredients -->
+        <rect x="-600" y="118" width="1700" height="9" rx="3" fill="#b47a4a"/><rect x="-600" y="126" width="1700" height="5" fill="#8d5a2b" opacity=".35"/>
+
+        <!-- WATER -->
+        <g class="ing" id="ing-water" role="button" tabindex="0" aria-label="Water" transform="translate(14 26)"><rect x="-6" y="-6" width="78" height="104" fill="transparent"/>
+          <path d="M8 18H52L56 86Q56 94 48 94H12Q4 94 4 86Z" fill="#fff" fill-opacity=".55" stroke="#8fb9c8" stroke-width="3"/><path d="M7 44H53L55 86Q55 90 48 90H12Q6 90 5 86Z" fill="#8ccbe6"/><path d="M52 24Q70 24 70 42Q70 58 54 58" fill="none" stroke="#8fb9c8" stroke-width="4"/><path d="M12 8H48L52 18H8Z" fill="#cfe3ea" stroke="#8fb9c8" stroke-width="2"/><path d="M12 50Q30 44 48 52" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/></g>
+        <!-- YEAST -->
+        <g class="ing" id="ing-yeast" role="button" tabindex="0" aria-label="Yeast" transform="translate(90 26)"><rect x="-6" y="-6" width="78" height="104" fill="transparent"/>
+          <rect x="6" y="32" width="50" height="60" rx="9" fill="#e7c9a0" stroke="#a9825a" stroke-width="3"/><rect x="2" y="22" width="58" height="14" rx="6" fill="#c5a173" stroke="#a9825a" stroke-width="3"/><rect x="12" y="50" width="38" height="24" rx="5" fill="#fff8e6"/><text x="31" y="66" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="9" fill="#7a5a2a">YEAST</text><g fill="#b98c52"><circle cx="20" cy="82" r="2"/><circle cx="31" cy="85" r="2"/><circle cx="42" cy="82" r="2"/></g></g>
+        <!-- SUGAR -->
+        <g class="ing" id="ing-sugar" role="button" tabindex="0" aria-label="Sugar" transform="translate(166 26)"><rect x="-6" y="-6" width="78" height="104" fill="transparent"/>
+          <path d="M10 28H52L56 86Q56 94 48 94H14Q6 94 6 86Z" fill="#fff" fill-opacity=".5" stroke="#9db8c4" stroke-width="3"/><path d="M8 48H54L56 86Q56 90 48 90H14Q8 90 8 86Z" fill="#fffdf4"/><rect x="12" y="14" width="38" height="14" rx="6" fill="#f2b8c6" stroke="#c9879a" stroke-width="2"/><g fill="#e8dfc4"><circle cx="20" cy="70" r="2"/><circle cx="32" cy="76" r="2"/><circle cx="44" cy="68" r="2"/><circle cx="28" cy="58" r="2"/></g><text x="31" y="84" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="9" fill="#9b7d5a">SUGAR</text></g>
+        <!-- CORNMEAL -->
+        <g class="ing" id="ing-cornmeal" role="button" tabindex="0" aria-label="Cornmeal" transform="translate(242 26)"><rect x="-6" y="-6" width="78" height="104" fill="transparent"/>
+          <path d="M8 30Q4 60 6 88Q6 94 14 94H48Q56 94 56 88Q58 60 54 30Z" fill="#d9b779" stroke="#a9824a" stroke-width="3"/><path d="M10 30Q14 20 18 22Q31 14 44 22Q48 20 52 30Z" fill="#f0c85a" stroke="#a9824a" stroke-width="3"/><path d="M8 38H54" stroke="#b9954f" stroke-width="3" stroke-dasharray="4 4"/><rect x="14" y="52" width="34" height="22" rx="5" fill="#fff8e6"/><text x="31" y="67" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="8" fill="#7a5a2a">CORNMEAL</text></g>
+        <!-- AGAR -->
+        <g class="ing" id="ing-agar" role="button" tabindex="0" aria-label="Agar" transform="translate(318 26)"><rect x="-6" y="-6" width="78" height="104" fill="transparent"/>
+          <rect x="14" y="40" width="34" height="54" rx="9" fill="#fff" fill-opacity=".5" stroke="#9db8c4" stroke-width="3"/><path d="M15 58H47V86Q47 90 41 90H21Q15 90 15 86Z" fill="#f7f1da"/><rect x="18" y="24" width="26" height="18" rx="6" fill="#58aaa0" stroke="#357d75" stroke-width="2"/><rect x="20" y="66" width="22" height="14" rx="3" fill="#fff"/><text x="31" y="76" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="8" fill="#357d75">AGAR</text></g>
+        <!-- SOAP (not an ingredient) -->
+        <g class="ing" id="ing-soap" role="button" tabindex="0" aria-label="Soap" transform="translate(394 26)"><rect x="-6" y="-6" width="78" height="104" fill="transparent"/>
+          <rect x="12" y="38" width="38" height="56" rx="12" fill="#c9a5e6" stroke="#8a64ad" stroke-width="3"/><rect x="26" y="22" width="12" height="18" fill="#8a64ad"/><path d="M26 22Q26 10 44 10H54" fill="none" stroke="#8a64ad" stroke-width="5" stroke-linecap="round"/><rect x="16" y="58" width="30" height="20" rx="5" fill="#fff"/><text x="31" y="72" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="900" font-size="9" fill="#6b4a8a">SOAP</text><circle cx="58" cy="30" r="6" fill="#fff" fill-opacity=".7" stroke="#b9a5d6"/><circle cx="64" cy="18" r="4" fill="#fff" fill-opacity=".7" stroke="#b9a5d6"/></g>
+        <g id="ingLabels" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="13" fill="#173f38" text-anchor="middle" aria-hidden="true">
+          <text x="47" y="148">Water</text><text x="123" y="148">Yeast</text><text x="199" y="148">Sugar</text><text x="275" y="148">Cornmeal</text><text x="351" y="148">Agar</text><text x="427" y="148">Soap</text></g>
+
+        <!-- BEAKER (preparation container) -->
+        <g id="beakerG" transform="translate(190 232)">
+          <ellipse cx="0" cy="68" rx="64" ry="9" fill="#6a3f20" opacity=".22"/>
+          <g clip-path="url(#beakerClip)"><rect id="mixFill" x="-52" y="66" width="104" height="0" fill="#bfe3f2"/><g id="mixParts"></g><g id="mixGloss" opacity="0"><path d="M-40 10Q0 2 40 10" stroke="#fff" stroke-width="4" fill="none" opacity=".6"/></g></g>
+          <path d="M-46 -62H46L50 56Q50 66 40 66H-40Q-50 66 -50 56Z" fill="url(#gGlass)" fill-opacity=".45" stroke="#8fb9c8" stroke-width="3.5"/>
+          <path d="M-56 -62H56" stroke="#8fb9c8" stroke-width="4" stroke-linecap="round"/><path d="M-34 -30V40" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".6"/>
+          <g stroke="#8fb9c8" stroke-width="2.5"><path d="M30 -40H44M34 -20H44M30 0H44M34 20H44M30 40H44"/></g>
+          <g id="steam" opacity="0" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"><path d="M-20 -72Q-28 -86 -20 -98"/><path d="M0 -74Q-8 -90 0 -104"/><path d="M20 -72Q12 -86 20 -98"/></g>
+        </g>
+        <g id="dropZone"><rect x="130" y="150" width="120" height="150" fill="transparent"/></g>
+        <!-- culture vial that receives the cooked food -->
+        <g id="foodVial" transform="translate(372 244) scale(1.05)" opacity="0">
+          <ellipse cx="0" cy="62" rx="26" ry="5" fill="#6a3f20" opacity=".22"/>
+          <path d="M-18 -60H18V44Q18 60 0 60Q-18 60 -18 44Z" fill="url(#gGlass)" fill-opacity=".5" stroke="#8fb9c8" stroke-width="3"/>
+          <g clip-path="url(#vialClip)"><rect id="foodVialFill" x="-20" y="60" width="40" height="0" fill="url(#gFood)"/></g>
+          <path d="M-12 -44V36" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+        </g>
+        <g id="foodBubbles"></g>
+        <g id="foodDrag" pointer-events="none"></g>
+        <rect x="-600" y="-200" width="1700" height="900" fill="url(#gVig)" pointer-events="none"/>
+      </svg>
+
+      <!-- CHAPTERS 3 & 4: culture vial, label and incubator -->
+      <svg class="scene" id="scene-lab" viewBox="0 0 480 360" preserveAspectRatio="xMidYMid meet" role="group" aria-label="A laboratory bench with a labelled culture vial and an incubator with a glass door." hidden>
+        <rect x="-600" y="-200" width="1700" height="900" fill="url(#gWall)"/>
+        <rect x="-600" y="296" width="1700" height="120" fill="url(#gBench)"/><rect x="-600" y="296" width="1700" height="8" fill="#f0cc98"/>
+        <!-- incubator cabinet -->
+        <g id="incubator">
+          <rect x="186" y="26" width="270" height="318" rx="22" fill="url(#gTeal)"/><rect x="186" y="26" width="270" height="318" rx="22" fill="none" stroke="#2b6a63" stroke-width="3"/>
+          <rect x="204" y="40" width="234" height="54" rx="14" fill="#2f726a"/>
+          <rect x="214" y="48" width="104" height="38" rx="9" fill="#12362f"/><text id="dispTemp" x="266" y="75" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="24" fill="#9bf0c2">--°C</text>
+          <circle cx="356" cy="67" r="15" fill="#f3e9c8" stroke="#2b6a63" stroke-width="3"/><path id="dialTick" d="M356 67V55" stroke="#2b6a63" stroke-width="3" stroke-linecap="round" transform="rotate(0 356 67)"/>
+          <circle id="lampDot" cx="404" cy="67" r="8" fill="#516b66" stroke="#fff" stroke-width="2"/><text x="404" y="90" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="8" fill="#d9f2ea">READY</text>
+          <rect x="206" y="104" width="230" height="228" rx="12" fill="#2b6a63"/>
+          <rect x="214" y="112" width="214" height="212" rx="8" fill="url(#gInside)"/>
+          <circle id="lampGlow" cx="321" cy="132" r="80" fill="url(#gLamp)" opacity=".35"/>
+          <rect x="214" y="272" width="214" height="8" fill="#b9c9c4"/><rect x="214" y="280" width="214" height="44" fill="#c9dad4"/><path d="M214 280H428" stroke="#9fb5ae" stroke-width="2"/>
+          <!-- the culture vial lives here; it moves between the bench and the incubator -->
+          <g id="vialMove" transform="translate(100 237)">
+            <g id="vialG">
+              <ellipse cx="0" cy="62" rx="24" ry="4" fill="#000" opacity=".12"/>
+              <path d="M-18 -60H18V44Q18 60 0 60Q-18 60 -18 44Z" fill="url(#gGlass)" fill-opacity=".5"/>
+              <path d="M-18 14H18V44Q18 60 0 60Q-18 60 -18 44Z" fill="url(#gFood)"/>
+              <g id="vialStage">
+                <g id="st0" opacity="1"><g fill="#fffdf5" stroke="#d8d0b0" stroke-width=".4"><ellipse cx="-11" cy="13.5" rx="1.9" ry="1.3" transform="rotate(-20 -11 13.5)"/><ellipse cx="-5" cy="13" rx="1.9" ry="1.3" transform="rotate(10 -5 13)"/><ellipse cx="1" cy="13.6" rx="1.9" ry="1.3" transform="rotate(-8 1 13.6)"/><ellipse cx="7" cy="13" rx="1.9" ry="1.3" transform="rotate(24 7 13)"/><ellipse cx="12" cy="13.6" rx="1.9" ry="1.3" transform="rotate(-14 12 13.6)"/></g></g>
+                <g id="st1" opacity="0"><image href="life-cycle-assets/larva.webp" x="-14" y="18" width="9" height="2.7"/><image href="life-cycle-assets/larva.webp" x="2" y="22" width="9" height="2.7" transform="rotate(14 6 23)"/><image href="life-cycle-assets/larva.webp" x="-8" y="30" width="9" height="2.7" transform="rotate(-10 -4 31)"/></g>
+                <g id="st2" opacity="0"><image href="life-cycle-assets/larva.webp" x="-15" y="12" width="15" height="4.4"/><image href="life-cycle-assets/larva.webp" x="1" y="18" width="15" height="4.4" transform="rotate(12 8 20)"/><image href="life-cycle-assets/larva.webp" x="-10" y="28" width="15" height="4.4" transform="rotate(-8 -3 30)"/></g>
+                <g id="st3" opacity="0"><image href="life-cycle-assets/larva.webp" x="-16" y="8" width="23" height="6.8" transform="rotate(8 -4 11)"/><image href="life-cycle-assets/larva.webp" x="-6" y="24" width="23" height="6.8" transform="rotate(-8 5 27)"/><image href="life-cycle-assets/larva.webp" x="-9" y="-24" width="24" height="7" transform="rotate(-82 3 -20)"/></g>
+                <g id="st4" opacity="0"><image href="life-cycle-assets/pupa.webp" x="-17" y="-22" width="5.4" height="15.6"/><image href="life-cycle-assets/pupa.webp" x="10" y="-40" width="5.4" height="15.6"/><image href="life-cycle-assets/pupa.webp" x="-16" y="-3" width="5.4" height="15.6"/><image href="life-cycle-assets/pupa.webp" x="11" y="-8" width="5.4" height="15.6"/></g>
+                <g id="st5" opacity="0"><image href="life-cycle-assets/pupa.webp" x="-17" y="-22" width="5.4" height="15.6" opacity=".45"/><image href="life-cycle-assets/pupa.webp" x="10" y="-40" width="5.4" height="15.6" opacity=".45"/><image href="life-cycle-assets/adult.webp" x="-14" y="-38" width="24" height="16"/><image href="life-cycle-assets/adult.webp" x="-6" y="-8" width="22" height="14.6"/></g>
+              </g>
+              <path d="M-18 -60H18V44Q18 60 0 60Q-18 60 -18 44Z" fill="none" stroke="#8fb9c8" stroke-width="2.6"/>
+              <path d="M-12 -52V40" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".7"/>
+              <rect x="-21" y="-74" width="42" height="30" rx="9" fill="url(#gCotton)" stroke="#d6c7a6" stroke-width="2"/>
+              <g stroke="#e3d6b8" stroke-width="1.5" fill="none" stroke-linecap="round"><path d="M-14 -64Q-6 -68 0 -62T14 -64"/><path d="M-14 -54Q-6 -58 0 -52T14 -54"/></g>
+              <g id="vialLabel" opacity="0"><rect x="-15" y="-34" width="30" height="42" rx="3" fill="#fffdf4" stroke="#d6c9a6" stroke-width=".8"/>
+                <rect id="lab1" x="-12" y="-30" width="24" height="9" rx="1.5" fill="#cfe8dc" opacity="0"/><text id="lab1t" x="0" y="-23.4" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="4" fill="#1d4a40" opacity="0">Fruit fly culture</text>
+                <rect id="lab2" x="-12" y="-19" width="24" height="9" rx="1.5" fill="#f9e2a8" opacity="0"/><text id="lab2t" x="0" y="-12.4" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="4" fill="#5a4417" opacity="0">Day 0</text>
+                <rect id="lab3" x="-12" y="-8" width="24" height="9" rx="1.5" fill="#f6d2c4" opacity="0"/><text id="lab3t" x="0" y="-1.4" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="4" fill="#6b3a2a" opacity="0">Drosie's Lab</text></g>
+            </g>
+            <g class="hot" id="vh-food" role="button" tabindex="0" aria-label="Look at the food in the vial" hidden><circle class="pulse" cx="0" cy="38" r="15"/><circle class="dot" cx="0" cy="38" r="10"/><text x="0" y="42" text-anchor="middle">1</text></g>
+            <g class="hot" id="vh-eggs" role="button" tabindex="0" aria-label="Look at the eggs on the food" hidden><circle class="pulse" cx="0" cy="8" r="15"/><circle class="dot" cx="0" cy="8" r="10"/><text x="0" y="12" text-anchor="middle">2</text></g>
+            <g class="hot" id="vh-plug" role="button" tabindex="0" aria-label="Look at the vial plug" hidden><circle class="pulse" cx="0" cy="-60" r="15"/><circle class="dot" cx="0" cy="-60" r="10"/><text x="0" y="-56" text-anchor="middle">3</text></g>
+          </g>
+          <!-- door -->
+          <g id="doorG" transform-origin="206px 0px">
+            <rect id="doorGlass" x="206" y="104" width="230" height="228" rx="12" fill="#d8efee" fill-opacity=".28" stroke="#2b6a63" stroke-width="6"/>
+            <path d="M226 118L282 118L226 190Z" fill="#fff" opacity=".35"/>
+            <rect x="420" y="190" width="9" height="56" rx="4.5" fill="#f3e9c8" stroke="#2b6a63" stroke-width="2"/>
+            <rect x="200" y="124" width="10" height="26" rx="3" fill="#8fb1ab"/><rect x="200" y="286" width="10" height="26" rx="3" fill="#8fb1ab"/>
+          </g>
+          <rect x="196" y="338" width="250" height="12" rx="6" fill="#2b6a63"/>
+        </g>
+        <!-- bench props -->
+        <g id="benchProps"><ellipse cx="100" cy="304" rx="52" ry="7" fill="#6a3f20" opacity=".22"/>
+          <g transform="translate(34 262) rotate(-4)"><rect width="56" height="30" rx="3" fill="#fffdf4" stroke="#d8cfae"/><path d="M6 10H50M6 18H50M6 25H36" stroke="#cfe0d4" stroke-width="2"/></g>
+        </g>
+        <rect x="-600" y="-200" width="1700" height="900" fill="url(#gVig)" pointer-events="none"/>
+      </svg>
+
+      <!-- CHAPTER 6: badge -->
+      <svg class="scene" id="scene-badge" viewBox="0 0 480 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Badge: Drosie's Junior Fly Scientist, showing Drosie in front of a flask and a magnifying glass." hidden>
+        <defs><linearGradient id="bgGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a8"/><stop offset="1" stop-color="#e9b447"/></linearGradient><clipPath id="bdgClip"><circle cx="240" cy="146" r="84"/></clipPath></defs>
+        <path d="M172 234L148 332L190 312L214 336L232 258Z" fill="#db8669"/><path d="M308 234L332 332L290 312L266 336L248 258Z" fill="#c9694b"/>
+        <circle cx="240" cy="146" r="124" fill="url(#bgGold)"/><circle cx="240" cy="146" r="110" fill="none" stroke="#fff6d4" stroke-width="3" stroke-dasharray="3 9" stroke-linecap="round"/>
+        <circle cx="240" cy="146" r="90" fill="#dcefe9" stroke="#245f55" stroke-width="5"/>
+        <g clip-path="url(#bdgClip)"><rect x="150" y="56" width="180" height="180" fill="#e8f3e8"/><path d="M150 190Q240 160 330 190V240H150Z" fill="#b6d49c"/>
+          <g transform="translate(182 96)"><path d="M10 0H30V26L46 68Q50 78 40 78H0Q-10 78 -6 68L10 26Z" fill="#fff" fill-opacity=".6" stroke="#58aaa0" stroke-width="3"/><path d="M-2 56H42L46 68Q50 78 40 78H0Q-10 78 -6 68Z" fill="#9ccfa2"/></g>
+          <g transform="translate(288 96)"><circle cx="0" cy="0" r="16" fill="#fff" fill-opacity=".5" stroke="#c9953f" stroke-width="5"/><path d="M11 12L28 30" stroke="#8d5a2b" stroke-width="6" stroke-linecap="round"/></g>
+        </g>
+        <image href="climbing-game-assets/drosie.webp" x="190" y="86" width="100" height="94"/>
+        <rect x="96" y="222" width="288" height="52" rx="12" fill="#245f55"/>
+        <text x="240" y="241" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="13" fill="#f6d48c" letter-spacing="2">DROSIE'S</text>
+        <text x="240" y="262" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="18" fill="#fff" letter-spacing="1">JUNIOR FLY SCIENTIST</text>
+      </svg>
+    </section>
+
+    <!-- ================= PANEL ================= -->
+    <section class="panel" id="panel" aria-labelledby="chTitle">
+      <p class="chlabel" id="chLabel">Welcome</p>
+      <h1 class="chtitle" id="chTitle" tabindex="-1">Welcome to Drosie's Fly Lab</h1>
+      <div class="coach">
+        <img src="climbing-game-assets/drosie.webp" alt="Drosie, a friendly fruit fly, waving" width="72" height="67">
+        <div class="bubble"><p id="coachText">Hello, scientist!</p></div>
+      </div>
+      <div class="readrow">
+        <button class="mini" id="readBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 8a5 5 0 0 1 0 8M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="readLbl">Read aloud</span></button>
+        <button class="mini" id="pauseBtn" type="button" hidden>Pause</button>
+        <span class="readmsg" id="readMsg" role="status"></span>
+      </div>
+      <div class="task" id="task" hidden><span class="taskicon" aria-hidden="true">★</span><span id="taskText"></span></div>
+      <div class="fillslot" id="fillSlot"></div>
+      <ul class="facts" id="facts" aria-label="What I learned"></ul>
+      <div class="actions"><button class="btn alt" id="backBtn" type="button" hidden>← Back</button><button class="btn" id="mainBtn" type="button" hidden></button><button class="btn alt" id="hintBtn" type="button" hidden>Help me</button></div>
+      <details class="deeper" id="deeper"><summary>Go deeper (older learners and grown-ups)</summary><div id="deeperBody"></div></details>
+    </section>
+  </main>
+
+  <footer class="foot"><p>This is an educational simulation with simplified illustrations. It is not real microscopy, a real laboratory protocol, or a validated model of development. Times are approximate for <em>Drosophila melanogaster</em> and vary with temperature, food and genetics. Everything stays on this device: no accounts, trackers or personal data.</p>
+    <nav aria-label="More from Drosie's World"><a href="/science-activities/">All science activities</a><a href="/life-cycle-game.html">Life Cycle Adventure</a><a href="/fruit-fly-life-cycle-activities/">Life cycle lesson ideas</a><a href="/climbing-game.html">Climbing Challenge</a><a href="/storybook.html">Storybook</a><a href="/">Home</a></nav></footer>
+</div>
+
+<div id="sr" class="sr-only" role="status" aria-live="polite"></div>
+
+<dialog id="prefDlg" aria-labelledby="prefTitle"><form method="dialog">
+  <h2 id="prefTitle">Settings</h2><p class="dnote">These stay on this device only. Read-aloud never starts by itself.</p>
+  <label class="sw"><input type="checkbox" data-pref="large"><span>Larger text</span></label>
+  <label class="sw"><input type="checkbox" data-pref="contrast"><span>High contrast</span></label>
+  <label class="sw"><input type="checkbox" data-pref="motion"><span>Reduce motion</span></label>
+  <label class="sw"><input type="checkbox" data-pref="easy"><span>Easy reading</span></label>
+  <label class="sw"><input type="checkbox" data-pref="spacing"><span>More reading space</span></label>
+  <label class="sw"><input type="checkbox" data-pref="calm"><span>Calm focus (fewer decorations)</span></label>
+  <div class="drow"><button class="btn alt" type="button" id="prefReset">Reset</button><button class="btn" value="close">Done</button></div></form></dialog>
+
+<dialog id="notesDlg" aria-labelledby="notesTitle"><form method="dialog">
+  <h2 id="notesTitle">Science notes</h2>
+  <table class="nt"><caption>Approximate fruit fly timeline (reference example)</caption><thead><tr><th scope="col">Stage</th><th scope="col">At about 25°C</th></tr></thead><tbody>
+    <tr><th scope="row">Egg (embryo)</th><td>about 1 day</td></tr><tr><th scope="row">First instar larva</th><td>about day 1–2</td></tr><tr><th scope="row">Second instar larva</th><td>about day 2–3</td></tr><tr><th scope="row">Third instar larva</th><td>about day 3–5</td></tr><tr><th scope="row">Pupa in the puparium</th><td>about day 5 to day 9–10</td></tr><tr><th scope="row">Adult emerges (eclosion)</th><td>around day 9–10</td></tr></tbody></table>
+  <p>Cooler temperatures slow development (roughly 19 days at 18°C) and warmer ones speed it up (roughly 7 days at 29°C). These are rough reference values; real timing also depends on food, crowding and the strain of fly.</p>
+  <dl class="gl"><dt>Culture</dt><dd>A group of living organisms grown in a container on food, with labels and records.</dd><dt>Nutrient</dt><dd>A substance an organism needs to live and grow.</dd><dt>Incubator</dt><dd>A cabinet that keeps the temperature steady.</dd>
+    <dt>Instar</dt><dd>A larval stage between molts. Fruit flies have three.</dd><dt>Molt</dt><dd>Shedding the old outer skin so the larva can grow.</dd><dt>Puparium</dt><dd>The hard case formed from the last larval skin.</dd><dt>Pupa</dt><dd>The developing fly inside the puparium.</dd><dt>Eclosion</dt><dd>The adult coming out of the puparium.</dd></dl>
+  <p class="dnote">The food recipe in this game is one example of a cornmeal-based medium. Laboratories use many different recipes. Real fly food is prepared by trained adults using careful, clean procedures.</p>
+  <div class="drow"><button class="btn" value="close">Close</button></div></form></dialog>
+
+<dialog id="restartDlg" aria-labelledby="restartTitle"><form method="dialog"><h2 id="restartTitle">Restart the experiment?</h2><p>Your notebook answers and observations will be cleared.</p>
+  <div class="drow"><button class="btn alt" value="cancel">Keep going</button><button class="btn" value="yes" id="restartYes">Yes, restart</button></div></form></dialog>
+
+<noscript><p style="padding:20px;text-align:center">This game needs JavaScript. Please turn it on and reload.</p></noscript>
+<script src="fly-lab-assets/core.js"></script>
+<script src="fly-lab-assets/bench.js"></script>
+<script src="fly-lab-assets/observe.js"></script>
+<script src="fly-lab-assets/report.js"></script>
+</body>
+</html>
