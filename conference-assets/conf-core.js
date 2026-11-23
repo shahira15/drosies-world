@@ -129,12 +129,14 @@
     return n <= DC.firstOpen();
   };
 
+  let lastRail = '', lastFoot = '';
   DC.paintRail = () => {
     const ol = DC.$('#railList'); if (!ol) return;
-    ol.innerHTML = DC.CHAPTERS.map((c) => {
+    const html = DC.CHAPTERS.map((c) => {
       const done = DC.isDone(c.n), open = DC.canOpen(c.n), cur = DC.state.cur === c.n;
       return '<li><button type="button" class="rbtn' + (done ? ' done' : '') + '" data-act="go" data-n="' + c.n + '"' + (cur ? ' aria-current="step"' : '') + (open ? '' : ' disabled') + ' aria-label="Chapter ' + c.n + ': ' + DC.esc(c.title) + (done ? ', complete' : open ? '' : ', locked until earlier chapters are finished') + '"><b aria-hidden="true">' + (done ? '✓' : c.n) + '</b>' + DC.esc(c.short) + '</button></li>';
     }).join('');
+    if (html !== lastRail) { ol.innerHTML = html; lastRail = html; }
   };
 
   DC.go = (n, opts) => {
@@ -152,10 +154,10 @@
     const y = window.scrollY;
     const head = '<div class="chead"><span class="num" aria-hidden="true">' + n + '</span><div><div class="kicker">Chapter ' + n + ' of 10</div><h2 id="chTitle">' + DC.esc(meta.title) + '</h2></div></div>';
     DC.bindings = {};
-    stage.innerHTML = head + (def ? def.render() : '<p>This chapter is not available.</p>') + DC.navFoot(n);
+    lastFoot = DC.navFoot(n);
+    stage.innerHTML = head + (def ? def.render() : '<p>This chapter is not available.</p>') + lastFoot;
     if (def && def.mount) def.mount(stage);
     DC.paintRail();
-    document.title = 'Chapter ' + n + ': ' + meta.title + ' | Drosie’s First Scientific Conference';
     if (opts.keepScroll) window.scrollTo(0, y); else if (!opts.quiet) { window.scrollTo(0, 0); stage.focus({ preventScroll: true }); DC.say('Chapter ' + n + ': ' + meta.title); }
   };
   DC.refresh = (focusSel) => {
@@ -175,7 +177,9 @@
   /* Update the footer and rail after a state change without re-rendering the whole chapter */
   DC.softUpdate = () => {
     DC.paintRail();
-    const f = DC.$('#stage .nav-foot'); if (f) f.outerHTML = DC.navFoot(DC.state.cur);
+    const h = DC.navFoot(DC.state.cur), f = DC.$('#stage .nav-foot');
+    /* never replace buttons that have not changed: replacing them between mousedown and mouseup would swallow the click */
+    if (f && h !== lastFoot) { f.outerHTML = h; lastFoot = h; }
   };
 
   /* ---------- modal dialog ---------- */

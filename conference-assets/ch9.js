@@ -150,7 +150,7 @@
       return '<p class="lead">Now practice the part scientists find hardest: explaining your work to other people, answering questions, and improving your work afterwards.</p><div id="pracBox">' + practiceHTML() + '</div>' +
         '<div class="card"><h3>Step 2 · Explanation challenge</h3><p>Explain your main finding to a 7-year-old in 2 to 4 short sentences (up to 60 words). Use everyday words.</p><div class="field"><label for="explain">My explanation</label><textarea id="explain" data-bind="prac.explain">' + esc(p.explain) + '</textarea></div><div class="row"><button type="button" class="btn small gold" data-act="explCheck">Check my explanation</button><span class="wc" id="explWc">' + wc(p.explain) + ' words</span></div><div id="explFb" aria-live="polite"></div></div>' + qaHTML() + '<div id="reviseBox">' + reviseHTML() + '</div>' + reflectHTML();
     },
-    mount() { ui.left = 60; stopTimer(); DC.onBind('prac.explain', () => { DC.state.prac.explainOk = false; DC.save(); const w = DC.$('#explWc'); if (w) w.textContent = wc(DC.state.prac.explain) + ' words'; DC.softUpdate(); });
+    mount() { ui.left = 60; stopTimer(); DC.onBind('refl.', () => DC.softUpdate());DC.onBind('prac.explain', () => { DC.state.prac.explainOk = false; DC.save(); const w = DC.$('#explWc'); if (w) w.textContent = wc(DC.state.prac.explain) + ' words'; DC.softUpdate(); });
       DC.onBind('prac.qa', (el) => { const id = el.dataset.bind.split('.')[2]; if (DC.state.prac.qaDone[id]) { DC.state.prac.qaDone[id] = false; DC.save(); const q = el.closest('.q'); if (q) q.classList.remove('done'); DC.softUpdate(); } }); }
   });
 })();
