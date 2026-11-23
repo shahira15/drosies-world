@@ -492,14 +492,26 @@ maxHeight: 500,
  function updateReader() {
   const current = pageFlip.getCurrentPageIndex();
 
-  pageNumber.textContent =
-    "Page " + (current + 1) + " of " + TOTAL_PAGES;
+  // Visible page range: one page in portrait mode; a spread shows two pages,
+  // except the front cover (page 1) and a final unpaired page, which show alone.
+  const lo = current + 1;
+  const spread = pageFlip.getOrientation() === "landscape" &&
+    current > 0 && current + 1 < TOTAL_PAGES;
+  const hi = spread ? lo + 1 : lo;
+  const label = spread
+    ? "Pages " + lo + "\u2013" + hi + " of " + TOTAL_PAGES
+    : "Page " + lo + " of " + TOTAL_PAGES;
 
-  progress.style.width =
-    ((current + 1) / TOTAL_PAGES * 100) + "%";
+  pageNumber.textContent = label;
 
-  slider.value = String(current + 1);
-  slider.setAttribute("aria-valuetext", "Page " + (current + 1) + " of " + TOTAL_PAGES);
+  progress.style.width = (hi / TOTAL_PAGES * 100) + "%";
+
+  // Keep the slider where the reader put it while that page is visible;
+  // otherwise move it to the first visible page.
+  const picked = Number(slider.value);
+  if (picked < lo || picked > hi) slider.value = String(lo);
+  slider.setAttribute("aria-valuetext", label);
+
   previous.disabled = current === 0;
   next.disabled = current >= TOTAL_PAGES - 1;
 
