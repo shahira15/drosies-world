@@ -80,6 +80,9 @@
     o[ks[ks.length - 1]] = val; DC.save();
   };
 
+  /* overclaiming: absolute words, or "all <animals> + verb" used as an assertion (not "cannot tell what all flies do") */
+  DC.overclaim = (t) => /\b(prove[sd]?|proof|definitely|certainly|always|never|100 ?%|everyone)\b/i.test(t) || /\ball (fruit )?(flies|ants|plants|animals|insects|bugs|birds|pill bugs)\s+(climb|are|like|will|move|get|behave|prefer|respond)\b/i.test(t);
+
   /* ---------- privacy check for text that could carry personal info ---------- */
   DC.looksPersonal = (t) => /@|https?:|www\./i.test(t) || /\d{6,}/.test(String(t).replace(/[\s-]/g, ''));
   DC.name = () => (DC.state.anon || !DC.state.nick.trim() ? 'Young Researcher' : DC.state.nick.trim());

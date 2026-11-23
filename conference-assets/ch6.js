@@ -85,16 +85,17 @@
     add(t >= 4.5 && body >= 4.5, 'Color contrast: title text ' + t.toFixed(1) + ':1 and body text ' + body.toFixed(1) + ':1 (at least 4.5:1 is recommended for text).');
     if (p.layout === 'banner') { const bt = ratio(pal.d, '#1c2b28'); add(bt >= 4.5, 'Banner title contrast ' + bt.toFixed(1) + ':1.'); }
     add((parseFloat(p.scale) || 1) >= 0.9, (parseFloat(p.scale) || 1) >= 0.9 ? 'Text size is readable.' : 'Text size is small. Make it larger and use fewer words.');
-    if (/\b(prove[sd]?|proof|definitely|always|never|100 ?%|everyone|all (fruit )?flies)\b/i.test(f.conclusions)) add(false, 'Conclusions: "proves", "always" or "all flies" claim more than your data can show.', true);
+    if (DC.overclaim(f.conclusions)) add(false, 'Conclusions: "proves", "always" or "all flies" claim more than your data can show.', true);
     if (DC.looksPersonal(f.author + ' ' + f.ack)) add(false, 'Remove emails, web addresses or phone numbers from the name or thanks.', true);
     const el = DC.$('#posterLive .poster'); if (el) { const w = el.getBoundingClientRect().width, h = el.getBoundingClientRect().height; const fits = h <= w / 1.34 + 3; add(fits, fits ? 'The poster fits on one landscape page.' : 'The poster is taller than one landscape page, so a printout would be cut or spill onto a second page. Shorten the text or reduce the text size.'); }
     out.blocks = blocks; return out;
   }
+  DC.posterChecks = checks;
   DC.posterComplete = () => {
     const p = DC.state.poster, f = p.f; if (!DC.state.path || !p.started) return false;
     const need = wc(f.title) > 0 && ['question', 'methods', 'results', 'conclusions', 'limitations'].every((k) => wc(f[k]) >= 3);
     if (!need) return false;
-    if (/\b(prove[sd]?|proof|definitely|always|never|100 ?%|everyone|all (fruit )?flies)\b/i.test(f.conclusions)) return false;
+    if (DC.overclaim(f.conclusions)) return false;
     if (DC.looksPersonal(f.author + ' ' + f.ack)) return false;
     if (DC.state.path === 'B' && figureCfg() && (!DC.state.b.chart.yTitle.trim() || !DC.state.b.chart.xTitle.trim())) return false;
     return true;

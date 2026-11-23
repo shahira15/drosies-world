@@ -53,7 +53,7 @@
       if (a.methods.trim() && wc(a.methods) < 12) add('todo', 'Methods: could someone repeat what you did? Add what you changed, measured or looked at.');
     }
     if (a.conclusion.trim()) {
-      if (/\b(prove[sd]?|proof|definitely|certainly|always|never|100 ?%|everyone|all (fruit )?flies|all (of )?the)\b/i.test(a.conclusion)) add('warn', 'Conclusion: words like "proves", "always" or "all flies" claim more than your data can show. Try "suggests", "fits" or "in this study".', true);
+      if (DC.overclaim(a.conclusion)) add('warn', 'Conclusion: words like "proves", "always" or "all flies" claim more than your data can show. Try "suggests", "fits" or "in this study".', true);
       if (!/(suggest|fit|fits|consistent|support|might|may |could|seems|in this|in my)/i.test(a.conclusion)) add('todo', 'Conclusion: use careful words such as "suggests" or "fits", and say how sure you can be.');
       if (!/(limit|only|small|more |need|cannot|can't|can not|not sure|don't know|do not know|future|next|another|other)/i.test(a.conclusion)) add('todo', 'Conclusion: add one limit or next step. For example, what you could not tell, or what you would test next.');
     }
