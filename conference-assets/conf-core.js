@@ -99,7 +99,7 @@
     const stage = DC.$('#stage');
     document.addEventListener('click', (e) => {
       const b = e.target.closest('[data-act]'); if (!b || b.disabled || b.getAttribute('aria-disabled') === 'true') return;
-      const fn = DC.acts[b.dataset.act]; if (fn) { e.preventDefault(); fn(b, e); }
+      const fn = DC.acts[b.dataset.act]; if (fn) { if (!b.matches('input,select,textarea')) e.preventDefault(); fn(b, e); }
     });
     const onField = (e) => {
       const el = e.target.closest('[data-bind]'); if (!el) return;

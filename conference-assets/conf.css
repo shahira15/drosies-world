@@ -138,11 +138,11 @@ dl.study dt{font-weight:800;color:var(--teal);font-size:.88rem}dl.study dd{margi
 .tbl th,.tbl td{border:2px solid var(--line);padding:.4rem .6rem;text-align:center}
 .tbl thead th{background:var(--sage)}
 .tbl tbody th{background:#f4f1e2;text-align:left}
-.tblwrap{overflow-x:auto}
+.tblwrap{overflow-x:auto;position:relative}
 .tbl input{width:100%;min-width:4.5rem}
 .setupgrid{display:grid;gap:.5rem}
 .setuprow{display:grid;gap:.3rem;grid-template-columns:minmax(0,1fr);background:#fff;border:2px solid var(--line);border-radius:.7rem;padding:.5rem .7rem}
-@media(min-width:700px){.setuprow{grid-template-columns:1fr 14rem;align-items:center}}
+@media(min-width:700px){.setuprow{grid-template-columns:1fr 19rem;align-items:center}}
 .setuprow.good{border-color:var(--ok);background:var(--okbg)}.setuprow.bad{border-color:var(--bad);background:var(--badbg)}
 
 /* questions */
