@@ -54,7 +54,7 @@
         ['Yes. The two groups used different vials and different flies, so those could differ. I would test more groups at both temperatures, in random order, and have a second person count.', 2, 'Excellent. Naming a specific alternative and a way to test it is how scientists think.'],
         ['No. The data are clear: cold causes less climbing.', 0, 'Be careful. Data rarely settle a question alone. Different flies, vials or timing could also matter.'],
         ['Maybe, but I cannot think of anything.', 1, 'Admitting that is honest. Try listing differences between the groups other than temperature: which flies, which vial, when, who counted.'],
-        ['Yes, maybe the flies just did not feel like it.', 1, 'That could be true, but it is too vague to test. Try something you could check, such as "the 18 °C flies were tested later and were more tired".']] }),
+        ['Yes, maybe the flies just did not feel like it.', 1, 'That could be true, but it is too vague to test. Try something you could check, such as "the 18 °C flies were tested at a different time of day than the 25 °C flies".']] }),
       B: () => ({ q: 'Could something else explain what you saw? What else might have been different?', o: [
         ['Yes. For example, something else I did not control might have mattered. To check, I would repeat it and change only one thing at a time.', 2, 'Good thinking. Naming a possible alternative and how you would test it is a strength.'],
         ['I do not know yet. I would need another experiment to find out.', 2, '"I don’t know yet" is a real scientist’s answer, especially when you say how you would find out.'],
@@ -170,11 +170,11 @@
   DC.acts.sciAns = (b) => {
     const id = b.dataset.s, i = +b.dataset.i, q = getQ(id), sc = q.o[i][1];
     const prev = DC.state.hall.sci[id] || {}; DC.state.hall.sci[id] = { sel: i, score: sc, best: sc === 2 || !!prev.best }; DC.save();
-    DC.$('#areaPanel').innerHTML = panelHTML(); const o = DC.$('#areaPanel [data-act=sciAns][data-i="' + i + '"]'); if (o) o.focus(); DC.softUpdate();
+    DC.$('#areaPanel').innerHTML = panelHTML(); const o = DC.$('#areaPanel [data-act=sciAns][data-i="' + i + '"]'); if (o) o.focus(); DC.softUpdate(); { const f = DC.$('#sciPanel .fb'); if (f) DC.say(f.innerText); }
   };
   /* mcq inside the hall: keep the hall open instead of re-rendering the whole chapter */
   const baseMcq = DC.acts.mcq;
-  DC.acts.mcq = (b) => { if (DC.state.cur === 8) { const id = b.dataset.q, i = +b.dataset.i, ok = DC.mcqReg[id][i][1], prev = DC.state.det[id] || { tries: 0 }; DC.state.det[id] = { sel: i, ok: ok || !!prev.ok, tries: prev.tries + 1 }; DC.save(); DC.$('#areaPanel').innerHTML = panelHTML(); const o = DC.$('#areaPanel [data-q="' + id + '"] .opt:nth-child(' + (i + 1) + ')'); if (o) o.focus(); } else baseMcq(b); };
+  DC.acts.mcq = (b) => { if (DC.state.cur === 8) { const id = b.dataset.q, i = +b.dataset.i, ok = DC.mcqReg[id][i][1], prev = DC.state.det[id] || { tries: 0 }; DC.state.det[id] = { sel: i, ok: ok || !!prev.ok, tries: prev.tries + 1 }; DC.save(); DC.$('#areaPanel').innerHTML = panelHTML(); const o = DC.$('#areaPanel [data-q="' + id + '"] .opt:nth-child(' + (i + 1) + ')'); if (o) o.focus(); const f = DC.$('#areaPanel [data-q="' + id + '"] .fb'); if (f) DC.say(f.innerText); } else baseMcq(b); };
 
   DC.hallDone = () => visitedCount() === DC.AREAS.length && bestCount() >= 3;
   DC.register(8, {

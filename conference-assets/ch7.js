@@ -62,4 +62,5 @@
         '<div class="card"><h3>5 · Practice: put your 60-second talk in order</h3><p>A short talk has a shape. Use the arrows to put the six steps in the best order, then check. (A 60-second talk is only about 120 to 150 spoken words, so each step gets a sentence or two.)</p><div id="ordBox">' + orderHTML() + '</div><div class="row"><button type="button" class="btn gold" data-act="ordCheck">Check my order</button></div><div id="ordMsg"></div></div>';
     }
   });
+  { const oc = DC.acts.ordCheck; DC.acts.ordCheck = (b) => { oc(b); const m = DC.$('#ordMsg .fb'); if (m) DC.say(m.innerText); }; }
 })();

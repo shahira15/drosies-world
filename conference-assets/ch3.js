@@ -116,7 +116,7 @@
   function aHTML() {
     const nrec = D.conditions.reduce((a, c) => a + DC.recorded(c.id).length, 0);
     return '<p class="lead">You are the researcher. Run the trials, count carefully and record the numbers. Everything on this page is a <strong>simulation</strong>.</p><div class="callout sim"><strong>Simulated experiment.</strong> The flies and results are generated for learning. They are not real data.</div>' + assayHTML() + '<div id="setupBox">' + setupHTML() + '</div>' +
-      '<div class="card"><h3>Step 2 · Run the trials</h3><p>Do all 5 trials for both groups (10 recordings). You can run them in any order. Scientists often mix the order so that tiredness does not affect one group more than the other.</p><div id="trialBox">' + trialArea() + '</div></div>' +
+      '<div class="card"><h3>Step 2 · Run the trials</h3><p>Do all 5 trials for both groups (10 recordings). You can run them in any order. Scientists often alternate between groups, so that things like the time of day do not affect one group more than the other.</p><div id="trialBox">' + trialArea() + '</div></div>' +
       '<div class="card"><h3>Step 3 · Your data table <span class="tag" id="recTag">' + nrec + ' of 10 recorded</span></h3><div id="tableBox">' + tableHTML() + '</div></div>' +
       '<div class="card"><h3>Step 4 · Variation</h3>' + DC.mcq('c3var', 'The five trials in one group did not give exactly the same number. What is the best explanation?', [
         ['Someone made a mistake, so we should throw away the odd trials.', false, 'Do not throw data away just because it differs. Real measurements vary.'],
@@ -197,9 +197,11 @@
       if (s.path === 'B') return !!(s.b.organizerSeen && bMethodsOk() && bDataOk() && DC.bFilled('question'));
       return false;
     },
-    gate: () => (DC.state.path === 'B' ? 'Check your readiness list, then tick the box saying you are ready.' : 'Record all 10 trials and answer the variation question.'),
+    gate() { if (DC.state.path !== 'B') return 'Record all 10 trials (' + D.conditions.reduce((a, c) => a + DC.recorded(c.id).length, 0) + ' so far) and answer the variation question.'; const m = []; if (!DC.bFilled('question')) m.push('a research question (Chapter 2)'); if (!bMethodsOk()) m.push('at least one method step'); if (!bDataOk()) m.push('one observation or data row (or skip it in Chapter 2)'); if (!DC.state.b.organizerSeen) m.push('tick the box saying you are ready'); return 'Still needed: ' + m.join('; ') + '.'; },
     render() {
       if (!DC.state.path) return '<div class="callout warn">Choose a research path in Chapter 2 first. <button class="btn small" data-act="go" data-n="2" type="button">Go to Chapter 2</button></div>';
+      /* coming back from another chapter: a trial that was running when the learner left must not be rendered as still running */
+      if (!DC.$('#labSvg')) stop();
       return DC.state.path === 'A' ? aHTML() : bHTML();
     },
     mount() {
@@ -208,4 +210,5 @@
       DC.onBind('b.', () => { const r = DC.$('#bready'); if (r) r.innerHTML = bReadyHTML(); DC.softUpdate(); });
     }
   });
+  { const rec = DC.acts.c3record; DC.acts.c3record = (b) => { rec(b); if (ui.msg) DC.say(ui.msg); }; }
 })();

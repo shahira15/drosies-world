@@ -69,7 +69,7 @@
     const ok = reg ? reg[i][1] : true;
     const prev = DC.state.det[id] || { tries: 0 };
     DC.state.det[id] = { sel: i, ok: ok || !!prev.ok, tries: prev.tries + 1, firstOk: prev.tries === 0 ? ok : prev.firstOk };
-    DC.save(); DC.refresh('[data-q="' + id + '"] .opt:nth-child(' + (i + 1) + ')'); DC.softUpdate();
+    DC.save(); DC.refresh('[data-q="' + id + '"] .opt:nth-child(' + (i + 1) + ')'); DC.softUpdate(); { const f = DC.$('[data-q="' + id + '"] .fb'); if (f) DC.say(f.innerText); }
   };
   DC.mcqReg = {};
   /* register options so the click handler can score them; chapters call DC.mcqDef */
@@ -173,5 +173,14 @@
       DC.onBind('b.f', () => { const r = DC.$('#ready'); if (r) r.innerHTML = readiness(); DC.softUpdate(); });
     }
   });
-  DC.acts.pickPath = (b) => { DC.state.path = b.dataset.p; DC.save(); DC.refresh('[data-act="pickPath"][data-p="' + b.dataset.p + '"]'); DC.softUpdate(); DC.say('Path ' + b.dataset.p + ' chosen'); };
+  /* Each path keeps its own abstract, poster, hall answers, practice answers and revisions, so a Path A draft can never leak into a Path B portfolio (and vice versa). */
+  const PATH_KEYS = ['abs', 'poster', 'hall', 'prac', 'revs'];
+  DC.acts.pickPath = (b) => {
+    const S = DC.state, np = b.dataset.p, op = S.path;
+    if (op && op !== np) {
+      S.snaps = S.snaps || {}; S.snaps[op] = {}; PATH_KEYS.forEach((k) => (S.snaps[op][k] = JSON.parse(JSON.stringify(S[k]))));
+      const d = DC.defaults(); PATH_KEYS.forEach((k) => (S[k] = S.snaps[np] ? S.snaps[np][k] : d[k]));
+      DC.toast('Switched to Path ' + np + '. Your Path ' + op + ' work is saved separately and returns if you switch back.');
+    }
+    DC.state.path = np; DC.save(); DC.refresh('[data-act="pickPath"][data-p="' + b.dataset.p + '"]'); DC.softUpdate(); DC.say('Path ' + b.dataset.p + ' chosen'); };
 })();

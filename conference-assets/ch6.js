@@ -34,10 +34,10 @@
       if (!DC.aComplete()) return null;
       const cfg = DC.guidedChart({ id: 'pf', title: '' });
       if (p.figView === 'bar') { cfg.kind = 'bar'; cfg.yMin = 0; cfg.step = 1; cfg.showPoints = true; } else if (p.figView === 'line') { cfg.kind = 'line'; cfg.catLabels = [1, 2, 3, 4, 5]; cfg.xTitle = 'Trial number'; }
-      cfg.title = ''; cfg.h = 240; return cfg;
+      cfg.title = ''; cfg.h = 240; cfg.w = 640; return cfg;
     }
     const b = DC.state.b; if (!b.chart.kind || b.chart.kind === 'auto' || b.chart.kind === 'words' || DC.bLogNumeric().length < 2) return null;
-    const cfg = DC.bChartCfg(); cfg.interactive = false; cfg.id = 'pf'; cfg.title = ''; cfg.h = 240; return cfg;
+    const cfg = DC.bChartCfg(); cfg.interactive = false; cfg.id = 'pf'; cfg.title = ''; cfg.h = 240; cfg.w = 640; return cfg;
   }
   function autoCaption() {
     const p = DC.state.poster, cfg = figureCfg(); if (!cfg) return '';
@@ -60,9 +60,9 @@
     let fig = '';
     if (cfg) fig = '<figure>' + DC.chart(cfg) + '<figcaption>' + esc(cap) + '</figcaption></figure>';
     else if (p.fig === 'draw') fig = '<figure><div class="figbox">Space for a drawing, photo or table. Add it to the printed poster by hand.</div><figcaption>' + esc(cap || 'Figure 1. (Write what the figure shows.)') + '</figcaption></figure>';
-    const sec = (cls, h, body) => '<section class="ps ' + cls + '"><h2>' + h + '</h2>' + body + '</section>';
+    const sec = (cls, h, body) => '<section class="ps ' + cls + '"><h4>' + h + '</h4>' + body + '</section>';
     return '<div class="poster" data-layout="' + esc(p.layout) + '" style="--pa:' + pal.a + ';--pb:' + pal.b + ';--pc:' + pal.c + ';--pd:' + pal.d + ';--ps:' + (parseFloat(p.scale) || 1) + '">' +
-      '<header class="pt"><h1>' + esc(f.title || 'My research title') + '</h1><p>' + esc(f.author || DC.name()) + '<br>Drosie’s First Scientific Conference<br>' + (sim ? '<span class="simtag">Simulated data</span>' : 'A simulated educational conference') + '</p></header>' +
+      '<header class="pt"><h3 class="ptitle">' + esc(f.title || 'My research title') + '</h3><p>' + esc(f.author || DC.name()) + '<br>Drosie’s First Scientific Conference<br>' + (sim ? '<span class="simtag">Simulated data</span>' : 'A simulated educational conference') + '</p></header>' +
       sec('s-q', 'Question', rich(f.question)) + sec('s-bg', 'Background', rich(f.background)) + sec('s-me', 'Methods', rich(f.methods)) +
       sec('s-res', 'Results', rich(f.results) + fig) + sec('s-con', 'Conclusions', rich(f.conclusions)) + sec('s-lim', 'Limitations', rich(f.limitations)) +
       '<footer class="pfoot"><div>' + (f.ack.trim() ? '<p><strong>Thanks:</strong> ' + esc(f.ack.replace(/\n/g, ' ')) + '</p>' : '') + (f.refs.trim() ? '<p><strong>References:</strong> ' + esc(f.refs.replace(/\n/g, ' ')) + '</p>' : '') + '</div><p>Made with Drosie’s World. A simulated educational conference poster. It has not been peer reviewed' + (sim ? ', and the data are simulated' : '') + '.</p></footer></div>';

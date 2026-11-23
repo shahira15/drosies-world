@@ -24,7 +24,7 @@
     control: 'The 25 °C group is the comparison (control) group. It is treated exactly like the 18 °C group except for the temperature.',
     kept: ['Same type of vial (10 cm of climbing height)', 'Same number of flies in each group (10)', 'Same age of flies (simulated: 3 to 5 days old)', 'Same time of day for testing', 'Same three gentle taps to start each trial', 'Same 10 minutes of rest in the test room before testing'],
     measure: 'Tap the vial gently three times so every fly falls to the bottom. Start a 10-second timer. When it ends, count the flies whose bodies are above the 8 cm reference line.',
-    uncertainty: ['Counting by eye can be slightly off, especially for flies near the line.', 'Each tap is a little different.', 'Flies can get tired after several trials in a row.', 'Individual flies differ from each other.', 'The room temperature can drift a little.'],
+    uncertainty: ['Counting by eye can be slightly off, especially for flies near the line.', 'Each tap is a little different.', 'Flies might respond a little differently after several trials in a row (a real lab would check whether repeated testing matters).', 'Individual flies differ from each other.', 'The room temperature can drift a little.'],
     limitations: ['Only 10 flies in each condition.', 'One vial per condition: a difference between the two vials is mixed up with the difference in temperature.', 'All 5 trials in a condition use the same 10 flies. They are repeated measurements, not independent replicates.', 'Only two temperatures were tested.', 'Climbing is one behavior. It cannot tell us why the flies climbed less.', 'These data are simulated. They are not a real experiment.']
   };
 

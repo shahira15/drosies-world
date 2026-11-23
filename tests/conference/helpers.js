@@ -5,6 +5,7 @@ async function open(opts = {}) {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ viewport: { width: opts.w || 1280, height: opts.h || 900 }, reducedMotion: opts.reduced ? 'reduce' : 'no-preference' });
   const page = await ctx.newPage();
+  if (opts.init) await ctx.addInitScript(opts.init);
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push('PAGEERROR ' + e.message));

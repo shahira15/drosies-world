@@ -80,3 +80,22 @@ Scrollable table label leaked page width · checkbox clicks blocked by global `p
 8. Path A uses one fixed dataset; the same learner on a different day (or a whole class) sees the same numbers.
 9. Navigation links to the conference exist from the home footer only. I deliberately did **not** edit the home nav dropdown, `science-activities/` or `teacher-resources/` to avoid conflicts with other open branches; adding those links is a one-line follow-up for the site owner.
 10. English only.
+
+---
+## Pre-merge review (second pass, after PR #13 was opened)
+Compatibility: `origin/main` has not moved since the branch point (db76f5e) and already contains PRs #11 and #12; a trial merge in a throwaway worktree had **no conflicts**. Only `index.html` (1 footer link) and `sitemap.xml` (2 entries) touch existing files.
+
+Problems found by the review and **fixed in this pass**
+1. **Path leakage (real bug):** switching A→B left the fruit-fly abstract/poster/answers in the Path B portfolio. Each path now keeps its own abstract, poster, hall answers, practice answers and revisions; switching back restores them.
+2. **Stuck Start button (real bug):** leaving Chapter 3 mid-trial and returning rendered a permanently disabled "Counting time…" button.
+3. **Science wording:** the study listed "flies get tired after several trials" as a source of uncertainty, but the cited RING paper's abstract reports performance was *not* influenced by repeated testing. Rewritten as a thing a real lab would check. A hard-coded "lower in every trial" (trials are not paired) now quotes computed ranges. Chapter 3's "mix the order so tiredness…" rewritten ("alternate between groups… time of day"). Chapter 4 now says explicitly that results do not always match the prediction.
+4. Charts were illegible at 320 px (~4.6 px text): added a narrow-screen drawing (≥ 8 px text, no clipping). Chapter 7 program table wrapped times mid-word.
+5. Screen readers: example-abstract heading jump (h2→h4), poster `<h1>` inside the page, answer feedback not reliably announced (now routed through the live region), Path B chapter-3 gate message now lists exactly what is missing.
+6. Added a `@supports not (width:1cqw)` pixel fallback for poster sizing in older Safari/Firefox (**untested**: the bundled Chromium supports `cqw`).
+
+New suites: `review` 49 · `exports` 25 (reads real PDFs with pdftotext; checks printed poster sizes: body 10.7 pt, headings 11 pt, caption 9.2 pt) · `privacy` 7 (158 requests during a full session: all same-origin GETs, no fetch/XHR/beacon/WebSocket, learner text never in a URL/body, one localStorage key, no cookies) · `robustness` 20 (locked deep links, corrupt/blocked storage, mid-animation navigation, XSS payloads in every free-text field incl. the downloaded portfolio, large text at 320 px).
+
+Still true after review (unchanged limitations)
+- **Firefox and WebKit could not be run**: only Chromium is installed and browser downloads are blocked by the network policy. Compatibility was reasoned from feature support only (container-query units: Safari 16+/Firefox 110+; CSS `zoom` fallback: Firefox < 126 shows a sideways-scrolling preview; `dialog.showModal`: Safari 15.4+).
+- No human or assistive-technology testing; keyboard behavior is verified only by automated scripts. Reduced motion verified via emulated `prefers-reduced-motion` and the in-app setting only.
+- References: both PubMed records re-confirmed; **PMC returned no full text** for Nichols 2012 and Gargano 2005 has no PMC copy via this tool, so neither full text was read. Still **unverified** by any source in this activity: that 18 °C vs 25 °C reduces climbing in real *Drosophila* (stated only as a hypothesis about simulated data; a PubMed search surfaced cold-stress work at 0 °C, which does not test this), and the general facts "fruit flies are ectothermic" and "flies climb after being tapped" (the latter is supported by the Gargano abstract).

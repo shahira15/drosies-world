@@ -17,7 +17,7 @@
     const prev = DC.state.det[id] || {};
     let ok = false, msg;
     if (raw === '' || isNaN(v)) msg = 'Type a number.'; else if (Math.abs(v - ans) <= tol) { ok = true; msg = 'Correct: ' + DC.fmt(ans, 1) + '. ' + b.dataset.hint; } else msg = 'Not quite. ' + b.dataset.hint.split('|')[0];
-    DC.state.det[id] = { val: raw, ok: ok || !!prev.ok, msg }; DC.save(); DC.refresh('#' + id); DC.softUpdate();
+    DC.state.det[id] = { val: raw, ok: ok || !!prev.ok, msg }; DC.save(); DC.refresh('#' + id); DC.softUpdate(); DC.say(msg);
   };
 
   /* ---------- sorting question: observation vs interpretation ---------- */
@@ -31,7 +31,7 @@
   DC.acts.oiCheck = (b) => {
     const id = b.dataset.id, items = DC.oiItems[id], sel = DC.state.det[id + '_sel'] || {};
     const ok = items.every((it, i) => sel[i] === it[1]);
-    DC.state.det[id] = { checked: true, ok: ok || !!(DC.state.det[id] && DC.state.det[id].ok) }; DC.save(); DC.refresh('[data-act=oiCheck]'); DC.softUpdate();
+    DC.state.det[id] = { checked: true, ok: ok || !!(DC.state.det[id] && DC.state.det[id].ok) }; DC.save(); DC.refresh('[data-act=oiCheck]'); DC.softUpdate(); DC.say(ok ? 'All sorted correctly.' : 'Some are not right yet. Read the notes and change your answers.');
   };
   DC.oiItems = {};
 
@@ -56,7 +56,7 @@
   DC.acts.limCheck = () => {
     const items = DC.oiItems.limits, sel = DC.state.det.limits_sel || {};
     const ok = items.every((it, i) => !!sel[i] === it[1]);
-    DC.state.det.limits = { checked: true, ok: ok || !!(DC.state.det.limits && DC.state.det.limits.ok) }; DC.save(); DC.refresh('[data-act=limCheck]'); DC.softUpdate();
+    DC.state.det.limits = { checked: true, ok: ok || !!(DC.state.det.limits && DC.state.det.limits.ok) }; DC.save(); DC.refresh('[data-act=limCheck]'); DC.softUpdate(); DC.say(ok ? 'Yes, those are all the real limitations.' : 'Not all choices match yet. Read the notes beside each statement.');
   };
 
   /* ---------- guided graph ---------- */
@@ -111,7 +111,7 @@
     return '<p class="lead">Now you have numbers. A data detective asks: what do the numbers <em>say</em>, and what do they <em>not</em> say?</p><div class="callout sim"><strong>Simulated data.</strong> These numbers came from your trials in the simulated lab. They are not from real flies.</div>' +
       '<div class="card"><h3>Step 1 · Your results and summaries</h3>' + summaryHTML() + '<p class="hint">Summaries are calculated from the numbers you recorded. We are only describing these data. We are <strong>not</strong> running a statistical test or claiming a significant result.</p></div>' +
       '<div class="card"><h3>Step 2 · Explore the graph</h3><p>Try each graph type. Which one lets you see <em>every</em> trial? Which one hides how much the trials vary?</p><div id="gArea">' + graphHTML() + '</div>' +
-      '<div class="callout"><strong>Comparing the conditions.</strong> The 25 °C average is ' + DC.fmt(m1, 1) + ' flies and the 18 °C average is ' + DC.fmt(m2, 1) + ', a difference of ' + DC.fmt(diff, 1) + ' flies. The lowest to highest counts ' + (nonOverlap ? 'do not overlap' : 'overlap') + ' (' + s.control.min + ' to ' + s.control.max + ' compared with ' + s.cool.min + ' to ' + s.cool.max + '). That describes <em>these 10 recordings</em>. A difference between two averages does not by itself prove what caused it.</div></div>' +
+      '<div class="callout"><strong>Comparing the conditions.</strong> The 25 °C average is ' + DC.fmt(m1, 1) + ' flies and the 18 °C average is ' + DC.fmt(m2, 1) + ', a difference of ' + DC.fmt(diff, 1) + ' flies. The lowest to highest counts ' + (nonOverlap ? 'do not overlap' : 'overlap') + ' (' + s.control.min + ' to ' + s.control.max + ' compared with ' + s.cool.min + ' to ' + s.cool.max + '). That describes <em>these 10 recordings</em>. A difference between two averages does not by itself prove what caused it.<br><strong>Results do not always match the prediction.</strong> If the 18 °C flies had climbed as much as or more than the 25 °C flies, that would also be a real and useful result. Scientists report what they find, not what they hoped for.</div></div>' +
       '<div class="card"><h3>Step 3 · Detective questions</h3>' +
       numQ('d_mean', 'What is the mean (average) number of flies above the line at 25 °C?', m1, 'Add the five counts (' + DC.state.a.rec.control.join(' + ') + ' = ' + s.control.sum + ') and divide by 5.|Add the five counts and divide by 5.') +
       numQ('d_diff', 'How many more flies, on average, were above the line at 25 °C than at 18 °C?', diff, 'Subtract the means: ' + DC.fmt(m1, 1) + ' − ' + DC.fmt(m2, 1) + ' = ' + DC.fmt(diff, 1) + '.|Subtract the 18 °C mean from the 25 °C mean.') +
@@ -123,7 +123,7 @@
       DC.mcq('d_cause', 'Which conclusion is best supported by these data?', [
         ['Cold air makes all fruit flies climb less. This proves it.', false, '"All fruit flies" and "proves" go far beyond 20 simulated flies in two vials.'],
         ['In this simulation the 18 °C group had fewer flies above the line on average (' + DC.fmt(m2, 1) + ' compared with ' + DC.fmt(m1, 1) + '). That fits the prediction, but one vial per condition cannot show what all flies do or rule out other differences between the groups.', true, 'This states what was found, says it fits the prediction, and admits what the study cannot show.'],
-        ['Temperature has no effect on climbing.', false, 'The data do not show that. The 18 °C counts were lower in every trial of this simulation.'],
+        ['Temperature has no effect on climbing.', false, 'The data do not show that. In this simulation every 18 °C count (' + s.cool.min + ' to ' + s.cool.max + ') was lower than every 25 °C count (' + s.control.min + ' to ' + s.control.max + ').'],
         ['The data can tell us nothing at all.', false, 'Too cautious. The data do tell us something about these groups. They just cannot tell us everything.']]) +
       DC.mcq('d_repl', 'The five trials in each group used the same 10 flies. Do they count as five independent replicates of the experiment?', [
         ['Yes. Five trials means five replicates.', false, 'Repeating on the same flies is useful, but those measurements are not independent. They all come from the same flies.'],
@@ -207,6 +207,7 @@
       return body + prog;
     },
     mount() {
+      let lastNarrow = window.innerWidth < 560; window.addEventListener('resize', () => { const n = window.innerWidth < 560; if (n !== lastNarrow && DC.state.cur === 4) { lastNarrow = n; DC.refresh(); } });
       if (DC.state.path === 'A' && DC.aComplete()) { const b = DC.$('#gBox'); if (b) DC.chart.attach(b, DC.$('#gOut')); }
       DC.onBind('b.chart.kind', () => DC.refresh());
       DC.onBind('b.chart', () => { const gr = DC.$('#bGraph'); if (gr) { gr.innerHTML = bGraphHTML(); const bb = DC.$('#bBox'); if (bb) DC.chart.attach(bb, DC.$('#bOut')); } DC.softUpdate(); });

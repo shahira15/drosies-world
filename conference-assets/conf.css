@@ -137,7 +137,8 @@ dl.study dt{font-weight:800;color:var(--teal);font-size:.88rem}dl.study dd{margi
 .tbl caption{text-align:left;font-weight:800;padding:.3rem 0}
 .tbl th,.tbl td{border:2px solid var(--line);padding:.4rem .6rem;text-align:center}
 .tbl thead th{background:var(--sage)}
-.tbl tbody th{background:#f4f1e2;text-align:left}
+.tbl tbody th{background:#f4f1e2;text-align:left;white-space:nowrap}
+.tbl thead th:first-child{white-space:nowrap}
 .tblwrap{overflow-x:auto;position:relative}
 .tbl input{width:100%;min-width:4.5rem}
 .setupgrid{display:grid;gap:.5rem}
@@ -224,10 +225,10 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .posterwrap{overflow-x:auto;position:relative}
 .poster{--pa:#1d5a5a;--pb:#fff8e6;--pc:#1c2b28;--pd:#d9b45a;--ps:1;container-type:inline-size;aspect-ratio:1.34;min-width:720px;background:var(--pb);color:var(--pc);font-family:var(--read);padding:1.6cqw;display:grid;gap:1.1cqw;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"pt pt pt" "q res res" "bg res res" "me con lim" "ft ft ft";align-content:start;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
 .poster .pt{grid-area:pt;background:var(--pa);color:#fff;border-radius:1.2cqw;padding:.9cqw 1.8cqw;display:flex;justify-content:space-between;align-items:center;gap:2cqw}
-.poster .pt h1{font:900 calc(3.1cqw*var(--ps)) Georgia,'Times New Roman',serif;margin:0;color:#fff;line-height:1.12}
+.poster .pt .ptitle{font:900 calc(3.1cqw*var(--ps)) Georgia,'Times New Roman',serif;margin:0;color:#fff;line-height:1.12}
 .poster .pt p{margin:0;font-size:calc(1.35cqw*var(--ps));text-align:right;line-height:1.3}
 .poster .ps{background:#fff;color:var(--pc);border:.25cqw solid var(--pa);border-radius:1cqw;padding:.8cqw 1.2cqw;min-width:0}
-.poster .ps h2{font:800 calc(1.55cqw*var(--ps)) Verdana,Arial,sans-serif;color:var(--pa);margin:0 0 .6cqw;text-transform:uppercase;letter-spacing:.06em;border-bottom:.25cqw solid var(--pd);padding-bottom:.3cqw}
+.poster .ps h4{font:800 calc(1.55cqw*var(--ps)) Verdana,Arial,sans-serif;color:var(--pa);margin:0 0 .6cqw;text-transform:uppercase;letter-spacing:.06em;border-bottom:.25cqw solid var(--pd);padding-bottom:.3cqw}
 .poster .ps p,.poster .ps li{font-size:calc(1.5cqw*var(--ps));line-height:1.35;margin:0 0 .5cqw}
 .poster .ps ul{margin:0 0 .5cqw;padding-left:2.2cqw}
 .poster .s-q{grid-area:q}.poster .s-bg{grid-area:bg}.poster .s-me{grid-area:me}.poster .s-res{grid-area:res}.poster .s-con{grid-area:con}.poster .s-lim{grid-area:lim}
@@ -240,7 +241,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .poster[data-layout="story"]{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"pt pt" "q bg" "me me" "res res" "con lim" "ft ft"}
 .poster[data-layout="story"] .pt{border-radius:2.4cqw}
 .poster[data-layout="banner"]{grid-template-columns:1fr 1.7fr 1fr;grid-template-areas:"pt pt pt" "q res bg" "me res con" "lim lim lim" "ft ft ft"}
-.poster[data-layout="banner"] .pt{background:var(--pd);color:#1c2b28}.poster[data-layout="banner"] .pt h1{color:#1c2b28}
+.poster[data-layout="banner"] .pt{background:var(--pd);color:#1c2b28}.poster[data-layout="banner"] .pt .ptitle{color:#1c2b28}
 .poster-dlg{max-width:96vw;width:min(1100px,96vw)}
 
 @media print{
@@ -253,4 +254,20 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   .pg .cert h3{font-size:38pt}.pg .cert .nm{font-size:32pt}.pg .cert p{font-size:16pt}.pg .cert p.kicker{font-size:11pt}.pg .cert .sm{font-size:10.5pt}
   .pg{page-break-after:always}
   .pg:last-child{page-break-after:auto}
+}
+
+/* Fallback for browsers without container-query units (older Safari/Firefox): fixed sizes sized for a ~1000px-wide poster.
+   Modern browsers ignore this block. (Not testable in the bundled Chromium; see conference-progress.md.) */
+@supports not (width: 1cqw) {
+  .poster{padding:16px;gap:11px}
+  .poster .pt{padding:9px 18px;border-radius:12px}
+  .poster .pt .ptitle{font:900 31px Georgia,'Times New Roman',serif}
+  .poster .pt p{font-size:13.5px}
+  .poster .ps{padding:8px 12px;border-radius:10px;border-width:2px}
+  .poster .ps h4{font:800 15.5px Verdana,Arial,sans-serif}
+  .poster .ps p,.poster .ps li{font-size:15px}
+  .poster figcaption{font-size:13px}
+  .poster .figbox{min-height:140px;font-size:14px}
+  .poster .pfoot{font-size:12.5px;gap:20px}
+  .poster .simtag{font-size:12px}
 }

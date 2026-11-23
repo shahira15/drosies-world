@@ -17,7 +17,7 @@
 
   /* cfg: {kind:'dot'|'bar'|'line', groups:[{key,label,color,values:[n], labels?:[s]}], yTitle, xTitle, yMin, yMax, title, interactive, showMean, showPoints, showRange, unit, id, catLabels} */
   DC.chart = function (cfg) {
-    const W = 640, H = cfg.h || 400, m = { l: 74, r: 20, t: cfg.title ? 44 : 14, b: 78 };
+    const NA = !cfg.w && window.innerWidth < 560, W = cfg.w || (NA ? 400 : 640), H = cfg.h || (NA ? 360 : 400), m = { l: NA ? 64 : 74, r: NA ? 38 : 20, t: cfg.title ? (NA ? 40 : 44) : 14, b: NA ? 84 : 78 }, F = NA ? 1.2 : 1, hw = NA ? 30 : 54;
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const kind = cfg.kind || 'dot';
     const all = cfg.groups.reduce((a, g) => a.concat(g.values.filter((v) => typeof v === 'number')), []);
@@ -30,20 +30,20 @@
     const n = cfg.groups.length;
     const inter = cfg.interactive;
     let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="Verdana,Arial,sans-serif" role="img" aria-labelledby="' + (cfg.id || 'c') + '-t ' + (cfg.id || 'c') + '-d"><title id="' + (cfg.id || 'c') + '-t">' + esc(cfg.title || 'Chart') + '</title><desc id="' + (cfg.id || 'c') + '-d">' + esc((cfg.desc || '') + ' Values: ' + cfg.groups.map((g) => g.label + ': ' + g.values.filter((v) => typeof v === 'number').join(', ')).join('; ') + '.') + '</desc><rect width="' + W + '" height="' + H + '" fill="#fff"/>';
-    if (cfg.title) s += '<text x="' + W / 2 + '" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2b28">' + esc(cfg.title) + '</text>';
+    if (cfg.title) s += '<text x="' + W / 2 + '" y="24" text-anchor="middle" font-size="' + (16 * F).toFixed(1) + '" font-weight="700" fill="#1c2b28">' + esc(cfg.title) + '</text>';
     /* gridlines + y ticks */
     for (let v = Math.ceil(yMin / step) * step; v <= top + 1e-9; v += step) {
-      const y = Y(v); s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y + '" y2="' + y + '" stroke="#e3e0d0"/><text x="' + (m.l - 8) + '" y="' + (y + 5) + '" text-anchor="end" font-size="13" fill="#1c2b28">' + DC.fmt(v, 2) + '</text>';
+      const y = Y(v); s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y + '" y2="' + y + '" stroke="#e3e0d0"/><text x="' + (m.l - 8) + '" y="' + (y + 5) + '" text-anchor="end" font-size="' + (13 * F).toFixed(1) + '" fill="#1c2b28">' + DC.fmt(v, 2) + '</text>';
     }
     s += '<line x1="' + m.l + '" x2="' + m.l + '" y1="' + m.t + '" y2="' + (m.t + ph) + '" stroke="#1c2b28" stroke-width="2"/><line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + (m.t + ph) + '" y2="' + (m.t + ph) + '" stroke="#1c2b28" stroke-width="2"/>';
-    if (yMin > 0) s += '<text x="' + (m.l + 6) + '" y="' + (m.t + ph + 16) + '" font-size="12" fill="#9a3f35" font-weight="700">≈ axis starts at ' + DC.fmt(yMin, 2) + '</text>';
-    s += '<text transform="translate(18 ' + (m.t + ph / 2) + ') rotate(-90)" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2b28">' + esc(cfg.yTitle || '') + '</text>';
-    s += '<text x="' + (m.l + pw / 2) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2b28">' + esc(cfg.xTitle || '') + '</text>';
+    if (yMin > 0) s += '<text x="' + (m.l + 6) + '" y="' + (m.t + ph + 16) + '" font-size="' + (12 * F).toFixed(1) + '" fill="#9a3f35" font-weight="700">≈ axis starts at ' + DC.fmt(yMin, 2) + '</text>';
+    s += '<text transform="translate(18 ' + (m.t + ph / 2) + ') rotate(-90)" text-anchor="middle" font-size="' + (13 * F).toFixed(1) + '" font-weight="700" fill="#1c2b28">' + esc(cfg.yTitle || '') + '</text>';
+    s += '<text x="' + (m.l + pw / 2) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="' + (13 * F).toFixed(1) + '" font-weight="700" fill="#1c2b28">' + esc(cfg.xTitle || '') + '</text>';
 
     if (kind === 'line') {
       const maxN = Math.max(1, ...cfg.groups.map((g) => g.values.length));
       const X = (i) => m.l + (maxN === 1 ? pw / 2 : 30 + (i * (pw - 60)) / (maxN - 1));
-      for (let i = 0; i < maxN; i++) s += '<text x="' + X(i) + '" y="' + (m.t + ph + 20) + '" text-anchor="middle" font-size="13" fill="#1c2b28">' + esc((cfg.catLabels && cfg.catLabels[i]) || i + 1) + '</text>';
+      for (let i = 0; i < maxN; i++) s += '<text x="' + X(i) + '" y="' + (m.t + ph + 20) + '" text-anchor="middle" font-size="' + (13 * F).toFixed(1) + '" fill="#1c2b28">' + esc((cfg.catLabels && cfg.catLabels[i]) || i + 1) + '</text>';
       cfg.groups.forEach((g, gi) => {
         const pts = g.values.map((v, i) => (typeof v === 'number' ? [X(i), Y(v), v, i] : null)).filter(Boolean);
         if (pts.length > 1) s += '<polyline fill="none" stroke="' + g.color + '" stroke-width="3" points="' + pts.map((p) => p[0] + ',' + p[1]).join(' ') + '"/>';
@@ -55,16 +55,16 @@
         const cx = m.l + slot * (gi + 0.5);
         const vals = g.values.filter((v) => typeof v === 'number');
         const st = DC.stats(vals);
-        s += '<text x="' + cx + '" y="' + (m.t + ph + 22) + '" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2b28">' + esc(g.label) + '</text>';
+        s += '<text x="' + cx + '" y="' + (m.t + ph + 22) + '" text-anchor="middle" font-size="' + (14 * F).toFixed(1) + '" font-weight="700" fill="#1c2b28">' + esc(g.label) + '</text>';
         if (!st) return;
         if (kind === 'bar') {
           const y = Y(st.mean), bw = Math.min(110, slot * 0.5);
           s += '<rect x="' + (cx - bw / 2) + '" y="' + y + '" width="' + bw + '" height="' + (m.t + ph - y) + '" fill="' + g.color + '" fill-opacity=".85" stroke="#1c2b28" stroke-width="1.5"/>';
-          s += '<text x="' + cx + '" y="' + (y - 8) + '" text-anchor="middle" font-size="14" font-weight="700" fill="#1c2b28">mean ' + DC.fmt(st.mean, 2) + '</text>';
+          s += '<text x="' + cx + '" y="' + (y - 8) + '" text-anchor="middle" font-size="' + (14 * F).toFixed(1) + '" font-weight="700" fill="#1c2b28">mean ' + DC.fmt(st.mean, 2) + '</text>';
         }
         if (cfg.showRange && st) s += '<line x1="' + (cx + 62) + '" x2="' + (cx + 62) + '" y1="' + Y(st.min) + '" y2="' + Y(st.max) + '" stroke="#1c2b28" stroke-width="3"/><line x1="' + (cx + 56) + '" x2="' + (cx + 68) + '" y1="' + Y(st.min) + '" y2="' + Y(st.min) + '" stroke="#1c2b28" stroke-width="3"/><line x1="' + (cx + 56) + '" x2="' + (cx + 68) + '" y1="' + Y(st.max) + '" y2="' + Y(st.max) + '" stroke="#1c2b28" stroke-width="3"/>';
         if (kind === 'dot' && cfg.showMean !== false) {
-          s += '<line x1="' + (cx - 54) + '" x2="' + (cx + 54) + '" y1="' + Y(st.mean) + '" y2="' + Y(st.mean) + '" stroke="#1c2b28" stroke-width="3" stroke-dasharray="7 4"/><text x="' + (cx + 58) + '" y="' + (Y(st.mean) - 6) + '" font-size="12" font-weight="700" fill="#1c2b28">mean ' + DC.fmt(st.mean, 2) + '</text>';
+          s += '<line x1="' + (cx - hw) + '" x2="' + (cx + hw) + '" y1="' + Y(st.mean) + '" y2="' + Y(st.mean) + '" stroke="#1c2b28" stroke-width="3" stroke-dasharray="7 4"/><text x="' + (cx + hw + 4) + '" y="' + (Y(st.mean) - 6) + '" font-size="' + (12 * F).toFixed(1) + '" font-weight="700" fill="#1c2b28">mean ' + DC.fmt(st.mean, 2) + '</text>';
         }
         if (cfg.showPoints !== false) {
           g.values.forEach((v, i) => {
@@ -103,7 +103,7 @@
     opts = opts || {};
     const groups = DC.DATA.conditions.map((c) => ({ key: c.id, label: c.short + (c.role === 'control' ? ' (control)' : ''), color: c.color, values: DC.state.a.rec[c.id].slice(), labels: [1, 2, 3, 4, 5].map((i) => 'trial ' + i) }));
     return Object.assign({
-      kind: 'dot', groups, yMin: 0, yMax: 10, step: 2, yTitle: 'Flies above the 8 cm line (out of 10)', xTitle: 'Test temperature (5 trials each)',
+      kind: 'dot', groups, yMin: 0, yMax: 10, step: 2, yTitle: window.innerWidth < 560 ? 'Flies above line (of 10)' : 'Flies above the 8 cm line (out of 10)', xTitle: 'Test temperature (5 trials each)',
       title: 'Climbing in 10 seconds (simulated data)', unit: 'flies', desc: 'Each marker is one trial. Control 25 °C and cooler 18 °C groups, 10 flies each.', id: opts.id || 'g'
     }, opts);
   };
