@@ -1,6 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Drosie's Climbing Challenge | Free Fruit Fly Game for Kids</title><style>
-:root{font-family:system-ui,Arial,sans-serif;color:#254f3e;background:#f5faef}*{box-sizing:border-box}body{margin:0}header{text-align:center;padding:22px;background:#e1f1df}main{max-width:850px;margin:auto;padding:22px}h1{margin:8px 0;color:#245c45}.panel{background:white;border:2px solid #dcebd6;border-radius:24px;padding:22px;margin:16px 0;box-shadow:0 5px 20px #174c3210}button,select{font:inherit;padding:12px 17px;border-radius:12px;border:2px solid #407b60}button{background:#28694e;color:white;cursor:pointer;font-weight:700}button:disabled{opacity:.5;cursor:not-allowed}button.secondary{background:white;color:#28694e}a{color:#28694e}.layout{display:flex;gap:26px;align-items:center;flex-wrap:wrap}.vial{height:320px;width:190px;border:6px solid #7da7a2;border-top:12px solid #7da7a2;border-radius:14px 14px 32px 32px;position:relative;background:linear-gradient(100deg,#eaf8f9,#fff 55%,#d6eeee);overflow:hidden;margin:20px auto}.line{position:absolute;bottom:53%;left:0;right:0;border-top:4px dashed #e99048;z-index:1}.line-label{position:absolute;bottom:55%;right:5px;font-size:12px;color:#955b2d;background:#fff8}.fly{position:absolute;bottom:12px;left:var(--x);font-size:20px;transition:bottom 1.3s ease-in-out,transform 1.3s ease-in-out;transform:rotate(var(--r,0deg));z-index:2}.details{flex:1;min-width:240px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.result{padding:13px;background:#fef6e8;border-radius:12px;min-height:48px}table{border-collapse:collapse;width:100%;margin-top:12px}th,td{border-bottom:1px solid #d9e6dc;text-align:left;padding:9px}.chart{display:flex;gap:16px;align-items:flex-end;min-height:145px;border-bottom:2px solid #8da997;padding:10px}.bar-wrap{width:80px;text-align:center;font-size:13px}.bar{background:#dca461;border-radius:6px 6px 0 0;margin:5px auto 0;width:42px}.small{font-size:14px;color:#587361}@media(prefers-reduced-motion:reduce){.fly{transition:none}}@media(max-width:500px){.panel{padding:15px}main{padding:12px}}
-</style>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#245f55">
+<title>Drosie's Climbing Challenge | Free Fruit Fly Game for Kids</title>
 <link rel="canonical" href="https://drosiesworld.com/climbing-game.html">
 <meta name="description" content="Play a free climbing game with Drosie the fruit fly. A quick, fun science game for children, with no sign-up needed.">
 <meta property="og:type" content="website">
@@ -11,7 +15,863 @@
 <meta property="og:image" content="https://drosiesworld.com/drosie-book-cover.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-</head><body><header><a href="index.html">← Back to Drosie's World</a><h1>🪰 Drosie's Climbing Challenge</h1><p>Can you think like a fruit fly scientist?</p></header><main><section class="panel"><h2>What is a climbing assay?</h2><p>Fruit flies often climb upward after being gently disturbed. Scientists call this <strong>negative geotaxis</strong>. In this playful demonstration, watch ten virtual flies move inside a vial and count how many reach the orange line.</p><p class="small"><strong>Science note:</strong> This is a simplified simulation. Results are randomly generated for learning and are not real laboratory measurements.</p></section><section class="panel"><h2>1. Predict, 2. Observe, 3. Compare</h2><label for="prediction">How many of the 10 flies do you predict will climb above the orange line?</label> <select id="prediction" aria-label="Predicted number of flies"></select><div class="layout"><div><div id="vial" class="vial" role="img" aria-label="Virtual vial containing ten flies and an orange target line"><div class="line"></div><span class="line-label">Target line</span></div></div><div class="details"><div class="actions"><button id="run">Run trial 1</button><button id="reset" class="secondary">Start over</button></div><div id="result" class="result" role="status" aria-live="polite">Ready to investigate!</div><p class="small">Each trial has ten virtual flies. Try three trials and compare the results.</p></div></div><h3>My results</h3><table><thead><tr><th>Trial</th><th>Flies above the line</th></tr></thead><tbody id="rows"><tr><td colspan="2">No trials yet</td></tr></tbody></table><h3>Compare your trials</h3><div id="chart" class="chart" role="img" aria-label="Bar chart of flies passing the line in each trial"></div><p id="question">What do you notice about the results?</p></section><section class="panel"><h2>💡 Fun fact</h2><p>Fruit flies have six legs and use their sense of balance and movement to navigate their surroundings.</p><p><strong>BZZZZTASTIC!</strong> You just practiced prediction, observation, and comparing repeated trials.</p></section></main><style>.dw-more{max-width:960px;margin:2rem auto 1rem;padding:1.25rem 16px;font-family:system-ui,-apple-system,Segoe UI,sans-serif;text-align:center;color:#1f2a1f}.dw-more h2{font-size:1.15rem;margin:0 0 .75rem}.dw-more ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}.dw-more a{display:inline-block;padding:.55rem .9rem;border-radius:999px;background:#f3f6ec;border:1px solid #cfd8c0;color:#1f2a1f;text-decoration:none;font-weight:600;min-height:44px;line-height:1.7}.dw-more a:hover,.dw-more a:focus-visible{background:#e3ecd2;outline:2px solid #5a7d3a}.dw-more--sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style><nav class="dw-more" aria-label="More from Drosie's World"><h2>Keep exploring Drosie's World</h2><ul><li><a href="/science-activities/">🌟 All Science Activities</a></li><li><a href="/storybook.html">📖 Read the Storybook</a></li><li><a href="/life-cycle-game.html">🔬 Life Cycle Game</a></li><li><a href="/grow-your-own-fruit-fly.html">🍌 Grow Your Own Fruit Fly</a></li><li><a href="/lab/">🧪 Secret Fly Lab</a></li><li><a href="/drosie-genetics-lab/">🧬 Genetics Lab</a></li><li><a href="/letters/">💌 Letters from Drosie</a></li><li><a href="/discoveries.html">🔭 Discovery Library</a></li><li><a href="/#lessons">🍎 Lessons &amp; Printables for Teachers</a></li><li><a href="/">🏠 Drosie's World Home</a></li></ul></nav>
+<style>
+/* ============ Drosie's Climbing Challenge · styles ============ */
+:root{
+  --ink:#24463c; --forest:#245f55; --forest-dk:#173f38; --muted:#5d7468;
+  --cream:#f9f8f1; --paper:#fffdf6; --mint:#e8f3e8; --peach:#ffe3d1;
+  --coral:#db8669; --coral-dk:#b9603f; --gold:#f6d48c; --gold-dk:#d9a63e;
+  --line:#dfe7de; --target:#ef7d2b;
+  --display:'Nunito','Trebuchet MS',system-ui,sans-serif;
+  --body:'DM Sans',Arial,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.55;
+  background:radial-gradient(1000px 520px at 85% -10%,#f6e7c8 0,transparent 60%),radial-gradient(900px 600px at -10% 20%,#dcefe0 0,transparent 55%),var(--cream);
+  min-height:100vh}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;line-height:1.12;margin:0}
+a{color:var(--forest);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--forest);outline-offset:3px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;background:#fff;padding:10px 14px;border-radius:10px;z-index:50}
+.skip:focus{top:12px}
+
+/* top bar */
+.bar{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:var(--display);font-weight:900;font-size:21px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px}
+.brand i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--gold);font-style:normal;font-size:20px;color:var(--forest)}
+.brand em{font-style:normal;color:var(--coral)}
+.bar nav{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:700 13px var(--body);border:1.5px solid #c9d9cb;background:#ffffffc0;color:var(--forest);border-radius:99px;padding:9px 15px;min-height:40px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{background:#fff}
+.chip[aria-pressed="true"]{background:var(--forest);color:#fff;border-color:var(--forest)}
+
+/* layout */
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 36px}
+.title{padding:6px 0 16px;max-width:760px}
+.kicker{font:800 12px var(--body);letter-spacing:.16em;text-transform:uppercase;color:#c1785c}
+.title h1{font-size:clamp(32px,5.4vw,58px);margin:6px 0 8px;color:var(--forest-dk)}
+.title h1 span{color:var(--coral)}
+.title p{margin:0;color:var(--muted);font-size:clamp(15px,1.8vw,18px)}
+.game{display:grid;grid-template-columns:minmax(0,470px) minmax(0,1fr);gap:26px;align-items:start}
+
+/* ---------- scene ---------- */
+.scene{position:relative;border-radius:30px;overflow:hidden;background:#d9ece1;box-shadow:0 26px 60px -24px rgba(23,63,56,.45),0 0 0 6px #fff,0 0 0 7px #d4e2d4;
+  height:clamp(400px,122vw,640px)}
+.scene svg.lab{display:block;width:100%;height:100%}
+.hud{position:absolute;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none}
+.hud>div{background:#fffdf6ee;border:2px solid #fff;border-radius:18px;box-shadow:0 6px 18px -8px rgba(23,63,56,.5);padding:7px 12px;font-family:var(--display);color:var(--forest-dk);min-width:88px}
+.hud small{display:block;font:800 10px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#7a8f82}
+.hud b{font-size:28px;line-height:1;font-weight:900;font-variant-numeric:tabular-nums}
+.hud .count b span{font-size:16px;color:#7a8f82;font-weight:800}
+.hud .timer{display:flex;align-items:center;gap:8px}
+.ring{width:38px;height:38px;flex:none}
+.ring circle{fill:none;stroke-width:5;stroke-linecap:round}
+.ring .bg{stroke:#dfe8dd}.ring .fg{stroke:var(--target);transform:rotate(-90deg);transform-origin:50% 50%;stroke-dasharray:100.5;stroke-dashoffset:0}
+.pop{animation:pop .35s ease-out}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+.fly .halo{fill:#ffd35a;opacity:0;transition:opacity .4s}
+.fly.is-above .halo{opacity:.55}
+.fly.is-below{opacity:.62}
+.fly.is-above .ring2{opacity:1}
+.ring2{fill:none;stroke:#e49a1f;stroke-width:1.6;opacity:0;transition:opacity .4s}
+#vialGroup.shake{animation:shake .7s ease-in-out}
+@keyframes shake{0%,100%{transform:translate(0,0) rotate(0)}15%{transform:translate(-5px,3px) rotate(-1.2deg)}35%{transform:translate(5px,-2px) rotate(1.2deg)}55%{transform:translate(-4px,2px) rotate(-.8deg)}75%{transform:translate(3px,-1px) rotate(.6deg)}}
+.line-glow{animation:glow 2.8s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.35}50%{opacity:.6}}
+#guessTag{transition:opacity .3s}
+
+/* ---------- panel ---------- */
+.panel{background:linear-gradient(180deg,#fffefa,#fbf8ee);border:1.5px solid #e8e2cf;border-radius:30px;padding:clamp(18px,3vw,30px);box-shadow:0 20px 50px -28px rgba(23,63,56,.4);min-height:420px}
+.coach{display:flex;gap:14px;align-items:flex-end;margin-bottom:18px}
+.coach img{width:84px;height:auto;flex:none;filter:drop-shadow(0 8px 8px rgba(120,80,20,.18))}
+.bubble{position:relative;background:var(--mint);border:1.5px solid #cfe3d3;border-radius:20px 20px 20px 6px;padding:12px 16px;font-size:15.5px;color:var(--forest-dk);font-weight:500}
+.trialbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.pips{display:flex;gap:6px}
+.pip{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:900 14px var(--display);background:#eef2e8;color:#8aa093;border:2px solid #dbe5d6}
+.pip.done{background:var(--forest);color:#fff;border-color:var(--forest)}
+.pip.now{background:var(--gold);color:var(--forest-dk);border-color:var(--gold-dk);box-shadow:0 0 0 4px #f6d48c55}
+.trialbar .lbl{font:800 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#7a8f82}
+.step h2{font-size:clamp(26px,3.4vw,36px);color:var(--forest-dk);margin:0 0 8px}
+.step h2:focus{outline:none}
+.step p{margin:0 0 12px;color:#496658;font-size:16.5px}
+.btn{font:800 17px var(--display);border:0;border-radius:99px;padding:15px 28px;min-height:52px;cursor:pointer;background:var(--forest);color:#fff;box-shadow:0 5px 0 var(--forest-dk),0 14px 22px -10px rgba(23,63,56,.6);transition:transform .15s,box-shadow .15s,background .15s;display:inline-flex;align-items:center;gap:10px}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 0 var(--forest-dk),0 18px 26px -12px rgba(23,63,56,.6)}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--forest-dk)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.alt{background:#fff;color:var(--forest);border:2px solid #bcd3c0;box-shadow:0 4px 0 #cfe0d2}
+.btn.go{background:linear-gradient(180deg,#f0935f,#d9683f);box-shadow:0 6px 0 #a64a28,0 18px 26px -10px rgba(185,96,63,.7);font-size:clamp(20px,3vw,26px);padding:18px 38px;min-height:64px}
+.btn.go:hover:not(:disabled){box-shadow:0 8px 0 #a64a28,0 22px 30px -12px rgba(185,96,63,.7)}
+.btn.go.ready{outline:4px solid #f6d48c88;outline-offset:3px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.note{font-size:13.5px;color:#6a8074;background:#f4f1e4;border-radius:14px;padding:10px 14px;margin-top:14px}
+details.learn{margin-top:14px;background:#fff;border:1.5px solid #e3e9e1;border-radius:16px;padding:2px 16px}
+details.learn summary{cursor:pointer;font-weight:800;color:var(--forest);padding:12px 0;min-height:44px}
+details.learn p{font-size:15px;margin:0 0 12px}
+
+/* predict */
+.preds{border:0;margin:14px 0 0;padding:0}
+.preds legend{font-weight:800;color:var(--forest-dk);padding:0;margin-bottom:8px}
+.flyrow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pf{position:relative}
+.pf input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;width:100%;height:100%}
+.pf span{display:grid;justify-items:center;gap:2px;padding:8px 2px 6px;border-radius:16px;border:2px solid #e3e9e1;background:#fff;transition:transform .15s,background .15s,border-color .15s}
+.pf svg{width:34px;height:40px;opacity:.38;filter:grayscale(.8);transition:opacity .2s,filter .2s,transform .2s}
+.pf b{font:900 15px var(--display);color:#6a8074}
+.pf.lit svg{opacity:1;filter:none}
+.pf.lit span{background:#fff7de;border-color:#f0cf7d}
+.pf.sel span{background:#ffeab0;border-color:var(--gold-dk);transform:translateY(-3px)}
+.pf input:focus-visible+span{outline:3px solid var(--forest);outline-offset:2px}
+.zero{margin-top:8px}
+.zero .pf span{grid-auto-flow:column;gap:8px;justify-content:center;padding:9px 14px}
+.zero svg{display:none}
+.guess{font:800 15px var(--display);color:var(--forest-dk);min-height:24px;margin-top:10px}
+
+/* record */
+.big{display:flex;align-items:baseline;gap:10px;margin:4px 0 6px}
+.big b{font:900 clamp(56px,9vw,84px)/1 var(--display);color:var(--coral-dk)}
+.big span{font:800 18px var(--display);color:var(--forest-dk)}
+.picto{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 12px}
+.picto svg{width:30px;height:36px}
+.picto .off{opacity:.3;filter:grayscale(1)}
+.verdict{background:#fff7de;border:1.5px solid #f0d58f;border-radius:16px;padding:12px 16px;color:#5a4417;font-size:16px}
+table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;background:#fff;border-radius:14px;overflow:hidden}
+.sum caption{text-align:left;font-weight:800;padding:0 0 6px}
+.sum th,.sum td{padding:9px 12px;border-bottom:1px solid #e8eee6;text-align:left}
+.sum thead th{background:#e8f3e8;color:var(--forest-dk);font-size:13px}
+
+/* chart */
+.chartbox{background:#fff;border:1.5px solid #e3e9e1;border-radius:20px;padding:10px 8px 6px;margin:8px 0}
+.chart{width:100%;height:auto;display:block}
+.bar-g{cursor:pointer;outline:none}
+.bar-g rect.b{fill:#f0b45c;transition:fill .2s}
+.bar-g:hover rect.b,.bar-g:focus rect.b{fill:#e48a2e}
+.bar-g:focus .fr{opacity:1}
+.fr{fill:none;stroke:var(--forest);stroke-width:2.5;stroke-dasharray:5 4;opacity:0}
+.bar-g rect.b{transform-box:fill-box;transform-origin:bottom;animation:grow .7s ease-out both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.readout{min-height:44px;font-size:15px;color:var(--forest-dk);font-weight:600;padding:6px 8px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#5d7468;padding:0 8px 6px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.stat{background:var(--mint);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font:900 28px var(--display);color:var(--forest-dk)}
+.stat span{font-size:12.5px;color:#5d7468}
+
+/* celebrate */
+.badge{display:grid;place-items:center;margin:4px 0 8px}
+.badge svg{width:min(300px,80%);height:auto;filter:drop-shadow(0 18px 20px rgba(120,80,20,.25))}
+.skills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0 14px}
+.skills span{background:var(--mint);border:1.5px solid #cfe3d3;border-radius:99px;padding:6px 14px;font-weight:800;font-size:14px;color:var(--forest)}
+.center{text-align:center}
+.more{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.petals{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:30}
+.petals i{position:absolute;top:-30px;width:14px;height:14px;border-radius:50% 0 50% 0;opacity:.85;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--rot))}}
+
+.confirm{background:#fff3e8;border:2px solid #f0c7a8;border-radius:16px;padding:14px 16px;margin:0 0 14px}
+.confirm p{margin:0 0 10px;font-weight:700}
+.confirm .btn{font-size:15px;padding:10px 20px;min-height:44px}
+.foot{max-width:1180px;margin:0 auto;padding:0 18px 36px;font-size:13.5px;color:#6a8074}
+.dw-more{max-width:960px;margin:1.5rem auto 1rem;padding:1.25rem 16px;text-align:center}
+.dw-more h2{font-size:1.15rem;margin:0 0 .75rem}
+.dw-more ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.dw-more a{display:inline-block;padding:.55rem .9rem;border-radius:999px;background:#f3f6ec;border:1px solid #cfd8c0;color:#1f2a1f;text-decoration:none;font-weight:600;min-height:44px;line-height:1.7}
+.dw-more a:hover{background:#e3ecd2}
+
+@media(max-width:940px){
+  .game{grid-template-columns:1fr}
+  .scene{max-width:520px;margin:0 auto;width:100%}
+}
+@media(max-width:480px){
+  .bar{padding:10px 12px}.wrap{padding:0 12px 28px}
+  .brand{font-size:18px}.chip{padding:8px 12px}
+  .coach img{width:64px}.bubble{font-size:14.5px}
+  .hud b{font-size:23px}.hud>div{min-width:76px;padding:6px 10px}.ring{width:32px;height:32px}
+  .stats{grid-template-columns:1fr 1fr 1fr;gap:6px}.stat b{font-size:22px}.stat{padding:10px 4px}
+  .flyrow{gap:5px}.pf svg{width:28px;height:34px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .petals{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#game">Skip to the game</a>
+
+<!-- shared fly artwork (custom illustration, used by the vial, buttons and results) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gAbd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3c36c"/><stop offset="1" stop-color="#df9a3c"/></linearGradient>
+    <symbol id="fly" viewBox="-20 -24 40 48" overflow="visible">
+      <g fill="#dff1fb" fill-opacity=".74" stroke="#a9c8dc" stroke-width=".7">
+        <ellipse cx="-8.6" cy="5" rx="5.2" ry="15.5" transform="rotate(13 -8.6 5)"/>
+        <ellipse cx="8.6" cy="5" rx="5.2" ry="15.5" transform="rotate(-13 8.6 5)"/>
+      </g>
+      <g stroke="#b9772a" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <path d="M-4 -4Q-12 -11 -16 -5"/><path d="M-5 0Q-14 1 -17 8"/><path d="M-4 4Q-11 10 -13 18"/>
+        <path d="M4 -4Q12 -11 16 -5"/><path d="M5 0Q14 1 17 8"/><path d="M4 4Q11 10 13 18"/>
+      </g>
+      <ellipse cx="0" cy="9" rx="7.3" ry="11.8" fill="url(#gAbd)" stroke="#a8651b" stroke-width=".6"/>
+      <g stroke="#a8651b" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M-6.8 5.5Q0 8.6 6.8 5.5"/><path d="M-7 10Q0 13.2 7 10"/><path d="M-6.2 14.5Q0 17.4 6.2 14.5"/></g>
+      <ellipse cx="0" cy="-3" rx="6.9" ry="7.6" fill="#f3c068" stroke="#a8651b" stroke-width=".6"/>
+      <circle cx="0" cy="-13.6" r="5.7" fill="#efb653" stroke="#a8651b" stroke-width=".6"/>
+      <path d="M-1.6 -18.6Q-3 -22 -5 -22.5M1.6 -18.6Q3 -22 5 -22.5" stroke="#a8651b" stroke-width=".9" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-4.1" cy="-14.6" rx="3.3" ry="3.9" fill="#c9232f"/><ellipse cx="4.1" cy="-14.6" rx="3.3" ry="3.9" fill="#c9232f"/>
+      <circle cx="-3.2" cy="-16" r="1.1" fill="#fff" fill-opacity=".9"/><circle cx="5" cy="-16" r="1.1" fill="#fff" fill-opacity=".9"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="bar">
+  <a class="brand" href="/" aria-label="Drosie's World home"><i aria-hidden="true">✿</i><span>Drosie's <em>World</em></span></a>
+  <nav aria-label="Game options">
+    <button class="chip" id="soundBtn" type="button" aria-pressed="false">Sound: off</button>
+    <button class="chip" id="startOverBtn" type="button">Start over</button>
+    <a class="chip" href="/science-activities/">All activities</a>
+  </nav>
+</header>
+
+<main class="wrap" id="game">
+  <div class="title">
+    <div class="kicker">Virtual lab · Ages 5–12 · Free · No sign-up</div>
+    <h1>Drosie's <span>Climbing Challenge</span></h1>
+    <p>Predict, observe and record. Can you think like a fruit fly scientist?</p>
+  </div>
+
+  <div class="game">
+    <!-- ================= LAB SCENE ================= -->
+    <section class="scene" aria-label="Virtual laboratory with a climbing vial of ten flies">
+      <svg class="lab" id="labSvg" viewBox="0 0 440 660" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A glass vial holding ten fruit flies, with an orange target line across the upper part of the vial.">
+        <defs>
+          <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe7dc"/><stop offset=".6" stop-color="#e6f0e0"/><stop offset="1" stop-color="#f3ecd6"/></linearGradient>
+          <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d49a64"/><stop offset="1" stop-color="#a96a3e"/></linearGradient>
+          <linearGradient id="woodDk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b47a4a"/><stop offset="1" stop-color="#8d5632"/></linearGradient>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3f2"/><stop offset="1" stop-color="#eaf6e8"/></linearGradient>
+          <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dff2f4" stop-opacity=".95"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".55"/><stop offset="1" stop-color="#cfe9ec" stop-opacity=".95"/></linearGradient>
+          <linearGradient id="cotton" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f6efe0"/><stop offset=".5" stop-color="#fffaf0"/><stop offset="1" stop-color="#e8dcc4"/></linearGradient>
+          <radialGradient id="vig" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1c4a40" stop-opacity=".22"/></radialGradient>
+          <clipPath id="inner"><path d="M158 118H282V496Q282 558 220 558Q158 558 158 496Z"/></clipPath>
+          <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter>
+        </defs>
+
+        <!-- room -->
+        <rect width="440" height="660" fill="url(#wall)"/>
+        <g opacity=".5" stroke="#bcd8c9" stroke-width="2"><path d="M0 396H440"/><path d="M0 410H440" opacity=".5"/></g>
+        <rect y="396" width="440" height="200" fill="#bfdccb" opacity=".45"/>
+        <g stroke="#a9cdb9" stroke-width="1.5" opacity=".6"><path d="M73 396V596M146 396V596M219 396V596M292 396V596M365 396V596"/></g>
+        <!-- window -->
+        <g transform="translate(26 40)">
+          <rect x="-8" y="-8" width="116" height="136" rx="8" fill="url(#wood)"/>
+          <rect width="100" height="120" rx="4" fill="url(#sky)"/>
+          <circle cx="72" cy="30" r="14" fill="#fbe6a2"/>
+          <path d="M0 96Q30 70 58 90T100 84V120H0Z" fill="#a8d3a4"/><path d="M0 108Q40 90 100 104V120H0Z" fill="#7fb98b"/>
+          <path d="M50 0V120M0 56H100" stroke="#e7c299" stroke-width="5"/>
+        </g>
+        <!-- shelf -->
+        <g transform="translate(318 96)">
+          <rect x="0" y="62" width="108" height="9" rx="3" fill="url(#woodDk)"/>
+          <rect x="10" y="22" width="26" height="40" rx="8" fill="#fff" fill-opacity=".7" stroke="#b9d0c4" stroke-width="2"/><rect x="13" y="38" width="20" height="21" rx="6" fill="#f2c25e"/>
+          <rect x="44" y="30" width="22" height="32" rx="7" fill="#fff" fill-opacity=".7" stroke="#b9d0c4" stroke-width="2"/><rect x="47" y="42" width="16" height="17" rx="5" fill="#9ccfa2"/>
+          <path d="M92 62V46Q80 34 84 18Q94 28 92 44Q100 24 112 22Q104 38 96 48V62Z" fill="#6fae7a"/><rect x="82" y="50" width="22" height="12" rx="3" fill="#e08c6a"/>
+        </g>
+        <!-- clipboard -->
+        <g transform="translate(336 332) rotate(4)">
+          <rect width="76" height="96" rx="8" fill="#c58a56"/><rect x="7" y="9" width="62" height="80" rx="4" fill="#fffdf4"/><rect x="25" y="2" width="26" height="12" rx="4" fill="#8d97a0"/>
+          <g stroke="#cfe0d4" stroke-width="2"><path d="M14 30H62M14 42H62M14 54H62M14 66H50"/></g>
+          <g fill="#ef7d2b"><circle cx="18" cy="76" r="3"/><circle cx="30" cy="76" r="3"/><circle cx="42" cy="76" r="3"/></g>
+        </g>
+
+        <!-- bench -->
+        <rect y="596" width="440" height="64" fill="url(#wood)"/>
+        <rect y="596" width="440" height="6" fill="#e8b27b"/>
+        <g stroke="#a46739" stroke-width="1.5" opacity=".5"><path d="M0 626H440M0 646H440"/></g>
+        <ellipse cx="220" cy="598" rx="98" ry="8" fill="#6a3f20" opacity=".25" filter="url(#soft)"/>
+        <!-- microscope (existing Drosie illustration) -->
+        <image href="climbing-game-assets/microscope.webp" x="6" y="476" width="132" height="148" preserveAspectRatio="xMidYMax meet"/>
+        <!-- notebook + pencil -->
+        <g transform="translate(318 584) rotate(-3)"><rect width="84" height="16" rx="3" fill="#fffdf4" stroke="#d8cfae"/><rect y="9" width="84" height="8" rx="3" fill="#e9d9ae"/><path d="M0 4Q42 10 84 4" stroke="#d8cfae" fill="none"/></g>
+        <g transform="translate(332 580) rotate(-8)"><rect width="64" height="7" rx="3" fill="#f2b84e"/><path d="M64 0L74 3.5L64 7Z" fill="#f4dfb4"/><path d="M71 2.4L74 3.5L71 4.6Z" fill="#6b4a2a"/></g>
+
+        <!-- ============ VIAL ============ -->
+        <g id="vialGroup">
+          <!-- glass back -->
+          <path d="M150 112H290V496Q290 566 220 566Q150 566 150 496Z" fill="url(#glass)" stroke="#9dc6c9" stroke-width="3"/>
+          <path d="M158 118H282V496Q282 558 220 558Q158 558 158 496Z" fill="#ffffff" fill-opacity=".28"/>
+
+          <!-- target line (behind flies, in front of glass) -->
+          <g id="targetLine">
+            <rect class="line-glow" x="158" y="271" width="124" height="22" fill="#ffb166"/>
+            <line x1="150" x2="290" y1="282" y2="282" stroke="#ef7d2b" stroke-width="4" stroke-dasharray="11 7" stroke-linecap="round"/>
+          </g>
+
+          <!-- flies -->
+          <g clip-path="url(#inner)" id="flies"></g>
+
+          <!-- glass front highlights -->
+          <path d="M166 130V490" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".7"/>
+          <path d="M276 150V470" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+          <path d="M150 112H290V496Q290 566 220 566Q150 566 150 496Z" fill="none" stroke="#7fb1b6" stroke-width="2.2" opacity=".7"/>
+          <!-- rim + cotton plug -->
+          <rect x="145" y="104" width="150" height="12" rx="6" fill="#d6ecee" stroke="#8fbcc0" stroke-width="2"/>
+          <rect x="154" y="70" width="132" height="44" rx="14" fill="url(#cotton)" stroke="#d6c7a6" stroke-width="2"/>
+          <g stroke="#e3d6b8" stroke-width="2" fill="none" stroke-linecap="round"><path d="M166 84Q180 78 192 86T220 84T248 86T274 82"/><path d="M164 98Q180 92 196 100T228 98T262 100"/></g>
+        </g>
+        <!-- stand -->
+        <path d="M134 556H306Q314 556 314 566V600H126V566Q126 556 134 556Z" fill="url(#woodDk)"/>
+        <path d="M134 556H306" stroke="#d29a63" stroke-width="3"/>
+
+        <!-- target label + flag (outside the glass) -->
+        <g id="targetFlag">
+          <path d="M290 282H318" stroke="#ef7d2b" stroke-width="4" stroke-dasharray="11 7"/>
+          <g transform="translate(318 262)"><path d="M0 4Q0 0 4 0H84Q88 0 88 4V32Q88 36 84 36H4Q0 36 0 32V24L-10 18L0 12Z" fill="#ef7d2b"/><text x="46" y="15" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="11" fill="#fff" letter-spacing=".5">TARGET</text><text x="46" y="29" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="11" fill="#fff" letter-spacing=".5">LINE</text></g>
+          <g transform="translate(14 262)" id="guessTag" opacity="0">
+            <path d="M0 4Q0 0 4 0H104L118 18L104 36H4Q0 36 0 32Z" fill="#245f55"/>
+            <text x="50" y="15" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="800" font-size="10" fill="#f6d48c" letter-spacing=".5">YOUR GUESS</text>
+            <text id="guessTagNum" x="50" y="30" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="15" fill="#fff">0</text>
+          </g>
+        </g>
+        <rect width="440" height="660" fill="url(#vig)" pointer-events="none"/>
+      </svg>
+
+      <div class="hud" aria-hidden="true">
+        <div class="timer"><svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" id="ringFg" cx="20" cy="20" r="16"/></svg><div><small>Time left</small><b id="timerNum">10</b></div></div>
+        <div class="count" id="countBox"><small>Above the line</small><b><span id="countNum">0</span><span> / 10</span></b></div>
+      </div>
+    </section>
+
+    <!-- ================= PANEL ================= -->
+    <section class="panel" aria-label="Experiment steps">
+      <div class="coach">
+        <img src="climbing-game-assets/drosie.webp" alt="Drosie, a friendly fruit fly with red eyes, waving" width="84" height="79">
+        <p class="bubble" id="coach">Welcome to my lab!</p>
+      </div>
+
+      <div class="confirm" id="confirm" role="alertdialog" aria-labelledby="confirmQ" hidden>
+        <p id="confirmQ">Start over? Your trials so far will be cleared.</p>
+        <div class="row" style="margin-top:0"><button class="btn" id="confirmYes" type="button">Yes, start over</button><button class="btn alt" id="confirmNo" type="button">Keep playing</button></div>
+      </div>
+
+      <div class="trialbar" id="trialbar" hidden>
+        <span class="lbl" id="trialLbl">Trial 1 of 3</span>
+        <div class="pips" aria-hidden="true"><span class="pip" data-pip="0">1</span><span class="pip" data-pip="1">2</span><span class="pip" data-pip="2">3</span></div>
+      </div>
+
+      <!-- WELCOME -->
+      <div class="step" data-phase="welcome">
+        <h2 tabindex="-1">Can fruit flies climb?</h2>
+        <p>Fruit flies often climb up when they are gently tapped down. Scientists call this <strong>negative geotaxis</strong>: moving <em>away</em> from the pull of gravity.</p>
+        <p>Your mission: <strong>predict</strong> how many of ten flies will climb above the orange target line, <strong>watch</strong> them for 10 seconds, then <strong>record</strong> what happened. You will do it three times.</p>
+        <div class="row"><button class="btn go ready" id="beginBtn" type="button">Enter the lab</button></div>
+        <details class="learn"><summary>What is a climbing assay?</summary>
+          <p>A climbing assay is a simple lab test. Scientists put flies in a vial, tap them to the bottom, and count how many climb past a marked line in a set amount of time. Real labs use standardized conditions and decide the observation time ahead of time.</p></details>
+        <p class="note"><strong>This is a simulation.</strong> The flies are drawings that move by a simple computer rule, not real lab data. Not every fly climbs every time, and these results can't tell us anything about real flies' ages, genes or treatments.</p>
+      </div>
+
+      <!-- PREDICT -->
+      <div class="step" data-phase="predict" hidden>
+        <h2 tabindex="-1">Make your prediction</h2>
+        <p>How many of the 10 flies will climb <strong>above the orange target line</strong>? Tap the flies to choose. There is no wrong guess. Scientists guess first, then check.</p>
+        <fieldset class="preds">
+          <legend>I predict this many flies will cross the line</legend>
+          <div class="flyrow" id="flyrow"></div>
+          <div class="zero" id="zeroWrap"></div>
+        </fieldset>
+        <div class="guess" id="guessText" aria-hidden="true"></div>
+        <div class="row"><button class="btn" id="lockBtn" type="button" disabled>Lock in my prediction</button></div>
+      </div>
+
+      <!-- PREPARE -->
+      <div class="step" data-phase="prepare" hidden>
+        <h2 tabindex="-1">Get the flies ready</h2>
+        <p>The flies are wandering around the vial. Before every trial scientists <strong>tap the vial gently</strong> so every fly starts at the bottom. This keeps the test fair.</p>
+        <div class="row">
+          <button class="btn alt" id="tapBtn" type="button">Tap flies to the bottom</button>
+          <button class="btn go" id="startBtn" type="button" disabled>Start experiment</button>
+        </div>
+        <p class="note" id="prepNote">Step 1: tap the vial. Step 2: press Start.</p>
+      </div>
+
+      <!-- RUN -->
+      <div class="step" data-phase="run" hidden>
+        <h2 tabindex="-1">Observe carefully!</h2>
+        <p>Watch the flies for 10 seconds. How many reach the orange line? The counter in the lab shows how many flies are above it right now.</p>
+        <p class="note" id="runNote">Observing…</p>
+      </div>
+
+      <!-- RECORD -->
+      <div class="step" data-phase="record" hidden>
+        <h2 tabindex="-1">Record the results</h2>
+        <div class="big"><b id="recNum">0</b><span id="recOf">of 10 flies were above the line</span></div>
+        <div class="picto" id="picto" aria-hidden="true"></div>
+        <div class="verdict" id="verdict"></div>
+        <table class="sum" id="recTable"><caption>Your trials so far</caption><thead><tr><th scope="col">Trial</th><th scope="col">Your prediction</th><th scope="col">Flies above line</th></tr></thead><tbody></tbody></table>
+        <div class="row"><button class="btn go" id="nextBtn" type="button">Next trial</button></div>
+      </div>
+
+      <!-- ANALYZE -->
+      <div class="step" data-phase="analyze" hidden>
+        <h2 tabindex="-1">Compare your three trials</h2>
+        <p>Each bar is one trial. The green diamond marks your prediction. Tap or focus a bar for details.</p>
+        <div class="chartbox"><svg class="chart" id="chart" viewBox="0 0 360 250" role="group" aria-label="Bar chart of flies above the line in each of three trials"></svg>
+          <div class="legend"><span><i style="background:#f0b45c"></i>Flies above the line</span><span><i style="background:#245f55;border-radius:2px;transform:rotate(45deg) scale(.8)"></i>Your prediction</span><span><i style="background:none;border-top:3px dashed #245f55;border-radius:0;height:0;vertical-align:4px"></i><span id="legendAvg">Average</span></span></div>
+          <div class="readout" id="readout" aria-live="polite">Select a bar to see its numbers.</div></div>
+        <div class="stats" id="stats"></div>
+        <table class="sum" id="anaTable"><caption>The same numbers as a table</caption><thead><tr><th scope="col">Trial</th><th scope="col">Prediction</th><th scope="col">Above line</th></tr></thead><tbody></tbody></table>
+        <h3 style="margin:18px 0 4px;font-size:20px">Think like a scientist</h3>
+        <details class="learn"><summary>Did every trial give the same number? Why might that be?</summary><p id="q1"></p></details>
+        <details class="learn"><summary>Why do scientists repeat an experiment?</summary><p>One trial can be a lucky or unlucky sample. Several trials show a pattern, and how much the results vary. A single result isn't enough to be sure.</p></details>
+        <details class="learn"><summary>If you compared two groups of flies, what would you keep the same?</summary><p>The same vial, the same timing, the same temperature and light, and the same way of tapping the flies down, with many repeats. Even then, this simulation cannot show anything about real flies. It only practises how to observe and record.</p></details>
+        <div class="row"><button class="btn go" id="finishBtn" type="button">Finish my experiment</button></div>
+      </div>
+
+      <!-- CELEBRATE -->
+      <div class="step center" data-phase="celebrate" hidden>
+        <h2 tabindex="-1">You're a Drosie Science Explorer!</h2>
+        <div class="badge">
+          <svg viewBox="0 0 300 330" role="img" aria-label="Badge reading Drosie Science Explorer, with a picture of Drosie">
+            <defs><linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a8"/><stop offset="1" stop-color="#e9b447"/></linearGradient><clipPath id="bc"><circle cx="150" cy="140" r="86"/></clipPath></defs>
+            <path d="M82 232L58 318L100 298L124 322L142 246Z" fill="#db8669"/><path d="M218 232L242 318L200 298L176 322L158 246Z" fill="#c9694b"/>
+            <circle cx="150" cy="140" r="122" fill="url(#bg1)"/><circle cx="150" cy="140" r="108" fill="none" stroke="#fff6d4" stroke-width="3" stroke-dasharray="3 9" stroke-linecap="round"/>
+            <circle cx="150" cy="140" r="92" fill="#e8f3e8" stroke="#245f55" stroke-width="5"/>
+            <image href="climbing-game-assets/drosie.webp" x="72" y="62" width="156" height="146" clip-path="url(#bc)" preserveAspectRatio="xMidYMid meet"/>
+            <rect x="34" y="214" width="232" height="44" rx="10" fill="#245f55"/>
+            <text x="150" y="233" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="14" fill="#f6d48c" letter-spacing="2">DROSIE</text>
+            <text x="150" y="251" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="16" fill="#fff" letter-spacing="1.5">SCIENCE EXPLORER</text>
+          </svg>
+        </div>
+        <p>You made a prediction, observed carefully, recorded evidence and repeated your experiment three times. That is how science works.</p>
+        <div class="skills"><span>Predicted</span><span>Observed</span><span>Recorded</span><span>Repeated</span><span>Compared</span></div>
+        <div class="row" style="justify-content:center"><button class="btn go" id="againBtn" type="button">Play again</button></div>
+        <div class="more">
+          <a class="chip" href="/life-cycle-game.html">Life Cycle Game</a><a class="chip" href="/grow-your-own-fruit-fly.html">Grow Your Own Fruit Fly</a><a class="chip" href="/lab/">Secret Fly Lab</a><a class="chip" href="/drosie-genetics-lab/">Genetics Lab</a><a class="chip" href="/science-activities/">All science activities</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="sr" class="sr-only" role="status" aria-live="polite"></div>
+</main>
+
+<p class="foot">Simulation notice: the flies in this game move by a simple computer rule for learning. They do not represent measured data, a validated model of fruit fly behaviour, or any effect of age, genotype or treatment. No personal information is collected and nothing is sent anywhere.</p>
+
+<nav class="dw-more" aria-label="More from Drosie's World"><h2>Keep exploring Drosie's World</h2><ul><li><a href="/science-activities/">🌟 All Science Activities</a></li><li><a href="/fruit-fly-life-cycle-activities/">🍎 Life Cycle Lesson Ideas</a></li><li><a href="/storybook.html">📖 Read the Storybook</a></li><li><a href="/life-cycle-game.html">🔬 Life Cycle Game</a></li><li><a href="/grow-your-own-fruit-fly.html">🍌 Grow Your Own Fruit Fly</a></li><li><a href="/lab/">🧪 Secret Fly Lab</a></li><li><a href="/drosie-genetics-lab/">🧬 Genetics Lab</a></li><li><a href="/letters/">💌 Letters from Drosie</a></li><li><a href="/discoveries.html">🔭 Discovery Library</a></li><li><a href="/">🏠 Drosie's World Home</a></li></ul></nav>
+<noscript><p style="padding:16px;text-align:center">This game needs JavaScript. Please turn it on and reload.</p></noscript>
+
 <script>
-const vial=document.getElementById('vial'),prediction=document.getElementById('prediction'),run=document.getElementById('run'),reset=document.getElementById('reset'),result=document.getElementById('result'),rows=document.getElementById('rows'),chart=document.getElementById('chart');let trials=[],busy=false;for(let i=0;i<=10;i++){let o=document.createElement('option');o.value=i;o.textContent=i;if(i===5)o.selected=true;prediction.append(o)}function drawFlies(n){vial.querySelectorAll('.fly').forEach(e=>e.remove());for(let i=0;i<10;i++){const e=document.createElement('span');e.className='fly';e.textContent='🪰';e.setAttribute('aria-hidden','true');e.style.setProperty('--x',(10+(i%4)*23)+'%');vial.append(e);if(n!==null){const target=i<n?185+Math.random()*70:20+Math.random()*105;requestAnimationFrame(()=>{e.style.bottom=target+'px';e.style.setProperty('--r',Math.round(Math.random()*50-25)+'deg')})}}}function update(){rows.innerHTML=trials.map((n,i)=>'<tr><td>'+(i+1)+'</td><td>'+n+' of 10</td></tr>').join('');chart.innerHTML='';trials.forEach((n,i)=>{const w=document.createElement('div');w.className='bar-wrap';const count=document.createElement('strong');count.textContent=n;const b=document.createElement('div');b.className='bar';b.style.height=(n*10)+'px';const label=document.createElement('div');label.textContent='Trial '+(i+1);w.append(count,b,label);chart.append(w)});run.textContent='Run trial '+(trials.length+1);run.disabled=trials.length>=3}run.addEventListener('click',()=>{if(busy||trials.length>=3)return;busy=true;run.disabled=true;prediction.disabled=true;const n=3+Math.floor(Math.random()*6);drawFlies(n);result.textContent='Watching the virtual flies climb…';setTimeout(()=>{trials.push(n);update();result.textContent='Trial '+trials.length+': '+n+' of 10 flies passed the line. Your prediction was '+prediction.value+'. '+(trials.length===3?'BZZZZTASTIC! Compare your three trials.':'Try another trial!');prediction.disabled=false;busy=false},window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:1400)});reset.addEventListener('click',()=>{trials=[];busy=false;prediction.disabled=false;run.disabled=false;run.textContent='Run trial 1';rows.innerHTML='<tr><td colspan="2">No trials yet</td></tr>';chart.innerHTML='';result.textContent='Ready to investigate!';drawFlies(null)});drawFlies(null);
-</script></body></html>
+/* ============ Drosie's Climbing Challenge · game logic ============ */
+(() => {
+'use strict';
+
+/* ---- constants (SVG coordinates match the vial in the scene) ---- */
+const N = 10, TRIALS = 3, DURATION = 10;
+const LINE_F = 0.62, MARGIN = 0.07, F_MAX = 0.92;   // heights are fractions 0..1 of the vial
+const Y0 = 536, SPAN = 410, X_MIN = 178, X_MAX = 262;
+const FLY_SCALE = 0.8;
+const yOf = f => Y0 - f * SPAN;
+const rand = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const $ = s => document.querySelector(s);
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+/* ---- state ---- */
+const S = { phase: 'welcome', trial: 0, pred: null, trials: [], flies: [], runId: 0, t: 0, busy: false, tapped: false, sound: false };
+
+/* ---- elements ---- */
+const el = {
+  flies: $('#flies'), coach: $('#coach'), sr: $('#sr'), trialbar: $('#trialbar'), trialLbl: $('#trialLbl'),
+  timer: $('#timerNum'), ring: $('#ringFg'), count: $('#countNum'), countBox: $('#countBox'),
+  guessTag: $('#guessTag'), guessNum: $('#guessTagNum'), vial: $('#vialGroup'), confirm: $('#confirm')
+};
+const COACH = {
+  welcome: "Welcome to my lab! I'm Drosie. Today we'll test how many of my friends climb up the vial.",
+  predict: "Make a guess first. Scientists predict before they look!",
+  prepare: "A good test starts fair. Let's tap everyone down to the bottom.",
+  run: "Eyes on the orange line. Here they go!",
+  record: "Write it down. Evidence matters more than being right.",
+  analyze: "Three trials! Let's look for a pattern.",
+  celebrate: "You did real science moves today. Thank you, Explorer!"
+};
+const announce = msg => { el.sr.textContent = ''; setTimeout(() => { el.sr.textContent = msg; }, 30); };
+
+/* ---- tiny optional sound (synthesised, off by default, no external audio) ---- */
+let audioCtx = null;
+function beep(freq = 660, dur = 0.09, gain = 0.035) {
+  if (!S.sound) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(gain, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch (e) { /* sound is optional */ }
+}
+
+/* ---- build the ten flies ---- */
+function buildFlies() {
+  el.flies.textContent = '';
+  // ten resting slots in three rows so the flies are not stacked on top of each other
+  const SLOTS = [[196, 0.02], [220, 0.02], [244, 0.02], [184, 0.078], [208, 0.078], [232, 0.078], [256, 0.078], [196, 0.136], [220, 0.136], [244, 0.136]];
+  const order = [...Array(N).keys()].sort(() => Math.random() - 0.5);
+  S.flies = order.map((slot, i) => {
+    const g = document.createElementNS(SVGNS, 'g');
+    g.setAttribute('class', 'fly');
+    g.dataset.fly = String(i + 1);
+    g.innerHTML = '<circle class="halo" r="24"/><circle class="ring2" r="23"/><use href="#fly" x="-20" y="-24" width="40" height="48"></use>';
+    el.flies.appendChild(g);
+    return {
+      i, g, lane: SLOTS[slot][0] + rand(-3, 3),
+      tend: rand(0.3, 0.92),                   // each simulated fly has its own tendency to climb
+      f: 0, x: 0, rot: 0, f0: SLOTS[slot][1] + rand(-0.004, 0.004), kf: [], ph: rand(0, 6.28), freq: rand(0.7, 1.7), amp: rand(5, 11), crossed: false
+    };
+  });
+  S.flies.forEach(fl => { fl.x = fl.lane; fl.f = fl.f0; fl.rot = rand(-18, 18); drawFly(fl); });
+}
+function drawFly(fl, bob = 1) {
+  fl.g.setAttribute('transform', `translate(${fl.x.toFixed(1)} ${yOf(fl.f).toFixed(1)}) rotate(${fl.rot.toFixed(1)}) scale(${(FLY_SCALE * bob).toFixed(3)})`);
+}
+
+/* ---- simulated trial: every fly gets its own keyframed path and final position ---- */
+function genTrial() {
+  const mood = rand(0.78, 1.18);                          // small random "trial-to-trial" variation
+  S.flies.forEach(fl => {
+    fl.crossed = false; fl.g.classList.remove('is-above', 'is-below');
+    const climbs = Math.random() < clamp(fl.tend * mood, 0.08, 0.97);
+    fl.kind = climbs ? 'climber' : (Math.random() < 0.55 ? 'partial' : 'idle');
+  });
+  // choose each fly's final spot; idle flies stay put and the others avoid overlapping them
+  const placed = [];
+  const free = (x, f) => placed.every(q => { const dx = (x - q.x) / 22, dy = ((f - q.f) * SPAN) / 25; return dx * dx + dy * dy >= 1; });
+  const order = [...S.flies].sort((a, b) => (a.kind === 'idle' ? 0 : 1) - (b.kind === 'idle' ? 0 : 1));
+  order.forEach(fl => {
+    let peak = 0, xEnd = fl.lane;
+    for (let tries = 0; tries < 40; tries++) {
+      if (fl.kind === 'climber') peak = rand(LINE_F + MARGIN + 0.01, F_MAX);
+      else if (fl.kind === 'partial') peak = rand(0.14, LINE_F - MARGIN - 0.03);
+      else peak = fl.f0 + rand(0, 0.03);
+      xEnd = fl.kind === 'idle' ? fl.lane : rand(X_MIN + 2, X_MAX - 2);
+      if (free(xEnd, peak)) break;
+    }
+    fl.final = peak; fl.xEnd = xEnd; placed.push({ x: xEnd, f: peak });
+  });
+  S.flies.forEach(fl => {
+    const climbs = fl.kind === 'climber', start = fl.f0, t0 = rand(0.15, 2.0), peak = fl.final;
+    const legs = fl.kind === 'idle' ? 2 : Math.round(rand(3, 5));
+    const segs = [];
+    for (let j = 1; j <= legs; j++) {
+      const f2 = j === legs ? peak : clamp(start + (peak - start) * (j / legs) * rand(0.88, 1.08), start, peak);
+      segs.push({ d: rand(0.5, 1.6), f: f2, pause: Math.random() < 0.45 ? rand(0.3, 1.0) : 0, slip: (fl.kind !== 'idle' && j < legs && Math.random() < 0.2) });
+    }
+    const total = segs.reduce((a, s) => a + s.d + s.pause, 0);
+    const scale = Math.min(1, (9.3 - t0) / total) * (climbs ? rand(0.72, 1) : rand(0.55, 1));
+    const kf = [{ t: 0, f: start }, { t: t0, f: start }];
+    let tt = t0, last = start;
+    segs.forEach(sg => {
+      tt += sg.d * scale; let fv = sg.f;
+      if (sg.slip) fv = Math.max(start, last - rand(0.02, 0.05));   // an occasional small slide back
+      kf.push({ t: tt, f: fv }); last = fv;
+      if (sg.pause) { tt += sg.pause * scale; kf.push({ t: tt, f: fv }); }
+    });
+    kf.push({ t: tt + 0.2, f: peak }); kf.push({ t: DURATION, f: peak });
+    kf.sort((a, b) => a.t - b.t);
+    fl.kf = kf; fl.vx = 0;
+  });
+}
+function posAt(fl, t) {
+  const k = fl.kf;
+  if (t <= k[0].t) return k[0].f;
+  for (let i = 1; i < k.length; i++) {
+    if (t <= k[i].t) {
+      const span = k[i].t - k[i - 1].t || 1e-6, u = (t - k[i - 1].t) / span, s = u * u * (3 - 2 * u);
+      return k[i - 1].f + (k[i].f - k[i - 1].f) * s;
+    }
+  }
+  return k[k.length - 1].f;
+}
+const countAbove = () => S.flies.filter(fl => fl.f > LINE_F).length;
+
+function renderAt(t, dt = 0.016) {
+  S.flies.forEach(fl => {
+    const prevF = fl.f;
+    fl.f = posAt(fl, t);
+    const moving = Math.abs(fl.f - prevF) / Math.max(dt, 0.001) > 0.012;
+    const amp = fl.amp * (moving ? 1 : 0.25);
+    const pr = clamp((fl.f - fl.f0) / Math.max(fl.final - fl.f0, 0.02), 0, 1);     // drift sideways toward this fly's own spot
+    const nx = clamp(fl.lane + (fl.xEnd - fl.lane) * pr + amp * Math.sin(t * fl.freq * 2.2 + fl.ph), X_MIN, X_MAX);
+    const vx = (nx - fl.x) / Math.max(dt, 0.001);
+    fl.vx += (vx - fl.vx) * 0.18;
+    fl.x = nx;
+    const targetRot = clamp(fl.vx * 0.55, -24, 24);
+    fl.rot += (targetRot - fl.rot) * 0.2;
+    drawFly(fl, moving ? 1 + 0.045 * Math.sin(t * 16 + fl.ph) : 1);
+    if (!fl.crossed && fl.f > LINE_F) { fl.crossed = true; beep(520 + countAbove() * 38); }
+  });
+  updateHud(t);
+}
+function updateHud(t) {
+  const left = Math.max(0, DURATION - t);
+  el.timer.textContent = String(Math.ceil(left - 1e-6));
+  el.ring.style.strokeDashoffset = String(100.5 * (1 - left / DURATION));
+  const c = countAbove();
+  if (el.count.textContent !== String(c)) { el.count.textContent = String(c); el.countBox.classList.remove('pop'); void el.countBox.offsetWidth; if (!reduceMotion()) el.countBox.classList.add('pop'); }
+}
+
+/* ---- generic tween of flies to target {f,x,rot} (used for scatter & tap-down) ---- */
+function moveFliesTo(targets, dur) {
+  const id = S.runId;
+  const from = S.flies.map(fl => ({ f: fl.f, x: fl.x, rot: fl.rot }));
+  return new Promise(resolve => {
+    if (reduceMotion() || dur <= 0) {
+      S.flies.forEach((fl, i) => { Object.assign(fl, targets[i]); drawFly(fl); });
+      return resolve(true);
+    }
+    const t0 = performance.now();
+    (function step(now) {
+      if (id !== S.runId) return resolve(false);
+      const u = clamp((now - t0) / dur, 0, 1), e = u * u * (3 - 2 * u);
+      S.flies.forEach((fl, i) => {
+        const stag = clamp((u * 1.25) - i * 0.025, 0, 1), se = stag * stag * (3 - 2 * stag);
+        fl.f = from[i].f + (targets[i].f - from[i].f) * se;
+        fl.x = from[i].x + (targets[i].x - from[i].x) * e;
+        fl.rot = from[i].rot + (targets[i].rot - from[i].rot) * e;
+        drawFly(fl);
+      });
+      if (u < 1) requestAnimationFrame(step); else resolve(true);
+    })(t0);
+  });
+}
+const bottomTargets = () => S.flies.map(fl => ({ f: fl.f0, x: fl.lane, rot: rand(-16, 16) }));
+const scatterTargets = () => S.flies.map(fl => ({ f: rand(0.1, 0.82), x: rand(X_MIN, X_MAX), rot: rand(-50, 50) }));
+
+/* ---- phases ---- */
+function show(phase, focusHeading = true) {
+  S.phase = phase;
+  document.querySelectorAll('[data-phase]').forEach(s => { s.hidden = s.dataset.phase !== phase; });
+  el.coach.textContent = COACH[phase];
+  const inTrial = ['predict', 'prepare', 'run', 'record'].includes(phase);
+  el.trialbar.hidden = !inTrial;
+  if (inTrial) {
+    el.trialLbl.textContent = `Trial ${S.trial + 1} of ${TRIALS}`;
+    document.querySelectorAll('.pip').forEach((p, i) => { p.classList.toggle('done', i < S.trial || (i === S.trial && phase === 'record')); p.classList.toggle('now', i === S.trial && phase !== 'record'); });
+  }
+  el.confirm.hidden = true;
+  const h = document.querySelector(`[data-phase="${phase}"] h2`);
+  if (h && focusHeading) { h.focus({ preventScroll: true }); h.scrollIntoView({ block: phase === 'run' ? 'center' : 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); }
+}
+
+function goWelcome() {
+  S.runId++; S.busy = false; S.tapped = false; S.trial = 0; S.pred = null; S.trials = [];
+  buildFlies(); resetHud(); setGuessTag(null);
+  show('welcome', false);
+  announce('Back at the start. Press Enter the lab to begin.');
+}
+function resetHud() { el.timer.textContent = String(DURATION); el.ring.style.strokeDashoffset = '0'; el.count.textContent = '0'; }
+
+function setGuessTag(n) {
+  if (n === null) { el.guessTag.setAttribute('opacity', '0'); return; }
+  el.guessNum.textContent = String(n); el.guessTag.setAttribute('opacity', '1');
+}
+
+/* PREDICT */
+const flyrow = $('#flyrow'), zeroWrap = $('#zeroWrap');
+function makePredictors() {
+  const mk = (n, withFly) => `<label class="pf" data-n="${n}"><input type="radio" name="pred" value="${n}" aria-label="${n === 0 ? 'None of the flies' : n + (n === 1 ? ' fly' : ' flies')}"><span>${withFly ? '<svg viewBox="-20 -24 40 48" aria-hidden="true"><use href="#fly" x="-20" y="-24" width="40" height="48"/></svg>' : ''}<b>${n === 0 ? 'None: 0' : n}</b></span></label>`;
+  flyrow.innerHTML = Array.from({ length: N }, (_, i) => mk(i + 1, true)).join('');
+  zeroWrap.innerHTML = mk(0, false);
+}
+function setPred(n) {
+  S.pred = n;
+  document.querySelectorAll('.pf').forEach(l => { const v = +l.dataset.n; l.classList.toggle('sel', v === n); l.classList.toggle('lit', v >= 1 && v <= n); });
+  $('#guessText').textContent = n === 0 ? 'You predict: none of the flies will cross.' : `You predict: ${n} of 10 flies will cross.`;
+  $('#lockBtn').disabled = false; setGuessTag(n); beep(440, 0.06);
+}
+document.addEventListener('change', e => { if (e.target.name === 'pred' && S.phase === 'predict') setPred(+e.target.value); });
+
+function enterPredict() {
+  S.pred = null; $('#lockBtn').disabled = true; $('#guessText').textContent = '';
+  document.querySelectorAll('.pf').forEach(l => { l.classList.remove('sel', 'lit'); l.querySelector('input').checked = false; });
+  setGuessTag(null); resetHud();
+  show('predict');
+}
+$('#lockBtn').addEventListener('click', () => {
+  if (S.phase !== 'predict' || S.pred === null) return;
+  announce(`Prediction locked: ${S.pred} flies.`);
+  enterPrepare();
+});
+
+/* PREPARE */
+async function enterPrepare() {
+  const id = ++S.runId; S.tapped = false; S.busy = true;
+  $('#tapBtn').disabled = true; $('#startBtn').disabled = true; $('#startBtn').classList.remove('ready');
+  $('#prepNote').textContent = 'The flies are wandering…';
+  show('prepare');
+  await moveFliesTo(scatterTargets(), 1100);
+  if (id !== S.runId) return;
+  S.busy = false; $('#tapBtn').disabled = false; $('#prepNote').textContent = 'Step 1: tap the vial. Step 2: press Start.';
+  announce('Flies are spread out in the vial. Press Tap flies to the bottom.');
+}
+$('#tapBtn').addEventListener('click', async () => {
+  if (S.phase !== 'prepare' || S.busy || S.tapped) return;
+  const id = S.runId; S.busy = true; $('#tapBtn').disabled = true;
+  if (!reduceMotion()) { el.vial.classList.remove('shake'); void el.vial.getBoundingClientRect(); el.vial.classList.add('shake'); }
+  beep(180, 0.12, 0.05);
+  await moveFliesTo(bottomTargets(), 1100);
+  if (id !== S.runId) return;
+  el.vial.classList.remove('shake');
+  S.busy = false; S.tapped = true;
+  $('#prepNote').textContent = 'All ten flies are at the bottom. Ready?';
+  const b = $('#startBtn'); b.disabled = false; b.classList.add('ready'); b.focus();
+  announce('All flies are at the bottom. Press Start experiment.');
+});
+
+/* START + OBSERVE (guarded so a trial can only run once) */
+$('#startBtn').addEventListener('click', () => {
+  if (S.phase !== 'prepare' || !S.tapped || S.busy) return;
+  S.busy = true; $('#startBtn').disabled = true; $('#startBtn').classList.remove('ready');
+  startRun();
+});
+function startRun() {
+  const id = ++S.runId;
+  genTrial();
+  S.t = 0; resetHud();
+  show('run');
+  $('#runNote').textContent = 'Observing…';
+  announce(`Trial ${S.trial + 1} started. Watch the flies for ${DURATION} seconds.`);
+  beep(740, 0.12);
+  if (reduceMotion()) {                          // no travelling animation: jump straight to the final positions
+    setTimeout(() => { if (id === S.runId) { S.t = DURATION; renderAt(DURATION, 1); finishRun(id); } }, 700);
+    return;
+  }
+  let last = performance.now(), nextNote = 3;
+  (function frame(now) {
+    if (id !== S.runId) return;
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    S.t = Math.min(DURATION, S.t + dt);
+    renderAt(S.t, dt);
+    if (S.t >= nextNote && S.t < DURATION - 0.5) { announce(`${Math.round(S.t)} seconds. ${countAbove()} flies above the line.`); nextNote += 3; }
+    if (S.t >= DURATION) return finishRun(id);
+    requestAnimationFrame(frame);
+  })(last);
+}
+function finishRun(id) {
+  if (id !== S.runId || S.trials.length > S.trial) return;       // never record a trial twice
+  S.flies.forEach(fl => { fl.f = fl.final; drawFly(fl); });       // exact final positions
+  updateHud(DURATION);
+  const above = S.flies.map(fl => fl.f > LINE_F);                // the result is read from the same positions that are drawn
+  const count = above.filter(Boolean).length;
+  S.flies.forEach((fl, i) => fl.g.classList.add(above[i] ? 'is-above' : 'is-below'));
+  S.trials.push({ pred: S.pred, count, above });
+  S.busy = false;
+  beep(880, 0.15);
+  renderRecord(count);
+  show('record');
+  announce(`Time is up. ${count} of 10 flies are above the target line. You predicted ${S.pred}.`);
+}
+
+/* RECORD */
+function pictogram(arr) {
+  return arr.map(a => `<svg viewBox="-20 -24 40 48" class="${a ? '' : 'off'}" aria-hidden="true"><use href="#fly" x="-20" y="-24" width="40" height="48"/></svg>`).join('');
+}
+function fillTable(tbl, withDiff) {
+  tbl.querySelector('tbody').innerHTML = S.trials.map((t, i) => `<tr><th scope="row">${i + 1}</th><td>${t.pred}</td><td>${t.count}</td></tr>`).join('');
+}
+function renderRecord(count) {
+  const t = S.trials[S.trial], diff = t.count - t.pred;
+  $('#recNum').textContent = String(count);
+  $('#recOf').textContent = count === 1 ? 'of 10 flies was above the line' : 'of 10 flies were above the line';
+  $('#picto').innerHTML = pictogram(t.above);
+  let msg;
+  if (diff === 0) msg = `You predicted ${t.pred}, and ${count} crossed. Your prediction matched this time. Does that mean it will match again? Try another trial to find out.`;
+  else msg = `You predicted ${t.pred}, and ${count} crossed (${Math.abs(diff)} ${diff > 0 ? 'more' : 'fewer'}). A surprise is useful: it shows what the evidence says, and it's why scientists check.`;
+  $('#verdict').textContent = msg;
+  fillTable($('#recTable'));
+  $('#nextBtn').textContent = S.trial < TRIALS - 1 ? `Start trial ${S.trial + 2}` : 'See my analysis';
+}
+$('#nextBtn').addEventListener('click', () => {
+  if (S.phase !== 'record') return;
+  if (S.trial < TRIALS - 1) {
+    const id = ++S.runId; S.trial++; S.flies.forEach(fl => fl.g.classList.remove('is-above', 'is-below'));
+    S.busy = true;
+    moveFliesTo(bottomTargets(), 700).then(ok => { if (id === S.runId) S.busy = false; });
+    resetHud();
+    enterPredict();
+  } else { renderAnalysis(); show('analyze'); announce('Analysis ready. Compare your three trials.'); }
+});
+
+/* ANALYZE (chart is drawn from the recorded trials only) */
+function renderAnalysis() {
+  const counts = S.trials.map(t => t.count), sum = counts.reduce((a, b) => a + b, 0), mean = sum / TRIALS;
+  const min = Math.min(...counts), max = Math.max(...counts);
+  const W = 360, PL = 34, PR = 12, PT = 16, PB = 34, ph = 250 - PT - PB, pw = W - PL - PR, yv = v => PT + ph - v * (ph / N);
+  let svg = '';
+  for (let v = 0; v <= N; v += 2) svg += `<line x1="${PL}" x2="${W - PR}" y1="${yv(v)}" y2="${yv(v)}" stroke="${v === 0 ? '#8da997' : '#e6ece4'}" stroke-width="${v === 0 ? 2 : 1}"/><text x="${PL - 8}" y="${yv(v) + 4}" text-anchor="end" font-size="11" fill="#6a8074" font-family="DM Sans,Arial">${v}</text>`;
+  svg += `<text x="10" y="${PT + ph / 2}" font-size="11" fill="#6a8074" text-anchor="middle" font-family="DM Sans,Arial" transform="rotate(-90 10 ${PT + ph / 2})">Flies above the line</text>`;
+  const slot = pw / TRIALS, bw = 58;
+  S.trials.forEach((t, i) => {
+    const cx = PL + slot * (i + 0.5), h = t.count * (ph / N), label = `Trial ${i + 1}: ${t.count} of 10 flies above the line. Your prediction was ${t.pred}.`;
+    svg += `<g class="bar-g" tabindex="0" role="img" aria-label="${label}" data-i="${i}"><rect class="fr" x="${cx - bw / 2 - 4}" y="${PT - 2}" width="${bw + 8}" height="${ph + 4}" rx="8"/><rect class="b" x="${cx - bw / 2}" y="${yv(t.count)}" width="${bw}" height="${Math.max(h, 1)}" rx="8" style="animation-delay:${i * 0.12}s"/><text x="${cx}" y="${yv(t.count) - 7}" text-anchor="middle" font-family="Nunito,Trebuchet MS" font-weight="900" font-size="16" fill="#173f38">${t.count}</text><path d="M${cx + 43} ${yv(t.pred) - 8}l8 8l-8 8l-8 -8z" fill="#245f55" stroke="#fff" stroke-width="2"/><text x="${cx}" y="${PT + ph + 20}" text-anchor="middle" font-family="DM Sans,Arial" font-weight="700" font-size="12.5" fill="#496658">Trial ${i + 1}</text></g>`;
+  });
+  svg += `<line x1="${PL}" x2="${W - PR}" y1="${yv(mean)}" y2="${yv(mean)}" stroke="#245f55" stroke-width="2.5" stroke-dasharray="7 5"/>`;
+  $('#chart').innerHTML = svg;
+  $('#legendAvg').textContent = `Average ${mean.toFixed(1)}`;
+  const ro = $('#readout');
+  ro.textContent = 'Select a bar to see its numbers.';
+  $('#chart').querySelectorAll('.bar-g').forEach(g => {
+    const say = () => { const t = S.trials[+g.dataset.i]; ro.textContent = `Trial ${+g.dataset.i + 1}: you predicted ${t.pred}; ${t.count} flies were above the line.`; };
+    g.addEventListener('focus', say); g.addEventListener('mouseenter', say); g.addEventListener('click', say);
+  });
+  $('#stats').innerHTML = `<div class="stat"><b>${mean.toFixed(1)}</b><span>average above the line</span></div><div class="stat"><b>${min}–${max}</b><span>lowest to highest</span></div><div class="stat"><b>${sum}</b><span>flies across 3 trials</span></div>`;
+  fillTable($('#anaTable'));
+  $('#q1').textContent = min === max
+    ? `Your three trials all gave ${min}. That can happen, but it doesn't mean it always will, so scientists keep repeating. In this simulation each fly climbs by chance, with its own tendency.`
+    : `Your trials ranged from ${min} to ${max}. Results can change a little from one trial to the next, even when the setup is the same. In this simulation that variation comes from random chance, and that's one reason scientists repeat experiments.`;
+}
+$('#finishBtn').addEventListener('click', () => {
+  if (S.phase !== 'analyze') return;
+  show('celebrate'); petals(); beep(660, 0.14); setTimeout(() => beep(880, 0.2), 150);
+  announce('Congratulations! You are a Drosie Science Explorer.');
+});
+
+/* CELEBRATE: gentle drifting petals (no flashing, skipped for reduced motion) */
+function petals() {
+  if (reduceMotion()) return;
+  const box = document.createElement('div'); box.className = 'petals'; box.setAttribute('aria-hidden', 'true');
+  const cols = ['#f6d48c', '#db8669', '#9ccfa2', '#bfe3f2', '#f0b45c'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('i');
+    p.style.left = rand(0, 100) + 'vw'; p.style.background = cols[i % cols.length];
+    p.style.setProperty('--dx', rand(-60, 60) + 'px'); p.style.setProperty('--rot', rand(120, 480) + 'deg');
+    p.style.animationDuration = rand(4, 7) + 's'; p.style.animationDelay = rand(0, 1.8) + 's';
+    box.appendChild(p);
+  }
+  document.body.appendChild(box); setTimeout(() => box.remove(), 9500);
+}
+
+/* ---- welcome / start over / sound ---- */
+$('#beginBtn').addEventListener('click', () => { if (S.phase === 'welcome') enterPredict(); });
+$('#againBtn').addEventListener('click', goWelcome);
+$('#startOverBtn').addEventListener('click', () => {
+  if (S.phase === 'welcome' || S.phase === 'celebrate') { goWelcome(); return; }
+  el.confirm.hidden = false; $('#confirmYes').focus();
+});
+$('#confirmYes').addEventListener('click', () => { document.querySelectorAll('.petals').forEach(n => n.remove()); goWelcome(); $('#startOverBtn').focus(); });
+$('#confirmNo').addEventListener('click', () => { el.confirm.hidden = true; $('#startOverBtn').focus(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !el.confirm.hidden) { el.confirm.hidden = true; $('#startOverBtn').focus(); } });
+$('#soundBtn').addEventListener('click', e => {
+  S.sound = !S.sound; e.currentTarget.setAttribute('aria-pressed', String(S.sound));
+  e.currentTarget.textContent = S.sound ? 'Sound: on' : 'Sound: off'; if (S.sound) beep(600, 0.1);
+});
+
+/* ---- init ---- */
+makePredictors(); buildFlies(); resetHud(); show('welcome', false);
+window.__drosieClimb = { S, LINE_F };   // read-only handle used by automated tests
+})();
+</script>
+</body>
+</html>
