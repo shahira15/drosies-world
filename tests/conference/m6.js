@@ -11,7 +11,7 @@ const SEED = () => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.st
   ok((await page.inputValue('#pf-title')).includes('fruit flies') && (await page.inputValue('#pf-author')) === 'Zoe', 'start fills title and nickname');
   ok((await page.inputValue('#pf-results')).includes('7.2'), 'results come from the abstract (recorded numbers)');
   ok((await page.inputValue('#pf-refs')).includes('Gargano') && (await page.inputValue('#pf-refs')).includes('Nichols'), 'verified references inserted for path A');
-  const pts = await page.locator('#posterLive .poster svg circle[aria-label], #posterLive .poster svg rect[aria-label]').evaluateAll((e) => e.map((x) => x.getAttribute('aria-label')));
+  const pts = await page.locator('#posterLive .poster svg [data-tip]').evaluateAll((e) => e.map((x) => x.getAttribute('data-tip')));
   ok(pts.length === 10, 'poster figure has 10 data markers (' + pts.length + ')');
   ok(pts.filter((p) => p.startsWith('25')).map((p) => p.match(/: (\d+) flies/)[1]).join() === '7,8,6,8,7' && pts.filter((p) => p.startsWith('18')).map((p) => p.match(/: (\d+) flies/)[1]).join() === '4,5,3,5,4', 'poster figure values equal the recorded dataset');
   ok((await page.locator('#posterLive figcaption').innerText()).includes('Simulated data'), 'caption says simulated');

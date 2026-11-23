@@ -32,7 +32,8 @@
     const i = +b.dataset.i, d = +b.dataset.d, o = order(); const j = i + d; if (j < 0 || j >= o.length) return;
     [o[i], o[j]] = [o[j], o[i]]; DC.state.reg.checked = false; DC.state.reg.orderOk = false; DC.save();
     DC.$('#ordBox').innerHTML = orderHTML(); DC.say('Moved to position ' + (j + 1));
-    const nb = DC.$('#ordBox [data-act=ordMove][data-i="' + j + '"][data-d="' + d + '"]') || DC.$('#ordBox [data-act=ordMove][data-i="' + j + '"]'); if (nb) nb.focus();
+    const rowBtns = DC.$$('#ordBox [data-act=ordMove][data-i="' + j + '"]').filter((x) => !x.disabled);
+    const nb = rowBtns.find((x) => x.dataset.d === String(d)) || rowBtns[0]; if (nb) nb.focus();
     DC.$('#ordMsg').innerHTML = ''; DC.softUpdate();
   };
   DC.acts.ordCheck = () => {

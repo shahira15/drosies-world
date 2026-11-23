@@ -29,7 +29,7 @@
     const Y = (v) => m.t + ph - ((v - yMin) / (top - yMin)) * ph;
     const n = cfg.groups.length;
     const inter = cfg.interactive;
-    let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="Verdana,Arial,sans-serif" role="img" aria-labelledby="' + (cfg.id || 'c') + '-t ' + (cfg.id || 'c') + '-d"><title id="' + (cfg.id || 'c') + '-t">' + esc(cfg.title || 'Chart') + '</title><desc id="' + (cfg.id || 'c') + '-d">' + esc(cfg.desc || '') + '</desc><rect width="' + W + '" height="' + H + '" fill="#fff"/>';
+    let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="Verdana,Arial,sans-serif" role="img" aria-labelledby="' + (cfg.id || 'c') + '-t ' + (cfg.id || 'c') + '-d"><title id="' + (cfg.id || 'c') + '-t">' + esc(cfg.title || 'Chart') + '</title><desc id="' + (cfg.id || 'c') + '-d">' + esc((cfg.desc || '') + ' Values: ' + cfg.groups.map((g) => g.label + ': ' + g.values.filter((v) => typeof v === 'number').join(', ')).join('; ') + '.') + '</desc><rect width="' + W + '" height="' + H + '" fill="#fff"/>';
     if (cfg.title) s += '<text x="' + W / 2 + '" y="24" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2b28">' + esc(cfg.title) + '</text>';
     /* gridlines + y ticks */
     for (let v = Math.ceil(yMin / step) * step; v <= top + 1e-9; v += step) {
@@ -81,7 +81,7 @@
   function ptAttrs(g, i, v, inter, cfg) {
     const lab = (g.labels && g.labels[i]) || 'point ' + (i + 1);
     const txt = g.label + ', ' + lab + ': ' + DC.fmt(v, 2) + (cfg.unit ? ' ' + cfg.unit : '');
-    return (inter ? 'class="chart-pt" tabindex="0" role="img" data-tip="' + esc(txt) + '" ' : '') + 'aria-label="' + esc(txt) + '"';
+    return inter ? 'class="chart-pt" tabindex="0" role="img" data-tip="' + esc(txt) + '" aria-label="' + esc(txt) + '"' : 'data-tip="' + esc(txt) + '"';
   }
 
   /* wire pointer/keyboard readout */
