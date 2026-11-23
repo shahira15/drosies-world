@@ -125,3 +125,15 @@
 @media(max-width:940px){.stage[data-ch="observe"]{position:sticky;top:.35rem;z-index:6;height:clamp(190px,30vh,290px)}}
 @media(max-width:480px){.trail{flex-wrap:wrap;justify-content:center}}
 @media(max-width:940px){html:has(.gm[data-ch="observe"]){scroll-padding-top:34vh}}
+
+.stepstrip{margin:.2rem 0 .6rem}.stepline{margin:0 0 .35rem;font-size:1rem;color:var(--forest-dk)}
+.stepdots{list-style:none;margin:0;padding:0;display:flex;gap:.35rem}
+.stepdots li{width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;font:900 .9rem var(--display);background:#eef2e8;color:#587064;border:2px solid #dbe5d6}
+.stepdots li.on{background:var(--forest);color:#fff;border-color:var(--forest)}.stepdots li.now{background:var(--gold);color:var(--forest-dk);border-color:var(--gold-dk);box-shadow:0 0 0 3px #f6d48c66}
+.labelcard{display:grid;gap:.15rem;justify-items:center;text-align:center;background:#fffdf4;border:3px dashed #d6c9a6;border-radius:1rem;padding:.7rem .8rem;margin:.4rem 0;position:relative}
+.labelcard b{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#a85e43}.labelcard .l1{font:900 1.15rem var(--display);background:#cfe8dc;border-radius:.4rem;padding:.1rem .7rem}.labelcard .l2{font:900 1.3rem var(--display);background:#f9e2a8;border-radius:.4rem;padding:.1rem .9rem}.labelcard .l3{font:800 1rem var(--display);background:#f6d2c4;border-radius:.4rem;padding:.1rem .7rem}
+.labelcard small{font-size:.82rem;color:var(--muted);margin-top:.3rem}.labelcard.done{border-style:solid;border-color:#4c987a;background:#e8f6ec}.labelcard .lok{font-weight:900;color:var(--forest)}
+/* tap targets must not move: the hotspot ring pulses by fading, never by scaling */
+.hot .pulse{animation:ringfade 2.4s ease-in-out infinite;transform:none}
+@keyframes ringfade{0%,100%{opacity:.95}50%{opacity:.3}}
+#mainBtn,.temps{scroll-margin-block:1.25rem}

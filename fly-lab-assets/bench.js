@@ -140,7 +140,7 @@ FL.resets.push(() => { fx.facts = []; $('#mixParts').innerHTML = ''; });
 /* =================================================================== CHAPTER 3 · SET UP THE FLY CULTURE */
 const TEMPS = { 18: { days: 'about 19 days', f: 2.0, note: 'Cooler: development is slower.' }, 25: { days: 'about 9–10 days', f: 1, note: 'The standard example. Many labs use about 25°C.' }, 29: { days: 'about 7 days', f: 0.74, note: 'Warmer: development is faster, but very hot temperatures can harm flies.' } };
 FL.TEMPS = TEMPS;
-const LABELS = [{ id: 'lab1', text: 'What: Fruit fly culture', short: 'Fruit fly culture' }, { id: 'lab2', text: 'When: Day 0', short: 'Day 0' }, { id: 'lab3', text: "Who: Drosie's Fly Lab", short: "Drosie's Fly Lab" }];
+const LABELS = [{ id: 'lab1', text: 'What: Fruit Fly Culture', short: 'Fruit Fly Culture' }, { id: 'lab2', text: 'When: Day 0', short: 'Day 0' }, { id: 'lab3', text: "Who: Drosie's Fly Lab", short: "Drosie's Fly Lab" }];
 const STEPS = ['Inspect the vial', 'Label the vial', 'Open the door and put the vial in', 'Set the temperature', 'Close the door', 'Begin observing'];
 const doorG = $('#doorG'), vialMove = $('#vialMove');
 const BENCH = { x: 100, y: 237 }, SHELF = { x: 321, y: 212 };
@@ -159,7 +159,7 @@ function setupScene() {
   const pos = C.placed ? SHELF : BENCH; vialMove.setAttribute('transform', `translate(${pos.x} ${pos.y})`);
   setTempDisplay(C.temp); $('#lampDot').setAttribute('fill', C.closed ? '#4cd08a' : '#516b66'); $('#lampGlow').setAttribute('opacity', C.closed ? .8 : .3);
   $$('#st0,#st1,#st2,#st3,#st4,#st5').forEach((n, i) => n.setAttribute('opacity', i === 0 ? 1 : 0));
-  const st = stepOf(); ['food', 'eggs', 'plug'].forEach(k => { const h = $('#vh-' + k); hide(h, st !== 0); h.classList.toggle('found', C.inspected.includes(k)); });
+  const st = stepOf(); ['food', 'eggs', 'plug'].forEach(k => { const h = $('#vh-' + k); hide(h, st !== 0); h.classList.toggle('found', C.inspected.includes(k)); }); hide($('#vh-label'), st !== 1);
   $('#benchProps').style.display = '';
   // zoom back out
   $('#scene-lab').setAttribute('viewBox', '0 0 480 360');
@@ -167,11 +167,12 @@ function setupScene() {
 const INSPECT = { food: 'This is the food medium you made. It is a soft gel with all the nutrients the larvae will need.', eggs: 'Tiny white eggs! A lab technician put a few adult flies on this food to lay eggs, then removed the adults. These eggs are about 0.5 mm long.', plug: 'The foam plug lets air in, but keeps the flies from escaping and keeps the vial clean.' };
 const inspectVial = k => { const C = D().setup; if (S.phase !== 'setup' || stepOf() !== 0) return; if (!C.inspected.includes(k)) C.inspected.push(k); FL.save(); say(INSPECT[k]); renderSetup(); };
 ['food', 'eggs', 'plug'].forEach(k => activate($('#vh-' + k), () => inspectVial(k)));
+activate($('#vh-label'), () => labelVial());
 
-function checklist() {
-  const st = stepOf(), C = D().setup, ul = document.createElement('ol'); ul.className = 'checklist'; ul.setAttribute('aria-label', 'Set-up steps');
-  STEPS.forEach((t, i) => { const li = document.createElement('li'); li.textContent = t; if (i < st || (i === 5 && D().done.setup)) { li.classList.add('on'); li.setAttribute('aria-label', t + ' (done)'); } else if (i === st) { li.classList.add('now'); li.setAttribute('aria-current', 'step'); } ul.appendChild(li); });
-  return ul;
+function stepStrip() {
+  const st = stepOf(), wrap = document.createElement('div'); wrap.className = 'stepstrip';
+  wrap.innerHTML = `<p class="stepline"><b>Step ${Math.min(st + 1, 6)} of 6</b> · ${esc(STEPS[st])}</p><ol class="stepdots" aria-label="Set-up steps">${STEPS.map((t, i) => `<li class="${i < st || (i === 5 && D().done.setup) ? 'on' : i === st ? 'now' : ''}" aria-label="Step ${i + 1}: ${esc(t)}${i < st ? ' (done)' : i === st ? ' (current)' : ''}" ${i === st ? 'aria-current="step"' : ''}>${i < st ? '✓' : i + 1}</li>`).join('')}</ol>`;
+  return wrap;
 }
 function tempCards(box) {
   const C = D().setup, f = document.createElement('fieldset'); f.className = 'temps'; f.innerHTML = '<legend class="sr-only">Incubator temperature</legend>' +
@@ -180,23 +181,46 @@ function tempCards(box) {
   const note = document.createElement('p'); note.className = 'tempnote'; note.id = 'tempNote'; note.textContent = C.temp ? TEMPS[C.temp].note : 'Pick a temperature. Many labs use about 25°C, but you can explore the others too.'; box.appendChild(note);
   $$('input[name="temp"]', f).forEach(r => r.addEventListener('change', () => { if (D().setup.closed) { r.checked = false; return; } const t = +r.value; C.temp = t; FL.save(); setTempDisplay(t); note.textContent = TEMPS[t].note; say(`${t} degrees. ${TEMPS[t].note} At this temperature a fruit fly takes ${TEMPS[t].days} from egg to adult.`); if (stepOf() > 3 || true) renderSetup(true); }));
 }
+function labelCard(done) {
+  const card = document.createElement('div'); card.className = 'labelcard' + (done ? ' done' : '');
+  card.innerHTML = `<b>${done ? 'Your vial label' : 'The label will say'}</b><span class="l1">Fruit Fly Culture</span><span class="l2">Day 0</span><span class="l3">Drosie's Fly Lab</span><small>A label says what is inside, when it started and who is responsible, so cultures never get mixed up.</small>${done ? '<span class="lok">✓ Labeled!</span>' : ''}`;
+  return card;
+}
 function renderSetup(keepFocus) {
-  const C = D().setup, st = stepOf(), box = document.createElement('div'); box.appendChild(checklist());
+  const C = D().setup, st = stepOf(), box = document.createElement('div'); box.appendChild(stepStrip());
   setScene(st); FL.setHint(null);
   if (st === 0) { setTask(`Tap the glowing numbers on the vial: ${C.inspected.length} of 3`); setMain(null); }
   else if (st === 1) {
-    setTask('Scientists label every culture. Tap the label pieces.'); setMain(null);
-    const wrap = document.createElement('div'); wrap.className = 'stickers';
-    LABELS.forEach(l => { const b = document.createElement('button'); b.type = 'button'; b.className = 'sticker'; const on = C.labels.includes(l.id); b.setAttribute('aria-pressed', String(on)); b.innerHTML = `${esc(l.text)}<span class="tick" aria-hidden="true">${on ? '✓' : ''}</span>`; b.addEventListener('click', () => { const i = C.labels.indexOf(l.id); if (i >= 0) C.labels.splice(i, 1); else C.labels.push(l.id); FL.save(); say(C.labels.length === 3 ? 'The label says what it is, when it started and who is responsible. Now the vial can go in the incubator.' : 'A label helps scientists keep their cultures organized.'); renderSetup(); }); wrap.appendChild(b); });
-    box.appendChild(wrap);
+    setTask('Give the vial a label'); setMain('Label my vial', labelVial, { go: true, ready: true }); box.appendChild(labelCard(false));
   } else if (st === 2) {
+    box.appendChild(labelCard(true));
     setTask(C.doorOpen ? 'Put the vial inside' : 'Open the incubator door');
     setMain(C.doorOpen ? 'Put the vial in the incubator' : 'Open the incubator door', C.doorOpen ? placeVial : openDoor, { go: true, ready: true });
-  } else if (st === 3) { setTask('Choose the incubator temperature'); setMain(null); tempCards(box); }
+  } else if (st === 3) { setTask('Choose the incubator temperature'); setMain('Choose a temperature first', null, { disabled: true }); tempCards(box); }
   else if (st === 4) { setTask('Close the incubator door'); setMain('Close the door', closeDoor, { go: true, ready: true }); tempCards(box); }
   else { setTask(null); tempCards(box); setMain('Begin observing →', () => go('observe'), { go: true, ready: true }); }
   FL.setFill(box);
   if (keepFocus) { const c = $('input[name="temp"]:checked'); if (c) c.focus({ preventScroll: true }); }
+  settleFocus(st);
+}
+// Keep keyboard focus and the next action on screen: controls that vanish (hidden hotspots, replaced buttons) must not drop focus to <body>,
+// and on phones the action button must be scrolled into view after every step change.
+let lastStep = -1;
+function settleFocus(st) {
+  const ae = document.activeElement, lost = !ae || ae === document.body || (ae.closest && ae.closest('[hidden]'));
+  const target = !FL.el.main.hidden && !FL.el.main.disabled ? FL.el.main : $('input[name="temp"]') || $('#vh-food:not([hidden])') || FL.el.main;
+  if (lost && target) target.focus({ preventScroll: true });
+  if (st !== lastStep && window.matchMedia('(max-width: 940px)').matches && !FL.el.main.hidden) { FL.el.main.scrollIntoView({ block: 'nearest', behavior: rm() ? 'auto' : 'smooth' }); }
+  lastStep = st;
+}
+async function labelVial() {
+  const C = D().setup; if (S.busy || stepOf() !== 1) return; S.busy = true; setMain(null);
+  say('Labeling the vial: Fruit Fly Culture, Day 0, Drosie\'s Fly Lab. A label tells everyone what is inside, when it started and who is responsible.');
+  const lab = $('#vialLabel'); lab.setAttribute('opacity', 0);
+  LABELS.forEach(l => { $('#' + l.id).setAttribute('opacity', 1); $('#' + l.id + 't').setAttribute('opacity', 1); });
+  await tween(700, u => { lab.setAttribute('opacity', u); lab.setAttribute('transform', `translate(0 ${(1 - u) * -10})`); });
+  lab.removeAttribute('transform'); C.labels = LABELS.map(l => l.id); FL.save(); S.busy = false;
+  say('Great job! Your vial is labeled: Fruit Fly Culture, Day 0. Now it can go in the incubator.'); renderSetup();
 }
 const go = id => FL.go(id);
 function setScene() { /* scene already reflects state; kept for clarity */ setupScene(); }

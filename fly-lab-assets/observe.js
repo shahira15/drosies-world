@@ -130,7 +130,7 @@ mods.observe = {
     $('#vialMove').setAttribute('transform', `translate(${FL.SHELF.x} ${FL.SHELF.y})`); FL.setDoor(0);
     $('#vialG').insertBefore($('#vialLabel'), $('#vialStage'));
     const lab = C.labels || []; $('#vialLabel').setAttribute('opacity', lab.length ? 0.2 : 0); ['lab1', 'lab2', 'lab3'].forEach(l => { const on = lab.includes(l); $('#' + l).setAttribute('opacity', on ? 1 : 0); $('#' + l + 't').setAttribute('opacity', on ? 1 : 0); });
-    FL.setTempDisplay(C.temp); $('#lampDot').setAttribute('fill', '#4cd08a'); $('#lampGlow').setAttribute('opacity', .8); ['food', 'eggs', 'plug'].forEach(k => FL.hide($('#vh-' + k), true));
+    FL.setTempDisplay(C.temp); $('#lampDot').setAttribute('fill', '#4cd08a'); $('#lampGlow').setAttribute('opacity', .8); ['food', 'eggs', 'plug', 'label'].forEach(k => FL.hide($('#vh-' + k), true));
     $('#scene-lab').setAttribute('aria-label', 'An incubator with a glass door. Inside, a labelled culture vial shows the stage you are observing.');
     zoomed = false; setView(WIDE);
     const root = document.createElement('div'); root.appendChild(buildTimeline());

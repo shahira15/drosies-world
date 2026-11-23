@@ -6,7 +6,7 @@ const mods = FL.mods;
 const D = () => FL.D();
 const INGR_NAMES = { water: 'Water', yeast: 'Yeast', sugar: 'Sugar', cornmeal: 'Cornmeal', agar: 'Agar' };
 const INGR_WHY = { water: 'moisture; holds the food together', yeast: 'nutrients (protein and vitamins)', sugar: 'energy', cornmeal: 'bulk and nutrients', agar: 'sets the food into a gel' };
-const LABEL_TEXT = { lab1: 'What: Fruit fly culture', lab2: 'When: Day 0', lab3: "Who: Drosie's Fly Lab" };
+const LABEL_TEXT = { lab1: 'What: Fruit Fly Culture', lab2: 'When: Day 0', lab3: "Who: Drosie's Fly Lab" };
 
 const CSS = `*{box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;color:#173f38;margin:0;background:#fff;line-height:1.5}
 .page{max-width:760px;margin:0 auto;padding:28px 34px}h1{font-size:28px;margin:0 0 4px;color:#245f55}h2{font-size:18px;margin:22px 0 6px;color:#245f55;border-bottom:2px solid #f6d48c;padding-bottom:3px}
