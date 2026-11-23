@@ -138,6 +138,8 @@
     pointer-events: none;
   }
 
+  .stf__parent { min-width: 0 !important; max-width: 100%; }
+
   #book {
     margin: auto;
     position: relative;
@@ -197,6 +199,7 @@
     cursor: not-allowed;
   }
 
+  .soft-btn:focus-visible,
   .control-btn:focus-visible,
   .back-link:focus-visible {
     outline: 3px solid #d3a750;
@@ -273,6 +276,15 @@
     font-family: Arial, sans-serif;
     font-size: 12px;
     color: #7c927e;
+  }
+
+  .page-jump { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: Arial, sans-serif; font-size: 13px; padding: 4px 16px 0; }
+  .page-jump label { white-space: nowrap; }
+  .page-jump input { width: min(360px, 62vw); accent-color: var(--forest); min-height: 32px; }
+  .page-jump input:focus-visible { outline: 3px solid var(--forest); outline-offset: 3px; }
+
+  @media (max-width: 800px) {
+    .book-stage { min-height: min(calc(100vw - 8px), 560px); padding: 8px 0 20px; }
   }
 
   @media (max-width: 600px) {
@@ -355,7 +367,7 @@
     <span class="sparkle two" aria-hidden="true">✳</span>
     <span class="sparkle three" aria-hidden="true">✧</span>
 
-    <div class="book-stage" id="book-stage">
+    <div class="book-stage" id="book-stage" role="group" aria-label="Storybook pages. Use the Previous and Next buttons, or the left and right arrow keys, to turn pages.">
       <div id="book"></div>
     </div>
 
@@ -364,25 +376,27 @@
     </p>
 
     <div class="reader-controls">
-      <button class="control-btn" id="previous" type="button">
+      <button class="control-btn" id="previous" type="button" aria-label="Previous page">
         ← Previous
       </button>
 
-      <span class="page-number" id="page-number">
+      <span class="page-number" id="page-number" role="status" aria-live="polite">
         Loading...
       </span>
 
-      <button class="control-btn" id="next" type="button">
+      <button class="control-btn" id="next" type="button" aria-label="Next page">
         Next →
       </button>
     </div>
+
+    <div class="page-jump"><label for="page-slider">Go to page</label><input type="range" id="page-slider" min="1" max="56" value="1" aria-valuetext="Page 1 of 56"></div>
 
     <div class="progress-track" aria-hidden="true">
       <div class="progress-fill" id="progress"></div>
     </div>
 
     <div class="extra-controls">
-      <button class="soft-btn" id="first-page" type="button">
+      <button class="soft-btn" id="first-page" type="button" aria-label="Start over from the first page">
         ↺ Start Over
       </button>
 
@@ -418,6 +432,7 @@
   const progress = document.getElementById("progress");
   const previous = document.getElementById("previous");
   const next = document.getElementById("next");
+  const slider = document.getElementById("page-slider");
   const firstPage = document.getElementById("first-page");
   const fullscreen = document.getElementById("fullscreen");
 
@@ -440,8 +455,8 @@ for (let i = 1; i <= TOTAL_PAGES; i++) {
     }
 
     const image = document.createElement("img");
-    image.src = "book-pages/" + i + ".png";
-    image.alt = "Drosie's Storybook, page " + i;
+    image.src = "book-pages-web/" + i + ".webp";
+    image.alt = "Drosie's Storybook, page " + i + " of " + TOTAL_PAGES + ". The story text is part of the picture.";
     image.draggable = false;
     image.loading = i <= 4 ? "eager" : "lazy";
 
@@ -453,7 +468,7 @@ for (let i = 1; i <= TOTAL_PAGES; i++) {
    width: 500,
 height: 500,
 size: "stretch",
-minWidth: 180,
+minWidth: 400, // single page below ~800px container width; two-page spread above
 maxWidth: 500,
 minHeight: 180,
 maxHeight: 500,
@@ -477,17 +492,36 @@ maxHeight: 500,
  function updateReader() {
   const current = pageFlip.getCurrentPageIndex();
 
-  pageNumber.textContent =
-    "Page " + (current + 1) + " of " + TOTAL_PAGES;
+  // Visible page range: one page in portrait mode; a spread shows two pages,
+  // except the front cover (page 1) and a final unpaired page, which show alone.
+  const lo = current + 1;
+  const spread = pageFlip.getOrientation() === "landscape" &&
+    current > 0 && current + 1 < TOTAL_PAGES;
+  const hi = spread ? lo + 1 : lo;
+  const label = spread
+    ? "Pages " + lo + "\u2013" + hi + " of " + TOTAL_PAGES
+    : "Page " + lo + " of " + TOTAL_PAGES;
 
-  progress.style.width =
-    ((current + 1) / TOTAL_PAGES * 100) + "%";
+  pageNumber.textContent = label;
+
+  progress.style.width = (hi / TOTAL_PAGES * 100) + "%";
+
+  // Keep the slider where the reader put it while that page is visible;
+  // otherwise move it to the first visible page.
+  const picked = Number(slider.value);
+  if (picked < lo || picked > hi) slider.value = String(lo);
+  slider.setAttribute("aria-valuetext", label);
 
   previous.disabled = current === 0;
   next.disabled = current >= TOTAL_PAGES - 1;
 
   status.textContent = "";
 }
+
+  slider.addEventListener("input", function () {
+    pageFlip.turnToPage(Number(slider.value) - 1);
+    updateReader();
+  });
 
   previous.addEventListener("click", function () {
     pageFlip.flipPrev();
