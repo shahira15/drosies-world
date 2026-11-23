@@ -138,6 +138,8 @@
     pointer-events: none;
   }
 
+  .stf__parent { min-width: 0 !important; max-width: 100%; }
+
   #book {
     margin: auto;
     position: relative;
@@ -276,6 +278,15 @@
     color: #7c927e;
   }
 
+  .page-jump { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: Arial, sans-serif; font-size: 13px; padding: 4px 16px 0; }
+  .page-jump label { white-space: nowrap; }
+  .page-jump input { width: min(360px, 62vw); accent-color: var(--forest); min-height: 32px; }
+  .page-jump input:focus-visible { outline: 3px solid var(--forest); outline-offset: 3px; }
+
+  @media (max-width: 800px) {
+    .book-stage { min-height: min(calc(100vw - 8px), 560px); padding: 8px 0 20px; }
+  }
+
   @media (max-width: 600px) {
     .topbar {
       padding: 14px;
@@ -378,6 +389,8 @@
       </button>
     </div>
 
+    <div class="page-jump"><label for="page-slider">Go to page</label><input type="range" id="page-slider" min="1" max="56" value="1" aria-valuetext="Page 1 of 56"></div>
+
     <div class="progress-track" aria-hidden="true">
       <div class="progress-fill" id="progress"></div>
     </div>
@@ -419,6 +432,7 @@
   const progress = document.getElementById("progress");
   const previous = document.getElementById("previous");
   const next = document.getElementById("next");
+  const slider = document.getElementById("page-slider");
   const firstPage = document.getElementById("first-page");
   const fullscreen = document.getElementById("fullscreen");
 
@@ -454,7 +468,7 @@ for (let i = 1; i <= TOTAL_PAGES; i++) {
    width: 500,
 height: 500,
 size: "stretch",
-minWidth: 180,
+minWidth: 400, // single page below ~800px container width; two-page spread above
 maxWidth: 500,
 minHeight: 180,
 maxHeight: 500,
@@ -484,11 +498,18 @@ maxHeight: 500,
   progress.style.width =
     ((current + 1) / TOTAL_PAGES * 100) + "%";
 
+  slider.value = String(current + 1);
+  slider.setAttribute("aria-valuetext", "Page " + (current + 1) + " of " + TOTAL_PAGES);
   previous.disabled = current === 0;
   next.disabled = current >= TOTAL_PAGES - 1;
 
   status.textContent = "";
 }
+
+  slider.addEventListener("input", function () {
+    pageFlip.turnToPage(Number(slider.value) - 1);
+    updateReader();
+  });
 
   previous.addEventListener("click", function () {
     pageFlip.flipPrev();
