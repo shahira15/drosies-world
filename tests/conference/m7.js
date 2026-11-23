@@ -47,7 +47,7 @@ const seed = (page, p) => page.evaluate(SEED, p);
   await page.locator('[data-q=hp_p1] .opt').nth(1).click();
   ok((await page.locator('[data-q=hp_p1] .fb').innerText()).startsWith('Not quite'), 'wrong poster diagnosis gets feedback');
   await page.locator('[data-q=hp_p1] .opt').nth(0).click();
-  ok((await page.locator('[data-q=hp_p1] .fb').innerText()).includes('one plant per condition') || (await page.locator('[data-q=hp_p1] .fb').innerText()).includes('one plant'), 'right poster diagnosis explained');
+  ok((await page.locator('[data-q=hp_p1] .fb').innerText()).includes('One pot per place')||(await page.locator('[data-q=hp_p1] .fb').innerText()).includes('one pot in each place'), 'right poster diagnosis explained');
   ok(await page.locator('#areaH').count() === 1, 'hall stays open after answering (no full re-render)');
   // stage claims
   await page.locator('.areabtn[data-a=stage]').click();

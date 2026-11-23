@@ -94,12 +94,12 @@
   /* ---------- fictional example posters for the poster hall (each has one fixable problem) ---------- */
   DC.EXAMPLE_POSTERS = [
     {
-      id: 'p1', by: 'Fictional poster by "Juniper"', title: 'Sunlight Makes Beans Grow Taller',
-      body: 'Question: Do bean plants grow taller with more light? Method: 1 plant on a sunny sill, 1 plant in a closet. After 2 weeks the sunny plant was 14 cm and the closet plant was 6 cm.',
-      claim: 'Conclusion: This proves that all plants need sunlight to grow.',
+      id: 'p1', by: 'Fictional poster by "Juniper"', title: 'Warm Spots Make Seeds Sprout Faster',
+      body: 'Question: Do bean seeds sprout faster in a warm spot? Method: 1 pot of seeds near a heater and 1 pot of seeds in a cold garage. The warm pot sprouted after 3 days and the cold pot after 7 days.',
+      claim: 'Conclusion: This proves that all seeds sprout faster when it is warm.',
       prompt: 'What is the main problem with this poster?',
       options: [
-        ['One plant per condition cannot support a claim about all plants, and "proves" is too strong.', true, 'Yes. With one plant in each place, we cannot tell whether the plants themselves or the place caused the difference. A careful claim stays with what was measured.'],
+        ['One pot per place cannot support a claim about all seeds, and "proves" is too strong.', true, 'Yes. With one pot in each place, we cannot tell whether the seeds, the pot or the place caused the difference (the heater might also dry the soil). A careful claim stays with what was measured.'],
         ['The title is too short.', false, 'Short titles are fine. Look at what the conclusion says and how much data stands behind it.'],
         ['It should have more colors.', false, 'Color is not the problem here. Check whether the conclusion fits the evidence.']
       ]
