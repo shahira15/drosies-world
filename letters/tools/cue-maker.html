@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cue Maker · Letters from Drosie</title>
+<meta name="robots" content="noindex">
+<style>
+  body { font: 16px/1.5 Georgia, serif; background: #f4ead4; color: #3e2b1f; margin: 0; }
+  header { background: #2f4a3a; color: #fbf6ea; padding: 14px 22px; }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  main { max-width: 980px; margin: 0 auto; padding: 20px; }
+  .panel { background: #fbf6ea; border: 1px solid #d8c69f; border-radius: 12px; padding: 16px 18px; margin: 14px 0; }
+  button, input[type=file] { font: inherit; }
+  button { min-height: 44px; padding: 8px 16px; border-radius: 10px; border: 1.5px solid #6b5440; background: #fff; color: #3e2b1f; cursor: pointer; }
+  button.primary { background: #5b2a45; color: #fbf6ea; border-color: #3f1830; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  ol { padding-left: 0; list-style: none; }
+  li { display: grid; grid-template-columns: 110px 90px 1fr 120px; gap: 10px; align-items: center; padding: 6px 8px; border-bottom: 1px dashed #d8c69f; border-radius: 6px; }
+  li.next { background: #fff3cf; } li.playing { background: #e7d3df; }
+  code, .t { font-family: ui-monospace, Menlo, monospace; font-size: .85rem; }
+  .t { font-weight: bold; }
+  textarea { width: 100%; min-height: 160px; font: .85rem ui-monospace, Menlo, monospace; }
+  .small { font-size: .9rem; color: #6b5440; }
+  kbd { background: #fff; border: 1px solid #b9a988; border-radius: 4px; padding: 0 5px; }
+</style>
+</head>
+<body>
+<header><h1>Cue Maker: time Drosie's narration to the letter text</h1></header>
+<main>
+  <section class="panel">
+    <p><strong>How to use:</strong></p>
+    <ol class="small" style="list-style: decimal; padding-left: 1.2em">
+      <li style="display:list-item;border:0">Choose the recorded narration file (MP3, M4A, WAV or OGG).</li>
+      <li style="display:list-item;border:0">Press <strong>Play</strong>. Each time Drosie <em>starts</em> the highlighted phrase, press <kbd>Space</kbd> or <strong>Mark</strong>.</li>
+      <li style="display:list-item;border:0">Fine-tune any time with the ± buttons, then <strong>Preview</strong>.</li>
+      <li style="display:list-item;border:0">Download <code>letter-01.cues.json</code> and put it in <code>letters/assets/audio/</code> beside the audio file.</li>
+    </ol>
+    <div class="row">
+      <input type="file" id="file" accept="audio/*" aria-label="Narration audio file">
+      <button id="load-default" type="button">Use assets/audio/letter-01.mp3</button>
+    </div>
+    <audio id="audio" controls style="width:100%;margin-top:10px"></audio>
+    <div class="row" style="margin-top:10px">
+      <button id="play" class="primary" type="button">Play</button>
+      <button id="mark" type="button">Mark phrase start (Space)</button>
+      <button id="undo" type="button">Undo last mark</button>
+      <button id="preview" type="button">Preview</button>
+      <button id="restart" type="button">Start over</button>
+      <span class="small" id="status"></span>
+    </div>
+  </section>
+  <section class="panel"><ol id="list"></ol></section>
+  <section class="panel">
+    <div class="row"><button id="download" class="primary" type="button">Download letter-01.cues.json</button><button id="copy" type="button">Copy JSON</button>
+      <label class="small"><input type="file" id="import" accept="application/json"> Load an existing cue file</label></div>
+    <textarea id="json" aria-label="Cue file JSON" readonly></textarea>
+  </section>
+</main>
+<script src="../js/letter-data.js"></script>
+<script src="../js/phrases.js"></script>
+<script>
+(function () {
+  const L = window.DROSIE_LETTER;
+  const phrases = window.DrosiePhrases.list(L);
+  const times = new Array(phrases.length).fill(null);
+  const audio = document.getElementById('audio');
+  const list = document.getElementById('list');
+  const status = document.getElementById('status');
+  let next = 0, previewing = false;
+
+  function render() {
+    list.innerHTML = phrases.map((p, i) => `<li data-i="${i}" class="${i === next && !previewing ? 'next' : ''}">
+      <code>${p.id}</code><span class="t">${times[i] == null ? '—' : times[i].toFixed(2) + 's'}</span><span>${p.text.replace(/</g, '&lt;')}</span>
+      <span class="row"><button type="button" data-n="-0.1" aria-label="Earlier">−0.1</button><button type="button" data-n="0.1" aria-label="Later">+0.1</button></span></li>`).join('');
+    const out = { letter: L.id, audio: 'letter-01.mp3', generated: new Date().toISOString().slice(0, 10), cues: phrases.map((p, i) => ({ id: p.id, start: times[i] == null ? null : +times[i].toFixed(2), text: p.text })) };
+    document.getElementById('json').value = JSON.stringify(out, null, 2);
+    status.textContent = `${times.filter(t => t != null).length} of ${phrases.length} phrases timed`;
+  }
+  list.addEventListener('click', e => {
+    const b = e.target.closest('button[data-n]'); if (!b) return;
+    const i = +b.closest('li').dataset.i; if (times[i] == null) return;
+    times[i] = Math.max(0, times[i] + Number(b.dataset.n)); render();
+  });
+  function mark() {
+    if (next >= phrases.length || !audio.src) return;
+    times[next] = audio.currentTime; next++; render();
+    list.querySelector('li.next')?.scrollIntoView({ block: 'center' });
+  }
+  document.getElementById('file').onchange = e => { const f = e.target.files[0]; if (f) { audio.src = URL.createObjectURL(f); status.textContent = 'Loaded ' + f.name; } };
+  document.getElementById('load-default').onclick = () => { audio.src = '../assets/audio/letter-01.mp3'; audio.onerror = () => { status.textContent = 'No file at assets/audio/letter-01.mp3 yet.'; }; };
+  document.getElementById('play').onclick = () => { if (!audio.src) { status.textContent = 'Choose an audio file first.'; return; } previewing = false; audio.paused ? audio.play() : audio.pause(); };
+  document.getElementById('mark').onclick = mark;
+  document.getElementById('undo').onclick = () => { if (next > 0) { next--; times[next] = null; render(); } };
+  document.getElementById('restart').onclick = () => { times.fill(null); next = 0; audio.currentTime = 0; render(); };
+  document.getElementById('preview').onclick = () => { previewing = true; audio.currentTime = Math.max(0, (times.find(t => t != null) ?? 0) - 0.3); audio.play(); };
+  audio.addEventListener('timeupdate', () => {
+    if (!previewing) return;
+    let cur = -1; times.forEach((t, i) => { if (t != null && t <= audio.currentTime) cur = i; });
+    list.querySelectorAll('li').forEach((li, i) => li.classList.toggle('playing', i === cur));
+  });
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); mark(); } });
+  document.getElementById('download').onclick = () => {
+    const blob = new Blob([document.getElementById('json').value], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'letter-01.cues.json'; a.click();
+  };
+  document.getElementById('copy').onclick = async () => { try { await navigator.clipboard.writeText(document.getElementById('json').value); status.textContent = 'Copied.'; } catch (e) { document.getElementById('json').select(); status.textContent = 'Select the text and copy it.'; } };
+  document.getElementById('import').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const d = JSON.parse(await f.text()); const m = new Map(d.cues.map(c => [c.id, c.start])); phrases.forEach((p, i) => { times[i] = m.has(p.id) && m.get(p.id) != null ? Number(m.get(p.id)) : null; }); next = times.findIndex(t => t == null); if (next < 0) next = phrases.length; render(); }
+    catch (err) { status.textContent = 'That file could not be read.'; }
+  };
+  render();
+})();
+</script>
+</body>
+</html>

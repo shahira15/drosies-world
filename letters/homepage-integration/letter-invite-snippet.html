@@ -1,0 +1,107 @@
+<!-- =====================================================================
+     LETTERS FROM DROSIE: homepage invitation (drop-in snippet)
+     ---------------------------------------------------------------------
+     PART A (the invitation section): paste where it should appear on the page.
+     PART B (optional gentle popup): paste just before </body>.
+     Everything is scoped with the "dl-" prefix and wrapped in an IIFE, so it
+     cannot change your existing styles, scripts or navigation.
+     Paths assume the homepage is at the site root and Letters is at /letters/.
+     ===================================================================== -->
+
+<!-- ============ PART A: invitation section ============ -->
+<section class="dl-invite" aria-labelledby="dl-invite-title">
+  <style>
+    .dl-invite { --dl-ivory:#fbf6ea; --dl-plum:#5b2a45; --dl-sepia:#3e2b1f; --dl-gold:#b8954a; --dl-forest:#2f4a3a;
+      max-width: 880px; margin: 48px auto; padding: 0 16px; box-sizing: border-box; }
+    .dl-invite *, .dl-invite *::before, .dl-invite *::after { box-sizing: border-box; }
+    .dl-invite .dl-card { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center;
+      background: var(--dl-ivory); color: var(--dl-sepia); border: 1px solid #e2d4b4; border-radius: 18px; padding: 28px 30px;
+      box-shadow: 0 2px 0 rgba(255,255,255,.7) inset, 0 14px 34px rgba(60,35,15,.14); overflow: hidden; }
+    .dl-invite .dl-card::after { content: ""; position: absolute; right: -10px; top: -14px; width: 70px; height: 140px; opacity: .35; transform: rotate(18deg);
+      background: url("/letters/assets/illustrations/sprig.svg") center / contain no-repeat; pointer-events: none; }
+    .dl-invite .dl-env { position: relative; width: 124px; height: 84px; background: #f1e4c7; border-radius: 4px; box-shadow: 0 8px 16px rgba(60,35,15,.2); flex: none; }
+    .dl-invite .dl-env::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom right, transparent 49.5%, #dcc9a1 50%, transparent 51%) left / 50% 100% no-repeat,
+      linear-gradient(to bottom left, transparent 49.5%, #dcc9a1 50%, transparent 51%) right / 50% 100% no-repeat; }
+    .dl-invite .dl-env img { position: absolute; left: 50%; top: 52%; width: 36px; height: 36px; transform: translate(-50%, -50%); }
+    .dl-invite h2 { margin: 0 0 6px; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: clamp(1.5rem, 3.4vw, 2rem); color: var(--dl-plum); line-height: 1.15; }
+    .dl-invite p { margin: 0 0 16px; font-size: 1.08rem; line-height: 1.55; }
+    .dl-invite .dl-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 22px; border-radius: 999px;
+      background: var(--dl-plum); color: var(--dl-ivory); text-decoration: none; font-weight: 600; letter-spacing: .2px; }
+    .dl-invite .dl-btn:hover { background: #6e3554; }
+    .dl-invite .dl-btn:focus-visible { outline: 3px solid var(--dl-gold); outline-offset: 3px; }
+    @media (max-width: 560px) { .dl-invite .dl-card { grid-template-columns: 1fr; text-align: center; padding: 24px 20px; } .dl-invite .dl-env { margin: 0 auto; } }
+  </style>
+  <div class="dl-card">
+    <div class="dl-env" aria-hidden="true"><img src="/letters/assets/illustrations/wax-seal.svg" alt=""></div>
+    <div>
+      <h2 id="dl-invite-title"><span aria-hidden="true">💌 </span>A Little Letter for You</h2>
+      <p>Psst… Drosie has something special to tell you.</p>
+      <a class="dl-btn" href="/letters/">Open My Letter</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART B (optional): gentle popup, once per browser ============ -->
+<div class="dl-pop" id="dl-pop" role="dialog" aria-modal="false" aria-labelledby="dl-pop-title" hidden>
+  <style>
+    .dl-pop { position: fixed; left: 16px; bottom: 16px; z-index: 900; width: min(330px, calc(100vw - 32px)); box-sizing: border-box;
+      background: #fbf6ea; color: #3e2b1f; border: 1px solid #e2d4b4; border-radius: 16px; padding: 18px 18px 16px;
+      box-shadow: 0 16px 40px rgba(40,22,8,.28); font-size: 1rem; line-height: 1.5; opacity: 0; transform: translateY(16px);
+      transition: opacity .5s ease, transform .5s ease; }
+    .dl-pop.dl-in { opacity: 1; transform: none; }
+    .dl-pop[hidden] { display: none; }
+    .dl-pop h2 { margin: 0 34px 4px 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.35rem; color: #5b2a45; line-height: 1.2; }
+    .dl-pop p { margin: 0 0 12px; }
+    .dl-pop .dl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .dl-pop a, .dl-pop button { font: inherit; min-height: 44px; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+    .dl-pop a { background: #5b2a45; color: #fbf6ea; text-decoration: none; display: inline-flex; align-items: center; font-weight: 600; }
+    .dl-pop .dl-later { background: transparent; border: 1.5px solid #b9a988; color: #3e2b1f; }
+    .dl-pop .dl-x { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; font-size: 1.5rem; line-height: 1; color: #6b5440; }
+    .dl-pop a:focus-visible, .dl-pop button:focus-visible { outline: 3px solid #b8954a; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { .dl-pop { transition: none; transform: none; } }
+  </style>
+  <button class="dl-x" type="button" aria-label="Close this invitation">×</button>
+  <h2 id="dl-pop-title">A little letter for you <span aria-hidden="true">💌</span></h2>
+  <p>Psst… Drosie has written you a letter.</p>
+  <div class="dl-row">
+    <a href="/letters/" id="dl-pop-open">Open My Letter</a>
+    <button class="dl-later" type="button">Maybe later</button>
+  </div>
+  <script>
+  (function () {
+    var KEY = 'drosie-letter-invite:v1';
+    var pop = document.getElementById('dl-pop');
+    if (!pop) return;
+    function seen() {
+      try {
+        if (localStorage.getItem(KEY)) return true;
+        var lp = JSON.parse(localStorage.getItem('drosie-letters:v1') || '{}'); // set by /letters/ itself
+        return !!lp.opened;   // already read the letter → no need to invite
+      } catch (e) { return true; } // no storage → never nag
+    }
+    function remember() { try { localStorage.setItem(KEY, '1'); } catch (e) {} }
+    if (seen()) return;
+    var shown = false;
+    function show() {
+      if (shown || seen()) return; shown = true;
+      pop.hidden = false;
+      requestAnimationFrame(function () { pop.classList.add('dl-in'); });
+      // Do not steal focus: the invitation waits politely in the corner.
+      window.removeEventListener('scroll', onScroll);
+    }
+    function close() { remember(); pop.classList.remove('dl-in'); setTimeout(function () { pop.hidden = true; }, 500); }
+    function onScroll() {
+      var h = document.documentElement;
+      if ((h.scrollTop + window.innerHeight) / h.scrollHeight > 0.45) show();
+    }
+    // Appears only after the visitor has spent time on the page or scrolled about halfway.
+    setTimeout(show, 25000);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    pop.querySelector('.dl-x').addEventListener('click', close);
+    pop.querySelector('.dl-later').addEventListener('click', close);
+    var links = document.querySelectorAll('a[href="/letters/"]');
+    for (var i = 0; i < links.length; i++) links[i].addEventListener('click', remember);
+    pop.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
+  })();
+  </script>
+</div>
