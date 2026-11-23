@@ -17,7 +17,7 @@
 
   /* cfg: {kind:'dot'|'bar'|'line', groups:[{key,label,color,values:[n], labels?:[s]}], yTitle, xTitle, yMin, yMax, title, interactive, showMean, showPoints, showRange, unit, id, catLabels} */
   DC.chart = function (cfg) {
-    const W = 640, H = 400, m = { l: 74, r: 20, t: 44, b: 78 };
+    const W = 640, H = cfg.h || 400, m = { l: 74, r: 20, t: cfg.title ? 44 : 14, b: 78 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const kind = cfg.kind || 'dot';
     const all = cfg.groups.reduce((a, g) => a.concat(g.values.filter((v) => typeof v === 'number')), []);

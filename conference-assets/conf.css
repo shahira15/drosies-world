@@ -182,26 +182,6 @@ dl.study dt{font-weight:800;color:var(--teal);font-size:.88rem}dl.study dd{margi
 .starters{display:flex;gap:.4rem;flex-wrap:wrap;margin:.2rem 0 .4rem}
 .chip{border:2px solid var(--sage2);background:var(--sage);border-radius:99px;padding:.2rem .7rem;min-height:2.4rem;cursor:pointer;font-size:.82rem;color:var(--teal);font-weight:700}
 .wc{font-size:.85rem;font-weight:800}
-.posterwrap{overflow-x:auto;border:3px solid var(--sage2);border-radius:.8rem;background:#d7d2c0;padding:.6rem}
-.poster{--pa:#1d5a5a;--pb:#fff8e6;--pc:#1c2b28;--pd:#d9b45a;--ps:1;container-type:inline-size;aspect-ratio:11/8.5;min-width:720px;background:var(--pb);color:var(--pc);font-family:var(--read);padding:2.2cqw;display:grid;gap:1.4cqw;grid-template-columns:repeat(3,1fr);grid-template-rows:auto 1fr 1fr;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
-.poster .pt{grid-column:1/-1;background:var(--pa);color:#fff;border-radius:1.2cqw;padding:1.2cqw 2cqw;display:flex;justify-content:space-between;align-items:center;gap:2cqw}
-.poster .pt h1{font:900 calc(3.4cqw*var(--ps)) var(--serif);margin:0;color:#fff;line-height:1.1}
-.poster .pt p{margin:0;font-size:calc(1.5cqw*var(--ps));text-align:right}
-.poster .ps{background:#fff;border:.25cqw solid var(--pa);border-radius:1cqw;padding:1cqw 1.3cqw;overflow:hidden;min-width:0}
-.poster .ps h2{font:800 calc(1.7cqw*var(--ps)) var(--read);color:var(--pa);margin:0 0 .5cqw;text-transform:uppercase;letter-spacing:.06em;border-bottom:.25cqw solid var(--pd);padding-bottom:.3cqw}
-.poster .ps p,.poster .ps li{font-size:calc(1.55cqw*var(--ps));line-height:1.35;margin:0 0 .5cqw}
-.poster .ps ul{margin:0;padding-left:2cqw}
-.poster .fig{grid-row:span 1}
-.poster .fig svg{width:100%;height:auto;display:block}
-.poster .fig figcaption{font-size:calc(1.2cqw*var(--ps));line-height:1.3}
-.poster .figbox{border:.3cqw dashed var(--pa);border-radius:.8cqw;min-height:12cqw;display:grid;place-items:center;text-align:center;font-size:calc(1.3cqw*var(--ps));color:#555;padding:1cqw}
-.poster .sim{font-size:calc(1.15cqw*var(--ps));font-weight:700;color:#5b3a6b}
-.poster .pfoot{grid-column:1/-1;font-size:calc(1.1cqw*var(--ps));display:flex;justify-content:space-between;gap:2cqw;color:var(--pc)}
-.poster[data-layout="story"]{grid-template-columns:1.2fr 1fr;grid-template-rows:auto repeat(3,auto)}
-.poster[data-layout="story"] .pt{border-radius:2cqw}
-.poster[data-layout="banner"]{grid-template-columns:1fr 1.5fr 1fr;grid-template-rows:auto auto 1fr}
-.poster[data-layout="banner"] .fig{grid-column:2;grid-row:2/4}
-.poster[data-layout="banner"] .pt{background:var(--pd);color:#1c2b28}.poster[data-layout="banner"] .pt h1{color:#1c2b28}
 .checks li{margin:.2rem 0}
 
 /* hall */
@@ -237,13 +217,37 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.5rem 1rem;border-radius:99px;z-index:70;max-width:90vw;font-size:.9rem}
 
 #printRoot{display:none}
+.pg{font-family:var(--serif);color:#000;padding:0}
+.pg h1{font-size:22pt}.pg h2{font-size:15pt;margin-top:12pt}.pg p{font-size:12pt}
+
+/* poster (sizes use container query units so the poster scales identically on screen, in print and in PDF) */
+.posterwrap{overflow-x:auto;position:relative}
+.poster{--pa:#1d5a5a;--pb:#fff8e6;--pc:#1c2b28;--pd:#d9b45a;--ps:1;container-type:inline-size;aspect-ratio:1.34;min-width:720px;background:var(--pb);color:var(--pc);font-family:var(--read);padding:1.6cqw;display:grid;gap:1.1cqw;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"pt pt pt" "q res res" "bg res res" "me con lim" "ft ft ft";align-content:start;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.poster .pt{grid-area:pt;background:var(--pa);color:#fff;border-radius:1.2cqw;padding:.9cqw 1.8cqw;display:flex;justify-content:space-between;align-items:center;gap:2cqw}
+.poster .pt h1{font:900 calc(3.1cqw*var(--ps)) Georgia,'Times New Roman',serif;margin:0;color:#fff;line-height:1.12}
+.poster .pt p{margin:0;font-size:calc(1.35cqw*var(--ps));text-align:right;line-height:1.3}
+.poster .ps{background:#fff;color:var(--pc);border:.25cqw solid var(--pa);border-radius:1cqw;padding:.8cqw 1.2cqw;min-width:0}
+.poster .ps h2{font:800 calc(1.55cqw*var(--ps)) Verdana,Arial,sans-serif;color:var(--pa);margin:0 0 .6cqw;text-transform:uppercase;letter-spacing:.06em;border-bottom:.25cqw solid var(--pd);padding-bottom:.3cqw}
+.poster .ps p,.poster .ps li{font-size:calc(1.5cqw*var(--ps));line-height:1.35;margin:0 0 .5cqw}
+.poster .ps ul{margin:0 0 .5cqw;padding-left:2.2cqw}
+.poster .s-q{grid-area:q}.poster .s-bg{grid-area:bg}.poster .s-me{grid-area:me}.poster .s-res{grid-area:res}.poster .s-con{grid-area:con}.poster .s-lim{grid-area:lim}
+.poster figure{margin:0 0 .6cqw}.poster figure svg{width:100%;height:auto;display:block;border:.15cqw solid #ddd;border-radius:.6cqw}
+.poster figcaption{font-size:calc(1.3cqw*var(--ps));line-height:1.35;margin-top:.4cqw}
+.poster .figbox{border:.3cqw dashed var(--pa);border-radius:.8cqw;min-height:14cqw;display:grid;place-items:center;text-align:center;font-size:calc(1.4cqw*var(--ps));color:#444;padding:1cqw}
+.poster .pfoot{grid-area:ft;font-size:calc(1.25cqw*var(--ps));display:flex;justify-content:space-between;gap:2cqw;color:var(--pc);align-items:flex-start;flex-wrap:wrap}
+.poster .pfoot p{margin:0 0 .3cqw;font-size:inherit;line-height:1.35}
+.poster .simtag{display:inline-block;background:#5b3a6b;color:#fff;border-radius:99px;padding:.1cqw 1cqw;font-size:calc(1.2cqw*var(--ps));font-weight:700}
+.poster[data-layout="story"]{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"pt pt" "q bg" "me me" "res res" "con lim" "ft ft"}
+.poster[data-layout="story"] .pt{border-radius:2.4cqw}
+.poster[data-layout="banner"]{grid-template-columns:1fr 1.7fr 1fr;grid-template-areas:"pt pt pt" "q res bg" "me res con" "lim lim lim" "ft ft ft"}
+.poster[data-layout="banner"] .pt{background:var(--pd);color:#1c2b28}.poster[data-layout="banner"] .pt h1{color:#1c2b28}
+.poster-dlg{max-width:96vw;width:min(1100px,96vw)}
+
 @media print{
   body>*:not(#printRoot){display:none!important}
   #printRoot{display:block!important}
   body{background:#fff}
-  .poster{box-shadow:none;min-width:0;width:100%}
+  .poster{box-shadow:none;min-width:0;width:100%;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .pg{page-break-after:always}
   .pg:last-child{page-break-after:auto}
 }
-.pg{font-family:var(--serif);color:#000;padding:0}
-.pg h1{font-size:22pt}.pg h2{font-size:15pt;margin-top:12pt}.pg p{font-size:12pt}
