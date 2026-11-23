@@ -7,8 +7,8 @@
 
   const niceStep = (max) => { const raw = max / 5, p = Math.pow(10, Math.floor(Math.log10(raw || 1))); const f = raw / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
 
-  function marker(shape, x, y, r, fill, extra) {
-    const a = 'fill="' + fill + '" stroke="#fff" stroke-width="2" ' + extra;
+  function marker(shape, x, y, r, fill, extra, onBar) {
+    const a = onBar ? 'fill="#fff" stroke="' + fill + '" stroke-width="3" ' + extra : 'fill="' + fill + '" stroke="#fff" stroke-width="2" ' + extra;
     if (shape === 'square') return '<rect x="' + (x - r) + '" y="' + (y - r) + '" width="' + 2 * r + '" height="' + 2 * r + '" ' + a + '/>';
     if (shape === 'triangle') return '<path d="M' + x + ' ' + (y - r - 1) + 'L' + (x + r + 1) + ' ' + (y + r) + 'L' + (x - r - 1) + ' ' + (y + r) + 'Z" ' + a + '/>';
     if (shape === 'diamond') return '<path d="M' + x + ' ' + (y - r - 2) + 'L' + (x + r + 2) + ' ' + y + 'L' + x + ' ' + (y + r + 2) + 'L' + (x - r - 2) + ' ' + y + 'Z" ' + a + '/>';
@@ -36,7 +36,7 @@
       const y = Y(v); s += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y + '" y2="' + y + '" stroke="#e3e0d0"/><text x="' + (m.l - 8) + '" y="' + (y + 5) + '" text-anchor="end" font-size="13" fill="#1c2b28">' + DC.fmt(v, 2) + '</text>';
     }
     s += '<line x1="' + m.l + '" x2="' + m.l + '" y1="' + m.t + '" y2="' + (m.t + ph) + '" stroke="#1c2b28" stroke-width="2"/><line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + (m.t + ph) + '" y2="' + (m.t + ph) + '" stroke="#1c2b28" stroke-width="2"/>';
-    if (yMin > 0) s += '<text x="' + (m.l - 2) + '" y="' + (m.t + ph + 16) + '" font-size="12" fill="#9a3f35" font-weight="700" text-anchor="end">axis starts at ' + DC.fmt(yMin, 2) + ' ≈</text>';
+    if (yMin > 0) s += '<text x="' + (m.l + 6) + '" y="' + (m.t + ph + 16) + '" font-size="12" fill="#9a3f35" font-weight="700">≈ axis starts at ' + DC.fmt(yMin, 2) + '</text>';
     s += '<text transform="translate(18 ' + (m.t + ph / 2) + ') rotate(-90)" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2b28">' + esc(cfg.yTitle || '') + '</text>';
     s += '<text x="' + (m.l + pw / 2) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2b28">' + esc(cfg.xTitle || '') + '</text>';
 
@@ -70,7 +70,7 @@
           g.values.forEach((v, i) => {
             if (typeof v !== 'number') return;
             const dx = (i - (g.values.length - 1) / 2) * 17;
-            s += marker(SHAPES[gi % 4], cx + dx, Y(v), 7, g.color, ptAttrs(g, i, v, inter, cfg));
+            s += marker(SHAPES[gi % 4], cx + dx, Y(v), 7, g.color, ptAttrs(g, i, v, inter, cfg), kind === 'bar');
           });
         }
       });

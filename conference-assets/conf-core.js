@@ -148,6 +148,7 @@
     const n = DC.state.cur, def = DC.chap[n], stage = DC.$('#stage'), meta = DC.CHAPTERS[n - 1];
     const y = window.scrollY;
     const head = '<div class="chead"><span class="num" aria-hidden="true">' + n + '</span><div><div class="kicker">Chapter ' + n + ' of 10</div><h2 id="chTitle">' + DC.esc(meta.title) + '</h2></div></div>';
+    DC.bindings = {};
     stage.innerHTML = head + (def ? def.render() : '<p>This chapter is not available.</p>') + DC.navFoot(n);
     if (def && def.mount) def.mount(stage);
     DC.paintRail();
