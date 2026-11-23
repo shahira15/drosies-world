@@ -197,6 +197,7 @@
     cursor: not-allowed;
   }
 
+  .soft-btn:focus-visible,
   .control-btn:focus-visible,
   .back-link:focus-visible {
     outline: 3px solid #d3a750;
@@ -355,7 +356,7 @@
     <span class="sparkle two" aria-hidden="true">✳</span>
     <span class="sparkle three" aria-hidden="true">✧</span>
 
-    <div class="book-stage" id="book-stage">
+    <div class="book-stage" id="book-stage" role="group" aria-label="Storybook pages. Use the Previous and Next buttons, or the left and right arrow keys, to turn pages.">
       <div id="book"></div>
     </div>
 
@@ -364,15 +365,15 @@
     </p>
 
     <div class="reader-controls">
-      <button class="control-btn" id="previous" type="button">
+      <button class="control-btn" id="previous" type="button" aria-label="Previous page">
         ← Previous
       </button>
 
-      <span class="page-number" id="page-number">
+      <span class="page-number" id="page-number" role="status" aria-live="polite">
         Loading...
       </span>
 
-      <button class="control-btn" id="next" type="button">
+      <button class="control-btn" id="next" type="button" aria-label="Next page">
         Next →
       </button>
     </div>
@@ -382,7 +383,7 @@
     </div>
 
     <div class="extra-controls">
-      <button class="soft-btn" id="first-page" type="button">
+      <button class="soft-btn" id="first-page" type="button" aria-label="Start over from the first page">
         ↺ Start Over
       </button>
 
@@ -440,8 +441,8 @@ for (let i = 1; i <= TOTAL_PAGES; i++) {
     }
 
     const image = document.createElement("img");
-    image.src = "book-pages/" + i + ".png";
-    image.alt = "Drosie's Storybook, page " + i;
+    image.src = "book-pages-web/" + i + ".webp";
+    image.alt = "Drosie's Storybook, page " + i + " of " + TOTAL_PAGES + ". The story text is part of the picture.";
     image.draggable = false;
     image.loading = i <= 4 ? "eager" : "lazy";
 
