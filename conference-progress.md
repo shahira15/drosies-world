@@ -21,12 +21,12 @@ Entry page: `scientific-conference.html` · assets: `conference-assets/` · test
 |---|-------|--------|
 | M1 | Architecture, visual system, navigation, persistence | done |
 | M2 | Introduction and path selection (Ch1, Ch2) | done |
-| M3 | Guided simulation + original-research organizer (Ch3) | next |
-| M4 | Data interpretation and graphing (Ch4) | todo |
-| M5 | Abstract studio (Ch5) | todo |
-| M6 | Poster studio and exports (Ch6) | todo |
-| M7 | Registration + hall (Ch7, Ch8) | todo |
-| M8 | Presentation practice, questions, revision (Ch9) | todo |
+| M3 | Guided simulation + original-research organizer (Ch3) | done |
+| M4 | Data interpretation and graphing (Ch4) | done |
+| M5 | Abstract studio (Ch5) | done |
+| M6 | Poster studio and exports (Ch6) | done |
+| M7 | Registration + hall (Ch7, Ch8) | done |
+| M8 | Presentation practice, questions, revision (Ch9) | next |
 | M9 | Finale, certificate, portfolio (Ch10) | todo |
 | M10 | Teacher guide, a11y, SEO, regression, polish | todo |
 
@@ -36,7 +36,8 @@ Entry page: `scientific-conference.html` · assets: `conference-assets/` · test
 Limitation: only title/abstract metadata were retrieved; method details in the activity are *inspired by* these assays, not copied.
 
 ## Tests run so far
-- `tests/conference/m1-m2.js`: 28/28 passed (shell, gating, PII guard, badge, persistence, both paths, overflow at 320/390/768/1280, console errors).
+- `m1-m2.js` 28/28 · `m3.js` 35/35 · `m4.js` 42/42 · `m5.js` 28/28 · `m6.js` 33/33 · `m7.js` 51/51 (all Playwright/Chromium; each also checks overflow at 320/390/768/1280 and console errors).
+- Poster PDF: generated via Chromium `page.pdf()` in print media, 1 page, text extractable (pdftotext).
 
 ## Known issues / limitations
 (see bottom of file as milestones complete)
