@@ -8,8 +8,8 @@ This is a complete static website (HTML, CSS, JavaScript, SVG) that works on pho
 - `styles.css` — colors, layout, responsive design, and typography.
 - `script.js` — mobile menu, live lesson search, and share button.
 - `assets/drosie-mascot.svg` — an original temporary cartoon illustration; **replace with your approved book artwork** before launch.
-- `resources/lesson-1-activity-sheet.pdf` through `lesson-7-activity-sheet.pdf` — seven printable student activities, each with a short teacher mini-guide.
-- `resources/all-activity-sheets.zip` — all seven activity PDFs together.
+- `lesson-1-activity-sheet.pdf` through `lesson-7-activity-sheet.pdf` — seven printable student activities, each with a short teacher mini-guide.
+- `all-activity-sheets.zip` — all seven activity PDFs together.
 - Existing editable Word lesson guides for Lesson 2 and Lessons 3–7. These are draft educator materials and should be proofread before public release.
 
 ## IMPORTANT: Add your actual storybook
@@ -17,14 +17,14 @@ This is a complete static website (HTML, CSS, JavaScript, SVG) that works on pho
 **The final storybook PDF was not provided.** The site intentionally says **coming soon** rather than offering a fake or broken book download.
 
 1. Export your finished book from Canva as a PDF, ensuring that you have the right to publish all illustrations and text.
-2. Rename the file `drosie-the-fruit-fly.pdf` and put it in `resources/`.
+2. Rename the file `drosie-the-fruit-fly.pdf` and put it in ``.
 3. Open `index.html` in a text editor and locate `<div class="book-download" id="bookDownload">`.
 4. Replace that whole block (up to its closing `</div>`) with:
 
 ```html
 <div class="book-download" id="bookDownload">
   <div><strong>Read Drosie, the Fruit Fly</strong><p>Download the free digital storybook PDF.</p></div>
-  <a class="button button-dark" href="resources/drosie-the-fruit-fly.pdf" download>Download the free book ↓</a>
+  <a class="button button-dark" href="drosie-the-fruit-fly.pdf" download>Download the free book ↓</a>
 </div>
 ```
 
