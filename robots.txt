@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /drosie-genetics-lab/tests/
+Disallow: /letters/tools/
+
+Sitemap: https://drosiesworld.com/sitemap.xml
