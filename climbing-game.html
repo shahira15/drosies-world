@@ -40,11 +40,11 @@ a{color:var(--forest);text-underline-offset:3px}
 
 /* top bar */
 .bar{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-family:var(--display);font-weight:900;font-size:21px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px}
+.brand{white-space:nowrap;font-family:var(--display);font-weight:900;font-size:21px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px}
 .brand i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--gold);font-style:normal;font-size:20px;color:var(--forest)}
 .brand em{font-style:normal;color:var(--coral)}
 .bar nav{display:flex;gap:8px;flex-wrap:wrap}
-.chip{font:700 13px var(--body);border:1.5px solid #c9d9cb;background:#ffffffc0;color:var(--forest);border-radius:99px;padding:9px 15px;min-height:40px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.chip{font:700 13px var(--body);border:1.5px solid #c9d9cb;background:#ffffffc0;color:var(--forest);border-radius:99px;padding:9px 15px;min-height:44px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{background:#fff}
 .chip[aria-pressed="true"]{background:var(--forest);color:#fff;border-color:var(--forest)}
 
@@ -52,20 +52,20 @@ a{color:var(--forest);text-underline-offset:3px}
 .wrap{max-width:1180px;margin:0 auto;padding:0 18px 36px}
 .title{padding:6px 0 16px;max-width:760px}
 .kicker{font:800 12px var(--body);letter-spacing:.16em;text-transform:uppercase;color:#c1785c}
-.title h1{font-size:clamp(32px,5.4vw,58px);margin:6px 0 8px;color:var(--forest-dk)}
+.title h1{font-size:clamp(30px,4.4vw,48px);margin:4px 0 6px;color:var(--forest-dk)}
 .title h1 span{color:var(--coral)}
 .title p{margin:0;color:var(--muted);font-size:clamp(15px,1.8vw,18px)}
 .game{display:grid;grid-template-columns:minmax(0,470px) minmax(0,1fr);gap:26px;align-items:start}
 
 /* ---------- scene ---------- */
 .scene{position:relative;border-radius:30px;overflow:hidden;background:#d9ece1;box-shadow:0 26px 60px -24px rgba(23,63,56,.45),0 0 0 6px #fff,0 0 0 7px #d4e2d4;
-  height:clamp(400px,122vw,640px)}
+  height:clamp(500px,calc(100vh - 28px),640px);position:sticky;top:14px}
 .scene svg.lab{display:block;width:100%;height:100%}
 .hud{position:absolute;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none}
 .hud>div{background:#fffdf6ee;border:2px solid #fff;border-radius:18px;box-shadow:0 6px 18px -8px rgba(23,63,56,.5);padding:7px 12px;font-family:var(--display);color:var(--forest-dk);min-width:88px}
-.hud small{display:block;font:800 10px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#7a8f82}
+.hud small{display:block;font:800 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#5d7468}
 .hud b{font-size:28px;line-height:1;font-weight:900;font-variant-numeric:tabular-nums}
-.hud .count b span{font-size:16px;color:#7a8f82;font-weight:800}
+.hud .count b span{font-size:16px;color:#5d7468;font-weight:800}
 .hud .timer{display:flex;align-items:center;gap:8px}
 .ring{width:38px;height:38px;flex:none}
 .ring circle{fill:none;stroke-width:5;stroke-linecap:round}
@@ -93,7 +93,7 @@ a{color:var(--forest);text-underline-offset:3px}
 .pip{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:900 14px var(--display);background:#eef2e8;color:#8aa093;border:2px solid #dbe5d6}
 .pip.done{background:var(--forest);color:#fff;border-color:var(--forest)}
 .pip.now{background:var(--gold);color:var(--forest-dk);border-color:var(--gold-dk);box-shadow:0 0 0 4px #f6d48c55}
-.trialbar .lbl{font:800 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#7a8f82}
+.trialbar .lbl{font:800 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#5d7468}
 .step h2{font-size:clamp(26px,3.4vw,36px);color:var(--forest-dk);margin:0 0 8px}
 .step h2:focus{outline:none}
 .step p{margin:0 0 12px;color:#496658;font-size:16.5px}
@@ -106,7 +106,7 @@ a{color:var(--forest);text-underline-offset:3px}
 .btn.go:hover:not(:disabled){box-shadow:0 8px 0 #a64a28,0 22px 30px -12px rgba(185,96,63,.7)}
 .btn.go.ready{outline:4px solid #f6d48c88;outline-offset:3px}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
-.note{font-size:13.5px;color:#6a8074;background:#f4f1e4;border-radius:14px;padding:10px 14px;margin-top:14px}
+.note{font-size:13.5px;color:#55695d;background:#f4f1e4;border-radius:14px;padding:10px 14px;margin-top:14px}
 details.learn{margin-top:14px;background:#fff;border:1.5px solid #e3e9e1;border-radius:16px;padding:2px 16px}
 details.learn summary{cursor:pointer;font-weight:800;color:var(--forest);padding:12px 0;min-height:44px}
 details.learn p{font-size:15px;margin:0 0 12px}
@@ -119,7 +119,7 @@ details.learn p{font-size:15px;margin:0 0 12px}
 .pf input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;width:100%;height:100%}
 .pf span{display:grid;justify-items:center;gap:2px;padding:8px 2px 6px;border-radius:16px;border:2px solid #e3e9e1;background:#fff;transition:transform .15s,background .15s,border-color .15s}
 .pf svg{width:34px;height:40px;opacity:.38;filter:grayscale(.8);transition:opacity .2s,filter .2s,transform .2s}
-.pf b{font:900 15px var(--display);color:#6a8074}
+.pf b{font:900 15px var(--display);color:#55695d}
 .pf.lit svg{opacity:1;filter:none}
 .pf.lit span{background:#fff7de;border-color:#f0cf7d}
 .pf.sel span{background:#ffeab0;border-color:var(--gold-dk);transform:translateY(-3px)}
@@ -127,6 +127,7 @@ details.learn p{font-size:15px;margin:0 0 12px}
 .zero{margin-top:8px}
 .zero .pf span{grid-auto-flow:column;gap:8px;justify-content:center;padding:9px 14px}
 .zero svg{display:none}
+.steps{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}.steps li{display:flex;align-items:center;gap:12px;font-size:16.5px;color:#496658}.steps b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--forest-dk);display:grid;place-items:center;font:900 15px var(--display)}
 .guess{font:800 15px var(--display);color:var(--forest-dk);min-height:24px;margin-top:10px}
 
 /* record */
@@ -174,7 +175,7 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
 .confirm{background:#fff3e8;border:2px solid #f0c7a8;border-radius:16px;padding:14px 16px;margin:0 0 14px}
 .confirm p{margin:0 0 10px;font-weight:700}
 .confirm .btn{font-size:15px;padding:10px 20px;min-height:44px}
-.foot{max-width:1180px;margin:0 auto;padding:0 18px 36px;font-size:13.5px;color:#6a8074}
+.foot{max-width:1180px;margin:0 auto;padding:0 18px 36px;font-size:13.5px;color:#55695d}
 .dw-more{max-width:960px;margin:1.5rem auto 1rem;padding:1.25rem 16px;text-align:center}
 .dw-more h2{font-size:1.15rem;margin:0 0 .75rem}
 .dw-more ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
@@ -183,16 +184,19 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
 
 @media(max-width:940px){
   .game{grid-template-columns:1fr}
-  .scene{max-width:520px;margin:0 auto;width:100%}
+  .game[data-phase-now="welcome"] .scene{display:none}
+  .scene{max-width:520px;margin:0 auto;width:100%;height:clamp(380px,108vw,480px);position:relative;top:auto}
 }
 @media(max-width:480px){
   .bar{padding:10px 12px}.wrap{padding:0 12px 28px}
-  .brand{font-size:18px}.chip{padding:8px 12px}
-  .coach img{width:64px}.bubble{font-size:14.5px}
+  .brand{font-size:18px}.chip{padding:8px 11px;font-size:12px}.hide-sm{display:none}.bar nav{flex-wrap:nowrap;gap:6px}
+  .picto{gap:2px}.picto svg{width:26px;height:32px}
+  .coach{margin-bottom:10px}.coach img{width:56px}.bubble{font-size:14.5px;padding:10px 14px}
   .hud b{font-size:23px}.hud>div{min-width:76px;padding:6px 10px}.ring{width:32px;height:32px}
   .stats{grid-template-columns:1fr 1fr 1fr;gap:6px}.stat b{font-size:22px}.stat{padding:10px 4px}
   .flyrow{gap:5px}.pf svg{width:28px;height:34px}
 }
+@media(max-width:380px){.bar{flex-wrap:wrap}.bar nav{flex-wrap:wrap}.brand{font-size:17px}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .petals{display:none}
@@ -231,7 +235,7 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
   <nav aria-label="Game options">
     <button class="chip" id="soundBtn" type="button" aria-pressed="false">Sound: off</button>
     <button class="chip" id="startOverBtn" type="button">Start over</button>
-    <a class="chip" href="/science-activities/">All activities</a>
+    <a class="chip hide-sm" href="/science-activities/">All activities</a>
   </nav>
 </header>
 
@@ -242,10 +246,10 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
     <p>Predict, observe and record. Can you think like a fruit fly scientist?</p>
   </div>
 
-  <div class="game">
+  <div class="game" id="gameGrid" data-phase-now="welcome">
     <!-- ================= LAB SCENE ================= -->
-    <section class="scene" aria-label="Virtual laboratory with a climbing vial of ten flies">
-      <svg class="lab" id="labSvg" viewBox="0 0 440 660" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A glass vial holding ten fruit flies, with an orange target line across the upper part of the vial.">
+    <section class="scene" id="scene" aria-label="Virtual laboratory with a climbing vial of ten flies">
+      <svg class="lab" id="labSvg" viewBox="0 52 440 556" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A glass vial holding ten fruit flies, with an orange target line across the upper part of the vial.">
         <defs>
           <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe7dc"/><stop offset=".6" stop-color="#e6f0e0"/><stop offset="1" stop-color="#f3ecd6"/></linearGradient>
           <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d49a64"/><stop offset="1" stop-color="#a96a3e"/></linearGradient>
@@ -259,10 +263,10 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
         </defs>
 
         <!-- room -->
-        <rect width="440" height="660" fill="url(#wall)"/>
-        <g opacity=".5" stroke="#bcd8c9" stroke-width="2"><path d="M0 396H440"/><path d="M0 410H440" opacity=".5"/></g>
-        <rect y="396" width="440" height="200" fill="#bfdccb" opacity=".45"/>
-        <g stroke="#a9cdb9" stroke-width="1.5" opacity=".6"><path d="M73 396V596M146 396V596M219 396V596M292 396V596M365 396V596"/></g>
+        <rect x="-500" y="-100" width="1440" height="800" fill="url(#wall)"/>
+        <g opacity=".5" stroke="#bcd8c9" stroke-width="2"><path d="M-500 396H940"/><path d="M-500 410H940" opacity=".5"/></g>
+        <rect x="-500" y="396" width="1440" height="200" fill="#bfdccb" opacity=".45"/>
+        <g stroke="#a9cdb9" stroke-width="1.5" opacity=".6"><path d="M-72 396V596M1 396V596M73 396V596M146 396V596M219 396V596M292 396V596M365 396V596M438 396V596M511 396V596"/></g>
         <!-- window -->
         <g transform="translate(26 40)">
           <rect x="-8" y="-8" width="116" height="136" rx="8" fill="url(#wood)"/>
@@ -286,9 +290,9 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
         </g>
 
         <!-- bench -->
-        <rect y="596" width="440" height="64" fill="url(#wood)"/>
-        <rect y="596" width="440" height="6" fill="#e8b27b"/>
-        <g stroke="#a46739" stroke-width="1.5" opacity=".5"><path d="M0 626H440M0 646H440"/></g>
+        <rect x="-500" y="596" width="1440" height="80" fill="url(#wood)"/>
+        <rect x="-500" y="596" width="1440" height="6" fill="#e8b27b"/>
+        <g stroke="#a46739" stroke-width="1.5" opacity=".5"><path d="M-500 626H940M-500 646H940"/></g>
         <ellipse cx="220" cy="598" rx="98" ry="8" fill="#6a3f20" opacity=".25" filter="url(#soft)"/>
         <!-- microscope (existing Drosie illustration) -->
         <image href="climbing-game-assets/microscope.webp" x="6" y="476" width="132" height="148" preserveAspectRatio="xMidYMax meet"/>
@@ -334,7 +338,7 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
             <text id="guessTagNum" x="50" y="30" text-anchor="middle" font-family="Nunito,Trebuchet MS,sans-serif" font-weight="900" font-size="15" fill="#fff">0</text>
           </g>
         </g>
-        <rect width="440" height="660" fill="url(#vig)" pointer-events="none"/>
+        <rect x="-500" y="-100" width="1440" height="800" fill="url(#vig)" pointer-events="none"/>
       </svg>
 
       <div class="hud" aria-hidden="true">
@@ -363,18 +367,18 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
       <!-- WELCOME -->
       <div class="step" data-phase="welcome">
         <h2 tabindex="-1">Can fruit flies climb?</h2>
-        <p>Fruit flies often climb up when they are gently tapped down. Scientists call this <strong>negative geotaxis</strong>: moving <em>away</em> from the pull of gravity.</p>
-        <p>Your mission: <strong>predict</strong> how many of ten flies will climb above the orange target line, <strong>watch</strong> them for 10 seconds, then <strong>record</strong> what happened. You will do it three times.</p>
+        <p>Fruit flies often climb up after they are tapped down. Scientists call this <strong>negative geotaxis</strong> (moving away from gravity's pull).</p>
+        <ol class="steps"><li><b>1</b> Guess how many of 10 flies will climb past the orange line.</li><li><b>2</b> Watch for 10 seconds.</li><li><b>3</b> Write down what happened. Do it 3 times!</li></ol>
         <div class="row"><button class="btn go ready" id="beginBtn" type="button">Enter the lab</button></div>
         <details class="learn"><summary>What is a climbing assay?</summary>
           <p>A climbing assay is a simple lab test. Scientists put flies in a vial, tap them to the bottom, and count how many climb past a marked line in a set amount of time. Real labs use standardized conditions and decide the observation time ahead of time.</p></details>
-        <p class="note"><strong>This is a simulation.</strong> The flies are drawings that move by a simple computer rule, not real lab data. Not every fly climbs every time, and these results can't tell us anything about real flies' ages, genes or treatments.</p>
+        <p class="note"><strong>This is a simulation.</strong> The flies are drawings that move by a simple computer rule. These are not real lab results, and they can't tell us anything about real flies.</p>
       </div>
 
       <!-- PREDICT -->
       <div class="step" data-phase="predict" hidden>
         <h2 tabindex="-1">Make your prediction</h2>
-        <p>How many of the 10 flies will climb <strong>above the orange target line</strong>? Tap the flies to choose. There is no wrong guess. Scientists guess first, then check.</p>
+        <p>How many flies will climb <strong>above the orange line</strong>? Tap a fly to choose. Any guess is a good guess!</p>
         <fieldset class="preds">
           <legend>I predict this many flies will cross the line</legend>
           <div class="flyrow" id="flyrow"></div>
@@ -387,18 +391,18 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
       <!-- PREPARE -->
       <div class="step" data-phase="prepare" hidden>
         <h2 tabindex="-1">Get the flies ready</h2>
-        <p>The flies are wandering around the vial. Before every trial scientists <strong>tap the vial gently</strong> so every fly starts at the bottom. This keeps the test fair.</p>
+        <p>Scientists tap the vial so every fly <strong>starts at the bottom</strong>. That keeps the test fair.</p>
         <div class="row">
           <button class="btn alt" id="tapBtn" type="button">Tap flies to the bottom</button>
-          <button class="btn go" id="startBtn" type="button" disabled>Start experiment</button>
+          <button class="btn go" id="startBtn" type="button" disabled hidden>Start experiment</button>
         </div>
-        <p class="note" id="prepNote">Step 1: tap the vial. Step 2: press Start.</p>
+        <p class="note" id="prepNote">First tap the vial, then press Start.</p>
       </div>
 
       <!-- RUN -->
       <div class="step" data-phase="run" hidden>
         <h2 tabindex="-1">Observe carefully!</h2>
-        <p>Watch the flies for 10 seconds. How many reach the orange line? The counter in the lab shows how many flies are above it right now.</p>
+        <p>Which flies will cross the orange line? The counter shows how many are above it.</p>
         <p class="note" id="runNote">Observing…</p>
       </div>
 
@@ -408,8 +412,8 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
         <div class="big"><b id="recNum">0</b><span id="recOf">of 10 flies were above the line</span></div>
         <div class="picto" id="picto" aria-hidden="true"></div>
         <div class="verdict" id="verdict"></div>
-        <table class="sum" id="recTable"><caption>Your trials so far</caption><thead><tr><th scope="col">Trial</th><th scope="col">Your prediction</th><th scope="col">Flies above line</th></tr></thead><tbody></tbody></table>
         <div class="row"><button class="btn go" id="nextBtn" type="button">Next trial</button></div>
+        <table class="sum" id="recTable" hidden><caption>Your trials so far</caption><thead><tr><th scope="col">Trial</th><th scope="col">Your prediction</th><th scope="col">Flies above line</th></tr></thead><tbody></tbody></table>
       </div>
 
       <!-- ANALYZE -->
@@ -470,7 +474,7 @@ table.sum{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:15px;bac
 const N = 10, TRIALS = 3, DURATION = 10;
 const LINE_F = 0.62, MARGIN = 0.07, F_MAX = 0.92;   // heights are fractions 0..1 of the vial
 const Y0 = 536, SPAN = 410, X_MIN = 178, X_MAX = 262;
-const FLY_SCALE = 0.8;
+const FLY_SCALE = 0.88;
 const yOf = f => Y0 - f * SPAN;
 const rand = (a, b) => a + Math.random() * (b - a);
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -488,7 +492,7 @@ const el = {
   guessTag: $('#guessTag'), guessNum: $('#guessTagNum'), vial: $('#vialGroup'), confirm: $('#confirm')
 };
 const COACH = {
-  welcome: "Welcome to my lab! I'm Drosie. Today we'll test how many of my friends climb up the vial.",
+  welcome: "Hi! I'm Drosie. Will my friends climb up the vial? Let's find out!",
   predict: "Make a guess first. Scientists predict before they look!",
   prepare: "A good test starts fair. Let's tap everyone down to the bottom.",
   run: "Eyes on the orange line. Here they go!",
@@ -531,7 +535,7 @@ function buildFlies() {
       f: 0, x: 0, rot: 0, f0: SLOTS[slot][1] + rand(-0.004, 0.004), kf: [], ph: rand(0, 6.28), freq: rand(0.7, 1.7), amp: rand(5, 11), crossed: false
     };
   });
-  S.flies.forEach(fl => { fl.x = fl.lane; fl.f = fl.f0; fl.rot = rand(-18, 18); drawFly(fl); });
+  S.flies.forEach(fl => { fl.x = rand(X_MIN, X_MAX); fl.f = rand(0.1, 0.5); fl.rot = rand(-40, 40); drawFly(fl); });   // wandering until the vial is tapped
 }
 function drawFly(fl, bob = 1) {
   fl.g.setAttribute('transform', `translate(${fl.x.toFixed(1)} ${yOf(fl.f).toFixed(1)}) rotate(${fl.rot.toFixed(1)}) scale(${(FLY_SCALE * bob).toFixed(3)})`);
@@ -547,7 +551,7 @@ function genTrial() {
   });
   // choose each fly's final spot; idle flies stay put and the others avoid overlapping them
   const placed = [];
-  const free = (x, f) => placed.every(q => { const dx = (x - q.x) / 22, dy = ((f - q.f) * SPAN) / 25; return dx * dx + dy * dy >= 1; });
+  const free = (x, f) => placed.every(q => { const dx = (x - q.x) / 24, dy = ((f - q.f) * SPAN) / 27; return dx * dx + dy * dy >= 1; });
   const order = [...S.flies].sort((a, b) => (a.kind === 'idle' ? 0 : 1) - (b.kind === 'idle' ? 0 : 1));
   order.forEach(fl => {
     let peak = 0, xEnd = fl.lane;
@@ -619,7 +623,8 @@ function updateHud(t) {
   el.timer.textContent = String(Math.ceil(left - 1e-6));
   el.ring.style.strokeDashoffset = String(100.5 * (1 - left / DURATION));
   const c = countAbove();
-  if (el.count.textContent !== String(c)) { el.count.textContent = String(c); el.countBox.classList.remove('pop'); void el.countBox.offsetWidth; if (!reduceMotion()) el.countBox.classList.add('pop'); }
+  if (el.count.textContent !== String(c)) {
+    if (S.phase === 'run') el.coach.textContent = c === 0 ? COACH.run : c === 1 ? 'One fly is over the line!' : `${c} flies are over the line!`; el.count.textContent = String(c); el.countBox.classList.remove('pop'); void el.countBox.offsetWidth; if (!reduceMotion()) el.countBox.classList.add('pop'); }
 }
 
 /* ---- generic tween of flies to target {f,x,rot} (used for scatter & tap-down) ---- */
@@ -647,11 +652,12 @@ function moveFliesTo(targets, dur) {
   });
 }
 const bottomTargets = () => S.flies.map(fl => ({ f: fl.f0, x: fl.lane, rot: rand(-16, 16) }));
-const scatterTargets = () => S.flies.map(fl => ({ f: rand(0.1, 0.82), x: rand(X_MIN, X_MAX), rot: rand(-50, 50) }));
+const scatterTargets = () => S.flies.map(fl => ({ f: rand(0.1, 0.5), x: rand(X_MIN, X_MAX), rot: rand(-50, 50) }));
 
 /* ---- phases ---- */
 function show(phase, focusHeading = true) {
   S.phase = phase;
+  $('#gameGrid').dataset.phaseNow = phase;
   document.querySelectorAll('[data-phase]').forEach(s => { s.hidden = s.dataset.phase !== phase; });
   el.coach.textContent = COACH[phase];
   const inTrial = ['predict', 'prepare', 'run', 'record'].includes(phase);
@@ -662,7 +668,12 @@ function show(phase, focusHeading = true) {
   }
   el.confirm.hidden = true;
   const h = document.querySelector(`[data-phase="${phase}"] h2`);
-  if (h && focusHeading) { h.focus({ preventScroll: true }); h.scrollIntoView({ block: phase === 'run' ? 'center' : 'nearest', behavior: reduceMotion() ? 'auto' : 'smooth' }); }
+  if (h && focusHeading) {
+    h.focus({ preventScroll: true });
+    const stacked = window.matchMedia('(max-width: 940px)').matches;   // scene sits above the steps on small screens
+    const target = stacked && (phase === 'prepare' || phase === 'run') ? document.querySelector('.scene') : h;
+    target.scrollIntoView({ block: target === h ? 'nearest' : 'start', behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }
 }
 
 function goWelcome() {
@@ -706,15 +717,12 @@ $('#lockBtn').addEventListener('click', () => {
 });
 
 /* PREPARE */
-async function enterPrepare() {
-  const id = ++S.runId; S.tapped = false; S.busy = true;
-  $('#tapBtn').disabled = true; $('#startBtn').disabled = true; $('#startBtn').classList.remove('ready');
-  $('#prepNote').textContent = 'The flies are wandering…';
+function enterPrepare() {
+  ++S.runId; S.tapped = false; S.busy = false;
+  $('#tapBtn').hidden = false; $('#tapBtn').disabled = false; $('#startBtn').hidden = true; $('#startBtn').disabled = true; $('#startBtn').classList.remove('ready');
+  $('#prepNote').textContent = 'First tap the vial, then press Start.';
   show('prepare');
-  await moveFliesTo(scatterTargets(), 1100);
-  if (id !== S.runId) return;
-  S.busy = false; $('#tapBtn').disabled = false; $('#prepNote').textContent = 'Step 1: tap the vial. Step 2: press Start.';
-  announce('Flies are spread out in the vial. Press Tap flies to the bottom.');
+  announce('The flies are spread out in the vial. Press Tap flies to the bottom.');
 }
 $('#tapBtn').addEventListener('click', async () => {
   if (S.phase !== 'prepare' || S.busy || S.tapped) return;
@@ -726,7 +734,8 @@ $('#tapBtn').addEventListener('click', async () => {
   el.vial.classList.remove('shake');
   S.busy = false; S.tapped = true;
   $('#prepNote').textContent = 'All ten flies are at the bottom. Ready?';
-  const b = $('#startBtn'); b.disabled = false; b.classList.add('ready'); b.focus();
+  $('#tapBtn').hidden = true;
+  const b = $('#startBtn'); b.hidden = false; b.disabled = false; b.classList.add('ready'); b.focus({ preventScroll: true });
   announce('All flies are at the bottom. Press Start experiment.');
 });
 
@@ -787,10 +796,11 @@ function renderRecord(count) {
   $('#recOf').textContent = count === 1 ? 'of 10 flies was above the line' : 'of 10 flies were above the line';
   $('#picto').innerHTML = pictogram(t.above);
   let msg;
-  if (diff === 0) msg = `You predicted ${t.pred}, and ${count} crossed. Your prediction matched this time. Does that mean it will match again? Try another trial to find out.`;
-  else msg = `You predicted ${t.pred}, and ${count} crossed (${Math.abs(diff)} ${diff > 0 ? 'more' : 'fewer'}). A surprise is useful: it shows what the evidence says, and it's why scientists check.`;
+  if (diff === 0) msg = `You guessed ${t.pred} and ${count} crossed. A match this time! Will it match again? Try another trial.`;
+  else msg = `You guessed ${t.pred} and ${count} crossed. A surprise is great: it shows what really happened, and that's why scientists check.`;
   $('#verdict').textContent = msg;
   fillTable($('#recTable'));
+  $('#recTable').hidden = S.trials.length < 2;
   $('#nextBtn').textContent = S.trial < TRIALS - 1 ? `Start trial ${S.trial + 2}` : 'See my analysis';
 }
 $('#nextBtn').addEventListener('click', () => {
@@ -798,7 +808,7 @@ $('#nextBtn').addEventListener('click', () => {
   if (S.trial < TRIALS - 1) {
     const id = ++S.runId; S.trial++; S.flies.forEach(fl => fl.g.classList.remove('is-above', 'is-below'));
     S.busy = true;
-    moveFliesTo(bottomTargets(), 700).then(ok => { if (id === S.runId) S.busy = false; });
+    moveFliesTo(scatterTargets(), 900).then(() => { if (id === S.runId) S.busy = false; });
     resetHud();
     enterPredict();
   } else { renderAnalysis(); show('analyze'); announce('Analysis ready. Compare your three trials.'); }
@@ -810,8 +820,8 @@ function renderAnalysis() {
   const min = Math.min(...counts), max = Math.max(...counts);
   const W = 360, PL = 34, PR = 12, PT = 16, PB = 34, ph = 250 - PT - PB, pw = W - PL - PR, yv = v => PT + ph - v * (ph / N);
   let svg = '';
-  for (let v = 0; v <= N; v += 2) svg += `<line x1="${PL}" x2="${W - PR}" y1="${yv(v)}" y2="${yv(v)}" stroke="${v === 0 ? '#8da997' : '#e6ece4'}" stroke-width="${v === 0 ? 2 : 1}"/><text x="${PL - 8}" y="${yv(v) + 4}" text-anchor="end" font-size="11" fill="#6a8074" font-family="DM Sans,Arial">${v}</text>`;
-  svg += `<text x="10" y="${PT + ph / 2}" font-size="11" fill="#6a8074" text-anchor="middle" font-family="DM Sans,Arial" transform="rotate(-90 10 ${PT + ph / 2})">Flies above the line</text>`;
+  for (let v = 0; v <= N; v += 2) svg += `<line x1="${PL}" x2="${W - PR}" y1="${yv(v)}" y2="${yv(v)}" stroke="${v === 0 ? '#8da997' : '#e6ece4'}" stroke-width="${v === 0 ? 2 : 1}"/><text x="${PL - 8}" y="${yv(v) + 4}" text-anchor="end" font-size="11" fill="#55695d" font-family="DM Sans,Arial">${v}</text>`;
+  svg += `<text x="10" y="${PT + ph / 2}" font-size="11" fill="#55695d" text-anchor="middle" font-family="DM Sans,Arial" transform="rotate(-90 10 ${PT + ph / 2})">Flies above the line</text>`;
   const slot = pw / TRIALS, bw = 58;
   S.trials.forEach((t, i) => {
     const cx = PL + slot * (i + 0.5), h = t.count * (ph / N), label = `Trial ${i + 1}: ${t.count} of 10 flies above the line. Your prediction was ${t.pred}.`;
