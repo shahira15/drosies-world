@@ -705,7 +705,7 @@
 
     // Drosie image (from the site root). Fall back gracefully if missing.
     const img = $('#drosie-img');
-    const missing = () => { img.hidden = true; $('#drosie-missing').hidden = false; console.warn('Drosie image not found at ../drosie.png.png'); };
+    const missing = () => { img.hidden = true; $('#drosie-missing').hidden = false; console.warn('Drosie image not found at ../images/drosie-mascot-640.webp'); };
     img.addEventListener('error', missing);
     if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) missing();
 

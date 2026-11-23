@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /drosie-genetics-lab/tests/
 Disallow: /letters/tools/
+Disallow: /letters/homepage-integration/
+Disallow: /seo/
 
 Sitemap: https://drosiesworld.com/sitemap.xml
