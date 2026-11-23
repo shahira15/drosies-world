@@ -57,6 +57,7 @@ FA.speak = text => {
   catch (e) { sp.speaking = false; readMsg.textContent = 'Read-aloud could not start.'; ui(); }
 };
 readBtn.addEventListener('click', () => FA.speak(sp.text || $('#coachText').textContent));
+$('#readPage').addEventListener('click', () => { const t = [...$$('#page .prompt')].map(n => n.textContent).join(' '); FA.speak(t || $('#coachText').textContent); });
 pauseBtn.addEventListener('click', () => { try { if (sp.paused) { speechSynthesis.resume(); sp.paused = false; } else { speechSynthesis.pause(); sp.paused = true; } } catch (e) { /* ignore */ } ui(); });
 if (!sp.ok) { readBtn.disabled = true; readMsg.textContent = 'Read-aloud is not available here.'; }
 document.addEventListener('visibilitychange', () => { if (document.hidden) FA.stopSpeech(); });

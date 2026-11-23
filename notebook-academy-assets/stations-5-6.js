@@ -100,6 +100,18 @@ FA.stations[5] = {
 };
 
 /* =============================================================== STATION 6 · The data integrity challenge */
+const SCNO = {
+  'A-del': 'Deleting a result because it is different hides data. It makes the record look tidier than what happened.',
+  'A-chg': 'Changing the 1 to a 4 is falsification: the record would no longer say what was observed.',
+  'C-guess': 'A guess written as a number looks like a real count. If you did not count, do not invent one.',
+  'C-copy': 'Copying Trial 3 makes up a result. Trial 4 was not counted, and the record should say so.',
+  'D-all': 'Changing every trial to 15 s rewrites what was actually done. Trials 1 to 3 really ran for 10 s.',
+  'D-none': 'Leaving the change out means a reader would think all trials used the same time, so the results could be misread.',
+  'E1-scrib': 'Scribbling over the 8 hides the original entry. A reader should still be able to read what was first written.',
+  'E1-erase': 'Erasing removes the original entry, so no one can see what was first recorded or why it changed.',
+  'E2-over': 'Replacing with no trace loses the original value and the reason for the change.',
+  'E2-del': 'Deleting and re-entering as new removes the link to the first entry, so the correction cannot be traced.'
+};
 const SC = {
   A: { t: 'A: An unexpected result', story: () => FA.T({ e: 'Three trials counted 4 flies. One trial counted 1 fly. What should you do?', j: 'Trials 1, 2 and 4 each had 4 flies crossing the line. Trial 3 had only 1. What should you do with Trial 3?', a: 'Trials 1, 2 and 4 each gave 4 flies crossing the line. Trial 3 gave 1. There is no known reason. What do you do with the Trial 3 value?' }), table: [['1', '4'], ['2', '4'], ['3', '1'], ['4', '4']],
     opts: [['del', 'Delete it because it is different', 0], ['keep', 'Record it, look for possible explanations, and consider repeating the trial', 1], ['chg', 'Change the 1 to a 4 so it matches', 0]],
@@ -116,7 +128,7 @@ SC.E2 = { t: 'E: correction in an electronic record', why: 'Keep the original en
 FA.stations[6] = {
   render(root) {
     const s = S().s6.sc, ok = id => s[id] && s[id].ok, allDone = ['A', 'B', 'C', 'D', 'E1', 'E2'].every(x => s[x] && s[x].ever);
-    const opt = (id, o) => `<div class="pills" role="radiogroup" aria-label="${esc(SC[id].t)}">${o.map(([k, t, c]) => `<button type="button" class="pill${s[id] && s[id].pick === k ? (s[id].ok ? ' good' : ' bad') : ''}" data-act="sc" data-id="${id}" data-k="${k}" data-c="${c}" data-f="${id}-${k}">${esc(t)}</button>`).join('')}</div><p class="fb ${s[id] ? (s[id].ok ? 'good' : 'bad') : ''}" role="status">${s[id] ? (s[id].ok ? '✓ ' + esc(SC[id].why) : 'Not quite. Think about what keeps the record honest and complete, then try again.') : ''}</p>`;
+    const opt = (id, o) => `<div class="pills" role="group" aria-label="${esc(SC[id].t)}">${o.map(([k, t, c]) => `<button type="button" aria-pressed="${!!(s[id] && s[id].pick === k)}" class="pill${s[id] && s[id].pick === k ? (s[id].ok ? ' good' : ' bad') : ''}" data-act="sc" data-id="${id}" data-k="${k}" data-c="${c}" data-f="${id}-${k}">${esc(t)}</button>`).join('')}</div><p class="fb ${s[id] ? (s[id].ok ? 'good' : 'bad') : ''}" role="status">${s[id] ? (s[id].ok ? '✓ ' + esc(SC[id].why) : esc(SCNO[id + '-' + s[id].pick] || 'Not quite. Think about what keeps the record honest and complete, then try again.')) : ''}</p>`;
     const tbl = id => SC[id].table ? `<div class="scroll"><table class="tbl"><caption class="sr-only">Data for scenario ${id}</caption><thead><tr><th scope="col">Trial</th><th scope="col">${id === 'D' ? 'Interval' : 'Flies crossing'}</th></tr></thead><tbody>${SC[id].table.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>` : '';
     const eOk1 = s.E1 && s.E1.ok, eOk2 = s.E2 && s.E2.ok, today = FA.niceDate(FA.today());
     root.innerHTML = `<p class="prompt">${esc(FA.T({ e: 'Scientists write down what really happened. Let us practice with five stories.', j: 'Five short stories show how scientists keep honest, complete records. Pick the best action for each.', a: 'Five scenarios on honest, complete data recording. Choose the response that keeps the record accurate and traceable.' }))}</p>
@@ -131,7 +143,7 @@ FA.stations[6] = {
     <section class="card" aria-labelledby="h-def"><h3 id="h-def">Three different things</h3><ul><li><b>Honest error:</b> an unintentional mistake, like miscounting. Fix it openly. This is not misconduct.</li><li><b>Fabrication:</b> making up data or results.</li><li><b>Falsification:</b> changing or leaving out data or results so the record does not accurately show what was found.</li></ul><p class="starter">These are the general ideas used in research integrity guidance (for example from the US Office of Research Integrity). Real institutions have their own policies.</p></section>
     ${allDone ? '<div class="callout ok" role="status"><b>Station complete!</b> You know how to keep an honest, complete record.</div>' : ''}`;
     FA.bind({
-      sc: b => { const id = b.dataset.id, good = b.dataset.c === '1', prev = s[id]; s[id] = { pick: b.dataset.k, ok: good }; if (prev && prev.ever) s[id].ever = true; if (good) s[id].ever = true; FA.save(); FA.say(good ? (SC[id] && SC[id].why || (id === 'E1' ? 'Draw one line through the old entry so it stays readable, then add the correction with the date.' : 'Preserve the original entry and keep a visible correction history.')) : 'Not quite. Think about what keeps the record honest and complete.', 'Corrections should never hide the original information.'); FA.rerender(`${id}-${b.dataset.k}`); fin(); },
+      sc: b => { const id = b.dataset.id, good = b.dataset.c === '1', prev = s[id]; s[id] = { pick: b.dataset.k, ok: good }; if (prev && prev.ever) s[id].ever = true; if (good) s[id].ever = true; FA.save(); FA.say(good ? (SC[id] && SC[id].why || (id === 'E1' ? 'Draw one line through the old entry so it stays readable, then add the correction with the date.' : 'Preserve the original entry and keep a visible correction history.')) : (SCNO[id + '-' + b.dataset.k] || 'Not quite. Think about what keeps the record honest and complete.'), 'Corrections should never hide the original information.'); FA.rerender(`${id}-${b.dataset.k}`); fin(); },
       unit: () => { const v = $('#unit').value; if (!v) return; const good = v === '°C'; s.B = { pick: v, ok: good, ever: good || (s.B && s.B.ever) }; FA.save(); FA.say(good ? SC.B.why : 'Check the unit. The thermometer measures in degrees Celsius.'); FA.rerender('unit'); fin(); }
     });
     function fin() { const q = S().s6.sc, e = x => q[x] && q[x].ever; if (['A', 'B', 'C', 'D', 'E1', 'E2'].every(e) && !S().done[6]) { FA.mark(6); FA.rerender(); } }
