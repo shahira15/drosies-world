@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1d5a5a">
+<title>Drosie's Lab Notebook Academy | Learn How Scientists Keep Trustworthy Records</title>
+<link rel="canonical" href="https://drosiesworld.com/lab-notebook-academy.html">
+<meta name="description" content="Every discovery deserves a record. A free interactive apprenticeship for ages 5–12 on how scientists keep honest laboratory notebooks, with printable notebook pages and a teacher guide. No sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Drosie's Lab Notebook Academy">
+<meta property="og:description" content="Every discovery deserves a record. Learn how scientists record what they did, what they saw, and what the evidence can and cannot tell them.">
+<meta property="og:url" content="https://drosiesworld.com/lab-notebook-academy.html">
+<meta property="og:site_name" content="Drosie's World">
+<meta property="og:image" content="https://drosiesworld.com/drosie-book-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="notebook-academy-assets/academy.css?v=1">
+</head>
+<body>
+<a class="skip" href="#page">Skip to the notebook page</a>
+
+<header class="bar">
+  <a class="brand" href="/" aria-label="Drosie's World home"><i aria-hidden="true">✿</i><span>Drosie's <em>World</em></span></a>
+  <div class="titleblock"><h1>Drosie's Lab Notebook Academy</h1><p>Every discovery deserves a record.</p></div>
+  <fieldset class="levels" id="levels"><legend>Learning level</legend>
+    <label><input type="radio" name="level" value="explorer"><span><b>Explorer</b><small>ages 5–6</small></span></label>
+    <label><input type="radio" name="level" value="junior"><span><b>Junior Scientist</b><small>ages 7–8</small></span></label>
+    <label><input type="radio" name="level" value="apprentice"><span><b>Research Apprentice</b><small>ages 9–12</small></span></label>
+  </fieldset>
+  <nav class="tools" aria-label="Tools">
+    <button type="button" class="tbtn" id="vStation" aria-pressed="true">Notebook stations</button>
+    <button type="button" class="tbtn" id="vPrint" aria-pressed="false">Printables</button>
+    <button type="button" class="tbtn" id="vGuide" aria-pressed="false">Teacher &amp; parent guide</button>
+    <button type="button" class="tbtn" id="prefBtn" aria-haspopup="dialog">Settings</button>
+  </nav>
+</header>
+
+<!-- the scientist's desk (decorative illustration; every prop is described in text elsewhere) -->
+<div class="desk" aria-hidden="true">
+  <svg viewBox="0 0 1200 150" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs>
+      <linearGradient id="dw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c79a63"/><stop offset="1" stop-color="#a97a46"/></linearGradient>
+      <linearGradient id="dglass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dcefee"/><stop offset=".5" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#cfe6e4"/></linearGradient>
+    </defs>
+    <rect width="1200" height="150" fill="url(#dw)"/>
+    <g stroke="#8d6336" stroke-width="1.5" opacity=".35"><path d="M0 40H1200M0 78H1200M0 116H1200"/></g>
+    <!-- ruler -->
+    <g transform="translate(60 92) rotate(-4)"><rect width="210" height="30" rx="3" fill="#f3e9c8" stroke="#b9a26a"/><g stroke="#6b5a2a" stroke-width="1.4"><path d="M10 0v12M20 0v7M30 0v7M40 0v7M50 0v7M60 0v12M70 0v7M80 0v7M90 0v7M100 0v7M110 0v12M120 0v7M130 0v7M140 0v7M150 0v7M160 0v12M170 0v7M180 0v7M190 0v7M200 0v7"/></g><text x="10" y="26" font-family="Verdana,sans-serif" font-size="8" fill="#6b5a2a">0</text><text x="58" y="26" font-family="Verdana,sans-serif" font-size="8" fill="#6b5a2a">5</text><text x="106" y="26" font-family="Verdana,sans-serif" font-size="8" fill="#6b5a2a">10</text><text x="156" y="26" font-family="Verdana,sans-serif" font-size="8" fill="#6b5a2a">15</text></g>
+    <!-- pens -->
+    <g transform="translate(300 62) rotate(18)"><rect width="150" height="9" rx="4.5" fill="#1d5a5a"/><rect x="118" width="32" height="9" rx="4" fill="#d9b45a"/><path d="M0 0L-14 4.5L0 9Z" fill="#f3e9c8"/><path d="M-9 3.5L-14 4.5L-9 5.5Z" fill="#222"/></g>
+    <g transform="translate(310 100) rotate(8)"><rect width="140" height="8" rx="4" fill="#9a4b3f"/><rect x="108" width="32" height="8" rx="4" fill="#ddd"/><path d="M0 0L-12 4L0 8Z" fill="#f3e9c8"/></g>
+    <!-- magnifier -->
+    <g transform="translate(520 30)"><circle cx="40" cy="40" r="34" fill="#fff6e0" fill-opacity=".55" stroke="#c9953f" stroke-width="7"/><path d="M64 66L100 108" stroke="#8d5a2b" stroke-width="10" stroke-linecap="round"/><path d="M26 28Q38 18 52 24" stroke="#fff" stroke-width="4" fill="none" opacity=".8"/></g>
+    <!-- fruit fly observation vial with a reference line -->
+    <g transform="translate(700 20)"><path d="M0 0H34V92Q34 110 17 110Q0 110 0 92Z" fill="url(#dglass)" stroke="#7fb1b6" stroke-width="3"/><rect x="-3" y="-6" width="40" height="14" rx="6" fill="#f1e7d2" stroke="#d6c7a6"/><path d="M0 48H34" stroke="#d9776a" stroke-width="2.5" stroke-dasharray="5 3"/><g fill="#6b4a2a"><circle cx="9" cy="30" r="2.6"/><circle cx="22" cy="24" r="2.6"/><circle cx="14" cy="64" r="2.6"/><circle cx="25" cy="72" r="2.6"/><circle cx="8" cy="86" r="2.6"/></g></g>
+    <!-- specimen label -->
+    <g transform="translate(760 78) rotate(-6)"><rect width="104" height="46" rx="3" fill="#fffdf4" stroke="#d8cfae"/><text x="8" y="17" font-family="Verdana,sans-serif" font-size="9" fill="#173f38">Specimen: FLY-S-01</text><text x="8" y="30" font-family="Verdana,sans-serif" font-size="9" fill="#173f38">Date: ____ / ____</text><path d="M8 39H96" stroke="#bbb" stroke-width="1"/></g>
+    <!-- data sheet -->
+    <g transform="translate(900 22) rotate(3)"><rect width="120" height="100" rx="3" fill="#fffdf4" stroke="#d8cfae"/><g stroke="#cfdcd1" stroke-width="1.2"><path d="M8 26H112M8 42H112M8 58H112M8 74H112M44 14V92M82 14V92"/></g><text x="10" y="22" font-family="Verdana,sans-serif" font-size="8" fill="#173f38">Trial   Flies   Crossed</text></g>
+    <image href="climbing-game-assets/microscope.webp" x="1040" y="10" width="110" height="126" preserveAspectRatio="xMidYMax meet"/>
+    <image href="climbing-game-assets/drosie.webp" x="150" y="4" width="96" height="90"/>
+  </svg>
+</div>
+
+<main class="wrap" id="main">
+  <!-- ================= STATIONS ================= -->
+  <section id="viewStation" aria-label="Notebook stations">
+    <div class="stationbar"><p class="progress" id="progress" aria-live="polite"></p></div>
+    <div class="bookwrap">
+      <nav class="tabs" id="tabs" aria-label="The eight learning stations"></nav>
+      <article class="book" aria-labelledby="pageTitle">
+        <div class="binding" aria-hidden="true"></div>
+        <div class="pageframe">
+          <header class="pagehead"><span id="pageNo">Page 1</span><h2 id="pageTitle" tabindex="-1">Station</h2><span id="pageDate"></span></header>
+          <div class="pagebody" id="page"></div>
+          <footer class="pagefoot"><button type="button" class="nb alt" id="prevSt">← Previous station</button><span id="doneNote" aria-live="polite"></span><button type="button" class="nb" id="nextSt">Next station →</button></footer>
+        </div>
+      </article>
+      <aside class="guide" aria-label="Drosie, your guide">
+        <img src="climbing-game-assets/drosie.webp" alt="Drosie the fruit fly, your guide" width="96" height="90">
+        <div class="bubble"><p id="coachText">Welcome!</p></div>
+        <div class="readrow"><button type="button" class="mini" id="readBtn">Read aloud</button><button type="button" class="mini" id="pauseBtn" hidden>Pause</button><span class="readmsg" id="readMsg" role="status"></span></div>
+        <p class="why" id="whyBox" hidden></p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= PRINTABLES ================= -->
+  <section id="viewPrint" hidden aria-label="Printable resources"></section>
+  <!-- ================= TEACHER GUIDE ================= -->
+  <section id="viewGuide" hidden aria-label="Teacher and parent guide"></section>
+</main>
+
+<footer class="foot">
+  <p><strong>This is an educational simulation for practice.</strong> It teaches general principles of good scientific recordkeeping and is not a legally compliant, validated or audit-trailed professional electronic laboratory notebook. Real laboratories follow their own institution's rules, and notebook formats vary by field. All practice data stays on this device (local storage). There are no accounts, trackers or ads, and it is not connected to other Drosie's World activities.</p>
+  <nav aria-label="More from Drosie's World"><a href="/science-activities/">All science activities</a><a href="/grow-your-own-fruit-fly.html">Grow Your Own Fruit Fly</a><a href="/life-cycle-game.html">Life Cycle Adventure</a><a href="/">Home</a></nav>
+  <p><button type="button" class="linkbtn" id="resetBtn">Reset or delete my practice data</button></p>
+</footer>
+<div id="sr" class="sr-only" role="status" aria-live="polite"></div>
+
+<dialog id="prefDlg" aria-labelledby="prefTitle"><form method="dialog">
+  <h2 id="prefTitle">Settings</h2><p class="dnote">These stay on this device. Read-aloud never starts by itself.</p>
+  <label class="sw"><input type="checkbox" data-pref="large"><span>Larger text</span></label>
+  <label class="sw"><input type="checkbox" data-pref="contrast"><span>High contrast</span></label>
+  <label class="sw"><input type="checkbox" data-pref="motion"><span>Reduce motion</span></label>
+  <label class="sw"><input type="checkbox" data-pref="easy"><span>Easy reading (wider spacing)</span></label>
+  <div class="drow"><button class="nb" value="close">Done</button></div></form></dialog>
+
+<dialog id="resetDlg" aria-labelledby="resetTitle"><form method="dialog">
+  <h2 id="resetTitle">Reset or delete practice data</h2>
+  <p>This removes your notebook setup, trial records, drawing, answers and finished entry from this device. It cannot be undone.</p>
+  <div class="drow"><button class="nb alt" value="cancel">Keep my data</button><button class="nb danger" value="reset" id="resetYes">Delete everything</button></div></form></dialog>
+
+<noscript><p style="padding:20px;text-align:center">This activity needs JavaScript. Please turn it on and reload.</p></noscript>
+<script src="notebook-academy-assets/core.js?v=1"></script>
+<script src="notebook-academy-assets/stations-1-4.js?v=1"></script>
+<script src="notebook-academy-assets/stations-5-6.js?v=1"></script>
+<script src="notebook-academy-assets/stations-7-8.js?v=1"></script>
+<script src="notebook-academy-assets/print.js?v=1"></script>
+</body>
+</html>
