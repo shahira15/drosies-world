@@ -1,0 +1,15 @@
+/* Shared styles for SEO hub pages (fruit-fly-biology, teacher-resources). Built on styles.css. */
+.hub-hero{background:#e9f3e9;padding:56px 0 40px}.hub-hero h1{font-size:clamp(32px,5vw,56px);line-height:1.1;letter-spacing:-.04em;margin:16px 0}.hub-hero h1 span{color:#d37d60}.hub-hero p{font-size:17px;color:#597165;max-width:680px}
+.hub-jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.breadcrumb{font-size:13px;margin:0 0 6px}.breadcrumb a{color:#245f55}
+.hub-section{padding:52px 0}.hub-section:nth-of-type(even){background:#f8f8f2}.hub-section h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.04em;line-height:1.15;margin:12px 0 16px}.hub-section h3{font-size:20px;margin:22px 0 8px}
+.hub-section p,.hub-section li{color:#4a6055;font-size:16px;line-height:1.75}.hub-section a:not(.button){color:#245f55;text-underline-offset:3px}.hub-section a:focus-visible,.hub-card a:focus-visible{outline:3px solid #245f55;outline-offset:3px}
+.narrow{max-width:820px}
+.hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:20px}.hub-card{background:#fff;border:1px solid #e3e9e1;border-radius:19px;padding:22px;display:flex;flex-direction:column;gap:6px}.hub-card h3{font-size:20px;margin:0 0 4px}.hub-card p{font-size:14.5px;margin:0 0 6px}.hub-card .button{align-self:flex-start;margin-top:auto}
+.facts{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}.facts th,.facts td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}.facts th{width:34%;background:#eef5ee;color:#245f55}
+.table-wrap{overflow-x:auto}
+.callout{background:#fdf1cf;border:1px solid #efd9a0;border-radius:16px;padding:16px 20px;margin:20px 0}.callout p{margin:0;color:#5a4a1c}
+.refs{font-size:14px;padding-left:20px}.refs li{font-size:14px;margin-bottom:8px}
+.byline{font-size:14px;color:#66796f}
+@media(max-width:900px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.hub-grid{grid-template-columns:1fr}.hub-section{padding:38px 0}.facts th{width:40%}}
