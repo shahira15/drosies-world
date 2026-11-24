@@ -74,7 +74,16 @@
   vx.tray = (items) => '<div class="vx-tray" role="group" aria-label="Things to do here">' + items.map((t) => '<button type="button" class="vx-tool' + (t.done ? ' done' : '') + (t.on ? ' on' : '') + '" data-act="' + t.act + '"' + Object.keys(t.data || {}).map((k) => ' data-' + k + '="' + esc(t.data[k]) + '"').join('') + (t.disabled ? ' disabled' : '') + (t.on ? ' aria-pressed="true"' : '') + (t.id ? ' id="' + t.id + '"' : '') + '>' + (t.svg || vx.icon(t.icon, 38)) + '<span>' + esc(t.label) + '</span>' + (t.done ? '<span class="sr-only">(done)</span>' : '') + '</button>').join('') + '</div>';
   vx.steps = (labels, cur, doneUpTo, act) => '<div class="vx-steps" role="group" aria-label="Steps">' + labels.map((l, i) => '<button type="button" class="vx-step' + (i < doneUpTo ? ' done' : '') + '" data-act="' + act + '" data-i="' + i + '"' + (i === cur ? ' aria-current="step"' : '') + (i > doneUpTo ? ' disabled' : '') + ' aria-label="Step ' + (i + 1) + ': ' + esc(l) + (i < doneUpTo ? ', done' : '') + '">' + (i < doneUpTo ? '✓' : i + 1) + '</button>').join('') + '</div>';
   /* picture choice card: {act, data, pic (svg/html), label, small, cls, pressed, id} */
-  vx.choice = (c) => '<button type="button" class="vx-choice ' + (c.cls || '') + '" data-act="' + c.act + '"' + Object.keys(c.data || {}).map((k) => ' data-' + k + '="' + esc(c.data[k]) + '"').join('') + (c.pressed != null ? ' aria-pressed="' + !!c.pressed + '"' : '') + (c.id ? ' id="' + c.id + '"' : '') + '><span class="pic">' + (c.pic || '') + '</span><span>' + esc(c.label) + '</span>' + (c.small ? '<small>' + esc(c.small) + '</small>' : '') + '</button>';
+  vx.choice = (c) => '<button type="button" class="vx-choice ' + (c.cls || '') + '" data-act="' + c.act + '"' + Object.keys(c.data || {}).map((k) => ' data-' + k + '="' + esc(c.data[k]) + '"').join('') + (c.pressed != null ? ' aria-pressed="' + !!c.pressed + '"' : '') + (c.id ? ' id="' + c.id + '"' : '') + '><span class="pic" aria-hidden="true">' + (c.pic || '') + '</span><span>' + esc(c.label) + '</span>' + (c.small ? '<small>' + esc(c.small) + '</small>' : '') + '</button>';
+  /* picture quiz: options [{label, small, pic, ok, fb}] -> sets DC.state.det[id] = {sel, ok, tries} (same shape as the original chapters) */
+  vx.reg = {};
+  vx.shuffle = (arr, seed) => { const a = arr.slice(), r = DC.rng('vx-' + seed); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  vx.quiz = (id, opts, o) => {
+    o = o || {}; vx.reg[id] = opts; const st = DC.state.det[id] || {};
+    return '<div class="vx-choices" role="group" aria-label="' + esc(o.q || 'Choose one') + '"' + (o.cols ? ' style="grid-template-columns:repeat(' + o.cols + ',minmax(0,1fr))"' : '') + '>' + opts.map((c, i) => vx.choice({ act: 'vxQuiz', data: { id, i }, pic: c.pic, label: c.label, small: c.small, cls: st.sel === i ? (c.ok ? 'ok' : 'bad') : '' })).join('') + '</div>' +
+      (st.sel != null && opts[st.sel] ? '<div class="vx-fb ' + (opts[st.sel].ok ? 'ok' : 'no') + '" role="status"><strong>' + (opts[st.sel].ok ? 'Yes! ' : 'Not quite. ') + '</strong>' + esc(opts[st.sel].fb || '') + '</div>' : '');
+  };
+  DC.acts.vxQuiz = (b) => { const id = b.dataset.id, i = +b.dataset.i, o = vx.reg[id] && vx.reg[id][i]; if (!o) return; const p = DC.state.det[id] || {}; DC.state.det[id] = { sel: i, ok: !!o.ok || !!p.ok, tries: (p.tries || 0) + 1 }; DC.save(); DC.refresh('[data-act=vxQuiz][data-id="' + id + '"][data-i="' + i + '"]'); DC.softUpdate(); DC.say((o.ok ? 'Yes! ' : 'Not quite. ') + (o.fb || '')); };
   vx.learn = (summary, html) => '<details class="vx-learn"><summary>' + esc(summary) + '</summary><div class="vx-note">' + html + '</div></details>';
 
   /* ---------- chapter wrapper: new visual render, original chapter kept as the Researcher workbench ---------- */
@@ -165,6 +174,9 @@
   const baseView = DC.view, baseSoft = DC.softUpdate;
   DC.view = function (o) { baseView.call(DC, o); document.body.dataset.vxChapter = String(DC.state.cur); vx.checkCards(); };
   DC.softUpdate = function () { baseSoft.call(DC); vx.checkCards(); };
+
+  /* elements that are not <button>s but carry role="button" + data-act (SVG flies, hot zones) must work with Enter and Space */
+  document.addEventListener('keydown', (e) => { const t = e.target; if ((e.key === 'Enter' || e.key === ' ') && t && t.getAttribute && t.getAttribute('role') === 'button' && t.hasAttribute('data-act') && t.tagName.toLowerCase() !== 'button') { e.preventDefault(); const ev = new MouseEvent('click', { bubbles: true, cancelable: true }); t.dispatchEvent(ev); } });
 
   /* ---------- header wiring ---------- */
   document.addEventListener('DOMContentLoaded', () => {

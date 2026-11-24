@@ -51,7 +51,7 @@ See the table in the final PR description; each milestone below is ticked only w
 | M0 | Audit and plan | done |
 | M1 | Design system, Drosie, scene framework, map, Research Backpack | done (`vx-core.js`, `vx.css`, `vx-art.js`; map, backpack, level switch, old-save migration tested) |
 | M2 | Ch1–2 | done (`vx-ch1-2.js`: envelope, 3 conference scenes, badge studio, two doors, stamped simulation seal, Path B step-by-step) |
-| M3 | Ch3 lab | todo |
+| M3 | Ch3 lab | done (`vx-ch3.js`: bench scene with 9 objects, planning game, animated trial, tap-to-count flies with nearest-fly targeting, clipboard/lamps, compare + variation; Path B card organizer; 55 checks) |
 | M4 | Ch4 detective | todo |
 | M5 | Ch5 abstract workshop | todo |
 | M6 | Ch6 poster studio | todo |

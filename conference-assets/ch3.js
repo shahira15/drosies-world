@@ -62,6 +62,8 @@
     }
   };
 
+  DC.lab.geom = { VX0, VX1, YB, PXCM, YLINE, cmY };   /* read-only geometry for the visual lab (same drawing space as DC.lab.svg) */
+
   /* ---------- UI state for the lab (not saved) ---------- */
   const ui = { cond: 'control', trial: 0, phase: 'idle', t: 0, hl: false, speed: 1, msg: '', tries: 0, raf: 0 };
   const reduced = () => document.documentElement.classList.contains('nomotion') || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);

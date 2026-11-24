@@ -6,6 +6,8 @@
 }
 body[data-app="conference"]{font-family:var(--vx-font)}
 .vx h2,.vx h3,.vx h4,.vx-title{font-family:var(--vx-font);letter-spacing:-.01em}
+.vx-title{font-weight:900;color:var(--vx-teal);line-height:1.15}
+.vx-choice{overflow-wrap:normal;word-break:normal;hyphens:auto}
 
 /* chunky buttons (same family as the Secret Fly Lab's "Play") */
 .vx-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font:800 1rem var(--vx-font);color:#33220c;background:linear-gradient(#ffe48f,var(--vx-gold) 55%,var(--vx-gold2));border:0;border-radius:16px;padding:.7rem 1.3rem;min-height:3rem;cursor:pointer;box-shadow:0 5px 0 var(--vx-goldedge),0 10px 18px rgba(60,40,10,.25);transition:transform .08s,box-shadow .08s,filter .15s;text-decoration:none;line-height:1.1}
@@ -140,3 +142,6 @@ details.vx-learn summary{cursor:pointer;font:800 .95rem var(--vx-font);color:var
 .vx-side>.vx-panel:first-child,.vx-side>.vx-steps:first-child{margin-top:0}
 @media(min-width:1000px){.vx-stage{grid-template-columns:minmax(0,1.5fr) minmax(330px,1fr)}.vx-stage.stack{grid-template-columns:minmax(0,1fr)}.vx-side{position:sticky;top:.6rem}.vx-stage.stack .vx-side{position:static}}
 @media(max-width:640px){.vx-hot{display:none}.vx-hot.keep{display:grid}}
+
+.vx-vshake{animation:vxvshake .16s linear 4;transform-box:fill-box;transform-origin:center}
+@keyframes vxvshake{25%{transform:translateX(-6px) rotate(-1deg)}75%{transform:translateX(6px) rotate(1deg)}}
