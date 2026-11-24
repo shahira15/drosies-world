@@ -3,7 +3,7 @@ const SEED_A = () => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.
 (async () => {
   let { browser, page, errors } = await open({});
   console.log('M5 path A');
-  await page.evaluate(SEED_A); await page.goto('http://localhost:8123/scientific-conference.html#ch5'); await page.reload();
+  await page.evaluate(SEED_A); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch5'); await page.reload();
   ok((await page.locator('#absFb').innerText()).includes('is empty'), 'empty abstract: feedback lists missing parts');
   await page.locator('[data-act=absDraft]').click();
   const res = await page.inputValue('#ab-results');
@@ -48,7 +48,7 @@ const SEED_A = () => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.
   ({ browser, page, errors } = await open({}));
   console.log('M5 path B');
   await page.evaluate(() => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.state.path = 'B'; DC.state.b.f.title = 'Ants'; DC.state.b.f.question = 'When do ants come?'; DC.state.b.f.background = 'Ants live in colonies.'; DC.state.b.log = [{ label: 'Mon', group: '', value: '4', note: '' }]; DC.saveNow(); });
-  await page.goto('http://localhost:8123/scientific-conference.html#ch5'); await page.reload();
+  await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch5'); await page.reload();
   await page.locator('[data-act=absDraft]').click();
   ok((await page.inputValue('#ab-obj')) === 'When do ants come?' && (await page.inputValue('#ab-bg')) === 'Ants live in colonies.', 'B draft copies learner’s own words only');
   ok((await page.inputValue('#ab-results')) === '', 'B results left empty (no invented results)');

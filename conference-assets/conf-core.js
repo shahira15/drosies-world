@@ -32,7 +32,7 @@
     hall: { visited: {}, sci: {}, posters: {}, talk: {}, reflect: '' },
     prac: { timerDone: false, explain: '', explainOk: false, qa: {}, qaDone: {} },
     revs: [], refl: { learned: '', surprise: '', next: '', proud: '' }, fin: { claimed: false },
-    settings: { large: false, motion: false, contrast: false }, cur: 1, ts: 0
+    settings: { large: false, motion: false, contrast: false }, ui: { level: 'explorer', seen: {}, bench: {}, c: {} }, cur: 1, ts: 0
   });
 
   const merge = (base, over) => {

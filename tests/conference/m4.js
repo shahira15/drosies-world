@@ -3,7 +3,7 @@ const SEED_A = () => { DC.state.mode = 'independent'; DC.state.nick = 'T'; DC.st
 (async () => {
   let { browser, page, errors } = await open({});
   console.log('M4 path A');
-  await page.evaluate(SEED_A); await page.goto('http://localhost:8123/scientific-conference.html#ch4'); await page.reload();
+  await page.evaluate(SEED_A); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch4'); await page.reload();
   const sumText = (await page.locator('.tbl').first().innerText()).replace(/\s+/g, ' ');
   ok(sumText.includes('7.2') && sumText.includes('4.2') && sumText.includes('7') && sumText.includes('36') && sumText.includes('21'), 'summary shows computed means 7.2 / 4.2 and totals 36 / 21');
   ok(sumText.includes('6 to 8') && sumText.includes('3 to 5'), 'ranges 6 to 8 and 3 to 5');
@@ -59,7 +59,7 @@ const SEED_A = () => { DC.state.mode = 'independent'; DC.state.nick = 'T'; DC.st
   // incomplete data: nothing manufactured
   ({ browser, page, errors } = await open({}));
   await page.evaluate(() => { DC.state.mode = 'independent'; DC.state.nick = 'T'; DC.state.path = 'A'; DC.state.a.acked = true; DC.state.a.rec.control[0] = 7; DC.saveNow(); });
-  await page.goto('http://localhost:8123/scientific-conference.html#ch4'); await page.reload();
+  await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch4'); await page.reload();
   ok((await page.locator('#stage .callout.warn').innerText()).includes('10 trial recordings'), 'incomplete trials: no analysis is invented, user is sent back');
   await browser.close();
 
@@ -67,7 +67,7 @@ const SEED_A = () => { DC.state.mode = 'independent'; DC.state.nick = 'T'; DC.st
   ({ browser, page, errors } = await open({}));
   console.log('M4 path B');
   await page.evaluate(() => { DC.state.mode = 'independent'; DC.state.nick = 'T'; DC.state.path = 'B'; DC.state.b.f.title = 'Ants'; DC.state.b.f.question = 'Q?'; DC.state.b.log = [{ label: 'Mon', group: 'Door', value: '4', note: '' }, { label: 'Tue', group: 'Door', value: '6', note: '' }, { label: 'Wed', group: 'Window', value: '2', note: '' }]; DC.saveNow(); });
-  await page.goto('http://localhost:8123/scientific-conference.html#ch4'); await page.reload();
+  await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch4'); await page.reload();
   ok((await page.locator('#bGraph').innerText()).includes('Pick the kind'), 'no graph until a kind is chosen');
   await page.locator('input[name=bkind][value=compare]').check({ force: true });
   ok((await page.locator('#bGraph .callout.warn').innerText()).includes('vertical axis a title'), 'warns about unlabeled axes');

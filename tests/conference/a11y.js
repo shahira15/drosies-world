@@ -8,7 +8,7 @@ const axeSrc = fs.readFileSync(process.env.AXE_PATH, 'utf8');
     const { browser, page, errors } = await open({ reduced: true });
     await page.evaluate(SEED_ALL, path);
     for (let n = 1; n <= 10; n++) {
-      await page.goto('http://localhost:8123/scientific-conference.html#ch' + n); await page.reload();
+      await page.goto('http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1') + '#ch' + n); await page.reload();
       if (n === 10) { await page.locator('[data-act=finCert]').click().catch(() => {}); }
       if (n === 8) { await page.locator('.areabtn[data-a=talk]').click(); await page.locator('[data-act=sciPick][data-s=quill]').click(); }
       await page.evaluate(axeSrc);

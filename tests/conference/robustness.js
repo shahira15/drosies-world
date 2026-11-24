@@ -4,7 +4,7 @@ const fs = require('fs');
 const { open, ok, done, overflow } = require('./helpers');
 const { SEED_ALL } = require('./seed');
 const OUT = '/tmp/claude-0/-home-user-drosies-world/7dc5b43f-e8cb-5caa-894c-ae04188dc07b/scratchpad/';
-const URL = 'http://localhost:8123/scientific-conference.html';
+const URL = 'http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1') + '';
 (async () => {
   console.log('robustness: navigation and storage');
   let { browser, page: p, errors } = await open({ reduced: true });

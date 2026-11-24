@@ -34,7 +34,7 @@ async function tabTo(page, sel, max = 80) { for (let i = 0; i < max; i++) { if (
   console.log('keyboard: lab, graph, hall, ordering');
   const b2 = await open({ reduced: true }); const p2 = b2.page;
   await p2.evaluate(SEED_ALL, 'A'); await p2.evaluate(() => { DC.state.a.rec = { control: [null, null, null, null, null], cool: [null, null, null, null, null] }; DC.state.a.setup = {}; DC.saveNow(); });
-  await p2.goto('http://localhost:8123/scientific-conference.html#ch3'); await p2.reload();
+  await p2.goto('http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1') + '#ch3'); await p2.reload();
   ok(await tabTo(p2, '#su-temp'), 'setup menus reachable'); await p2.keyboard.press('ArrowDown'); // choose via keyboard
   ok((await p2.evaluate(() => DC.state.a.setup.temp)) === 'changed', 'select option chosen with ArrowDown');
   const ans = ['changed', 'measured', 'same', 'same', 'same', 'same'];
@@ -44,13 +44,13 @@ async function tabTo(page, sel, max = 80) { for (let i = 0; i < max; i++) { if (
   ok(await p2.evaluate(() => DC.state.a.rec.control[0] === 7), 'a trial was run, counted and recorded with the keyboard only');
   // graph focus
   await p2.evaluate(() => { DC.DATA.conditions.forEach((c) => (DC.state.a.rec[c.id] = c.counts.slice())); DC.saveNow(); });
-  await p2.goto('http://localhost:8123/scientific-conference.html#ch4'); await p2.reload();
+  await p2.goto('http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1') + '#ch4'); await p2.reload();
   let reached = 0; for (let i = 0; i < 120 && reached < 10; i++) { await p2.keyboard.press('Tab'); if (await p2.evaluate(() => document.activeElement.classList.contains('chart-pt'))) { reached++; } }
   ok(reached === 10, 'all 10 graph points are keyboard reachable (' + reached + ')');
   ok((await p2.locator('#gOut').innerText()).includes('flies'), 'focus reads the value out in the readout');
   // hall
   await p2.evaluate((SEED) => 0, 0);
-  await p2.evaluate(SEED_ALL, 'A'); await p2.goto('http://localhost:8123/scientific-conference.html#ch8'); await p2.reload();
+  await p2.evaluate(SEED_ALL, 'A'); await p2.goto('http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1') + '#ch8'); await p2.reload();
   await tabTo(p2, '.hot'); await p2.keyboard.press('Enter');
   ok(await p2.evaluate(() => Object.keys(DC.state.hall.visited).length) >= 1, 'hall hotspot activates with Enter');
   ok(await tabTo(p2, '.areabtn[data-a=talk]'), 'area list buttons reachable'); await p2.keyboard.press('Space');
@@ -59,7 +59,7 @@ async function tabTo(page, sel, max = 80) { for (let i = 0; i < max; i++) { if (
   ok(await p2.locator('#sciPanel .fb').count() === 1, 'answering a scientist works by keyboard');
   // ordering without drag
   await p2.evaluate(() => { DC.state.reg.order = ['why', 'hello', 'how', 'found', 'means', 'next']; DC.state.reg.orderOk = false; DC.saveNow(); });
-  await p2.goto('http://localhost:8123/scientific-conference.html#ch7'); await p2.reload();
+  await p2.goto('http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1') + '#ch7'); await p2.reload();
   await tabTo(p2, '[data-act=ordMove][data-i="1"][data-d="-1"]'); await p2.keyboard.press('Enter');
   ok(await p2.evaluate(() => DC.state.reg.order[0] === 'hello'), 'reordering works with the keyboard (non-drag alternative)');
   ok(await p2.evaluate(() => document.activeElement.matches('[data-act=ordMove]')), 'focus stays on a move button after moving');

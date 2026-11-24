@@ -6,7 +6,7 @@ const OUT = '/tmp/claude-0/-home-user-drosies-world/7dc5b43f-e8cb-5caa-894c-ae04
   let { browser, ctx, page, errors } = await open({});
   console.log('M9 finale (path A)');
   await page.evaluate(() => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.state.path = 'A'; DC.saveNow(); });
-  await page.goto('http://localhost:8123/scientific-conference.html#ch10'); await page.reload();
+  await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch10'); await page.reload();
   ok((await page.locator('.callout.warn').first().innerText()).includes('certificate unlocks'), 'certificate locked until chapters 1-9 are done');
   ok(await page.locator('.cert').count() === 0, 'no certificate before completion');
   await page.evaluate(SEED_ALL, 'A'); await page.reload();
@@ -57,7 +57,7 @@ const OUT = '/tmp/claude-0/-home-user-drosies-world/7dc5b43f-e8cb-5caa-894c-ae04
   ({ browser, page, errors } = await open({}));
   console.log('M9 finale (path B)');
   await page.evaluate(() => { DC.state.mode = 'independent'; DC.saveNow(); });
-  await page.goto('http://localhost:8123/scientific-conference.html#ch10'); await page.evaluate(SEED_ALL, 'B'); await page.reload();
+  await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch10'); await page.evaluate(SEED_ALL, 'B'); await page.reload();
   const fb = await page.evaluate(() => [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => DC.isDone(n)));
   ok(fb.every(Boolean), 'B seeded state completes chapters 1-9: ' + fb.join());
   await page.locator('[data-act=finCert]').click();
