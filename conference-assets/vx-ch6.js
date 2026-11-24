@@ -94,7 +94,7 @@
     mount() {
       paint();
       DC.onBind('poster.', (el) => { if (el.dataset.bind === 'poster.scale') { const o = DC.$('#v6szo'); if (o) o.textContent = el.value; } paint(); DC.softUpdate(); });
-      window.addEventListener('resize', () => { if (DC.state.cur === 6) fitPoster(); });
+      window.addEventListener('resize', () => { if (DC.state && DC.state.cur === 6) fitPoster(); });
     }
   });
 

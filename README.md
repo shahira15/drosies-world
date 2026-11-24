@@ -81,7 +81,7 @@ Then open <http://localhost:8000/>. Any static file server works (for example `n
 
 **Network note:** a fully offline copy is functional for most activities, but some pages request third-party resources (web fonts, map tiles, analytics; see [Privacy and external services](#privacy-and-external-services)). These degrade gracefully or fail silently when blocked.
 
-**Software-release ZIP:** a deterministic archive of the code and documentation, with certain artwork and personal images deliberately **excluded** pending rights decisions, can be built with `python3 tools/build_release.py`. See [`docs/RELEASE_BUILD.md`](docs/RELEASE_BUILD.md). The excluded images must be supplied separately for pages that display them to look complete.
+**Archival edition (for Zenodo):** a self-contained, offline edition with no third-party requests is built with `python3 tools/build_archive.py` (two variants: `full`, with the original illustrations under the rights described in `ASSET_LICENSES.md`, and `placeholders`, with neutral stand-in images). Differences from the live site are listed in [`docs/ARCHIVAL_EDITION.md`](docs/ARCHIVAL_EDITION.md); the build is reproducible ([`docs/RELEASE_BUILD.md`](docs/RELEASE_BUILD.md)).
 
 ## Functionality overview
 
@@ -92,16 +92,15 @@ Then open <http://localhost:8000/>. Any static file server works (for example `n
 
 ## Testing, accessibility and browser support
 
-Summarised here; evidence and exact commands are in [`docs/TESTING.md`](docs/TESTING.md). In brief:
+Summarised here; actual results, failures and limits are in [`docs/TESTING.md`](docs/TESTING.md). In brief:
 
-- Automated tests exist for the **Genetics Lab engine** (Node, 58 tests) and the **Scientific Conference** (Playwright scripts in `tests/conference/`, axe-core scans), plus a static SEO/link checker (`seo/tools/seo_check.py`).
-- The other components (Secret Fly Lab, Life Cycle, Grow Your Own, Climbing Challenge, Lab Notebook Academy, Letters) have **no dedicated automated test suite** in this repository.
-- Automated browser testing used **Chromium only**. Firefox, Safari, and real mobile devices have **not** been tested.
-- Accessibility: automated axe-core scans on the Conference; **no screen-reader testing, no user testing with people with disabilities, and no WCAG conformance claim**.
+- Automated tests: the **Genetics Lab engine** (Node), the **Scientific Conference** (Playwright, 30 scripts) and, new in this release, a **site-wide suite** (`tests/site/`) covering page loading, links, keyboard navigation, mobile layouts, offline operation, an axe-core scan, and functional flows for the Climbing Challenge, Life Cycle Adventure, Grow Your Own, Secret Fly Lab, Notebook Academy, Storybook, Letters, Discovery Library, home page and Genetics Lab UI.
+- Browsers: automated runs used **Chromium only**. The suite supports Firefox and WebKit, but those browsers are not installed in the build environment, so they have **not** been run.
+- Accessibility: automated axe-core scans plus keyboard tests. **No screen-reader testing, no testing with disabled users, and no WCAG conformance claim**; automated tools find only part of the barriers.
 
 ## Privacy and external services
 
-There are no user accounts. The site uses these third-party services (details in [`docs/REPOSITORY_AUDIT.md`](docs/REPOSITORY_AUDIT.md)):
+There are no user accounts. The **live website** uses these third-party services (the **archival edition uses none of them**) (details in [`docs/REPOSITORY_AUDIT.md`](docs/REPOSITORY_AUDIT.md)):
 
 - GoatCounter (privacy-oriented analytics): home page, Secret Fly Lab, Discovery Library and Storybook;
 - Google Fonts: the shared `styles.css` (used by the home page, Discovery Library, Fruit Fly Biology, Life Cycle Activities, Science Activities, Teacher Resources, Team and 404 pages) and the Letters page;
@@ -116,12 +115,12 @@ The Scientific Conference, Genetics Lab, Secret Fly Lab (apart from analytics), 
 
 - **No demonstrated educational effectiveness.** No formal student learning outcomes have been established. No pilot, controlled study or classroom evaluation has been conducted. Optional pre/post quizzes in the software are practice tools and, as the software itself states, do not measure learning gains.
 - **Simplified, partly stylised science.** Illustrations are diagrams, not photographs. Timings are approximate. The Genetics Lab models 7 real alleles with complete penetrance and no crossover interference, nondisjunction, incomplete dominance or chromosome 4 loci (see `drosie-genetics-lab/docs/MODEL_SPECIFICATION.md` §9).
-- **No independent expert review.** Allele data were checked against FlyBase by the developer; no independent *Drosophila* geneticist or entomologist has reviewed the content, and no teacher review has been recorded.
+- **No independent expert review.** The design is literature-informed and technically tested; allele data were compiled from FlyBase by the developer and not independently reviewed. No *Drosophila* geneticist, entomologist or teacher review has been recorded. See [`docs/SCIENTIFIC_VERIFICATION_MATRIX.md`](docs/SCIENTIFIC_VERIFICATION_MATRIX.md) for what is and is not supported.
 - **Not standards-aligned** except for informal NGSS/TEKS mappings in the Genetics Lab teacher guide, which are the author's own and unreviewed. The Conference makes no alignment claim.
-- **Testing gaps:** single-browser automation, no screen-reader or real-device testing, no tests for several components.
+- **Testing gaps:** single-browser automation, no screen-reader or real-device testing; see the testing document for unresolved failures.
 - **English only.** Narration relies on the browser's built-in speech voices, which vary.
 - **Safety:** the software does not replace school laboratory rules, adult supervision or training, and does not give instructions for keeping live animals.
-- **Rights:** mascot, storybook illustrations and branding are not licensed for reuse. See [Licensing](#licensing).
+- **Rights:** the mascot, character designs, storybook illustrations and branding are not licensed for reuse. See [Licensing](#licensing).
 
 ## Repository layout
 
@@ -155,25 +154,38 @@ tools/build_release.py              deterministic release-ZIP builder
 | [`docs/LICENSING_AUDIT.md`](docs/LICENSING_AUDIT.md) | Per-asset licensing audit |
 | [`docs/LICENSING_PROPOSAL.md`](docs/LICENSING_PROPOSAL.md) | **Proposed** (not applied) mixed-license strategy |
 | [`docs/AI_DISCLOSURE.md`](docs/AI_DISCLOSURE.md) | AI-assisted development disclosure |
+| [`docs/ARCHIVAL_EDITION.md`](docs/ARCHIVAL_EDITION.md) | Archival edition and its differences from the live site |
+| [`docs/SCIENTIFIC_VERIFICATION_MATRIX.md`](docs/SCIENTIFIC_VERIFICATION_MATRIX.md) | Concept-by-concept verification of the science |
+| [`docs/INDEPENDENT_SCIENTIFIC_REVIEWER_CHECKLIST.md`](docs/INDEPENDENT_SCIENTIFIC_REVIEWER_CHECKLIST.md) | Checklist for an independent reviewer |
+| [`docs/LIVE_SITE_PRIVACY_SECURITY_AUDIT.md`](docs/LIVE_SITE_PRIVACY_SECURITY_AUDIT.md) | Live-site privacy/security audit (incl. Supabase RLS requirements) |
+| [`docs/PROPOSED_PRIVACY_NOTICE.md`](docs/PROPOSED_PRIVACY_NOTICE.md) | Draft privacy notice for human/legal review |
+| [`docs/BOOK_RELATIONSHIP.md`](docs/BOOK_RELATIONSHIP.md) | Verified book record and recommended relation |
+| [`docs/COMPONENT_LICENSE_INVENTORY.md`](docs/COMPONENT_LICENSE_INVENTORY.md) | Per-component proposed licensing |
+| [`ASSET_LICENSES.md`](ASSET_LICENSES.md), [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Asset rights and third-party notices |
 | [`docs/ZENODO_METADATA_DRAFT.md`](docs/ZENODO_METADATA_DRAFT.md) | Draft Zenodo record text |
 | [`docs/RELEASE_BUILD.md`](docs/RELEASE_BUILD.md) | Reproducible build |
 | [`docs/RELEASE_READINESS_REPORT.md`](docs/RELEASE_READINESS_REPORT.md) | Issues needing human review |
 
 ## Licensing
 
-**No software licence has been applied to this repository yet.** Until the author decides, all rights are reserved by default under copyright law. A mixed strategy (permissive licence for code; separate rights-reserved terms for mascot, branding and storybook illustrations; a content licence for text) is *proposed* in [`docs/LICENSING_PROPOSAL.md`](docs/LICENSING_PROPOSAL.md). The mascot "Drosie", the Drosie's World name and logo, and the storybook illustrations must not be assumed to be reusable.
+**No licence has been finalised.** The author's preferred strategy, drafted but **not in effect**:
+
+- **MIT** for eligible reusable software code (`licenses/MIT.PROPOSED.txt`; per-component list in [`docs/COMPONENT_LICENSE_INVENTORY.md`](docs/COMPONENT_LICENSE_INVENTORY.md)).
+- The **Drosie's World name and logo, the Drosie mascot and character designs, the storybook illustrations (by Letícia Cavalcanti), photographs, and other protected creative assets are excluded** from that licence. Their rights and terms are documented in [`ASSET_LICENSES.md`](ASSET_LICENSES.md). The author states that artwork rights were obtained from the illustrator; the exact contractual scope still needs human verification. The companion book is CC BY-NC-ND 4.0 on Zenodo (verified).
+- Illustrator attribution is preserved; permission to *distribute* artwork is kept distinct from permission to *sublicense* it.
+- Third-party material: [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 ## How to cite
 
-See [`CITATION.cff`](CITATION.cff). Suggested form (version and DOI to be completed after deposit):
+Use the citation hub at [`/cite/`](cite/index.html) (APA, MLA, Chicago, BibTeX, RIS, with copy buttons and downloadable `.bib`/`.ris` files) or [`CITATION.cff`](CITATION.cff). Suggested platform citation (the software DOI has **not** been issued yet and none is shown):
 
-> Arzoo, S. H. (2026). *Drosie's World: An Interactive Educational Software Platform for Entomology and Scientific Inquiry* (Version 1.0.0) [Computer software]. Zenodo. DOI to be assigned.
+> Arzoo, S. H. (2026). *Drosie's World: An Interactive Educational Software Platform for Entomology and Scientific Inquiry* (Version 1.0.0) [Computer software]. Drosie's World. https://drosiesworld.com
 
-The accompanying storybook has its own DOI and should be cited separately: <https://doi.org/10.5281/zenodo.23550876>.
+The companion storybook is a separate scholarly output with its own DOI, verified against the Zenodo record: <https://doi.org/10.5281/zenodo.23550876> (see [`docs/BOOK_RELATIONSHIP.md`](docs/BOOK_RELATIONSHIP.md)). The creator's ORCID is intentionally left blank until the author supplies a verified identifier.
 
 ## AI-assisted development
 
-Parts of this software and its documentation were developed with AI assistance (ChatGPT and Claude). See [`docs/AI_DISCLOSURE.md`](docs/AI_DISCLOSURE.md). AI tools are not authors; the human author is responsible for the work.
+The creator conceived the project and directs its scientific and educational development. **ChatGPT** assisted with project conceptualisation, brainstorming, educational content development, simulation specifications, scientific explanations, prompt development, code generation, troubleshooting and feature planning. **Claude Code** assisted with repository-level implementation, interface development, code generation, debugging, testing, documentation and release preparation. Not all code or content was written manually. AI tools are not authors. Details and open confirmations: [`docs/AI_DISCLOSURE.md`](docs/AI_DISCLOSURE.md).
 
 ## Contact
 

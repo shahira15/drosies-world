@@ -249,7 +249,7 @@
       <ellipse cx="2020" cy="600" rx="420" ry="90" fill="url(#g-warm)" class="warmpulse"/>
       <ellipse cx="760" cy="600" rx="380" ry="80" fill="url(#g-warm)" opacity=".6"/>
       ${cabinet()}${poster()}${computer()}${notebook()}${fruit()}${compound()}${vials()}${prep()}${lamp()}${clock()}${board()}${stereo()}${stool()}
-      <text x="1200" y="640" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" letter-spacing="7" fill="#fff" opacity=".18">DROSIE'S SECRET FLY LAB</text>
+      <text aria-hidden="true" x="1200" y="640" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" letter-spacing="7" fill="#fff" opacity=".18">DROSIE'S SECRET FLY LAB</text>
     `;
   };
 

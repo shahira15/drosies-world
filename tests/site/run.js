@@ -83,7 +83,7 @@ const brokenImages = (page) => page.evaluate(() => [...document.images].filter(i
       const seen = []; let noIndicator = 0;
       for (let i = 0; i < 45; i++) {
         await t.page.keyboard.press('Tab');
-        const f = await t.page.evaluate(() => { const e = document.activeElement; if (!e || e === document.body) return null; const cs = getComputedStyle(e); const vis = (cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0) || (cs.boxShadow && cs.boxShadow !== 'none') || e.matches(':focus-visible'); return { k: e.tagName + '#' + e.id + '.' + (e.className && e.className.baseVal === undefined ? e.className : '') + '@' + (e.getAttribute('href') || e.getAttribute('aria-label') || e.textContent || '').trim().slice(0, 30), vis: !!vis }; });
+        const f = await t.page.evaluate(() => { const e = document.activeElement; if (!e || e === document.body) return null; if (e.tagName === 'IFRAME') return { k: 'IFRAME#' + (e.title || '').slice(0, 20), vis: true }; /* embedded documents draw their own focus */ const cs = getComputedStyle(e); const vis = (cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0) || (cs.boxShadow && cs.boxShadow !== 'none') || e.matches(':focus-visible'); return { k: e.tagName + '#' + e.id + '.' + (e.className && e.className.baseVal === undefined ? e.className : '') + '@' + (e.getAttribute('href') || e.getAttribute('aria-label') || e.textContent || '').trim().slice(0, 30), vis: !!vis }; });
         if (f) { seen.push(f.k); if (!f.vis) noIndicator++; }
       }
       const distinct = new Set(seen).size;

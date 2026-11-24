@@ -105,7 +105,7 @@
 
   /* on narrow screens, shrink the whole poster preview to fit (the full-size preview and print are not affected) */
   function fitPoster() { const w = DC.$('#posterLive .posterwrap'), po = w && DC.$('.poster', w); if (!po) return; po.style.zoom = ''; const avail = w.clientWidth - 24; po.style.zoom = avail < 720 ? String(Math.max(0.3, avail / 720)) : ''; }
-  window.addEventListener('resize', () => { if (DC.state.cur === 6) fitPoster(); });
+  window.addEventListener('resize', () => { if (DC.state && DC.state.cur === 6) fitPoster(); });
   function paint() { const l = DC.$('#posterLive'); if (!l) return; l.innerHTML = '<div class="posterwrap" tabindex="0" role="region" aria-label="Poster preview">' + DC.posterHTML() + '</div>'; fitPoster(); const c = DC.$('#posterChecks'); if (c) c.innerHTML = checksHTML(); DC.softUpdate(); }
 
   /* ---------- starting content from the learner's own earlier work ---------- */
