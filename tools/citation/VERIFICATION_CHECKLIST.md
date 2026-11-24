@@ -1,16 +1,17 @@
-# Manual verification checklist (generated from metadata.json)
+# Verification checklist (generated from metadata.json)
 
-These items could not be verified from inside the repository. Check them against the live records, then edit `metadata.json` and re-run `build_cite.py`.
+## Confirmed from the Zenodo API record (author-supplied, https://zenodo.org/api/records/23550876)
 
-## Storybook (Zenodo 10.5281/zenodo.23550876)
+- [x] Title, creator string, affiliation, ORCID, publication date 2026-10-22, Version 1.0, resource type Book, contributor Letícia Cavalcanti, language English, version DOI and concept DOI, licence CC BY-NC-ND 4.0, open access, published (author-supplied from https://zenodo.org/api/records/23550876; not re-fetched by the tooling)
 
-- [ ] Author name string on the Zenodo record (this repo uses 'Shahira Helal Arzoo'; the site and PR #16 use 'Arzoo, S.')
-- [ ] Publication date and version on the Zenodo record (year 2026, Version 1.0 are taken from existing site text)
-- [ ] Whether the Zenodo record lists the illustrator, and the record's licence/rights statement
-- [ ] Resource type on Zenodo (book vs. other)
+## Still needs manual verification / correction
 
-## Not provided yet (left blank on purpose)
+- [ ] Creator name: the record lists 'Arzoo, Shahira'; the preferred professional name is 'Shahira Helal Arzoo'. Correct on Zenodo if desired (book citations follow the record until then).
+- [ ] ISBN recorded on Zenodo ('979-8--23424051-4'): malformed hyphenation. The 13 digits 9798234240514 do pass the ISBN-13 checksum, but the correct form must be confirmed against the book's ISBN assignment. Not used or corrected here.
 
-- ORCID: null (awaiting author)
-- Software DOI: null (none exists yet)
-- Licence: null (undecided; see PR #16)
+## Left unset on purpose
+
+- Software DOI: null
+- Software release version: null
+- Software licence: null (MIT is intended for eligible original code but is not yet applied)
+- Educational-resource (worksheets etc.) licence: pending the author's decision

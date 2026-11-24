@@ -101,20 +101,25 @@ def build_downloads():
     write("cite/drosies-world-bibliography.enw", "\n\n".join(strip(F.endnote)) + "\n")
     write("CITATION.cff", F.cff())
     flags = META["book"].get("needs_manual_verification", [])
+    ver = META["book"].get("verified_from_zenodo_api", [])
     write("tools/citation/VERIFICATION_CHECKLIST.md",
-          "# Manual verification checklist (generated from metadata.json)\n\n"
-          "These items could not be verified from inside the repository. Check them against the live records, "
-          "then edit `metadata.json` and re-run `build_cite.py`.\n\n## Storybook (Zenodo %s)\n\n%s\n\n"
-          "## Not provided yet (left blank on purpose)\n\n- ORCID: %s\n- Software DOI: %s\n- Licence: %s\n"
-          % (BOOK_DOI, "\n".join("- [ ] " + f for f in flags), ORCID or "null (awaiting author)",
-             SOFTWARE.get("doi") or "null (none exists yet)", LICENSE or "null (undecided; see PR #16)"))
+          "# Verification checklist (generated from metadata.json)\n\n"
+          "## Confirmed from the Zenodo API record (author-supplied, %s)\n\n%s\n\n"
+          "## Still needs manual verification / correction\n\n%s\n\n"
+          "## Left unset on purpose\n\n- Software DOI: %s\n- Software release version: %s\n- Software licence: %s (MIT is intended for eligible original code but is not yet applied)\n"
+          "- Educational-resource (worksheets etc.) licence: pending the author's decision\n"
+          % (META["book"]["metadata_source"], "\n".join("- [x] " + v for v in ver), "\n".join("- [ ] " + f for f in flags),
+             SOFTWARE.get("doi") or "null", SOFTWARE.get("version") or "null", LICENSE or "null"))
     return flags
 
 
 # ------------------------------------------------------------------ JSON-LD / meta
 def person():
-    return {"@type": "Person", "@id": AUTHOR_ID, "name": AUTHOR_FULL, "url": AUTHOR_ID,
-            "affiliation": {"@type": "CollegeOrUniversity", "name": AFFILIATION_ORG}}
+    p = {"@type": "Person", "@id": AUTHOR_ID, "name": AUTHOR_FULL, "url": AUTHOR_ID,
+         "affiliation": {"@type": "CollegeOrUniversity", "name": AFFILIATION_ORG}}
+    if ORCID:
+        p["sameAs"] = ORCID
+    return p
 
 
 def org():
@@ -142,9 +147,10 @@ def jsonld(r):
             "citation": F.plain(F.apa(r, acc=False))}
     base.update(age_props(r))
     if r["id"] == "storybook":
-        base.update({"@type": ["Book", "LearningResource"], "datePublished": r["year"], "bookFormat": "https://schema.org/EBook",
+        base.update({"@type": ["Book", "LearningResource"], "datePublished": r["date"], "license": BOOK_LICENSE_URL, "bookFormat": "https://schema.org/EBook",
                      "illustrator": {"@type": "Person", "name": ILLUSTRATOR},
-                     "identifier": {"@type": "PropertyValue", "propertyID": "DOI", "value": BOOK_DOI},
+                     "identifier": [{"@type": "PropertyValue", "propertyID": "DOI", "name": "Version DOI", "value": BOOK_DOI},
+                                    {"@type": "PropertyValue", "propertyID": "DOI", "name": "Concept DOI", "value": CONCEPT_DOI}],
                      "sameAs": "https://doi.org/" + BOOK_DOI, "version": r["version"], "learningResourceType": "Storybook"})
         return base
     if r["schema"] == "SoftwareApplication":
@@ -167,12 +173,12 @@ def meta_block(r, with_jsonld):
     lines = [START,
              '<meta name="author" content="%s">' % esc(AUTHOR_FULL),
              '<meta name="citation_title" content="%s">' % esc(r["title"]),
-             '<meta name="citation_author" content="%s, %s">' % (AUTHOR_FAMILY, AUTHOR_GIVEN),
+             '<meta name="citation_author" content="%s">' % esc(r.get("creator") or "%s, %s" % (AUTHOR_FAMILY, AUTHOR_GIVEN)),
              '<meta name="citation_author_institution" content="%s">' % esc(AFFILIATION)]
     if ORCID:
         lines.append('<meta name="citation_author_orcid" content="%s">' % esc(ORCID))
     if r["year"]:  # only dated (verified) resources get a publication date
-        lines.append('<meta name="citation_publication_date" content="%s">' % r["year"])
+        lines.append('<meta name="citation_publication_date" content="%s">' % r["date"].replace("-", "/"))
     lines += ['<meta name="citation_publisher" content="%s">' % esc(_pub(r)),
               '<meta name="citation_public_url" content="%s">' % canon]
     if r.get("doi"):
@@ -233,10 +239,14 @@ def card(r):
     if r.get("parent"):
         links.append('<a href="/teacher-resources/#lessons">All seven lessons</a>')
     if archived:
-        when = "Published %s%s" % (r["year"], " (Version %s)" % r["version"] if r.get("version") else "")
+        y, mo, d = r["date"].split("-")
+        when = "Published %d %s %s%s" % (int(d), ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][int(mo) - 1], y, " (Version %s)" % r["version"] if r.get("version") else "")
         meta = [("Date", esc(when))]
         if r.get("doi"):
-            meta.append(("DOI", '<a href="%s" rel="noopener">https://doi.org/%s</a>' % (esc(r["url"]), esc(r["doi"]))))
+            meta.append(("Version DOI", '<a href="%s" rel="noopener">https://doi.org/%s</a>' % (esc(r["url"]), esc(r["doi"]))))
+        if r["id"] == "storybook":
+            meta.append(("Concept DOI (all versions)", '<a href="https://doi.org/%s" rel="noopener">https://doi.org/%s</a>' % (CONCEPT_DOI, CONCEPT_DOI)))
+            meta.append(("Licence", '<a href="%s" rel="noopener">%s</a> (as on the Zenodo record)' % (BOOK_LICENSE_URL, esc(BOOK_LICENSE))))
     else:
         meta = [("Date", "Not documented: cited as n.d. with your access date")]
     if r.get("ages"):
@@ -342,7 +352,7 @@ def page():
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Drosie's World</a> › Cite Drosie's World</nav><span class="eyebrow"><span class="tiny-star">✳</span> Scholarly citation hub</span>
 <h1>Cite <span>Drosie's World</span></h1>
 <p class="lead">Researchers, educators, students and institutions are welcome to use and cite these free resources. Copy a ready-made citation, or import the whole bibliography into your reference manager.</p>
-<p class="byline">Created by <a href="/team.html#author">{esc(AUTHOR_FULL)}</a>, {esc(AFFILIATION)}. The affiliation identifies the creator; it does not mean that Texas Tech University publishes, endorses, sponsors or owns Drosie's World.</p>
+<p class="byline">Created by <a href="/team.html#author">{esc(AUTHOR_FULL)}</a>, {esc(AFFILIATION)}{(' (<a href="%s" rel="noopener">ORCID %s</a>)' % (esc(ORCID), esc(ORCID.replace("https://orcid.org/", "")))) if ORCID else ""}. The affiliation identifies the creator; it does not mean that Texas Tech University publishes, endorses, sponsors or owns Drosie's World.</p>
 <ul class="stat-row" aria-label="At a glance"><li><strong>{n_res}</strong> citable resources</li><li><strong>5</strong> citation formats</li><li><strong>3</strong> reference-manager files</li></ul>
 </div>
 <aside class="how-panel" aria-labelledby="how-h"><h2 id="how-h">How to cite in three steps</h2>
@@ -360,7 +370,7 @@ def page():
 <p class="group-intro">Each resource is labelled by what actually exists today, so you can cite it accurately.</p>
 <div class="status-grid">
 <article class="status-card"><span class="badge badge-pub">Published web resources</span><h3>Live on drosiesworld.com</h3><p>Every resource cited on this page is freely available at the URL shown. Websites change: cite the URL with your access date. These resources are self-published and have not been independently peer reviewed.</p></article>
-<article class="status-card"><span class="badge badge-archived">Archived with a DOI</span><h3>The storybook</h3><p><em>Drosie, the Fruit Fly</em> (Version 1.0) is archived on Zenodo: <a href="https://doi.org/{BOOK_DOI}" rel="noopener">https://doi.org/{BOOK_DOI}</a>. It is the only DOI currently listed for Drosie's World. <a href="#storybook">Jump to its citations.</a></p></article>
+<article class="status-card"><span class="badge badge-archived">Archived with a DOI</span><h3>The storybook</h3><p><em>Drosie, the Fruit Fly</em> (Version 1.0, published 22 October 2026) is archived on Zenodo: <a href="https://doi.org/{BOOK_DOI}" rel="noopener">https://doi.org/{BOOK_DOI}</a>, under the open licence {esc(BOOK_LICENSE)}. It is the only DOI currently listed for Drosie's World, and it identifies the book only. <a href="#storybook">Jump to its citations.</a></p></article>
 {software_status()}
 <article class="status-card status-future" id="future-publications"><span class="badge badge-future">Not yet available</span><h3>Future scholarly publications</h3><p>No journal article, preprint or conference paper about Drosie's World is listed on this page. If one is published, it will be added here with its own citation and DOI.</p></article>
 </div></div></section>
@@ -385,14 +395,14 @@ def page():
 <section class="hub-section" id="notes" aria-labelledby="notes-h"><div class="container narrow">
 <h2 id="notes-h"><span class="h-ico" aria-hidden="true">🧭</span>Using these citations well</h2>
 <ul>
-<li><strong>Dates.</strong> Only the storybook has a documented publication year (2026, Version 1.0, on Zenodo). Every other resource is cited as undated (<em>n.d.</em>) with your access date; no date has been inferred from copyright notices or repository history.</li>
-<li><strong>Author.</strong> The creator is {esc(AUTHOR_FULL)} (APA: {esc(AUTHOR_APA)}). Contributor credits, including the storybook illustrator and reviewers, are on the <a href="/team.html">Team page</a>.</li>
-<li><strong>Illustrations.</strong> The storybook is illustrated by {esc(ILLUSTRATOR)}, who is credited in each storybook citation. The illustrations are used with the illustrator's permission; citing the book does not grant permission to reproduce its artwork. Contact the creator through the <a href="/team.html">Team page</a> about any reuse.</li>
+<li><strong>Dates.</strong> Only the storybook has a verified publication date (22 October 2026, Version 1.0, on Zenodo). Each citation style gets the level of detail it expects: year in APA and Chicago, full date in MLA, BibTeX and RIS. Every other resource is cited as undated (<em>n.d.</em>) with your access date; no date has been inferred from copyright notices or repository history.</li>
+<li><strong>Author.</strong> The creator is {esc(AUTHOR_FULL)} (APA: {esc(AUTHOR_APA)}). The Zenodo record for the storybook lists the creator as "{esc(BOOK_CREATOR)}", so storybook citations follow the record. Contributor credits, including the storybook illustrator and reviewers, are on the <a href="/team.html">Team page</a>.</li>
+<li><strong>Illustrations.</strong> The storybook is illustrated by {esc(ILLUSTRATOR)}, who is credited in each storybook citation. Citing the book does not grant permission to reproduce its artwork beyond the terms of its published licence. Contact the creator through the <a href="/team.html">Team page</a> about any other reuse.</li>
 <li><strong>Simulations are not data.</strong> Games and simulators produce simulated outcomes for learning. Cite them as tools, and do not present their output as experimental results. Descriptions of fruit fly biology are drawn from published sources listed on the <a href="/fruit-fly-biology/#references">Fruit Fly Biology page</a>; cite those primary sources for scientific claims.</li>
 <li><strong>No claim of effectiveness.</strong> These pages report no evaluation of learning outcomes. Citing a resource does not show that it improves learning.</li>
 <li><strong>Self-published, not peer reviewed.</strong> Cite these as self-published educational resources, not as peer-reviewed publications.</li>
 <li><strong>Software metadata.</strong> The repository includes a <code>CITATION.cff</code> file, so GitHub's "Cite this repository" button works on <a href="{REPO}" rel="noopener">the source repository</a>. It lists no software DOI.</li>
-<li><strong>Reuse.</strong> The site footer asks that the creator be credited when resources are shared. No open licence is declared on this page.</li>
+<li><strong>Licences.</strong> The published storybook is licensed <a href="{BOOK_LICENSE_URL}" rel="noopener">{esc(BOOK_LICENSE)}</a> and is not relicensed here. Rights in the Drosie mascot, characters and artwork are reserved beyond permissions already granted under existing licences. A software licence is not yet in effect, and licensing for worksheets and other educational resources is pending. Until a licence is stated for a resource, the site footer's request applies: please credit the creator when sharing.</li>
 </ul></div></section>
 
 <section class="hub-section" id="ai-disclosure" aria-labelledby="ai-h"><div class="container narrow">

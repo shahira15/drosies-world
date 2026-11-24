@@ -72,7 +72,7 @@ const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? '  PASS ' : '  FAIL
   await tabs.nth(3).click(); ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '2026-03-05', 'BibTeX urldate is ISO');
   await tabs.nth(4).click(); ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '2026/03/05', 'RIS Y2 uses YYYY/MM/DD');
   await tabs.nth(0).click();
-  ok((await page.locator('#storybook [role=tabpanel][data-fmt=apa] .cite-text').textContent()).startsWith('Arzoo, S. H. (2026). Drosie, the Fruit Fly (Version 1.0; L. Cavalcanti, Illus.)'), 'storybook APA is dated and credits the illustrator');
+  ok((await page.locator('#storybook [role=tabpanel][data-fmt=apa] .cite-text').textContent()).startsWith('Arzoo, S. (2026). Drosie, the Fruit Fly (Version 1.0; L. Cavalcanti, Illus.)'), 'storybook APA is dated and credits the illustrator');
   ok(await page.locator('#storybook .acc').count() === 0, 'storybook (dated, DOI) has no access-date field');
   await page.fill('#access-date', '');
   ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '[access date]', 'empty date falls back to a visible placeholder');

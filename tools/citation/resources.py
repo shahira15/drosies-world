@@ -7,8 +7,8 @@ does not exist, and do not add dates or identifiers that are not documented.
 Documented facts used here:
   * Creator: Shahira Helal Arzoo, Department of Biological Sciences, Texas Tech University
     (site Team page and JSON-LD on team.html).
-  * Only the storybook has a publication year (2026, Version 1.0, Zenodo DOI), taken from text already
-    published on the site; it is flagged for manual verification in metadata.json.
+  * Only the storybook is dated (published 2026-10-22, Version 1.0, Zenodo DOI), per the Zenodo API record
+    supplied by the author (metadata.json).
   * Every other resource is cited as undated (n.d.) with an access date. Copyright years and git commit
     dates are NOT used as publication dates.
   * `first_commit` is kept for maintainers only and is never shown or used in citations.
@@ -23,7 +23,8 @@ _A, _B = META["author"], META["book"]
 SITE = META["site"]["url"]
 REPO = META["repository"]["url"]
 PUBLISHER = META["site"]["name"]
-YEAR = _B["year"]                      # applies ONLY to the storybook (dated entries); everything else is undated
+PUB_DATE = _B["published_date"]        # applies ONLY to the storybook; everything else is undated
+YEAR = PUB_DATE[:4]
 AUTHOR_FAMILY = _A["family_names"]
 AUTHOR_GIVEN = _A["given_names"]
 AUTHOR_APA = _A["apa_name"]
@@ -33,6 +34,11 @@ AFFILIATION_ORG = _A["affiliation_org"]
 ORCID = _A["orcid"]
 AUTHOR_ID = SITE + "/team.html#author"
 BOOK_DOI = _B["doi"]
+CONCEPT_DOI = _B["concept_doi"]
+BOOK_CREATOR = _B["creator_as_published"]
+BOOK_LICENSE = _B["license"]
+BOOK_LICENSE_SPDX = _B["license_spdx"]
+BOOK_LICENSE_URL = _B["license_url"]
 ILLUSTRATOR = _B["illustrator"]
 SOFTWARE = META["software"]
 LICENSE = META["license"]
@@ -53,6 +59,8 @@ R = []
 
 def add(**kw):
     kw.setdefault("doi", None)
+    kw.setdefault("date", None)
+    kw.setdefault("creator", None)    # author string as published, when it differs from the professional name
     kw.setdefault("year", None)       # None = undated (cited as n.d.)
     kw.setdefault("version", None)
     kw.setdefault("note", None)
@@ -72,7 +80,7 @@ add(id="platform", group="platform", short="Drosie's World (whole platform)",
 
 add(id="storybook", group="storybook", short="Drosie, the Fruit Fly (storybook)",
     title="Drosie, the Fruit Fly", medium="Illustrated storybook", version="1.0",
-    doi=BOOK_DOI, year=YEAR, illustrator=ILLUSTRATOR, url="https://doi.org/" + BOOK_DOI, read_url=SITE + "/storybook.html",
+    doi=BOOK_DOI, year=YEAR, date=PUB_DATE, creator=BOOK_CREATOR, illustrator=ILLUSTRATOR, url="https://doi.org/" + BOOK_DOI, read_url=SITE + "/storybook.html",
     file="storybook.html", first_commit="2026-11-02", ris="BOOK", bib="misc", publisher="Zenodo",
     desc="An illustrated children's storybook that follows Drosie the fruit fly through the life cycle, the laboratory and the discoveries scientists have made with fruit flies.",
     schema="Book", ages="5-8", status="archived",

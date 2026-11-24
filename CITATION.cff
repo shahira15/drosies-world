@@ -14,6 +14,7 @@ authors:
 - family-names: Arzoo
   given-names: Shahira Helal
   affiliation: Department of Biological Sciences, Texas Tech University
+  orcid: https://orcid.org/0009-0009-8947-7828
 repository-code: https://github.com/shahira15/drosies-world
 url: https://drosiesworld.com/
 keywords:
@@ -28,11 +29,15 @@ references:
   title: Drosie, the Fruit Fly
   authors:
   - family-names: Arzoo
-    given-names: Shahira Helal
+    given-names: Shahira
+    orcid: https://orcid.org/0009-0009-8947-7828
   year: 2026
+  date-published: '2026-10-22'
   version: '1.0'
   doi: 10.5281/zenodo.23550876
+  license: CC-BY-NC-ND-4.0
   publisher:
     name: Zenodo
   url: https://doi.org/10.5281/zenodo.23550876
-  notes: Illustrated children's storybook, archived on Zenodo. Illustrated by Letícia Cavalcanti.
+  notes: Illustrated children's storybook, archived on Zenodo (concept DOI 10.5281/zenodo.23550875). Illustrated
+    by Letícia Cavalcanti. Creator name as published on the record.

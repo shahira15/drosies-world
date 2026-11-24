@@ -8,9 +8,10 @@ AB  - Free fruit fly science games, an illustrated storybook, lessons and teache
 ER  - 
 
 TY  - BOOK
-AU  - Arzoo, Shahira Helal
+AU  - Arzoo, Shahira
 TI  - Drosie, the Fruit Fly
 PY  - 2026
+DA  - 2026/10/22
 PB  - Zenodo
 M3  - Illustrated storybook
 ET  - 1.0
@@ -18,6 +19,8 @@ DO  - 10.5281/zenodo.23550876
 UR  - https://doi.org/10.5281/zenodo.23550876
 AB  - An illustrated children's storybook that follows Drosie the fruit fly through the life cycle, the laboratory and the discoveries scientists have made with fruit flies.
 N1  - Illustrated by Letícia Cavalcanti
+N1  - License: CC BY-NC-ND 4.0
+LA  - en
 ER  - 
 
 TY  - COMP

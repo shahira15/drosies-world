@@ -120,7 +120,7 @@ for r in RS.R:
     p = parse(r["file"]); m = {a.get("name"): a.get("content") for a in p.metas if a.get("name")}
     canon_tag = re.search(r'<link rel="canonical" href="([^"]+)"', read(r["file"]))
     expect = r.get("read_url") or r["url"]
-    ok(m.get("citation_author") == "Arzoo, Shahira Helal" and m.get("author") == RS.AUTHOR_FULL and m.get("citation_title") and m.get("citation_public_url") == expect,
+    ok(m.get("citation_author") == (r.get("creator") or "Arzoo, Shahira Helal") and m.get("author") == RS.AUTHOR_FULL and m.get("citation_title") and m.get("citation_public_url") == expect,
        "%s: author/title/URL meta present" % r["id"])
     ok(canon_tag is None or canon_tag.group(1) == expect, "%s: citation URL equals canonical (%s)" % (r["id"], expect))
     docs = []
@@ -138,24 +138,32 @@ for r in RS.R:
     if "SoftwareApplication" in ts:
         ok(d["applicationCategory"] and d["operatingSystem"] and d["offers"]["price"] == "0", "%s: SoftwareApplication required props" % r["id"])
     if r["id"] == "storybook":
-        ok(d["datePublished"] == "2026" and d["sameAs"] == "https://doi.org/" + RS.BOOK_DOI, "storybook: datePublished 2026 + Zenodo DOI")
+        ok(d["datePublished"] == "2026-10-22" and d["sameAs"] == "https://doi.org/" + RS.BOOK_DOI and d["license"].endswith("/by-nc-nd/4.0/"), "storybook: datePublished 2026-10-22, Zenodo DOI, CC BY-NC-ND 4.0 licence URL")
         ok(d["illustrator"]["name"] == "Letícia Cavalcanti", "storybook: illustrator preserved in JSON-LD")
-        ok(m.get("citation_publication_date") == "2026" and m.get("citation_doi") == RS.BOOK_DOI, "storybook: dated meta + DOI")
+        ok(m.get("citation_publication_date") == "2026/10/22" and m.get("citation_doi") == RS.BOOK_DOI and m.get("citation_author") == "Arzoo, Shahira", "storybook: dated meta, DOI, creator string as published on the record")
     else:
         ok("datePublished" not in d and "copyrightYear" not in d and "dateCreated" not in d, "%s: no inferred publication/copyright date in JSON-LD" % r["id"])
         ok("citation_publication_date" not in m, "%s: no citation_publication_date meta" % r["id"])
         ok("(n.d.)" in d["citation"], "%s: JSON-LD citation is undated (n.d.)" % r["id"])
-    ok("sameAs" not in json.dumps(d.get("author")), "%s: no unverified author sameAs/ORCID" % r["id"])
+    ok(d["author"].get("sameAs") == RS.ORCID and d["author"]["name"] == "Shahira Helal Arzoo", "%s: author has the verified ORCID and professional name" % r["id"])
 ld = [json.loads(b) for b in parse("cite/index.html").jsonld]; ok(len(ld) == 1 and ld[0]["@graph"][0]["@type"] == "WebPage", "cite page WebPage + BreadcrumbList JSON-LD")
 
 print("== Honesty guards")
 allsrc = "".join(read(f) for f in ["cite/index.html", "CITATION.cff", "cite/drosies-world-bibliography.bib", "cite/drosies-world-bibliography.ris", "cite/drosies-world-bibliography.enw"])
-ok(not re.search(r"orcid\.org|\b\d{4}-\d{4}-\d{4}-\d{3}[\dX]\b", allsrc, re.I), "no ORCID link or identifier (not verified)")
+orcids = set(re.findall(r"\b\d{4}-\d{4}-\d{4}-\d{3}[\dX]\b", allsrc)); ok(orcids == {"0009-0009-8947-7828"}, "only the verified ORCID appears: %s" % orcids)
+def orcid_ok(o):
+    t = 0
+    for c in o.replace("-", "")[:-1]: t = (t + int(c)) * 2
+    r = (12 - t % 11) % 11; return o[-1] == ("X" if r == 10 else str(r))
+ok(orcid_ok("0009-0009-8947-7828"), "ORCID checksum valid")
+ok("979-8--23424051-4" not in allsrc and "9798234240514" not in allsrc, "malformed ISBN is not published or 'corrected' anywhere in generated outputs")
 meta = json.load(open(os.path.join(ROOT, "tools/citation/metadata.json"), encoding="utf-8"))
-ok(meta["author"]["orcid"] is None and meta["license"] is None and meta["software"]["doi"] is None, "metadata.json: ORCID, licence and software DOI are null")
+ok(meta["author"]["orcid"] == "https://orcid.org/0009-0009-8947-7828" and meta["license"] is None and meta["software"]["doi"] is None and meta["software"]["version"] is None and meta["educational_content_license"] is None, "metadata.json: ORCID set; software DOI/version/licence and educational licence unset")
+ok(meta["book"]["license"] == "CC BY-NC-ND 4.0" and meta["book"]["published_date"] == "2026-10-22" and meta["book"]["concept_doi"] == "10.5281/zenodo.23550875" and meta["book"]["creator_as_published"] == "Arzoo, Shahira", "metadata.json: confirmed book record fields")
 ok(meta["author"]["display_name"] == "Shahira Helal Arzoo" and meta["author"]["apa_name"] == "Arzoo, S. H.", "author name standardised (Shahira Helal Arzoo / Arzoo, S. H.)")
-ok(len(meta["book"]["needs_manual_verification"]) >= 3 and os.path.exists(os.path.join(ROOT, "tools/citation/VERIFICATION_CHECKLIST.md")), "storybook metadata flagged for manual verification (checklist file exists)")
-dois = {d.rstrip(".") for d in re.findall(r"10\.\d{4,9}/[^\s\"'<>)\]},]+", allsrc)}; ok(dois == {RS.BOOK_DOI}, "only the storybook DOI appears: %s" % dois)
+ck = read("tools/citation/VERIFICATION_CHECKLIST.md")
+ok(len(meta["book"]["needs_manual_verification"]) == 2 and "ISBN" in ck and "979-8--23424051-4" in ck and "name" in ck.lower(), "checklist flags the name discrepancy and the malformed ISBN (verbatim, uncorrected)")
+dois = {d.rstrip(".") for d in re.findall(r"10\.\d{4,9}/[^\s\"'<>)\]},]+", allsrc)}; ok(dois == {RS.BOOK_DOI, RS.CONCEPT_DOI}, "only the book's version and concept DOIs appear (no software DOI): %s" % dois)
 page = read("cite/index.html")
 ok("No software DOI is listed" in page and "Not yet available" in page, "software DOI section is a clearly-labelled placeholder")
 for bad in ("peer-reviewed by", "endorsed by", "proven effective", "evidence-based", "improves learning outcomes", "owned by Texas Tech"):
@@ -170,9 +178,14 @@ for r in RS.R:
     ok(("(2026)" in a) == (r["id"] == "storybook") and (("(n.d.)" in a) == (r["id"] != "storybook")), "%s: APA is %s" % (r["id"], "dated" if r["id"] == "storybook" else "n.d."))
 for fn in (FM.apa, FM.mla, FM.chicago, FM.bibtex, FM.ris, FM.endnote):
     ok("Cavalcanti" in fn(RS.BY_ID["storybook"], acc=False) or fn is FM.endnote and "Cavalcanti" in fn(RS.BY_ID["storybook"]), "illustrator credited in storybook %s" % fn.__name__)
-ok("(L. Cavalcanti, Illus.)" in FM.apa(RS.BY_ID["storybook"]) or "L. Cavalcanti, Illus." in FM.apa(RS.BY_ID["storybook"]), "APA storybook uses the (Illus.) convention")
+sb = RS.BY_ID["storybook"]
+ok(FM.apa(sb, acc=False).startswith("Arzoo, S. (2026). *Drosie, the Fruit Fly* (Version 1.0; L. Cavalcanti, Illus.)"), "APA storybook: record's author string (Arzoo, S.), year only, Illus. convention")
+ok("22 Oct. 2026" in FM.mla(sb) and "2026." in FM.chicago(sb) and "22 Oct" not in FM.chicago(sb) and "22" not in FM.apa(sb).split("Version")[0], "date detail follows each style: MLA full date, APA/Chicago year only")
+ok("date         = {2026-10-22}" in FM.bibtex(sb) and "month        = oct" in FM.bibtex(sb) and "DA  - 2026/10/22" in FM.ris(sb), "BibTeX/RIS carry the full date")
+ok("Arzoo, Shahira Helal" not in FM.bibtex(sb) and "Arzoo, Shahira Helal" in FM.bibtex(RS.BY_ID["secret-fly-lab"]), "storybook entries use the record's creator string; other entries use the professional name")
 ok("Illustrated by Letícia Cavalcanti" in read("cite/drosies-world-bibliography.ris") and "Let{\\'\\i}cia" in read("cite/drosies-world-bibliography.bib"), "illustrator attribution in downloadable RIS and BibTeX")
-ok("does not grant permission to reproduce" in page, "illustration permission scope respected on the page")
+ok("does not grant permission to reproduce" in page and "CC BY-NC-ND" in page and "reserved beyond permissions already granted" in page and "No open licence is declared" not in page, "page states the book licence, reserved rights and pending licences accurately")
+ok("licensing for worksheets and other educational resources is pending" in page and "A software licence is not yet in effect" in page, "software and educational licensing shown as pending")
 bib_entries = read("cite/drosies-world-bibliography.bib").split("@misc{")[1:]
 ok(sum(1 for e in bib_entries if re.search(r"^\s+year\s+=", e, re.M)) == 1, "BibTeX: exactly one entry (storybook) has a year")
 ok(sum(1 for e in read("cite/drosies-world-bibliography.ris").split("\n\n") if "\nPY  - " in e) == 1, "RIS: exactly one record (storybook) has PY")
@@ -194,8 +207,10 @@ print("== CITATION.cff")
 import yaml
 y = yaml.safe_load(read("CITATION.cff"))
 ok(y["cff-version"] == "1.2.0" and y["title"] and y["authors"][0]["family-names"] == "Arzoo", "CFF required keys")
-ok("doi" not in y and "date-released" not in y and "version" not in y and "license" not in y and "orcid" not in json.dumps(y).lower(), "CFF has no software DOI/version/date/license/ORCID")
-ok(y["references"][0]["doi"] == RS.BOOK_DOI, "CFF references the storybook DOI")
+ok("doi" not in y and "date-released" not in y and "version" not in y and "license" not in y, "CFF has no software DOI/version/date/license")
+ok(y["authors"][0]["orcid"] == RS.ORCID and y["authors"][0]["given-names"] == "Shahira Helal", "CFF author: professional name + verified ORCID")
+ref = y["references"][0]
+ok(ref["doi"] == RS.BOOK_DOI and ref["license"] == "CC-BY-NC-ND-4.0" and ref["date-published"] == "2026-10-22" and ref["authors"][0]["given-names"] == "Shahira" and ref["authors"][0]["orcid"] == RS.ORCID, "CFF book reference: record author string, date, licence, ORCID, version DOI")
 cc = shutil.which("cffconvert") or os.environ.get("CFFCONVERT")
 if cc:
     r = subprocess.run([cc, "--validate", "-i", os.path.join(ROOT, "CITATION.cff")], capture_output=True, text=True)
