@@ -57,7 +57,7 @@ See the table in the final PR description; each milestone below is ticked only w
 | M6 | Ch6 poster studio | done (`vx-ch6.js`: live poster board, 8 research cards pinned by tap or keyboard, graph-type/layout thumbnails, colour swatches, text-size slider, original checks + print/PDF; existing posters migrate; 35 checks) |
 | M7 | Ch7–8 lobby and hall | done: vx-ch7.js (badge scan, talk-card strip) and vx-ch8.js (six distinct area scenes, one scientist question at a time, posters, stage claims, booth, reflection); tests vx-m7 (22) and vx-m8 (47); legacy m7/m8/e2e still pass |
 | M8 | Ch9 theater | done: vx-ch9.js (theater scene, five stops, 60 s timer with skip-ahead, explanation chips, answer-card building for audience questions, revision log, reflection); legacy checkers exported additively from ch9.js; test vx-m9 (41) |
-| M9 | Ch10 celebration | todo |
+| M9 | Ch10 celebration | done: vx-ch10.js (party scene, backpack journey, certificate stamp reveal, print/download tray reusing original actions, next places); test vx-m10 (46) |
 | M10 | Integration, verification, polish | todo |
 
 ## Notes from M1–M2
