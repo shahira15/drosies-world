@@ -119,7 +119,7 @@ def main():
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--allow-dirty", action="store_true", help="skip the clean-tree check (build not reproducible from a commit)")
     a = ap.parse_args()
-    dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", ".", ":!release"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     if dirty and not a.allow_dirty and not a.list:
         sys.exit("Tracked files have uncommitted changes. Commit first (reproducible builds come from a commit) or use --allow-dirty.\n" + dirty)
     inc, exc = plan()
