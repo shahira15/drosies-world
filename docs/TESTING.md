@@ -1,98 +1,136 @@
 # Testing, Accessibility and Browser Compatibility
 
-Prepared 2026-11-24. **Rule for this document: only results that were actually obtained are reported as results.** Anything not run is listed as not run. No result has been estimated or inferred.
+Updated 2026-11-24 (second pass). **Only results actually obtained are reported as results.** Anything not run is listed as not run. Automated accessibility tests are **not** a WCAG conformance evaluation.
 
-## 1. Test environment used for the runs reported here
+## 1. Environment
+Linux container; Node v22.23.5; Python 3.13; Playwright 1.63.0 with bundled **Chromium 158**; axe-core 4.10.2 (installed outside the repository); static servers started by the tests. Third-party hosts are blocked in every run (and the sandbox network allowed only Zenodo, DOI and Crossref).
 
-| Item | Value |
-|---|---|
-| Date | 2026-11-24 |
-| OS | Linux 6.18 (cloud container) |
-| Node.js | v22.23.5 |
-| Python | 3.13 |
-| Playwright | 1.63.0, bundled Chromium (headless) |
-| axe-core | 4.10.2, installed ad hoc with `npm i axe-core` outside the repository |
-| Server | `python3 -m http.server 8123` from the repository root |
-| Network | Third-party hosts (Google Fonts, analytics, Leaflet, Supabase, Turnstile, jsDelivr) are not guaranteed reachable from the container; tests of the Conference and Genetics Lab do not depend on them. |
+## 2. Suites and how to run them
+| Suite | Location | Command |
+|---|---|---|
+| Genetics engine (scientific calculations) | `drosie-genetics-lab/tests/` | `cd drosie-genetics-lab && node tests/run-tests.mjs` |
+| Scientific Conference (30 scripts) | `tests/conference/` | `AXE_PATH=<axe.min.js> tests/conference/run-all.sh` (server on :8123) |
+| **Site-wide suite (new)** | `tests/site/run.js` | `SITE_ROOT=<dir> EXPECT_NO_EXTERNAL=1 AXE_PATH=<axe.min.js> BROWSER=chromium node tests/site/run.js [pages links keyboard mobile a11y offline components]` |
+| Static SEO/link checker | `seo/tools/seo_check.py` | `python3 seo/tools/seo_check.py` |
 
-## 2. Automated test inventory and results
+The site-wide suite covers: page load without JavaScript/console errors or failed local requests; all visible images load; title/lang/viewport/h1; static link and anchor resolution across every shipped HTML file; keyboard Tab traversal with visible focus indicators; mobile layouts (390x844 touch and 320x568, no horizontal scroll); an axe-core scan; offline operation with all external hosts blocked and, for the archival edition, **zero external requests**, plus opening pages from `file://`; and functional flows: Climbing Challenge (three full trials, recorded count equals flies drawn above the line, mean equals the recorded trials), Life Cycle Adventure, Grow Your Own (including the development-time table's internal consistency), Secret Fly Lab, Lab Notebook Academy, Storybook reader, Letters, Discovery Library search, home-page lesson search, Genetics Lab UI smoke.
 
-| Suite | Location | Command | Result in this session |
+## 3. Results of the final runs (Chromium, 2026-11-24)
+
+Run against the archival editions extracted from the built ZIPs, and against the live-site source (repository root).
+
+### Archival edition, FULL (illustrations included), extracted from the ZIP
+
+Browser: chromium. Total: **348 passed, 3 failed, 0 skipped**.
+
+| Suite | Passed | Failed | Skipped |
 |---|---|---|---|
-| Genetics Lab engine (scientific tests) | `drosie-genetics-lab/tests/` | `cd drosie-genetics-lab && node tests/run-tests.mjs` | **58 / 58 passed** (deterministic and fixed-seed stochastic tests) |
-| Scientific Conference, 30 scripts run by `tests/conference/run-all.sh` (functional, keyboard, privacy, export, robustness, discoverability, axe accessibility) | `tests/conference/` | `AXE_PATH=<axe.min.js> tests/conference/run-all.sh` (each script run individually in this session) | **1,145 assertions passed, 0 failed** across the 30 scripts, including `a11y` (22 passed) and `vx-a11y` (52 passed) |
-| Static SEO / link / structured-data checker | `seo/tools/seo_check.py` | `python3 seo/tools/seo_check.py` | **0 errors, 8 warnings** (long titles/descriptions, one `#ch1` anchor on `scientific-conference.html` with no static target) |
-| `tests/conference/reading-load.js` | `tests/conference/` | not included in `run-all.sh` | **Not run** |
-| Genetics Lab browser suite (`tests/index.html`) and the end-to-end mission runs described in its QA report | `drosie-genetics-lab/` | open in a browser | **Not re-run.** The QA report (22 Nov 2026) states 16/16 missions were completed by scripted players; that script is not in the repository. |
+| pages: load, errors, images, external requests (desktop 1280x800) | 148 | 0 | 0 |
+| links: every local href/src/action resolves; in-page anchors exist | 2 | 0 | 0 |
+| keyboard: Tab order reaches interactive controls with a visible focus indicator, no trap | 40 | 0 | 0 |
+| mobile: 390x844 touch and 320x568; no horizontal overflow, no missing images | 80 | 0 | 0 |
+| a11y: automated axe-core scan (NOT a WCAG conformance evaluation) | 18 | 3 | 0 |
+| offline: pages work with every external host blocked and make zero external attempts | 2 | 0 | 0 |
+| offline: open directly from the file system (file://), no server | 7 | 0 | 0 |
+| components: Climbing Challenge (full 3-trial flow, results match what is drawn) | 10 | 0 | 0 |
+| components: Life Cycle Adventure, Grow Your Own Fruit Fly | 16 | 0 | 0 |
+| components: The Secret Fly Lab | 4 | 0 | 0 |
+| components: Lab Notebook Academy | 5 | 0 | 0 |
+| components: Storybook reader | 6 | 0 | 0 |
+| components: Letters from Drosie, Discovery Library, home page | 7 | 0 | 0 |
+| components: Drosie Genetics Lab (UI smoke; the engine has its own 58-test Node suite) | 3 | 0 | 0 |
 
-How the Conference suite was run here: the five tests that write scratch output (`m6.js`, `m9.js`, `exports.js`, `robustness.js`, `vx-m6.js`) have hard-coded absolute scratch paths from an earlier session, so those directories were created outside the repository before running. This is a portability defect, listed in the readiness report. No test file was modified.
+Failures:
 
-### Components with no automated tests in this repository
+- `a11y` index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(68) .hero-proof > span:nth-child(2))
+- `a11y` fruit-fly-life-cycle-activities/index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(6) figcaption)
+- `a11y` science-activities/index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(50) #ages-5-8 > .container > .hub-blurb)
 
-The Secret Fly Lab (`lab/`), Life Cycle Adventure, Grow Your Own Fruit Fly, Climbing Challenge, Lab Notebook Academy, Letters from Drosie, Storybook, Discovery Library and the home page have **no dedicated automated functional tests**. The SEO checker covers their static HTML only (titles, canonical links, alt attributes, internal links, JSON-LD parses). Earlier repository reports (`seo/05-testing-report.md`, `lab/README.md` "QA actually run") describe manual or scripted browser checks made in earlier sessions; those were **not reproduced** in this session and are cited as the authors' reports, not as results verified here.
+### Archival edition, PLACEHOLDERS, extracted from the ZIP
 
-### What the tests do and do not show
+Browser: chromium. Total: **348 passed, 3 failed, 0 skipped**.
 
-They show that the specific scripted behaviours passed on Chromium in the stated environment. They do **not** show correctness of the science beyond what is asserted (the Genetics Lab expected values are analytic and written into tests), usability for children, or educational effect. Stochastic tests use fixed seeds.
+| Suite | Passed | Failed | Skipped |
+|---|---|---|---|
+| pages: load, errors, images, external requests (desktop 1280x800) | 148 | 0 | 0 |
+| links: every local href/src/action resolves; in-page anchors exist | 2 | 0 | 0 |
+| keyboard: Tab order reaches interactive controls with a visible focus indicator, no trap | 40 | 0 | 0 |
+| mobile: 390x844 touch and 320x568; no horizontal overflow, no missing images | 80 | 0 | 0 |
+| a11y: automated axe-core scan (NOT a WCAG conformance evaluation) | 18 | 3 | 0 |
+| offline: pages work with every external host blocked and make zero external attempts | 2 | 0 | 0 |
+| offline: open directly from the file system (file://), no server | 7 | 0 | 0 |
+| components: Climbing Challenge (full 3-trial flow, results match what is drawn) | 10 | 0 | 0 |
+| components: Life Cycle Adventure, Grow Your Own Fruit Fly | 16 | 0 | 0 |
+| components: The Secret Fly Lab | 4 | 0 | 0 |
+| components: Lab Notebook Academy | 5 | 0 | 0 |
+| components: Storybook reader | 6 | 0 | 0 |
+| components: Letters from Drosie, Discovery Library, home page | 7 | 0 | 0 |
+| components: Drosie Genetics Lab (UI smoke; the engine has its own 58-test Node suite) | 3 | 0 | 0 |
 
-## 3. Accessibility
+Failures:
 
-### Implemented (from code and documentation)
-Skip links, landmarks and heading structure, labelled form controls, visible focus styles, keyboard operation of interactive scenes (Genetics Lab stations, Conference hall), ARIA live regions for announcements, chart descriptions and table views, non-drag alternatives, reduced-motion (device preference and in-app setting), high-contrast and larger-text options, optional speech narration, text with every colour cue, print stylesheets.
+- `a11y` index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(68) .hero-proof > span:nth-child(2))
+- `a11y` fruit-fly-life-cycle-activities/index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(6) figcaption)
+- `a11y` science-activities/index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(50) #ages-5-8 > .container > .hub-blurb)
 
-### Tested
-| What | Evidence |
-|---|---|
-| axe-core scan of Conference states: no violations found in the tested states | `a11y` and `vx-a11y` scripts passed in this session (22 and 52 assertions) |
-| Keyboard walkthrough of the Conference by script | `keyboard` script passed (29 assertions) |
-| Genetics Lab: no interactive controls without accessible names across six stations; keyboard Tab/Enter/Escape; reduced motion; high contrast and 130% text (visual) | reported in `drosie-genetics-lab/docs/QA_REPORT.md` (22 Nov 2026), not re-run here |
+### Live-site source (repository root; third-party hosts blocked)
 
-### Not tested (no evidence exists)
-- Screen readers (NVDA, JAWS, VoiceOver, TalkBack): **none**.
-- Switch access, voice control, magnification software: **none**.
-- Testing with disabled users, or with children: **none**.
-- Colour-vision-deficiency checks beyond the Genetics Lab chart palette validation reported in its QA report.
-- axe-core or other automated scans of the home page, Secret Fly Lab, Life Cycle, Grow Your Own, Climbing, Notebook Academy, Letters, Storybook.
-- **No claim of WCAG conformance (any level) is made.** Automated tools detect only a portion of barriers.
+Browser: chromium. Total: **310 passed, 3 failed, 2 skipped**.
 
-## 4. Browser and device compatibility
+| Suite | Passed | Failed | Skipped |
+|---|---|---|---|
+| pages: load, errors, images, external requests (desktop 1280x800) | 127 | 0 | 0 |
+| links: every local href/src/action resolves; in-page anchors exist | 2 | 0 | 0 |
+| keyboard: Tab order reaches interactive controls with a visible focus indicator, no trap | 40 | 0 | 0 |
+| mobile: 390x844 touch and 320x568; no horizontal overflow, no missing images | 80 | 0 | 0 |
+| a11y: automated axe-core scan (NOT a WCAG conformance evaluation) | 18 | 3 | 0 |
+| offline: pages work with every external host blocked | 0 | 0 | 1 |
+| components: Climbing Challenge (full 3-trial flow, results match what is drawn) | 10 | 0 | 0 |
+| components: Life Cycle Adventure, Grow Your Own Fruit Fly | 16 | 0 | 0 |
+| components: The Secret Fly Lab | 4 | 0 | 0 |
+| components: Lab Notebook Academy | 5 | 0 | 0 |
+| components: Storybook reader | 0 | 0 | 1 |
+| components: Letters from Drosie, Discovery Library, home page | 5 | 0 | 0 |
+| components: Drosie Genetics Lab (UI smoke; the engine has its own 58-test Node suite) | 3 | 0 | 0 |
 
-### Tested
-| Browser | Evidence |
-|---|---|
-| Chromium (Playwright 1.63, desktop viewports; mobile viewports 390 px reported by earlier QA) | Automated runs above and earlier reports |
+Failures:
 
-### Not tested
-Firefox, Safari (desktop and iOS), Samsung Internet, Edge as a separate product, Android browsers, real touch devices, older browser versions, assistive-technology/browser combinations. Any compatibility statement beyond Chromium would be a guess.
+- `a11y` index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(69) .hero-proof > span:nth-child(2))
+- `a11y` fruit-fly-life-cycle-activities/index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(6) figcaption)
+- `a11y` science-activities/index.html: no critical/serious axe violations (1 total violations of any impact) (color-contrast(50) #ages-5-8 > .container > .hub-blurb)
 
-### Features used (compatibility risk indicators, from a source scan, not test results)
-ES modules (Genetics Lab; modern browsers only), `<dialog>.showModal()`, optional chaining and nullish coalescing, CSS container queries (`container-type`, used in the Conference poster, with a documented `cqw` fallback), Web Audio API, Web Speech `speechSynthesis` (voices vary by device; Letters and others handle absence), `localStorage` (guarded with try/catch in several modules), Clipboard and Web Share (feature-guarded in at least some places), Fullscreen API, `prefers-reduced-motion`. Several of these require browsers from roughly 2021 onward; the exact minimum versions have not been determined or tested and are therefore not stated.
 
-### Known compatibility-related observations
-- The Genetics Lab does not work from `file://`; it needs HTTP.
-- Pages use absolute root paths (e.g. `/favicon.svg`, `/life-cycle-game.html`), so they assume deployment at a domain root.
-- Offline use degrades third-party features (fonts, map, analytics, feedback form, page-flip effect on the Storybook).
+**Genetics engine:** 58/58 passed. **SEO checker:** 0 errors, 7 warnings (long titles/descriptions).
+**Scientific Conference (30 scripts):** see section 4.
 
-## 5. How to reproduce
+### Reading the failures
+All remaining failures are **axe-core colour-contrast violations** of muted grey text (`.hero-proof` text on the home page, a hub blurb, figure captions). They are real findings, not test errors, and are **unresolved**; they need approved darker text colours across the site (decision D-8 in the readiness report). The live-site run skips two checks that need CDN resources blocked in the test environment (the Storybook page-turn library on the live site; the archival edition vendors it and passes).
 
-```bash
-# Genetics engine
-cd drosie-genetics-lab && node tests/run-tests.mjs
+## 4. Conference suite (rerun after the conference code guards were added)
+All 30 scripts run by  were rerun after the guards were added: **1145 assertions passed, 0 failed** (including  22 and  52 axe assertions). Not part of this run: .
 
-# Static checks
-python3 seo/tools/seo_check.py
+## 5. Defects found by the new tests and fixed in this pass
+1. Home-page lesson search and the Discovery Library filter/search set the `hidden` property but a CSS `display` rule kept cards visible. Fixed with a `[hidden]` rule.
+2. The Letters page's "More from Drosie's World" block was dark text on a dark background (contrast 1.12). Fixed.
+3. The Secret Fly Lab disabled pinch zoom (`user-scalable=no`). Removed for accessibility (touch behaviour of the game should be checked on devices).
+4. A worksheet page overflowed horizontally on phones (long underscore lines). Fixed.
+5. Colour contrast: site logo accent, eyebrow labels, hero heading accents, team role, Notebook Academy logo. Fixed.
+6. The Conference threw an error when a resize event arrived before initialisation (intermittent). Guarded.
+7. A dead in-page link (`#ch1`) on the Conference page. Fixed.
+8. The Secret Fly Lab inventory had an ARIA label on a role-less `div`. Added `role="group"`.
+9. Reproducibility bug in the placeholder PDF (timestamp). Pinned.
 
-# Conference (needs Playwright with Chromium, and axe-core for two scripts)
-mkdir -p /tmp/axe && cd /tmp/axe && npm init -y && npm i axe-core
-cd <repo> && python3 -m http.server 8123 &
-AXE_PATH=/tmp/axe/node_modules/axe-core/axe.min.js tests/conference/run-all.sh
-```
+## 6. What was NOT tested
+- **Firefox and WebKit: not run.** Neither binary is installed in this environment; installing browsers was not attempted. The suite honours `BROWSER=firefox|webkit` and reports "NOT RUN" when a browser is missing; `tests/site/ci-workflow.example.yml` shows a three-browser CI job (not installed in the repository).
+- Screen readers, switch/voice control, magnifiers, disabled users, children: none.
+- Real mobile devices and touch gestures (mobile runs are emulation).
+- WCAG conformance: not assessed. axe-core detects only a part of the possible barriers.
+- The Genetics Lab mission-by-mission end-to-end script cited in its QA report is not in the repository and was not re-run.
+- Supabase/Turnstile backend behaviour (live site): not tested (see the privacy/security audit).
+- Page behaviour under slow or failing networks beyond blocking external hosts.
 
-`run-all.sh` writes to `/tmp/conf-last.txt`, and five scripts expect the scratch directories named in their source; create them first (see readiness report item T-3).
-
-## 6. Recommended additional testing before claiming more
-
-1. Cross-browser run of the Conference and Genetics suites on Firefox and WebKit (Playwright supports both).
-2. Add smoke tests for the untested components (load without console errors, key flows).
-3. Manual screen-reader pass (NVDA + Firefox, VoiceOver + Safari) of at least the Genetics Lab, Secret Fly Lab and Conference.
-4. A pilot with teachers and children, with an ethics review, if any claim about learning is to be made.
+## 7. Known test limitations and hygiene
+- Five Conference scripts (`m6`, `m9`, `exports`, `robustness`, `vx-m6`) hard-code scratch paths from an earlier session; the directories were created outside the repository to run them.
+- `tests/conference/reading-load.js` is not in `run-all.sh` and was not run.
+- Stochastic engine tests use fixed seeds; random simulations in games are checked for internal consistency, not for statistical properties.
+- Test timing waits are tuned for a loaded container; a rerun on a slower machine may need longer waits.

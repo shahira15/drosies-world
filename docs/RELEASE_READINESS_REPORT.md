@@ -1,85 +1,91 @@
-# Release-Readiness Report: Drosie's World v1.0.0 (provisional)
+# Release-Readiness Report: Drosie's World v1.0.0 (provisional), second pass
 
-Prepared 2026-11-24 on branch `claude/ecstatic-planck-jl44t9` from base commit `b3707ac`.
-Prepared by an AI assistant (Claude) at the author's request; **every item marked "human review" needs a person's decision.** Not legal advice.
+Updated 2026-11-24 on branch `claude/ecstatic-planck-jl44t9` (draft PR #16). Prepared by an AI assistant (Claude Code) at the author's direction. Not legal advice. **Nothing has been merged, deployed, released, uploaded to Zenodo, or licensed.**
 
 ## 1. Bottom line
 
-**Not ready to deposit as-is.** The software itself is in reasonable technical shape for an archival snapshot, and the documentation and metadata are drafted. Deposit should wait for the **blocking decisions** below: licence selection, artwork/illustrator rights, confirmation of AI-generated content, and the live-backend/privacy questions. Nothing was published, uploaded, deployed, merged or licensed in this work.
+The technical and documentary preparation is largely done: a reproducible offline archival edition exists in two variants, the live-site privacy exposure is removed from it, the science has a verification matrix, and the tests found and fixed real defects. **It is still not ready to deposit.** Remaining items need the author's decisions, the illustrator, legal/institutional review and an independent scientific reviewer (sections 3 to 7). Test results, including failures that remain, are in `docs/TESTING.md`.
 
-| Status | Count |
-|---|---|
-| Blocking (must be resolved before upload) | 9 |
-| Strongly recommended before upload | 10 |
-| Housekeeping / later | 9 |
+## 2. Resolved in this pass
 
-## 2. What was prepared (all in this branch, unmerged)
-
-README.md (rewritten; old text retained in git history), `CITATION.cff` (schema-valid: validated with `cffconvert`, CFF 1.2.0), `.zenodo.json` (valid JSON, **licence omitted on purpose**), and in `docs/`: AI_DISCLOSURE, SCIENTIFIC_REFERENCES, ARCHITECTURE, TESTING, EDUCATIONAL_FEATURES, REPOSITORY_AUDIT, LICENSING_AUDIT, LICENSING_PROPOSAL, ZENODO_METADATA_DRAFT, RELEASE_BUILD, this report; `tools/build_release.py`; `release/` (ZIP, checksum, verification record).
-
-## 3. Release ZIP
-
-See `release/BUILD_VERIFICATION.md` for exact counts, the SHA-256 and the reproducibility checks performed. The archive contains code, tests, documentation and educator documents; it **excludes** mascot/storybook artwork, brand marks, portraits, the Canva certificate and other items (`EXCLUDED_FILES.txt` inside the archive).
-
-## 4. Blocking issues (human decision required)
-
-| ID | Area | Issue | Why it blocks | Suggested resolution |
-|---|---|---|---|---|
-| L-1 | Licence | **No licence exists** anywhere in the repository. | Zenodo needs one for open access; without a choice, a default may be applied to everything. | Decide per `docs/LICENSING_PROPOSAL.md`, then add LICENSE and update `.zenodo.json` and `CITATION.cff`. |
-| L-2 | Rights | **Ownership of mascot and storybook art is undocumented** (illustrator credited on `team.html`; book made in Canva). | Cannot grant or reserve rights confidently. | Obtain the illustrator agreement; state who holds copyright; decide what may be archived. |
-| L-3 | Rights | **Possible AI-generated or Canva-library imagery** is unknown. | Affects copyright claims and disclosure. | Author to confirm and record in `AI_DISCLOSURE.md`. |
-| L-4 | Rights | **Licence of the existing book record** (DOI 10.5281/zenodo.23550876) could not be read from this environment. | An open licence there already covers those images; "all rights reserved" would be inconsistent. | Check the record; align strategy. |
-| L-5 | Rights/privacy | Illustrator's name, social handle and portrait are on the public site; consent for permanent archival isn't documented. | Personal data / likeness. | Get written consent or omit (the ZIP already omits the photo). |
-| L-6 | Rights | Characters are **drawn in code** (`lab/js/art/chars.js`, `lab-scene.js`, `vx-art.js`), mixing software and artwork. These files **are in the ZIP**. | They would be covered by whatever software licence is chosen. | Choose option 1/2/3 in the proposal; if option 1 or 3, move or replace before upload. |
-| S-1 | Security/privacy | `index.html` embeds a live **Supabase URL + publishable key** and **Turnstile site key**. Not secrets by design, but they permanently identify a live backend; row-level-security was not and could not be reviewed here. | Archived forever; misuse/abuse surface; also the older README wrongly said no data is collected. | Verify RLS and function rate limits; decide to keep, redact or parameterise in the archive. |
-| S-3 | Privacy/legal | Feedback form collects free text and optional country; **no privacy notice or retention policy** in the repo; analytics and Google Fonts also transmit visitor data. Children's-privacy law (COPPA/GDPR-K etc.) not assessed. | A formal software record of a children's educational site should not carry unexamined data-protection exposure. | Legal/privacy review; publish a privacy notice; consider self-hosting fonts. |
-| SC-1 | Scientific | **No independent expert review** of the science, including allele data and timings (the repository says so). Genetics README calls it "scientifically validated". | The record would be read as scholarly. | Obtain a *Drosophila* geneticist's review, or change wording to "checked by the developer against FlyBase". |
-
-## 5. Strongly recommended before upload
-
-| ID | Area | Issue | Suggested action |
+| # | Issue | Resolution | Evidence |
 |---|---|---|---|
-| S-2 | Privacy | GoatCounter script and `drosiesworld` site code in archived pages would report counts to the live site from any copy. | Document, or make analytics opt-in/configurable for forks. |
-| SC-2 | Scientific | Timing facts (about 24 h embryo, 4 d larva, 4-5 d pupa; 19 d at 18 °C, 7 d at 29 °C) lack citations on the pages. | Add citations or soften ("about"). |
-| SC-3 | Scientific | Reference R9 (Miller et al. 2018 balancer evolution) not matched in PubMed lookup. Hurd 2015 and Bidaye 2014 matched by PMID but metadata not read. Full texts of Gargano 2005 and Nichols 2012 not read (stated on the guide). | Verify citations; read the sources. |
-| SC-4 | Scientific | FlyBase IDs, map positions and release coordinates in `drosie-genetics-lab/` were not re-checked in this work. | Spot-check against FlyBase. |
-| SC-5 | Scientific | "roughly 14,000 genes" (Fruit Fly Biology) vs the cited paper's about 13,600 at the time. | Cite a current FlyBase figure. |
-| E-1 | Educational claims | Standards mappings (NGSS, TEKS) in the Genetics teacher guide and the team page are unreviewed; only TEKS BIO.8.B was verified. Teacher Resources says other resources are not aligned. | Have a teacher/curriculum specialist verify, or label "informal". |
-| E-2 | Educational claims | Age bands and time estimates are unpiloted; draft DOCX lesson plans are marked "to be proofread". | Proofread or label as drafts; do not imply validation. |
-| T-1 | Testing | Only Chromium tested; no screen-reader, device or user testing; most components (all except the Genetics Lab and the Conference) have no dedicated automated tests. | Run the extra tests in `docs/TESTING.md` §6, or keep the limitations statement prominent. |
-| T-2 | Dependencies | page-flip 2.0.7 (jsDelivr, no SRI), Leaflet, fonts loaded from CDNs; test dependencies undeclared. | Add SRI/vendor with licences; add dev manifest. |
-| L-7 | Licensing | Third-party terms to verify: FlyBase data licence attribution wording, NGSS terms of use for quoted text, OSM tile policy, YouTube video authorisation (credited to IMP and Science/AAAS), Canva terms for `Certificate.pdf`. | Review each; remove if unclear. |
+| R1 | Miller 2018 reference unresolved | PMC5873907 = PMID 29420191, *G3* 2018;8(4):1161-1171, doi:10.1534/g3.118.200021. The repository had the wrong title and journal; corrected. No substitute invented; whether it supports the CyO marker list remains open (S-3). | `docs/SCIENTIFIC_VERIFICATION_MATRIX.md` |
+| R2 | Book record unverified | Fetched live from the Zenodo API: Book, v1.0, 2026-10-22, **CC BY-NC-ND 4.0**, open access, creator Arzoo, Shahira, contributor Cavalcanti, Letícia. Relation to the software recommended: `references`, not `isSupplementTo`. | `docs/BOOK_RELATIONSHIP.md` |
+| R3 | "Scientifically validated" and "verified against FlyBase" wording | Replaced with literature-informed design, technical testing, "compiled from FlyBase records and checked by the developer (not independently reviewed)". | Genetics Lab README, UI, footer, `fruit-fly-biology` byline |
+| R4 | Live Supabase/Turnstile/analytics/fonts/CDN/map/video in the archived software | Removed by asserted build transformations; page-flip vendored; links made relative. Automated test: zero external requests, works from `file://` | `docs/ARCHIVAL_EDITION.md`, `tests/site` |
+| R5 | Missing images / nonfunctional pages in the archive | Full edition keeps the illustrations used by pages; placeholder edition generates same-size placeholders; tests assert no broken images on every page | `docs/TESTING.md` |
+| R6 | Licensing documents missing | Proposed MIT text (not in effect), `ASSET_LICENSES.md`, `THIRD_PARTY_NOTICES.md`, component inventory, character-in-code files identified with a separation proposal; licensing audit updated for the creator-provided illustrator-rights statement (scope flagged) | repository root and `docs/` |
+| R7 | AI disclosure | Rewritten with the author's descriptions of ChatGPT and Claude Code contributions; does not claim all work was manual | `docs/AI_DISCLOSURE.md` |
+| R8 | Citation hub | `/cite/` with APA, MLA, Chicago, BibTeX, RIS, copy buttons, downloads, book DOI, software DOI placeholder (no invented identifier), creators, AI disclosure; "Cite this resource" links on resource pages; sitemap updated | `cite/`, `tools/build_cite.py` |
+| R9 | Untested simulations | New site-wide test suite; defects found and fixed: search/filters did not hide cards (CSS overrode `hidden`), invisible text block on Letters page, zoom disabled in the Secret Fly Lab, horizontal overflow on a worksheet page, contrast failures (logo, eyebrow, headings, team role, notebook academy), unnamed inventory group, a load-time race in the Conference, a dead `#ch1` link | commits and `docs/TESTING.md` |
+| R10 | Live-site privacy/security audit; privacy notice | Audit with Supabase RLS requirements and owner test plan; proposed privacy notice (draft) | `docs/LIVE_SITE_PRIVACY_SECURITY_AUDIT.md`, `docs/PROPOSED_PRIVACY_NOTICE.md` |
+| R11 | Reproducible build | Both ZIPs rebuilt; in-place `--check` and a fresh-clone build give identical SHA-256 (see `release/BUILD_VERIFICATION.md`) | `tools/build_archive.py` |
+| R12 | Secret/PII scan of new work | No credentials added; ORCID left blank; portraits excluded | `docs/REPOSITORY_AUDIT.md` |
 
-## 6. Housekeeping / later
+## 3. Requires the author's decision
+
+| ID | Decision |
+|---|---|
+| D-1 | Approve **MIT** (or Apache-2.0) for eligible code, and a content licence (CC BY 4.0 or CC BY-NC-SA 4.0) for text. Then create `LICENSE`, set `license` in `.zenodo.json` and `CITATION.cff`, rebuild. The build does not do this automatically. |
+| D-2 | **Which edition to deposit:** *full* (illustrations; only after the illustrator-agreement check) or *placeholders*. Rehearse in the Zenodo sandbox to see how a mixed-rights record's licence label displays. |
+| D-3 | **Characters drawn in JavaScript** (`lab/js/art/chars.js`, `drMayaSVG`/`drosieSVG` in `drosie-genetics-lab/js/lab-scene.js`): option 1 (separate and reserve), 2 (release under MIT) or 3 (replace with neutral art); then implement the proposed separation. |
+| D-4 | Related identifier to the book (`references` recommended) and whether to add a reciprocal link on the book record; whether to list the illustrator as a contributor on the software record; the **ORCID** to use (blank until supplied; the book record shows one). |
+| D-5 | Confirm AI-disclosure statements: which tool produced which components, the human-review statement, and that no illustration was AI-generated or Canva-library sourced. |
+| D-6 | Live-site changes: keep or remove third-party services; adopt the privacy notice; self-host fonts; accept the pinch-zoom change in the Secret Fly Lab (needed for accessibility, but it alters touch behaviour). |
+| D-7 | Wording of unsupported numbers (development times, stage durations): soften or cite (see S-1). |
+| D-8 | Contrast findings still open (see `docs/TESTING.md`): approve darker muted-text colours across the site. |
+| D-9 | Housekeeping: delete stray files in the repository, add `.gitignore`, move the 90 MB of raster masters out of the code repository, remove hard-coded scratch paths from five Conference tests. |
+| D-10 | Set the real release date; record the release commit hash in the Zenodo notes. |
+
+## 4. Requires the illustrator's consent (Letícia Cavalcanti)
+
+The author states rights were obtained. The following need her written confirmation or the agreement text (`ASSET_LICENSES.md` section 0):
+- I-1 Scope of the agreement: assignment or licence; exclusive or not; term; territory.
+- I-2 Express permission for **permanent public archival on Zenodo** and download by anyone, and for Zenodo to host (a licence the depositor must be able to grant).
+- I-3 **Sublicensing** separately from distribution (the book is already CC BY-NC-ND 4.0).
+- I-4 Adaptations: web-optimised WebP copies, display in an interactive reader, the certificate PDF, Open Graph image, life-cycle stage images, character poses used in games, and the code-drawn characters derived from her designs.
+- I-5 Which works are covered (book pages, cover, mascot, fruit bowl, microscope, stage art, certificate art).
+- I-6 Credit wording, moral rights, and being listed as a contributor on the software record.
+- I-7 Use of her name, Instagram handle and photograph (photograph is excluded from every archive).
+- I-8 Any restrictions on AI-training use, merchandise, or commercial use.
+
+## 5. Requires institutional or legal review
 
 | ID | Item |
 |---|---|
-| T-3 | Five Conference tests hard-code `/tmp/claude-0/...` scratch paths (tests pass only if those directories exist). Use `os.tmpdir()`. |
-| T-4 | Absolute root paths make sub-folder deployment break. |
-| T-5 | `drosie-genetics-lab/package.json` lacks version/licence; `.nojekyll` claimed but absent; no root `.gitignore`. |
-| T-6 | Stray files: `Virtual lab`, `book-pages/gitkeep`, `drosie.png.png`. About 90 MB of raster images in the code repo (55 MB duplicates of storybook pages). |
-| T-7 | `seo_check.py` reports 8 warnings (long titles/descriptions; `#ch1` anchor). |
-| T-8 | Five different JS architectures, no shared library (maintainability). |
-| T-9 | Sitemap, robots and canonical URLs refer to drosiesworld.com; unaffected for archive but note for forks. |
-| T-10 | The date in `CITATION.cff`/`.zenodo.json` (2026-11-24) is a placeholder for the deposit date. |
-| T-11 | Add the release commit hash to the Zenodo notes after merge; if the PR is merged by squash, the hash changes. |
+| L-1 | **Institutional IP and affiliation:** the author is a doctoral researcher at Texas Tech University and the metadata names the university. Check university IP and outside-activity policies and whether the affiliation may be used. |
+| L-2 | Copyright in AI-assisted code and text; suitability of MIT for it. |
+| L-3 | **Children's privacy and data protection** for the live site (COPPA/GDPR-K/FERPA context, IP addresses, feedback form, analytics, third-party requests), and the proposed privacy notice. No compliance is claimed. |
+| L-4 | Supabase terms and a data-processing agreement; retention and deletion procedures. |
+| L-5 | Trademark status of "Drosie's World", "Drosie", the logo; brand-use policy. |
+| L-6 | Terms for third-party material: FlyBase data licence and attribution, NGSS/TEKS text, Canva terms for `Certificate.pdf` (it embeds Canva fonts), YouTube video authorisation (live site only), OSM tile policy (live site only). |
+| L-7 | The Zenodo depositor terms for mixed-rights records. |
+| L-8 | Accessibility obligations for schools (no conformance claimed here). |
+| L-9 | If any future study with children is planned, ethics review. None has been done. |
 
-## 7. Claim discipline check
+## 6. Requires independent scientific review
 
-Statements added in this work that distinguish functionality from effectiveness: README header note and Limitations; Zenodo description; CITATION abstract; EDUCATIONAL_FEATURES §G. **No** document in this branch claims learning effectiveness, WCAG conformance, standards alignment, expert review or cross-browser support. Existing site text was **not** edited; pre-existing claims flagged above remain as they were.
+Use `docs/INDEPENDENT_SCIENTIFIC_REVIEWER_CHECKLIST.md`.
+- S-1 Unsupported numbers: 9-10 days at 25 C, about 19 days at 18 C, about 7 days at 29 C; stage durations; anatomy facts. Only the qualitative effect of temperature is supported by sources found (Yadav 2013, Schou 2017; abstracts).
+- S-2 FlyBase allele/gene data (not re-queried: the network allowed only Zenodo, DOI and Crossref).
+- S-3 Whether Miller 2018 supports the CyO marker list; balancer recombination treated as fully suppressed although rare crossovers are reported.
+- S-4 Discrepancies: gene count (13,600 vs "roughly 14,000"); Kosambi 1943 vs 1944; Haldane 1919 original not located.
+- S-5 Moonwalker stock details (BDSC 79596, 625 nm, retinal) and the FlyBase record identity for Vilinsky 2018.
+- S-6 Missing sources: male achiasmate meiosis, X:A sex determination, notebook practice, lab-safety standards (safety professional), NGSS/TEKS codes (curriculum specialist).
+- S-7 Full-text confirmation of all abstract-only (V-ABS) rows.
 
-## 8. What was verified in this work versus not
+## 7. Technical items still open (not blocking if disclosed)
 
-| Verified here (evidence) | Not verified |
-|---|---|
-| Genetics engine tests: 58/58 passed (run now) | Educational effectiveness (no data exist) |
-| Conference scripts: 1,145 assertions, 0 failed (run now, Chromium) | Firefox/Safari/mobile; screen readers |
-| `seo_check.py`: 0 errors, 8 warnings (run now) | RLS and security of the Supabase backend |
-| `CITATION.cff` validates against CFF 1.2.0 (cffconvert) | Zenodo's acceptance of `.zenodo.json` (no upload attempted) |
-| 6 references confirmed to exist in PubMed; 2 matched by PMID | Full texts of any cited paper; FlyBase records |
-| Secret/PII pattern scans on tree and history: nothing credential-like found | Third-party licence terms, legal sufficiency |
-| ZIP built twice and in a clean clone: see `release/BUILD_VERIFICATION.md` | Whether artwork is AI-generated or Canva-sourced |
+- Firefox and WebKit **not run**: binaries are not installed here and installing browsers was out of scope for this environment; the suite supports them (`BROWSER=firefox|webkit`; example CI file `tests/site/ci-workflow.example.yml`, not installed).
+- Remaining axe contrast failures on muted grey text and a few page-specific colours (listed in `docs/TESTING.md`); no screen-reader or user testing; no WCAG claim.
+- Absolute root paths on the live site (the archival edition rewrites them).
+- Live-site third-party exposure (audit) is unchanged; only the archival edition is clean.
 
-## 9. Actions deliberately not taken (per instructions)
+## 8. Claim discipline
 
-No existing licence modified (none exist); no licence assigned to artwork or anything else; no GitHub release or tag created; nothing uploaded to Zenodo; no merge; no deployment. A draft pull request was opened for review.
+No document claims learning effectiveness, WCAG conformance, standards alignment, expert review, legal compliance or cross-browser support. No student learning outcomes have been established. Existing live-site text was edited only to remove unsupported "validated/verified" phrasing and to fix defects listed above.
+
+## 9. Counts
+
+Items resolved: 12. Awaiting the author: 10. Illustrator: 8. Legal/institutional: 9. Scientific: 7.
