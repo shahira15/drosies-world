@@ -5,7 +5,7 @@ const SEED = () => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.st
 (async () => {
   let { browser, page, errors } = await open({});
   console.log('M6 poster');
-  await page.evaluate(SEED); await page.goto('http://localhost:8123/scientific-conference.html#ch6'); await page.reload();
+  await page.evaluate(SEED); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch6'); await page.reload();
   ok(!(await page.evaluate(() => DC.isDone(6))), 'poster incomplete before starting');
   await page.locator('[data-act=postStart]').click();
   ok((await page.inputValue('#pf-title')).includes('fruit flies') && (await page.inputValue('#pf-author')) === 'Zoe', 'start fills title and nickname');
@@ -65,7 +65,7 @@ const SEED = () => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.st
   ({ browser, page, errors } = await open({}));
   console.log('M6 path B');
   await page.evaluate(() => { DC.state.mode = 'independent'; DC.state.nick = 'Zoe'; DC.state.path = 'B'; DC.state.b.f.title = 'Ants at my door'; DC.state.b.f.question = 'When do ants come?'; DC.saveNow(); });
-  await page.goto('http://localhost:8123/scientific-conference.html#ch6'); await page.reload();
+  await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch6'); await page.reload();
   await page.locator('[data-act=postStart]').click();
   ok(await page.locator('#posterLive figure').count() === 0, 'B without numeric data: no figure is invented');
   ok((await page.inputValue('#pf-refs')) === '', 'B: no references inserted for learner');

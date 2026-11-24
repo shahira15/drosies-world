@@ -6,7 +6,7 @@ const seed = (page, p) => page.evaluate(SEED, p);
 (async () => {
   let { browser, page, errors } = await open({});
   console.log('M8 present/discuss/revise (path A)');
-  await seed(page, 'A'); await page.goto('http://localhost:8123/scientific-conference.html#ch9'); await page.reload();
+  await seed(page, 'A'); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch9'); await page.reload();
   ok((await page.locator('#pracBox').innerText()).includes('7.2 flies'), 'practice cards show the learner’s own abstract text');
   ok((await page.locator('#pracBox').innerText()).includes('No microphone or camera'), 'states no mic/camera');
   ok(!(await page.evaluate(() => DC.isDone(9))), 'ch9 incomplete at start');
@@ -74,7 +74,7 @@ const seed = (page, p) => page.evaluate(SEED, p);
 
   ({ browser, page, errors } = await open({ reduced: true }));
   console.log('M8 path B');
-  await seed(page, 'B'); await page.goto('http://localhost:8123/scientific-conference.html#ch9'); await page.reload();
+  await seed(page, 'B'); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch9'); await page.reload();
   await page.fill('#explain', 'I watched my door and counted ants each morning. On Tuesday I saw more ants than on Monday. That might mean they like some days better.');
   await page.locator('[data-act=explCheck]').click();
   ok(await page.evaluate(() => DC.state.prac.explainOk), 'B: explanation without simulated numbers is accepted');

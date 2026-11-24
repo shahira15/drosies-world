@@ -1,0 +1,386 @@
+{
+ "label": "baseline",
+ "mode": "legacy",
+ "chapters": {
+  "A1": {
+   "desktop": {
+    "title": "The Conference Invitation",
+    "words": 329,
+    "firstScreenWords": 168,
+    "paragraphs": 5,
+    "textFields": 1,
+    "buttons": 4,
+    "longTextBlocks": 2
+   },
+   "phone": {
+    "title": "The Conference Invitation",
+    "words": 329,
+    "firstScreenWords": 46,
+    "paragraphs": 5,
+    "textFields": 1,
+    "buttons": 4,
+    "longTextBlocks": 2
+   }
+  },
+  "A2": {
+   "desktop": {
+    "title": "Choose Your Research Path",
+    "words": 105,
+    "firstScreenWords": 105,
+    "paragraphs": 3,
+    "textFields": 0,
+    "buttons": 4,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "Choose Your Research Path",
+    "words": 105,
+    "firstScreenWords": 68,
+    "paragraphs": 3,
+    "textFields": 0,
+    "buttons": 4,
+    "longTextBlocks": 0
+   }
+  },
+  "A3": {
+   "desktop": {
+    "title": "The Research Investigation",
+    "words": 482,
+    "firstScreenWords": 196,
+    "paragraphs": 9,
+    "textFields": 6,
+    "buttons": 12,
+    "longTextBlocks": 5
+   },
+   "phone": {
+    "title": "The Research Investigation",
+    "words": 482,
+    "firstScreenWords": 109,
+    "paragraphs": 9,
+    "textFields": 6,
+    "buttons": 12,
+    "longTextBlocks": 5
+   }
+  },
+  "A4": {
+   "desktop": {
+    "title": "Become a Data Detective",
+    "words": 773,
+    "firstScreenWords": 145,
+    "paragraphs": 3,
+    "textFields": 7,
+    "buttons": 19,
+    "longTextBlocks": 7
+   },
+   "phone": {
+    "title": "Become a Data Detective",
+    "words": 769,
+    "firstScreenWords": 77,
+    "paragraphs": 3,
+    "textFields": 7,
+    "buttons": 19,
+    "longTextBlocks": 7
+   }
+  },
+  "A5": {
+   "desktop": {
+    "title": "The Abstract Studio",
+    "words": 742,
+    "firstScreenWords": 360,
+    "paragraphs": 14,
+    "textFields": 5,
+    "buttons": 23,
+    "longTextBlocks": 8
+   },
+   "phone": {
+    "title": "The Abstract Studio",
+    "words": 742,
+    "firstScreenWords": 152,
+    "paragraphs": 14,
+    "textFields": 5,
+    "buttons": 23,
+    "longTextBlocks": 8
+   }
+  },
+  "A6": {
+   "desktop": {
+    "title": "The Scientific Poster Studio",
+    "words": 766,
+    "firstScreenWords": 162,
+    "paragraphs": 8,
+    "textFields": 12,
+    "buttons": 5,
+    "longTextBlocks": 4
+   },
+   "phone": {
+    "title": "The Scientific Poster Studio",
+    "words": 762,
+    "firstScreenWords": 98,
+    "paragraphs": 8,
+    "textFields": 12,
+    "buttons": 5,
+    "longTextBlocks": 4
+   }
+  },
+  "A7": {
+   "desktop": {
+    "title": "Registration and Preparation",
+    "words": 337,
+    "firstScreenWords": 127,
+    "paragraphs": 10,
+    "textFields": 0,
+    "buttons": 16,
+    "longTextBlocks": 3
+   },
+   "phone": {
+    "title": "Registration and Preparation",
+    "words": 337,
+    "firstScreenWords": 82,
+    "paragraphs": 10,
+    "textFields": 0,
+    "buttons": 16,
+    "longTextBlocks": 3
+   }
+  },
+  "A8": {
+   "desktop": {
+    "title": "The Interactive Conference Hall",
+    "words": 125,
+    "firstScreenWords": 63,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 14,
+    "longTextBlocks": 1
+   },
+   "phone": {
+    "title": "The Interactive Conference Hall",
+    "words": 111,
+    "firstScreenWords": 61,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 14,
+    "longTextBlocks": 1
+   }
+  },
+  "A9": {
+   "desktop": {
+    "title": "Present, Discuss, and Revise",
+    "words": 673,
+    "firstScreenWords": 192,
+    "paragraphs": 15,
+    "textFields": 9,
+    "buttons": 19,
+    "longTextBlocks": 4
+   },
+   "phone": {
+    "title": "Present, Discuss, and Revise",
+    "words": 673,
+    "firstScreenWords": 112,
+    "paragraphs": 15,
+    "textFields": 9,
+    "buttons": 19,
+    "longTextBlocks": 4
+   }
+  },
+  "A10": {
+   "desktop": {
+    "title": "The Conference Finale",
+    "words": 291,
+    "firstScreenWords": 186,
+    "paragraphs": 8,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 3
+   },
+   "phone": {
+    "title": "The Conference Finale",
+    "words": 291,
+    "firstScreenWords": 61,
+    "paragraphs": 8,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 3
+   }
+  },
+  "B2": {
+   "desktop": {
+    "title": "Choose Your Research Path",
+    "words": 105,
+    "firstScreenWords": 105,
+    "paragraphs": 3,
+    "textFields": 0,
+    "buttons": 4,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "Choose Your Research Path",
+    "words": 105,
+    "firstScreenWords": 68,
+    "paragraphs": 3,
+    "textFields": 0,
+    "buttons": 4,
+    "longTextBlocks": 0
+   }
+  },
+  "B3": {
+   "desktop": {
+    "title": "The Research Investigation",
+    "words": 251,
+    "firstScreenWords": 160,
+    "paragraphs": 6,
+    "textFields": 10,
+    "buttons": 8,
+    "longTextBlocks": 2
+   },
+   "phone": {
+    "title": "The Research Investigation",
+    "words": 251,
+    "firstScreenWords": 60,
+    "paragraphs": 6,
+    "textFields": 10,
+    "buttons": 8,
+    "longTextBlocks": 2
+   }
+  },
+  "B4": {
+   "desktop": {
+    "title": "Become a Data Detective",
+    "words": 280,
+    "firstScreenWords": 173,
+    "paragraphs": 2,
+    "textFields": 3,
+    "buttons": 9,
+    "longTextBlocks": 3
+   },
+   "phone": {
+    "title": "Become a Data Detective",
+    "words": 280,
+    "firstScreenWords": 96,
+    "paragraphs": 2,
+    "textFields": 3,
+    "buttons": 9,
+    "longTextBlocks": 3
+   }
+  },
+  "B5": {
+   "desktop": {
+    "title": "The Abstract Studio",
+    "words": 641,
+    "firstScreenWords": 302,
+    "paragraphs": 13,
+    "textFields": 5,
+    "buttons": 23,
+    "longTextBlocks": 8
+   },
+   "phone": {
+    "title": "The Abstract Studio",
+    "words": 641,
+    "firstScreenWords": 189,
+    "paragraphs": 13,
+    "textFields": 5,
+    "buttons": 23,
+    "longTextBlocks": 8
+   }
+  },
+  "B6": {
+   "desktop": {
+    "title": "The Scientific Poster Studio",
+    "words": 712,
+    "firstScreenWords": 169,
+    "paragraphs": 9,
+    "textFields": 11,
+    "buttons": 5,
+    "longTextBlocks": 4
+   },
+   "phone": {
+    "title": "The Scientific Poster Studio",
+    "words": 712,
+    "firstScreenWords": 98,
+    "paragraphs": 9,
+    "textFields": 11,
+    "buttons": 5,
+    "longTextBlocks": 4
+   }
+  },
+  "B7": {
+   "desktop": {
+    "title": "Registration and Preparation",
+    "words": 337,
+    "firstScreenWords": 127,
+    "paragraphs": 10,
+    "textFields": 0,
+    "buttons": 16,
+    "longTextBlocks": 3
+   },
+   "phone": {
+    "title": "Registration and Preparation",
+    "words": 337,
+    "firstScreenWords": 82,
+    "paragraphs": 10,
+    "textFields": 0,
+    "buttons": 16,
+    "longTextBlocks": 3
+   }
+  },
+  "B8": {
+   "desktop": {
+    "title": "The Interactive Conference Hall",
+    "words": 125,
+    "firstScreenWords": 63,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 14,
+    "longTextBlocks": 1
+   },
+   "phone": {
+    "title": "The Interactive Conference Hall",
+    "words": 111,
+    "firstScreenWords": 61,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 14,
+    "longTextBlocks": 1
+   }
+  },
+  "B9": {
+   "desktop": {
+    "title": "Present, Discuss, and Revise",
+    "words": 614,
+    "firstScreenWords": 144,
+    "paragraphs": 16,
+    "textFields": 9,
+    "buttons": 20,
+    "longTextBlocks": 4
+   },
+   "phone": {
+    "title": "Present, Discuss, and Revise",
+    "words": 614,
+    "firstScreenWords": 88,
+    "paragraphs": 16,
+    "textFields": 9,
+    "buttons": 20,
+    "longTextBlocks": 4
+   }
+  },
+  "B10": {
+   "desktop": {
+    "title": "The Conference Finale",
+    "words": 283,
+    "firstScreenWords": 178,
+    "paragraphs": 7,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 3
+   },
+   "phone": {
+    "title": "The Conference Finale",
+    "words": 283,
+    "firstScreenWords": 71,
+    "paragraphs": 7,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 3
+   }
+  }
+ }
+}

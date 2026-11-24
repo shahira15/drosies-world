@@ -4,7 +4,7 @@ const seed = (page, p) => page.evaluate(SEED, p);
 (async () => {
   let { browser, page, errors } = await open({});
   console.log('M7 registration (ch7)');
-  await seed(page, 'A'); await page.goto('http://localhost:8123/scientific-conference.html#ch7'); await page.reload();
+  await seed(page, 'A'); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch7'); await page.reload();
   ok((await page.locator('#stage').innerText()).includes('Everything here is pretend'), 'fictional notice shown');
   const a1 = await page.evaluate(() => JSON.stringify(DC.assignment())); await page.reload();
   ok(a1 === await page.evaluate(() => JSON.stringify(DC.assignment())), 'poster assignment is stable across reloads');
@@ -32,7 +32,7 @@ const seed = (page, p) => page.evaluate(SEED, p);
 
   ({ browser, page, errors } = await open({}));
   console.log('M7 hall (ch8) path A');
-  await seed(page, 'A'); await page.goto('http://localhost:8123/scientific-conference.html#ch8'); await page.reload();
+  await seed(page, 'A'); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch8'); await page.reload();
   ok(await page.locator('.hot').count() === 6 && await page.locator('.areabtn').count() === 6, '6 map hotspots and 6 list buttons');
   ok(!(await page.evaluate(() => DC.isDone(8))), 'ch8 incomplete at start');
   // keyboard: tab to a hotspot and press Enter
@@ -81,7 +81,7 @@ const seed = (page, p) => page.evaluate(SEED, p);
 
   ({ browser, page, errors } = await open({ reduced: true }));
   console.log('M7 hall path B');
-  await seed(page, 'B'); await page.goto('http://localhost:8123/scientific-conference.html#ch8'); await page.reload();
+  await seed(page, 'B'); await page.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch8'); await page.reload();
   await page.locator('.areabtn[data-a=talk]').click(); await page.locator('[data-act=sciPick][data-s=quill]').click();
   ok((await page.locator('#sciQ').innerText()).includes('When do ants come to my door?'), 'B: Quill quotes the learner’s own question');
   await page.locator('[data-act=sciPick][data-s=anand]').click();

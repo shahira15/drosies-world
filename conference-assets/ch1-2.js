@@ -175,12 +175,15 @@
   });
   /* Each path keeps its own abstract, poster, hall answers, practice answers and revisions, so a Path A draft can never leak into a Path B portfolio (and vice versa). */
   const PATH_KEYS = ['abs', 'poster', 'hall', 'prac', 'revs'];
-  DC.acts.pickPath = (b) => {
-    const S = DC.state, np = b.dataset.p, op = S.path;
+  /* Switch paths without re-rendering (also used by the visual chapters). Same isolation rules as before. */
+  DC.setPath = (np) => {
+    const S = DC.state, op = S.path;
     if (op && op !== np) {
       S.snaps = S.snaps || {}; S.snaps[op] = {}; PATH_KEYS.forEach((k) => (S.snaps[op][k] = JSON.parse(JSON.stringify(S[k]))));
       const d = DC.defaults(); PATH_KEYS.forEach((k) => (S[k] = S.snaps[np] ? S.snaps[np][k] : d[k]));
       DC.toast('Switched to Path ' + np + '. Your Path ' + op + ' work is saved separately and returns if you switch back.');
     }
-    DC.state.path = np; DC.save(); DC.refresh('[data-act="pickPath"][data-p="' + b.dataset.p + '"]'); DC.softUpdate(); DC.say('Path ' + b.dataset.p + ' chosen'); };
+    S.path = np; DC.save();
+  };
+  DC.acts.pickPath = (b) => { DC.setPath(b.dataset.p); DC.refresh('[data-act="pickPath"][data-p="' + b.dataset.p + '"]'); DC.softUpdate(); DC.say('Path ' + b.dataset.p + ' chosen'); };
 })();

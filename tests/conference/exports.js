@@ -9,7 +9,7 @@ const pages = (f) => +/Pages:\s+(\d+)/.exec(execFileSync('pdfinfo', [f], { encod
   for (const path of ['A', 'B']) {
     console.log('exports path ' + path);
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, acceptDownloads: true }); const p = await ctx.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
-    await p.goto('http://localhost:8123/scientific-conference.html#ch10'); await p.evaluate(SEED_ALL, path); await p.evaluate(() => { DC.state.fin.claimed = true; DC.state.fin.date = 'November 23, 2026'; DC.state.refl.proud = 'I am proud that I said what my data cannot show.'; DC.saveNow(); }); await p.reload();
+    await p.goto('http://localhost:8123/scientific-conference.html?legacy=1#ch10'); await p.evaluate(SEED_ALL, path); await p.evaluate(() => { DC.state.fin.claimed = true; DC.state.fin.date = 'November 23, 2026'; DC.state.refl.proud = 'I am proud that I said what my data cannot show.'; DC.saveNow(); }); await p.reload();
     const sheets = { cert: ['finPrintCert', 'landscape'], abs: ['finPrintAbs', 'portrait'], poster: ['finPrintPoster', 'landscape'], refl: ['finPrintRefl', 'portrait'], badge: ['finPrintBadge', 'portrait'] };
     const txt = {};
     for (const [k, [act, o]] of Object.entries(sheets)) {
