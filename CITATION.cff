@@ -12,7 +12,7 @@ authors:
   - family-names: "Arzoo"
     given-names: "Shahira Helal"
     affiliation: "Texas Tech University"
-    # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"   # add if the author has one
+    # orcid: add only when the author supplies the verified identifier (intentionally blank)
 repository-code: "https://github.com/shahira15/drosies-world"
 url: "https://drosiesworld.com"
 abstract: >-
@@ -42,4 +42,4 @@ references:
     publisher:
       name: "Zenodo"
     doi: "10.5281/zenodo.23550876"
-    notes: "Companion storybook, deposited separately. Illustrations by Letícia Cavalcanti are not part of this software release."
+    notes: "Companion storybook, deposited separately (CC BY-NC-ND 4.0 on Zenodo; verified 2026-11-24). Illustrations by Letícia Cavalcanti. The software references the book and is a distinct output."

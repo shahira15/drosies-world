@@ -17,3 +17,6 @@ code { font: .9em ui-monospace, Menlo, monospace; background: #f1ece0; padding: 
 @media print { nav, .noprint { display: none; } body { background: #fff; } .sheet, .page { box-shadow: none; margin: 0; padding: 10mm 12mm; page-break-after: always; max-width: none; } }
 
 @media screen and (max-width:700px){table{display:block;overflow-x:auto}}
+
+/* long fill-in lines (underscores) must wrap on narrow screens */
+.sheet li,.sheet p{overflow-wrap:anywhere}

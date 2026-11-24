@@ -9,7 +9,7 @@
       "affiliation": "Texas Tech University"
     }
   ],
-  "description": "<p>Drosie's World is a free, browser-based collection of educational activities about the fruit fly <em>Drosophila melanogaster</em> and the practice of scientific inquiry. It is a static website (HTML, CSS and vanilla JavaScript) with no build step and no package dependencies.</p><p>Components: a fruit fly genetics simulator with a seeded, independently tested inheritance engine (Punnett squares, X-linkage, linkage and recombination, lethal alleles, chi-square); a laboratory-safety and stereomicroscope game; life-cycle activities and a virtual fly-culture lab; a simulated climbing assay; a lab-notebook practice module; a simulated scientific conference in which learners write an abstract and build a poster; a storybook reader; and printable teacher resources.</p><p><strong>All experimental data in the software are simulated.</strong> The release documents technical functionality only. <strong>No formal student learning outcomes have been established</strong>, no classroom study has been conducted, and no independent expert review has been completed. Automated testing covers the genetics engine and the conference module (Chromium only); no screen-reader or multi-browser testing has been done.</p><p>This software deposit excludes the Drosie mascot artwork, branding, storybook illustrations and portrait photographs, which are not licensed for reuse. The companion storybook is deposited separately.</p>",
+  "description": "<p>Drosie's World is a free, browser-based collection of educational activities about the fruit fly <em>Drosophila melanogaster</em> and the practice of scientific inquiry. This record is the <strong>self-contained archival edition</strong>: a static website (HTML, CSS and vanilla JavaScript) with no build step, which works offline and makes <strong>no network requests to third parties</strong>. The live website's feedback form, analytics, visitor counter, outreach map, web-font requests, CDN scripts and embedded video are removed; the page-flip library is vendored.</p><p>Components: a fruit fly genetics simulator with a seeded, independently tested inheritance engine (Punnett squares, X-linkage, linkage and recombination, lethal alleles, chi-square); a laboratory-safety and stereomicroscope game; life-cycle activities and a virtual fly-culture lab; a simulated climbing assay; a lab-notebook practice module; a simulated scientific conference in which learners write an abstract and build a poster; a storybook reader; a citation hub; and printable teacher resources.</p><p><strong>All experimental data in the software are simulated.</strong> The release documents technical functionality only. <strong>No formal student learning outcomes have been established</strong>, no classroom study has been conducted, and no independent expert review of the science has been completed. Design is literature-informed (see the scientific verification matrix in the archive). Automated testing covers the genetics engine, the conference module and, in this release, page loading, links, keyboard navigation, mobile layouts, offline operation and component flows, on Chromium only; automated accessibility scans are not a WCAG conformance evaluation.</p><p><strong>Rights.</strong> Software code is proposed for the MIT licence (see the archive's licence files). The Drosie's World name and logo, the Drosie mascot and character designs, and the storybook illustrations (by Let&iacute;cia Cavalcanti) are <strong>not</strong> covered by that licence; see ASSET_LICENSES.md in the archive. Photographs of people are not included.</p><p><strong>AI assistance.</strong> The platform was conceived and directed by its creator and developed with assistance from ChatGPT (OpenAI) and Claude Code (Anthropic); see docs/AI_DISCLOSURE.md. The companion storybook is a separate scholarly output deposited separately (DOI 10.5281/zenodo.23550876).</p>",
   "keywords": [
     "educational software",
     "science education",
@@ -28,7 +28,7 @@
   "related_identifiers": [
     {
       "identifier": "10.5281/zenodo.23550876",
-      "relation": "isSupplementTo",
+      "relation": "references",
       "resource_type": "publication-book",
       "scheme": "doi"
     },
@@ -44,5 +44,11 @@
       "scheme": "url"
     }
   ],
-  "notes": "DRAFT metadata prepared for human review. The 'license' field is deliberately omitted: no licence has been chosen (see docs/LICENSING_PROPOSAL.md). A licence MUST be set before publication; do not accept a default. Add ORCID for the creator if available. Version 1.0.0 is provisional."
+  "notes": "DRAFT for human review; do not upload until approved. (1) 'license' is deliberately omitted: no licence is finalised (see docs/LICENSING_PROPOSAL.md; proposed: MIT for eligible code only, artwork excluded). Set it only after approval. (2) The 'contributors' entry credits the illustrator and applies only if the FULL edition (with illustrations) is uploaded and she agrees; remove it for the placeholder edition. (3) No creator ORCID is included; add a verified one when the author supplies it. (4) Version 1.0.0 is provisional. (5) The related-identifier relation to the book is a recommendation; see docs/BOOK_RELATIONSHIP.md.",
+  "contributors": [
+    {
+      "name": "Cavalcanti, Letícia",
+      "type": "Other"
+    }
+  ]
 }

@@ -132,7 +132,7 @@
       h('div', { class: 't-opts' },
         h('button', { class: 'chipbtn', id: 'tFs', html: icon('full', 18) + ' Fullscreen' }),
         h('button', { class: 'chipbtn', id: 'tSnd', 'aria-pressed': String(A.on.sfx), html: icon('sound', 18) + ' Sound' })),
-      h('p', { class: 't-foot' }, 'Ages 5 to 8 · Free · No sign-in · We do not collect anything about you'));
+      h('p', { class: 't-foot' }, 'Ages 5 to 8 · Free · No sign-in · No names or personal information collected · ', h('a', { href: '/cite/#secret-fly-lab', style: 'color:inherit' }, 'Cite this resource')));
     ui.game.append(el);
     if (!ui.fullscreenOK) el.querySelector('#tFs').style.display = 'none';
     el.querySelector('#tFs').onclick = ui.toggleFullscreen;

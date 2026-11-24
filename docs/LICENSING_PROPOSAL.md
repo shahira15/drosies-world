@@ -1,5 +1,13 @@
 # Proposed Mixed-Licensing Strategy (PROPOSAL ONLY: NOT APPLIED)
 
+> ## UPDATE 2026-11-24: author's preferred strategy and new facts
+> - **Preferred by the author:** MIT for eligible reusable software code; original illustrations, mascot, character designs, storybook artwork and branding keep their existing rights and contractual terms; the illustrator's attribution is preserved; MIT is **not** applied automatically to any artwork; distribution permission is kept distinct from sublicensing permission.
+> - **Implemented as drafts only (nothing finalised):** `licenses/MIT.PROPOSED.txt` (marked "not in effect"), `ASSET_LICENSES.md`, `THIRD_PARTY_NOTICES.md`, `docs/COMPONENT_LICENSE_INVENTORY.md` (including the files that draw characters in code and a proposed code/art separation).
+> - **Layer D (artwork):** the illustrator-rights statement is creator-provided and its scope is unverified (see `ASSET_LICENSES.md` section 0). The book's Zenodo record is CC BY-NC-ND 4.0 (verified live), so the earlier suggestion of CC BY-NC-ND 4.0 for storybook art is *consistent with the licence already published for the book PDF*, but it remains a choice for the author and illustrator, and it must not be applied to non-book artwork without their decision.
+> - **Zenodo mechanics (unchanged):** one licence field per record. If the full edition is uploaded, setting the record to MIT without qualification could be misread as covering the artwork. Recommended wording: record licence = the code licence (after approval) **plus** the description paragraph and `ASSET_LICENSES.md` stating that artwork is excluded from it. Alternative with the least ambiguity: upload the **placeholder edition** under MIT as the software record and archive the artwork separately under its own terms. Whether the Zenodo form accepts the intended combination should be tested in the Zenodo sandbox before the real deposit.
+> - **Finalising:** the build script does not create a `LICENSE` file. After the author approves, `licenses/MIT.PROPOSED.txt` would be copied to `LICENSE` (without the "proposed" banner), the licence field added to `.zenodo.json`/`CITATION.cff`, and the archives rebuilt.
+
+
 Status: **proposal for the author's decision.** Nothing in this document has been applied to any file. No `LICENSE` file was created or changed, no licence field was set in `CITATION.cff` or `.zenodo.json`, and **no licence is assigned to any artwork**. This is not legal advice; have an advisor (and the illustrator) review it. See `docs/LICENSING_AUDIT.md` for the facts it rests on.
 
 ## Goals

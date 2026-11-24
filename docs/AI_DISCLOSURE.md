@@ -1,46 +1,40 @@
 # AI-Assisted Development Disclosure
 
-Status: **DRAFT for author review.** Items marked **[AUTHOR TO CONFIRM]** could not be established from the repository and must be completed by the human author before deposit.
+Status: **DRAFT for the author's confirmation.** Updated 2026-11-24 with the author's description of each tool's contribution. Items still marked **[AUTHOR TO CONFIRM]** could not be established from the repository.
 
 ## Summary
 
-Drosie's World was developed with the assistance of generative AI tools. The tools identified by the author are:
+Drosie's World was conceived and is directed by its creator, **Shahira Helal Arzoo**, who directs the scientific and educational development of the platform and is responsible for its content. Generative AI tools assisted at several stages. **Not all code and content was written by hand**, and no statement in this repository should be read as saying that it was. The tools are not authors and are not listed as creators in `CITATION.cff`, `.zenodo.json` or the citation hub.
 
-| Tool | Vendor | Role |
+| Tool | Vendor | Contribution (as described by the author) |
 |---|---|---|
-| **ChatGPT** | OpenAI | Development assistance by the author's account. Specific models, dates and scope: **[AUTHOR TO CONFIRM]**. Nothing in the git history identifies ChatGPT output, so this disclosure cannot say which files it touched. |
-| **Claude** (including Claude Code, model "Claude Sonnet 5.5") | Anthropic | Code, documentation and test authoring in agentic coding sessions. Identifiable from git history (see below). |
+| **ChatGPT** | OpenAI | Project conceptualisation; brainstorming; educational content development; simulation specifications; scientific explanations; prompt development; code generation; troubleshooting; feature planning. |
+| **Claude Code** (model "Claude Sonnet 5.5") | Anthropic | Repository-level implementation; interface development; code generation; debugging; testing; documentation; release preparation. |
 
-AI tools are **not authors** of this work and are not listed as creators in `CITATION.cff` or `.zenodo.json`. The human author selected the project goals, directed the work, reviewed or accepted the changes, and is responsible for the content, including its scientific accuracy and licensing.
+The author's description is the source for the ChatGPT row; the repository cannot confirm which files or passages ChatGPT produced. The Claude Code row is consistent with git history (below).
 
-## Evidence in the repository (Claude)
+## Evidence in the repository
 
-Git history (`git log`) as of 2026-11-24 contains 31 commits whose author is "Claude" (noreply@anthropic.com), most with a `Co-Authored-By: Claude Sonnet 5.5` trailer and a `Claude-Session` URL. They cover, between 2026-11-23 and 2026-11-24:
+- **Git history:** 31 commits authored as "Claude" (noreply@anthropic.com) before this release-preparation work, most with a `Co-Authored-By: Claude Sonnet 5.5` trailer and a `Claude-Session` URL, between 2026-11-23 and 2026-11-24. They cover SEO work and hub pages; the redesign of the Climbing Challenge, Life Cycle Adventure and Grow Your Own Fruit Fly; the Lab Notebook Academy; the Scientific Conference and its 34 test scripts; storybook reader changes and image optimisation.
+- Many other commits are authored by the repository owner, often as bulk uploads ("Add files via upload"). For these, the generating tool cannot be determined from history. Based on style alone (not proof), the Genetics Lab, the Secret Fly Lab, Letters from Drosie and the Discovery Library appear to have been developed with AI assistance. **[AUTHOR TO CONFIRM which tool(s) and which sessions produced each.]**
+- **This release-preparation work** (2026-11-24, in the pull request that adds this file): Claude Code drafted the documentation, metadata, audits, citation hub, archival-edition build script, automated tests and the small defect fixes the tests exposed (listed in the readiness report). The author directed the scope and supplied decisions and confirmations (for example the illustrator-rights statement and the descriptions above).
 
-- SEO work (sitemap, robots, structured data, the `seo/` reports and `seo/tools/seo_check.py`), the Science Activities, Fruit Fly Biology and Teacher Resources hub pages, the 404 page;
-- redesign or rebuild of the Climbing Challenge, Life Cycle Adventure and Grow Your Own Fruit Fly pages (`climbing-game.html`, `life-cycle-*`, `fly-lab-assets/`, `grow-your-own-fruit-fly.html`);
-- Drosie's Lab Notebook Academy (`lab-notebook-academy.html`, `notebook-academy-assets/`);
-- the ten-chapter Scientific Conference (`scientific-conference.html`, `conference-assets/`, `conference-teacher-guide.html`) and its 34 test scripts in `tests/conference/`;
-- storybook reader changes and WebP image optimisation (`book-pages-web/`);
-- the documentation files created for this release preparation (everything listed in the README's documentation index plus `README.md`, `CITATION.cff`, `.zenodo.json`, `tools/build_release.py`).
+## Where AI involvement matters for users and reviewers
 
-The remaining commits are authored by the repository owner (many titled "Add files via upload" or "Update index.html"). Some components were committed in bulk by upload, so their generating tool cannot be determined from history. Based on file content only (not proof), `drosie-genetics-lab/`, `lab/` (The Secret Fly Lab), `letters/` and `discoveries.html` look machine-assisted in style, for example `lab/README.md` describes itself with a "QA actually run" section and `drosie-genetics-lab/docs/QA_REPORT.md` references Playwright runs. **[AUTHOR TO CONFIRM which tool produced each of these.]**
+1. **Source code and tests** may contain defects that AI-assisted authorship did not prevent. New automated tests in this release found and led to fixes of several previously undetected defects (see `docs/TESTING.md`).
+2. **Scientific content**: explanations, quiz items, timings, allele data and reference lists were developed with AI assistance and then checked by the author. **No independent expert has reviewed them.** During this release preparation, citations were checked against PubMed and Crossref (abstract level) and the results, including discrepancies found, are in `docs/SCIENTIFIC_VERIFICATION_MATRIX.md`. AI assistance is not a substitute for expert review, and the verification matrix lists claims that remain unsupported.
+3. **Artwork**: interface art (laboratory scenes, microscope, fly diagrams, icons) is inline SVG written in code, including AI-assisted code. The Drosie and Dr. Maya characters drawn in code (`lab/js/art/chars.js`, `drosie-genetics-lab/js/lab-scene.js`) are marked as placeholder art in the code. The storybook illustrations and the raster mascot images are credited to the human illustrator, Letícia Cavalcanti, and the author states that rights were obtained from her. **[AUTHOR TO CONFIRM that no illustration was generated with an AI image tool and that no raster image came from a stock or AI library (for example Canva).]**
+4. **Audio**: sound effects are synthesised in code with the Web Audio API; narration uses the browser's speech synthesis. No AI-generated audio files are in the repository.
+5. **Authorship and copyright**: how copyright applies to AI-assisted code and text varies by jurisdiction. Human direction, selection, editing and responsibility are documented here so a reader can judge. Legal review is recommended before relying on any ownership statement.
 
-## Where AI involvement is likely to matter to users and reviewers
+## Statement for the author to confirm
 
-1. **Source code and tests.** AI-written code can contain defects. Tests exist only for the genetics engine and the conference module; see `docs/TESTING.md`.
-2. **Scientific content.** Text, quiz items, timings, allele data and reference lists were produced or compiled with AI help. The author, a doctoral researcher working with *Drosophila*, is responsible for checking them. The repository records that allele data were checked against FlyBase by the developer and that **no independent expert has reviewed** them (`drosie-genetics-lab/docs/REMAINING_WORK.md`). During this release preparation, citations were checked for existence against PubMed (see `docs/SCIENTIFIC_REFERENCES.md`); full texts were not read.
-3. **Artwork.** The README and code state that interface art (laboratory, microscope, fly diagrams, icons) is inline SVG written in code, and `lab/README.md` states that Drosie and Dr. Maya in the Secret Fly Lab are "TEMP ART" vector placeholders. Whether any raster artwork was AI-generated is **[AUTHOR TO CONFIRM]**. The storybook illustrations are credited to the human illustrator named on `team.html`; the author should confirm that no AI image generation was used for them, and record the answer here.
-4. **Audio.** Sound effects and music are synthesised with the Web Audio API in code; narration uses the browser's speech synthesis. No AI-generated audio files are in the repository.
-
-## Human oversight statement (to be confirmed by the author)
-
-**[AUTHOR TO CONFIRM]** Suggested wording once true: "The author reviewed all AI-assisted code, text and scientific claims before release, verified references against primary sources, and takes responsibility for the content."
-
-## Release-preparation work in this branch
-
-The files added for the v1.0.0 archival preparation (documentation, metadata, audit reports and the build script) were drafted by Claude (Claude Code, Claude Sonnet 5.5) at the author's request, based on an audit of the repository on 2026-11-24. Scientific references were checked for existence through PubMed lookups during that session. Automated test results quoted in `docs/TESTING.md` were produced by running the repository's own tests in that session; nothing was estimated.
+> The creator conceived the project and directs its scientific and educational development. ChatGPT assisted with project conceptualisation, brainstorming, educational content development, simulation specifications, scientific explanations, prompt development, code generation, troubleshooting and feature planning. Claude Code assisted with repository-level implementation, interface development, code generation, debugging, testing, documentation and release preparation. Not all code or content was written manually. The creator reviewed and is responsible for the released work. **[AUTHOR TO CONFIRM the sentence "The creator reviewed...", including the extent of review per component.]**
 
 ## Data and privacy note
 
-The software contains no calls to any AI service at runtime. No learner data is sent to an AI provider.
+The software makes no calls to any AI service at runtime and sends no learner data to an AI provider.
+
+## Where this disclosure is repeated
+
+`README.md`, `CITATION.cff` (not as authors), `.zenodo.json` description, the `/cite/` page, and `docs/ZENODO_METADATA_DRAFT.md`.

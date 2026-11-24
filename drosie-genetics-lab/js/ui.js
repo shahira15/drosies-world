@@ -273,7 +273,7 @@ function introDialog() {
     little: ['Hi! I\'m Dr. Maya, and this is Drosie — a fruit fly! 🪰', 'Fruit flies have babies very fast, so scientists love to study them. Let\'s look at some flies and see how they are different!', 'Tap the <strong>Challenge Board</strong> to start your first mission.'],
     junior: ['Welcome to the Drosie Genetics Lab! I\'m Dr. Maya.', 'Fruit flies (<em>Drosophila melanogaster</em>) have helped scientists discover how traits are inherited for over 100 years.', 'Start at the <strong>Challenge Board</strong>, or explore the <strong>Fly Stock Center</strong> and set up your own crosses.'],
     researcher: ['Welcome, researcher. Everything here runs on a real inheritance engine: X-linkage, independent assortment, linkage and recombination.', 'Your missions will take you through Morgan\'s classic experiments. Results are simulated — but the statistics are real.'],
-    university: ['Welcome. Genotypes use FlyBase-style notation; alleles are verified against FlyBase, and model assumptions are documented in the reference pages.', 'Note the key Drosophila specifics: no meiotic crossing over in males, recessive lethality of Cy and Sb1, and a simplified CyO balancer model.']
+    university: ['Welcome. Genotypes use FlyBase-style notation; allele data are compiled from FlyBase records and checked by the developer, and model assumptions are documented in the reference pages.', 'Note the key Drosophila specifics: no meiotic crossing over in males, recessive lethality of Cy and Sb1, and a simplified CyO balancer model.']
   }[m];
   showDialog(lines);
 }

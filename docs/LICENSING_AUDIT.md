@@ -1,5 +1,22 @@
 # Licensing Audit
 
+> ## UPDATE 2026-11-24 (second pass): creator-provided rights confirmation and book-record verification
+>
+> **New information, with sources:**
+> 1. **Creator-provided confirmation (not verified by this repository):** the author states they have **obtained artwork rights from Letícia Cavalcanti**, illustrator of *Drosie, the Fruit Fly*. No contract, assignment or licence document exists in the repository, so the **exact contractual scope is unverified and must be checked by a human** (checklist in `ASSET_LICENSES.md` section 0).
+> 2. **Verified live (Zenodo API, 2026-11-24):** the companion book record (DOI 10.5281/zenodo.23550876) is **open access under CC BY-NC-ND 4.0**, creator Arzoo, Shahira, contributor Cavalcanti, Letícia (type "Other"). This answers the earlier open question about the book's licence. It is the **only licence on record for the storybook illustrations**.
+> 3. **Author's licensing preference:** MIT for eligible reusable code; retain rights and contractual terms for the illustrations, mascot, character designs, storybook artwork and branding; preserve the illustrator's attribution; do not automatically apply MIT to artwork; distinguish permission to **distribute** artwork from permission to **sublicense** it; keep the original illustrations in the Zenodo release **where the rights permit permanent digital archival and redistribution**; do not include personal photographs without consent.
+>
+> **Effect on this audit:**
+> - Rows below that said "UNKNOWN whether the rasters were drawn by the credited illustrator" are now: *author states rights obtained from the illustrator; scope unverified; origin of any piece not drawn by the illustrator (for example the code-drawn characters, the Canva certificate layout) still undetermined*.
+> - Former blocking item "who owns the mascot and storybook art" is **downgraded from "unknown" to "author-asserted, scope to verify"**. It is not closed.
+> - Former item "licence of the existing book record" is **resolved**: CC BY-NC-ND 4.0. Consequence: the book PDF's illustrations are already publicly licensed on those terms; **a MIT (or any open sublicence) must not be applied to the illustrations**, and an "all rights reserved" statement can only apply to files and uses outside that grant.
+> - The **full archival edition includes** the original illustrations (web-sized copies), conditional on the scope check; the **placeholder edition** is the fallback if any answer is "no". Portraits remain excluded in both.
+> - Distribution is not sublicensing: Zenodo requires the depositor to be able to grant Zenodo a licence to host and distribute; whether the illustrator agreement allows that, and allows adaptations (WebP conversion, page-flip display, certificate PDF), is part of the scope check.
+>
+> Still open (unchanged): AI-generated or Canva-library imagery; trademark status; FlyBase data-licence wording; NGSS/TEKS terms; YouTube video authorisation (the archival edition no longer embeds it); the three DOCX lesson plans' template provenance; consent for the author's and illustrator's names and photos (photos excluded).
+
+
 Audit date: 2026-11-24. This is a **technical inventory prepared for the author, not legal advice.** Facts come from the repository; "Provenance" entries marked **UNKNOWN** could not be determined and need the author's records (contracts, receipts, export history).
 
 ## 1. Existing licences in the repository
