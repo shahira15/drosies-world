@@ -1,0 +1,48 @@
+{
+  "title": "Drosie's World: An Interactive Educational Software Platform for Entomology and Scientific Inquiry",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "publication_date": "2026-11-24",
+  "creators": [
+    {
+      "name": "Arzoo, Shahira Helal",
+      "affiliation": "Texas Tech University"
+    }
+  ],
+  "description": "<p>Drosie's World is a free, browser-based collection of educational activities about the fruit fly <em>Drosophila melanogaster</em> and the practice of scientific inquiry. It is a static website (HTML, CSS and vanilla JavaScript) with no build step and no package dependencies.</p><p>Components: a fruit fly genetics simulator with a seeded, independently tested inheritance engine (Punnett squares, X-linkage, linkage and recombination, lethal alleles, chi-square); a laboratory-safety and stereomicroscope game; life-cycle activities and a virtual fly-culture lab; a simulated climbing assay; a lab-notebook practice module; a simulated scientific conference in which learners write an abstract and build a poster; a storybook reader; and printable teacher resources.</p><p><strong>All experimental data in the software are simulated.</strong> The release documents technical functionality only. <strong>No formal student learning outcomes have been established</strong>, no classroom study has been conducted, and no independent expert review has been completed. Automated testing covers the genetics engine and the conference module (Chromium only); no screen-reader or multi-browser testing has been done.</p><p>This software deposit excludes the Drosie mascot artwork, branding, storybook illustrations and portrait photographs, which are not licensed for reuse. The companion storybook is deposited separately.</p>",
+  "keywords": [
+    "educational software",
+    "science education",
+    "Drosophila melanogaster",
+    "fruit fly",
+    "entomology",
+    "genetics simulation",
+    "scientific inquiry",
+    "simulation",
+    "open educational resources",
+    "elementary education",
+    "JavaScript"
+  ],
+  "language": "eng",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.23550876",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-book",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/shahira15/drosies-world",
+      "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://drosiesworld.com",
+      "relation": "isAlternateIdentifier",
+      "scheme": "url"
+    }
+  ],
+  "notes": "DRAFT metadata prepared for human review. The 'license' field is deliberately omitted: no licence has been chosen (see docs/LICENSING_PROPOSAL.md). A licence MUST be set before publication; do not accept a default. Add ORCID for the creator if available. Version 1.0.0 is provisional."
+}

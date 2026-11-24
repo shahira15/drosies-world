@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below. The accompanying storybook has a separate DOI (10.5281/zenodo.23550876)."
+type: software
+title: "Drosie's World: An Interactive Educational Software Platform for Entomology and Scientific Inquiry"
+version: "1.0.0"
+# DRAFT: replace with the version DOI Zenodo assigns after the human-approved deposit.
+# doi: "10.5281/zenodo.XXXXXXX"
+# date-released is the planned date and must be confirmed at release time.
+date-released: "2026-11-24"
+# license: intentionally omitted. No licence has been chosen yet; see docs/LICENSING_PROPOSAL.md.
+authors:
+  - family-names: "Arzoo"
+    given-names: "Shahira Helal"
+    affiliation: "Texas Tech University"
+    # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"   # add if the author has one
+repository-code: "https://github.com/shahira15/drosies-world"
+url: "https://drosiesworld.com"
+abstract: >-
+  Drosie's World is a free, browser-based collection of educational activities about the fruit fly
+  Drosophila melanogaster and the scientific process. It includes a fruit fly genetics simulator,
+  a laboratory-safety and microscope game, life-cycle activities, a simulated climbing assay,
+  a lab-notebook practice module, a simulated scientific conference, a storybook reader and
+  teacher resources. All experimental data are simulated. The software documents technical
+  functionality only; no formal student learning outcomes have been established.
+keywords:
+  - educational software
+  - Drosophila melanogaster
+  - entomology
+  - science education
+  - genetics simulation
+  - scientific inquiry
+  - simulation
+  - open educational resources
+references:
+  - type: book
+    title: "Drosie, the Fruit Fly"
+    authors:
+      - family-names: "Arzoo"
+        given-names: "S."
+    year: 2026
+    version: "1.0"
+    publisher:
+      name: "Zenodo"
+    doi: "10.5281/zenodo.23550876"
+    notes: "Companion storybook, deposited separately. Illustrations by Letícia Cavalcanti are not part of this software release."
