@@ -6,6 +6,41 @@ Updated 2026-11-24 on branch `claude/ecstatic-planck-jl44t9` (draft PR #16). Pre
 
 The technical and documentary preparation is largely done: a reproducible offline archival edition exists in two variants, the live-site privacy exposure is removed from it, the science has a verification matrix, and the tests found and fixed real defects. **It is still not ready to deposit.** Remaining items need the author's decisions, the illustrator, legal/institutional review and an independent scientific reviewer (sections 3 to 7). Test results, including failures that remain, are in `docs/TESTING.md`.
 
+## 1A. Author statements recorded after the second pass (2026-11-24)
+
+These are the author's statements. The assistant has **not** seen the agreements and cannot verify them; this is not legal advice. Private contractual documents must stay out of the public repository (do not commit them, quote them, or paste their terms into `ASSET_LICENSES.md`).
+
+| # | Author statement | Effect on this report |
+|---|---|---|
+| A-1 | Signed illustrator agreements exist, and the author **owns the copyright** in the commissioned Drosie's World illustrations covered by them. | Resolves the "who owns the art" question (formerly L-2 in the first-pass report) and most of I-1 to I-4. What remains is *which works the agreements cover* (I-5) and a check for retained rights or restrictions (I-8). |
+| A-2 | **MIT for original software code only.** | Decision for D-1 (code). Not yet applied: no `LICENSE` file exists and `license` stays out of `.zenodo.json` and `CITATION.cff` until the structure below is complete. |
+| A-3 | **All rights reserved** for Drosie characters, mascot, character designs, storybook illustrations and storybook text. | Fixes the scope of the reserved works. See blocker B-2 (existing book record is CC BY-NC-ND 4.0). |
+| A-4 | MIT is **not** extended to artwork, character designs or creative content embedded in source code. | This is D-3 **option 1** (separate and reserve). Decision made; implementation open (B-3). |
+| A-5 | Preserve credit to Letícia Cavalcanti. | Resolves I-6 credit wording. Her name stays in `team.html`, `cite/`, `CITATION.cff` and the book record's contributor field. |
+| A-6 | Preserve applicable third-party licences. | Obligation confirmed; verification of each term remains (B-5). |
+| A-7 | Omit the illustrator's **portrait and social handle** from archival editions unless separately authorised. | Resolves I-7 as a decision. Build must be checked for the handle (B-4). |
+| A-8 | **Educational content licensing is pending** the author's final decision. | Stays open (B-1). |
+
+## 1B. Remaining genuine licensing blockers
+
+Only items that are still open after A-1 to A-8. Resolved questions are not repeated.
+
+| ID | Blocker | Needed to close |
+|---|---|---|
+| B-1 | **Educational content licence is undecided** (lesson sheets, worksheets, guides, teacher text, DOCX plans). The archive ZIP currently contains educator documents. | Author decides the content licence, **or** the archive excludes educator content until then. |
+| B-2 | **Existing book record is CC BY-NC-ND 4.0** (second-pass finding R2, fetched live). "All rights reserved" for the storybook text and illustrations cannot silently override a public licence already granted on that record. | Author states the intended relationship in `ASSET_LICENSES.md` (for example: the deposited book copy is CC BY-NC-ND 4.0; all other uses of the text and art are reserved), or changes the book record. Public pages (cite hub, README) must use the same wording. |
+| B-3 | **Reserved works embedded in code are not yet separated.** Character-drawing code (`lab/js/art/chars.js`, `drMayaSVG`/`drosieSVG` in `drosie-genetics-lab/js/lab-scene.js`, `vx-art.js` and similar) and creative text in data/narration files (for example letters and conference story text) fall under A-4. The boundary of "creative content embedded in code" has not been enumerated. | Author confirms the file list; then add file-level reservation notices and a `LICENSE` carve-out, and keep reserved files out of any MIT-labelled path or out of the archive. |
+| B-4 | Archival editions must omit the illustrator's portrait and **social handle**. The portrait is already excluded; the handle appears in `team.html` text. | Verify (or add) redaction of the handle in the archival build. |
+| B-5 | Third-party terms are inventoried (`THIRD_PARTY_NOTICES.md`) but not verified: FlyBase attribution wording, NGSS text, Canva terms for `Certificate.pdf`, vendored page-flip licence text. | Author or legal reviewer checks each; include the licence texts in the archive. |
+| B-6 | **Edition choice (D-2).** With A-3 and A-4, the **placeholder edition** is the only variant fully consistent with "MIT for code only". The full edition would put reserved artwork in an open-access record. | Author chooses; rehearse a Zenodo sandbox record first. |
+| B-7 | **Institutional (L-1) and AI-assisted code (L-2):** the university IP/outside-activity check and MIT suitability for AI-assisted code are unchanged, and they bear on who may place the MIT notice and under which name. | Legal/institutional review. |
+
+Other blockers (S-1 privacy/backend, S-3 children's privacy, SC-1 independent science review) are unchanged.
+
+## 1C. Overlap with PR #17 (citation hub)
+
+PR #16 now contains its own `cite/index.html`, `tools/build_cite.py` and `CITATION.cff`. PR #17 (`feature/scholarly-citation-hub`) provides a second citation hub with a single metadata source. A merge rehearsal shows **25 overlapping files**, with content conflicts in `CITATION.cff`, `cite/index.html` and about 15 pages. Two competing hubs must not both land. Keep one as canonical and drop the other's `cite/` files, generator and tests before merging either PR.
+
 ## 2. Resolved in this pass
 
 | # | Issue | Resolution | Evidence |
@@ -27,18 +62,20 @@ The technical and documentary preparation is largely done: a reproducible offlin
 
 | ID | Decision |
 |---|---|
-| D-1 | Approve **MIT** (or Apache-2.0) for eligible code, and a content licence (CC BY 4.0 or CC BY-NC-SA 4.0) for text. Then create `LICENSE`, set `license` in `.zenodo.json` and `CITATION.cff`, rebuild. The build does not do this automatically. |
+| D-1 | **Code: MIT decided (A-2). Educational content licence still pending (B-1).** Approve **MIT** (or Apache-2.0) for eligible code, and a content licence (CC BY 4.0 or CC BY-NC-SA 4.0) for text. Then create `LICENSE`, set `license` in `.zenodo.json` and `CITATION.cff`, rebuild. The build does not do this automatically. |
 | D-2 | **Which edition to deposit:** *full* (illustrations; only after the illustrator-agreement check) or *placeholders*. Rehearse in the Zenodo sandbox to see how a mixed-rights record's licence label displays. |
-| D-3 | **Characters drawn in JavaScript** (`lab/js/art/chars.js`, `drMayaSVG`/`drosieSVG` in `drosie-genetics-lab/js/lab-scene.js`): option 1 (separate and reserve), 2 (release under MIT) or 3 (replace with neutral art); then implement the proposed separation. |
+| D-3 | **Option 1 decided (A-4); implementation open (B-3).** **Characters drawn in JavaScript** (`lab/js/art/chars.js`, `drMayaSVG`/`drosieSVG` in `drosie-genetics-lab/js/lab-scene.js`): option 1 (separate and reserve), 2 (release under MIT) or 3 (replace with neutral art); then implement the proposed separation. |
 | D-4 | Related identifier to the book (`references` recommended) and whether to add a reciprocal link on the book record; whether to list the illustrator as a contributor on the software record; the **ORCID** to use (blank until supplied; the book record shows one). |
-| D-5 | Confirm AI-disclosure statements: which tool produced which components, the human-review statement, and that no illustration was AI-generated or Canva-library sourced. |
+| D-5 | **Narrowed:** the commissioned illustrations are covered by A-1; confirm that no *other* reserved work (mascot rasters, Canva layout, certificate art) is AI-generated or Canva-library sourced. Confirm AI-disclosure statements: which tool produced which components, the human-review statement, and that no illustration was AI-generated or Canva-library sourced. |
 | D-6 | Live-site changes: keep or remove third-party services; adopt the privacy notice; self-host fonts; accept the pinch-zoom change in the Secret Fly Lab (needed for accessibility, but it alters touch behaviour). |
 | D-7 | Wording of unsupported numbers (development times, stage durations): soften or cite (see S-1). |
 | D-8 | Contrast findings still open (see `docs/TESTING.md`): approve darker muted-text colours across the site. |
 | D-9 | Housekeeping: delete stray files in the repository, add `.gitignore`, move the 90 MB of raster masters out of the code repository, remove hard-coded scratch paths from five Conference tests. |
 | D-10 | Set the real release date; record the release commit hash in the Zenodo notes. |
 
-## 4. Requires the illustrator's consent (Letícia Cavalcanti)
+## 4. Illustrator-related items (Letícia Cavalcanti)
+
+**Status after A-1, A-5 and A-7:** I-1 to I-4, I-6 and I-7 are answered by the author's statements (copyright owned under signed agreements; credit preserved; portrait and handle omitted from archives). Still open: **I-5** (which works the agreements cover) and **I-8** (any retained rights or restrictions). Her written confirmation is needed only if an agreement does not already cover an item. The list below is the original second-pass list, kept for traceability.
 
 The author states rights were obtained. The following need her written confirmation or the agreement text (`ASSET_LICENSES.md` section 0):
 - I-1 Scope of the agreement: assignment or licence; exclusive or not; term; territory.
@@ -88,4 +125,4 @@ No document claims learning effectiveness, WCAG conformance, standards alignment
 
 ## 9. Counts
 
-Items resolved: 12. Awaiting the author: 10. Illustrator: 8. Legal/institutional: 9. Scientific: 7.
+Items resolved: 12 (plus the author statements A-1 to A-8 in section 1A). Licensing blockers still open: 7 (section 1B). Awaiting the author: 10. Illustrator: 2 open (I-5, I-8). Legal/institutional: 9. Scientific: 7.
