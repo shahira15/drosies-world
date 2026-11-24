@@ -9,6 +9,11 @@
   vx.legacy = /[?&]legacy=1/.test(location.search);
   vx.reduced = () => document.documentElement.classList.contains('nomotion') || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+  /* new place names for the adventure (the original worksheet-style titles stay in ?legacy=1 mode) */
+  const TITLES = ['The Magical Conference Invitation', 'The Research Pathways', 'The Virtual Fruit Fly Laboratory', 'Data Detective Headquarters', 'The Abstract Story Workshop', 'The Scientific Poster Art Studio', 'Conference Registration Lobby', 'The Living Conference Hall', 'The Presentation Theater', 'The Conference Celebration'];
+  const SHORTS = ['Invitation', 'Pathways', 'Fly Lab', 'Detective HQ', 'Story Workshop', 'Poster Studio', 'Lobby', 'Conference Hall', 'Theater', 'Celebration'];
+  if (!vx.legacy) DC.CHAPTERS.forEach((c, i) => { c.title = TITLES[i]; c.short = SHORTS[i]; });
+
   /* ---------- UI-only state (never scientific data) ---------- */
   vx.ui = () => { const u = (DC.state.ui = DC.state.ui || {}); u.level = u.level || 'explorer'; u.seen = u.seen || {}; u.bench = u.bench || {}; u.c = u.c || {}; return u; };
   vx.level = () => (vx.legacy ? 'researcher' : vx.ui().level);

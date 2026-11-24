@@ -53,7 +53,7 @@ See the table in the final PR description; each milestone below is ticked only w
 | M2 | Ch1–2 | done (`vx-ch1-2.js`: envelope, 3 conference scenes, badge studio, two doors, stamped simulation seal, Path B step-by-step) |
 | M3 | Ch3 lab | done (`vx-ch3.js`: bench scene with 9 objects, planning game, animated trial, tap-to-count flies with nearest-fly targeting, clipboard/lamps, compare + variation; Path B card organizer; 55 checks) |
 | M4 | Ch4 detective | done (`vx-ch4.js`: evidence-board scene with 7 case pins: card sort, averages, graph reading, truncated-axis slider, seen-vs-guessed card sort, claim check, limits; Path B evidence board; 51 checks) |
-| M5 | Ch5 abstract workshop | todo |
+| M5 | Ch5 abstract workshop | done (`vx-ch5.js`: five arched story slots, sentence cards generated from the learner's data with wrong-number / interpretation / overclaim distractors, write-my-own with the original checker, Path B own-words slots; 42 checks) |
 | M6 | Ch6 poster studio | todo |
 | M7 | Ch7–8 lobby and hall | todo |
 | M8 | Ch9 theater | todo |

@@ -16,7 +16,7 @@ const U = 'http://localhost:8123/scientific-conference.html';
   const lockedLabel = await p.locator('#dlg .vx-node.lock').first().getAttribute('aria-label');
   ok(/locked/.test(lockedLabel), 'locked places are announced as locked (not only by colour): ' + lockedLabel);
   await p.locator('#dlg .vx-node.lock').first().click({ force: true });
-  ok((await p.locator('#chTitle').innerText()) === 'The Conference Invitation', 'clicking a locked place does not navigate');
+  ok((await p.locator('#chTitle').innerText()) === 'The Magical Conference Invitation', 'clicking a locked place does not navigate');
   await p.keyboard.press('Escape');
   await p.locator('#btnPack').click(); ok((await p.locator('#dlg .vx-card.locked').count()) === 10, 'backpack shows 10 locked card slots'); await p.keyboard.press('Escape');
 
@@ -47,7 +47,7 @@ const U = 'http://localhost:8123/scientific-conference.html';
   await p.reload();
   ok((await p.evaluate(() => DC.state.nick === 'Zoe' && DC.state.mode === 'guided')) && (await p.evaluate(() => DC.isDone(1))), 'chapter 1 progress persists');
   await p.locator('.nav-foot .btn.primary').click();
-  ok((await p.locator('#chTitle').innerText()) === 'Choose Your Research Path', 'Next place opens the doors');
+  ok((await p.locator('#chTitle').innerText()) === 'The Research Pathways', 'Next place opens the doors');
 
   console.log('M2 chapter 2: doors, Path A');
   ok((await p.locator('.vx-hot').count()) === 2, 'two clickable doors in the scene');
