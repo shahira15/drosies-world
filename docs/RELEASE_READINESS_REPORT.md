@@ -41,6 +41,31 @@ Other blockers (S-1 privacy/backend, S-3 children's privacy, SC-1 independent sc
 
 PR #16 now contains its own `cite/index.html`, `tools/build_cite.py` and `CITATION.cff`. PR #17 (`feature/scholarly-citation-hub`) provides a second citation hub with a single metadata source. A merge rehearsal shows **25 overlapping files**, with content conflicts in `CITATION.cff`, `cite/index.html` and about 15 pages. Two competing hubs must not both land. Keep one as canonical and drop the other's `cite/` files, generator and tests before merging either PR.
 
+## 1D. Final decisions and verified book metadata (author, 2026-11-24)
+
+Book metadata below was retrieved by the author from `https://zenodo.org/api/records/23550876` and supplied to the assistant; the assistant could not re-fetch it. It supersedes earlier "could not verify" wording (R2, B-2, D-4).
+
+| Field | Value |
+|---|---|
+| Title / type / language | *Drosie, the Fruit Fly* / Book / English |
+| Creator as published | "Arzoo, Shahira" (preferred professional name: Shahira Helal Arzoo; mismatch flagged for the author to correct on Zenodo) |
+| Affiliation / ORCID | Texas Tech University / 0009-0009-8947-7828 (checksum-valid) |
+| Published / version | 2026-10-22 / 1.0 |
+| Version DOI / concept DOI | 10.5281/zenodo.23550876 / 10.5281/zenodo.23550875 |
+| Licence / access | CC BY-NC-ND 4.0 (**preserved; not relicensed**) / open |
+| Contributor | Letícia Cavalcanti (illustrator) |
+| ISBN on the record | `979-8--23424051-4`: malformed hyphenation. Flagged for manual verification; not used or corrected anywhere. (Its 13 digits, 9798234240514, do pass the ISBN-13 checksum, so the problem is formatting or assignment, to be confirmed.) |
+
+Decisions now fixed:
+- **Citation hub:** PR #17's hub and metadata generator (`tools/citation/`) are canonical. PR #16's own `cite/`, `tools/build_cite.py` and tests are to be dropped when reconciling, after any unique, useful functionality they contain is identified and ported. Not yet done.
+- **Edition:** the **placeholder edition** is selected for the initial archival software release (resolves D-2 and B-6).
+- **Licensing:** MIT is intended for eligible original software code only, subject to the outstanding IP and third-party checks (B-5, B-7); it is not applied. Rights in the mascot, characters and artwork are reserved beyond permissions already granted under existing licences. The book's CC BY-NC-ND 4.0 stands, so B-2 becomes a wording task for `ASSET_LICENSES.md`. Educational-resource licensing remains pending (B-1).
+- **ORCID** (D-4): resolved. Add it to `.zenodo.json` and `CITATION.cff` when those files are regenerated from PR #17's `metadata.json`.
+- **Illustrator:** credit preserved; portrait and social handle omitted from archives unless separately authorised (B-4 still needs a build check for the handle). Signed agreements stay private.
+- **Wording:** unsupported "scientifically validated" claims become "research-informed". Remaining occurrences in code and pages are an open implementation task (R3 used "literature-informed").
+
+Still open: B-1, B-3, B-4, B-5, B-7, S-1, S-3, SC-1, I-5, I-8, the creator-name and ISBN corrections on Zenodo, and the cite-hub reconciliation.
+
 ## 2. Resolved in this pass
 
 | # | Issue | Resolution | Evidence |
