@@ -54,7 +54,7 @@ See the table in the final PR description; each milestone below is ticked only w
 | M3 | Ch3 lab | done (`vx-ch3.js`: bench scene with 9 objects, planning game, animated trial, tap-to-count flies with nearest-fly targeting, clipboard/lamps, compare + variation; Path B card organizer; 55 checks) |
 | M4 | Ch4 detective | done (`vx-ch4.js`: evidence-board scene with 7 case pins: card sort, averages, graph reading, truncated-axis slider, seen-vs-guessed card sort, claim check, limits; Path B evidence board; 51 checks) |
 | M5 | Ch5 abstract workshop | done (`vx-ch5.js`: five arched story slots, sentence cards generated from the learner's data with wrong-number / interpretation / overclaim distractors, write-my-own with the original checker, Path B own-words slots; 42 checks) |
-| M6 | Ch6 poster studio | todo |
+| M6 | Ch6 poster studio | done (`vx-ch6.js`: live poster board, 8 research cards pinned by tap or keyboard, graph-type/layout thumbnails, colour swatches, text-size slider, original checks + print/PDF; existing posters migrate; 35 checks) |
 | M7 | Ch7–8 lobby and hall | todo |
 | M8 | Ch9 theater | todo |
 | M9 | Ch10 celebration | todo |
@@ -65,3 +65,5 @@ See the table in the final PR description; each milestone below is ticked only w
 - `DC.setPath(p)` was split out of `pickPath` (same isolation behaviour) so visual chapters can switch paths without re-rendering mid-typing.
 - Drosie's expressions are implemented as state-dependent animation + an icon badge on the existing mascot artwork, **not** as redrawn poses. This is a documented limitation (no new Drosie illustrations exist).
 - Game layout: scene + companion on the left, the current step on the right (desktop); stacked on phones. In-scene hotspots hide on phones; every hotspot has a tray/list alternative.
+
+- Bug found by the new layout: the original `.toast` (and my `.vx-toast`) captured pointer events and swallowed clicks for ~2 s; both are now click-through.

@@ -134,7 +134,7 @@ details.vx-learn summary{cursor:pointer;font:800 .95rem var(--vx-font);color:var
 .vx-bench{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#f0e9f6;border:3px solid var(--plum);border-radius:18px;padding:.5rem .9rem;margin:.8rem 0;font:700 .9rem var(--vx-font)}
 @media (prefers-reduced-motion:reduce){.vx-art .bob,.vx-art .sway,.vx-art .drift,.vx-hot.pulse::before,.vx-node.cur .dot,.vx-env svg{animation:none!important}}
 
-.vx-toast{position:fixed;left:50%;transform:translateX(-50%);background:var(--vx-teal);color:#fff;padding:.55rem 1.1rem;border-radius:99px;z-index:75;max-width:90vw;font:800 .92rem var(--vx-font);box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.vx-toast{pointer-events:none;position:fixed;left:50%;transform:translateX(-50%);background:var(--vx-teal);color:#fff;padding:.55rem 1.1rem;border-radius:99px;z-index:75;max-width:90vw;font:800 .92rem var(--vx-font);box-shadow:0 6px 0 rgba(0,0,0,.18)}
 
 /* game-style layout: scene + companion on the left, the current step on the right (stacked on phones/tablets) */
 .vx-stage{display:grid;gap:16px;align-items:start}

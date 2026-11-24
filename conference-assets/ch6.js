@@ -10,6 +10,7 @@
     forest: { n: 'Forest', a: '#2f5d34', b: '#f6faef', c: '#1b2a1c', d: '#d9b45a' },
     mono: { n: 'High contrast', a: '#000000', b: '#ffffff', c: '#000000', d: '#ffd400' }
   };
+  DC.POSTER_PAL = PAL;   /* read-only: lets the visual studio show the same palettes */
   const LAYOUTS = [['columns', 'Classic columns', 'Three columns with a wide results area. Reads left to right.'], ['story', 'Storyboard', 'Two columns that tell the story from top to bottom.'], ['banner', 'Banner', 'Results in the middle, with a bright title banner.']];
   const FIELDS = [
     ['title', 'Title', 'Say what you studied, in under 12 words. Titles can be a question or a finding.', 'text'],
