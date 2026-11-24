@@ -225,7 +225,9 @@ def placeholder_image(path, original_bytes):
                                           ("Presented to: ________________________", 32, 380), ("Date: __________    Facilitator: __________", 28, 520),
                                           ("(Neutral placeholder: the illustrated certificate is not in this edition)", 22, 700)]):
             ff = _font(sz); dd.text(((1100 - dd.textlength(txt, font=ff)) / 2, y), txt, fill="#285a43", font=ff)
-        pg.save(buf, "PDF", resolution=100.0)
+        import datetime
+        _d = datetime.datetime(2026, 11, 24, 0, 0, 0)
+        pg.save(buf, "PDF", resolution=100.0, creationDate=_d, modDate=_d)
     else:
         return None
     return buf.getvalue()
