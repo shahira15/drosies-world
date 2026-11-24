@@ -1,0 +1,386 @@
+{
+ "label": "after",
+ "mode": "explorer",
+ "chapters": {
+  "A1": {
+   "desktop": {
+    "title": "The Magical Conference Invitation",
+    "words": 41,
+    "firstScreenWords": 23,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 8,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Magical Conference Invitation",
+    "words": 41,
+    "firstScreenWords": 20,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 7,
+    "longTextBlocks": 0
+   }
+  },
+  "A2": {
+   "desktop": {
+    "title": "The Research Pathways",
+    "words": 28,
+    "firstScreenWords": 22,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 7,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Research Pathways",
+    "words": 28,
+    "firstScreenWords": 22,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 5,
+    "longTextBlocks": 0
+   }
+  },
+  "A3": {
+   "desktop": {
+    "title": "The Virtual Fruit Fly Laboratory",
+    "words": 116,
+    "firstScreenWords": 68,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 18,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Virtual Fruit Fly Laboratory",
+    "words": 116,
+    "firstScreenWords": 28,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 0
+   }
+  },
+  "A4": {
+   "desktop": {
+    "title": "Data Detective Headquarters",
+    "words": 118,
+    "firstScreenWords": 64,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 27,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "Data Detective Headquarters",
+    "words": 118,
+    "firstScreenWords": 22,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 20,
+    "longTextBlocks": 0
+   }
+  },
+  "A5": {
+   "desktop": {
+    "title": "The Abstract Story Workshop",
+    "words": 131,
+    "firstScreenWords": 79,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 18,
+    "longTextBlocks": 1
+   },
+   "phone": {
+    "title": "The Abstract Story Workshop",
+    "words": 131,
+    "firstScreenWords": 27,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 13,
+    "longTextBlocks": 1
+   }
+  },
+  "A6": {
+   "desktop": {
+    "title": "The Scientific Poster Art Studio",
+    "words": 143,
+    "firstScreenWords": 97,
+    "paragraphs": 2,
+    "textFields": 0,
+    "buttons": 24,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Scientific Poster Art Studio",
+    "words": 143,
+    "firstScreenWords": 55,
+    "paragraphs": 2,
+    "textFields": 0,
+    "buttons": 24,
+    "longTextBlocks": 0
+   }
+  },
+  "A7": {
+   "desktop": {
+    "title": "Conference Registration Lobby",
+    "words": 93,
+    "firstScreenWords": 41,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 19,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "Conference Registration Lobby",
+    "words": 93,
+    "firstScreenWords": 19,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 14,
+    "longTextBlocks": 0
+   }
+  },
+  "A8": {
+   "desktop": {
+    "title": "The Living Conference Hall",
+    "words": 57,
+    "firstScreenWords": 51,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 15,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Living Conference Hall",
+    "words": 57,
+    "firstScreenWords": 39,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 0
+   }
+  },
+  "A9": {
+   "desktop": {
+    "title": "The Presentation Theater",
+    "words": 94,
+    "firstScreenWords": 48,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 16,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Presentation Theater",
+    "words": 94,
+    "firstScreenWords": 23,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 11,
+    "longTextBlocks": 0
+   }
+  },
+  "A10": {
+   "desktop": {
+    "title": "The Conference Celebration",
+    "words": 156,
+    "firstScreenWords": 37,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 6,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Conference Celebration",
+    "words": 156,
+    "firstScreenWords": 22,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 6,
+    "longTextBlocks": 0
+   }
+  },
+  "B2": {
+   "desktop": {
+    "title": "The Research Pathways",
+    "words": 28,
+    "firstScreenWords": 22,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 7,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Research Pathways",
+    "words": 28,
+    "firstScreenWords": 22,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 5,
+    "longTextBlocks": 0
+   }
+  },
+  "B3": {
+   "desktop": {
+    "title": "The Virtual Fruit Fly Laboratory",
+    "words": 80,
+    "firstScreenWords": 9,
+    "paragraphs": 1,
+    "textFields": 10,
+    "buttons": 9,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Virtual Fruit Fly Laboratory",
+    "words": 80,
+    "firstScreenWords": 21,
+    "paragraphs": 1,
+    "textFields": 10,
+    "buttons": 9,
+    "longTextBlocks": 0
+   }
+  },
+  "B4": {
+   "desktop": {
+    "title": "Data Detective Headquarters",
+    "words": 105,
+    "firstScreenWords": 7,
+    "paragraphs": 0,
+    "textFields": 2,
+    "buttons": 15,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "Data Detective Headquarters",
+    "words": 105,
+    "firstScreenWords": 23,
+    "paragraphs": 0,
+    "textFields": 2,
+    "buttons": 15,
+    "longTextBlocks": 0
+   }
+  },
+  "B5": {
+   "desktop": {
+    "title": "The Abstract Story Workshop",
+    "words": 158,
+    "firstScreenWords": 79,
+    "paragraphs": 4,
+    "textFields": 1,
+    "buttons": 18,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Abstract Story Workshop",
+    "words": 158,
+    "firstScreenWords": 27,
+    "paragraphs": 4,
+    "textFields": 1,
+    "buttons": 13,
+    "longTextBlocks": 0
+   }
+  },
+  "B6": {
+   "desktop": {
+    "title": "The Scientific Poster Art Studio",
+    "words": 146,
+    "firstScreenWords": 87,
+    "paragraphs": 3,
+    "textFields": 0,
+    "buttons": 24,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Scientific Poster Art Studio",
+    "words": 146,
+    "firstScreenWords": 52,
+    "paragraphs": 3,
+    "textFields": 0,
+    "buttons": 24,
+    "longTextBlocks": 0
+   }
+  },
+  "B7": {
+   "desktop": {
+    "title": "Conference Registration Lobby",
+    "words": 93,
+    "firstScreenWords": 41,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 19,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "Conference Registration Lobby",
+    "words": 93,
+    "firstScreenWords": 19,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 14,
+    "longTextBlocks": 0
+   }
+  },
+  "B8": {
+   "desktop": {
+    "title": "The Living Conference Hall",
+    "words": 57,
+    "firstScreenWords": 51,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 15,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Living Conference Hall",
+    "words": 57,
+    "firstScreenWords": 39,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 9,
+    "longTextBlocks": 0
+   }
+  },
+  "B9": {
+   "desktop": {
+    "title": "The Presentation Theater",
+    "words": 94,
+    "firstScreenWords": 48,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 16,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Presentation Theater",
+    "words": 94,
+    "firstScreenWords": 23,
+    "paragraphs": 1,
+    "textFields": 0,
+    "buttons": 11,
+    "longTextBlocks": 0
+   }
+  },
+  "B10": {
+   "desktop": {
+    "title": "The Conference Celebration",
+    "words": 147,
+    "firstScreenWords": 44,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 6,
+    "longTextBlocks": 0
+   },
+   "phone": {
+    "title": "The Conference Celebration",
+    "words": 147,
+    "firstScreenWords": 22,
+    "paragraphs": 0,
+    "textFields": 0,
+    "buttons": 6,
+    "longTextBlocks": 0
+   }
+  }
+ }
+}

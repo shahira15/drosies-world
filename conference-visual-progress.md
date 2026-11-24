@@ -58,7 +58,7 @@ See the table in the final PR description; each milestone below is ticked only w
 | M7 | Ch7–8 lobby and hall | done: vx-ch7.js (badge scan, talk-card strip) and vx-ch8.js (six distinct area scenes, one scientist question at a time, posters, stage claims, booth, reflection); tests vx-m7 (22) and vx-m8 (47); legacy m7/m8/e2e still pass |
 | M8 | Ch9 theater | done: vx-ch9.js (theater scene, five stops, 60 s timer with skip-ahead, explanation chips, answer-card building for audience questions, revision log, reflection); legacy checkers exported additively from ch9.js; test vx-m9 (41) |
 | M9 | Ch10 celebration | done: vx-ch10.js (party scene, backpack journey, certificate stamp reveal, print/download tray reusing original actions, next places); test vx-m10 (46) |
-| M10 | Integration, verification, polish | todo |
+| M10 | Integration, verification, polish | done: all suites in `run-all.sh` (visual + legacy + a11y + new-UI axe + robustness/XSS/privacy); phone header compacted; teacher guide updated; screenshots and reading-load table in `docs/conference-visual/` |
 
 ## Notes from M1–M2
 - Old regression suites now run against the original chapters with `?legacy=1` (the Researcher workbench is the same code). New suites run the visual interface.
@@ -67,3 +67,26 @@ See the table in the final PR description; each milestone below is ticked only w
 - Game layout: scene + companion on the left, the current step on the right (desktop); stacked on phones. In-scene hotspots hide on phones; every hotspot has a tray/list alternative.
 
 - Bug found by the new layout: the original `.toast` (and my `.vx-toast`) captured pointer events and swallowed clicks for ~2 s; both are now click-through.
+
+## Reading load, before and after (Path A, desktop first view, words visible)
+| Chapter (Path A) | Before: words / fields | Explorer: words / fields | Researcher: words / fields |
+|---|---|---|---|
+| 1. The Magical Conference Invitation | 329 / 1 | 41 / 0 | 41 / 0 |
+| 2. The Research Pathways | 105 / 0 | 28 / 0 | 42 / 0 |
+| 3. The Virtual Fruit Fly Laboratory | 482 / 6 | 116 / 0 | 130 / 0 |
+| 4. Data Detective Headquarters | 773 / 7 | 118 / 0 | 154 / 0 |
+| 5. The Abstract Story Workshop | 742 / 5 | 131 / 0 | 145 / 0 |
+| 6. The Scientific Poster Art Studio | 766 / 12 | 143 / 0 | 157 / 0 |
+| 7. Conference Registration Lobby | 337 / 0 | 93 / 0 | 93 / 0 |
+| 8. The Living Conference Hall | 125 / 0 | 57 / 0 | 57 / 0 |
+| 9. The Presentation Theater | 673 / 9 | 94 / 0 | 94 / 0 |
+| 10. The Conference Celebration | 291 / 0 | 156 / 0 | 156 / 0 |
+
+
+Researcher level opens the same compact scene; the full original forms, tables and text are one tap away in the "Open the workbench" view (same code as the original chapter).
+
+## Verification summary
+- Chromium only (Playwright). Firefox and WebKit were not available and are untested.
+- axe-core: 52 scans of the new interface (10 chapters x 2 paths x Explorer/Researcher, answered states, map and backpack dialogs): 0 violations. Automated checks cover part of WCAG only.
+- Not done: testing with children, teachers, screen-reader users or a scientific expert reviewer; no real-device touch testing.
+- Known limits: Drosie's expressions are animation plus an icon on the existing mascot art, not new poses; scientist portraits have one expression; fictional scientists/posters are unverified.

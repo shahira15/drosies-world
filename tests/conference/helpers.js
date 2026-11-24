@@ -1,6 +1,6 @@
 // Shared helpers for conference tests. Run: node tests/conference/<file>.js  (needs a static server on :8123 at repo root)
 const { chromium } = require('playwright');
-const URL = process.env.CONF_URL || 'http://localhost:8123/scientific-conference.html?legacy=1';
+const URL = process.env.CONF_URL || ('http://localhost:8123/scientific-conference.html' + (process.env.VX ? '' : '?legacy=1'));
 async function open(opts = {}) {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ viewport: { width: opts.w || 1280, height: opts.h || 900 }, reducedMotion: opts.reduced ? 'reduce' : 'no-preference' });

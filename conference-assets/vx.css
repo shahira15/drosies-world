@@ -99,7 +99,7 @@ details.vx-learn summary{cursor:pointer;font:800 .95rem var(--vx-font);color:var
 .vx-card{display:flex;flex-direction:column;gap:.2rem;align-items:center;text-align:center;padding:.7rem .6rem;border-radius:18px;border:3px solid var(--vx-teal);background:#fff;box-shadow:0 5px 0 rgba(29,90,90,.2);font:800 .9rem var(--vx-font);color:var(--vx-ink);cursor:pointer;min-height:7rem}
 .vx-card svg{width:44px;height:44px}
 .vx-card small{font:600 .75rem/1.3 var(--vx-font);color:#4b5f59;max-height:3.9em;overflow:hidden}
-.vx-card.locked{border-style:dashed;border-color:#b9b49d;background:#f6f1e1;color:#7a7664;cursor:default;box-shadow:none}
+.vx-card.locked{border-style:dashed;border-color:#b9b49d;background:#f6f1e1;color:#55513f;cursor:default;box-shadow:none}
 .vx-card.locked svg{filter:grayscale(1);opacity:.45}
 .vx-pack{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fill,minmax(8.4rem,1fr))}
 .vx-fly{position:fixed;z-index:80;pointer-events:none;width:64px;height:64px;transition:transform .85s cubic-bezier(.5,-0.2,.4,1),opacity .85s}
@@ -147,3 +147,11 @@ details.vx-learn summary{cursor:pointer;font:800 .95rem var(--vx-font);color:var
 @keyframes vxvshake{25%{transform:translateX(-6px) rotate(-1deg)}75%{transform:translateX(6px) rotate(1deg)}}
 
 input[type=range]{accent-color:var(--vx-teal);width:100%;min-height:2.75rem}
+/* phones: a compact header so the picture comes first */
+@media(max-width:640px){
+  .bar .tools{gap:.3rem}
+  .bar .tools .btn.small{font-size:.78rem;padding:.22rem .55rem;min-height:2rem}
+  .bar .save-note{flex-basis:100%;font-size:.72rem}
+  .vx-level button{font-size:.78rem;padding:.22rem .6rem;min-height:2rem}
+  .bar .kicker{font-size:.7rem}
+}
