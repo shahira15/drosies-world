@@ -105,7 +105,7 @@
     return '<div class="areanav" role="group" aria-label="Go to an area of the hall">' + DC.AREAS.map((a) => '<button type="button" class="areabtn' + (DC.state.hall.visited[a.id] ? ' visited' : '') + '" data-act="area" data-a="' + a.id + '"' + (cur === a.id ? ' aria-current="true"' : '') + '><span aria-hidden="true">' + a.icon + '</span> ' + esc(a.name) + (DC.state.hall.visited[a.id] ? '<span class="sr-only"> (visited)</span>' : '') + '</button>').join('') + '</div>';
   }
   function hotspots() {
-    return DC.AREAS.map((a) => '<button type="button" class="hot' + (DC.state.hall.visited[a.id] ? ' visited' : '') + '" style="left:' + HOT[a.id][0] + '%;top:' + HOT[a.id][1] + '%" data-act="area" data-a="' + a.id + '"' + (cur === a.id ? ' aria-current="true"' : '') + ' aria-label="' + esc(a.name) + (DC.state.hall.visited[a.id] ? ', visited' : '') + '"><span aria-hidden="true">' + a.icon + '</span><span class="t">' + esc(a.name) + '</span></button>').join('');
+    return DC.AREAS.map((a) => '<button type="button" class="hot' + (DC.state.hall.visited[a.id] ? ' visited' : '') + '" style="left:' + HOT[a.id][0] + '%;top:' + HOT[a.id][1] + '%" data-act="area" data-a="' + a.id + '"' + (cur === a.id ? ' aria-current="true"' : '') + ' aria-label="' + esc(a.name) + (DC.state.hall.visited[a.id] ? ', visited' : '') + '"><span aria-hidden="true" data-ico="' + a.icon + '"></span><span class="t">' + esc(a.name) + '</span></button>').join('');
   }
 
   /* ---------- area panels ---------- */

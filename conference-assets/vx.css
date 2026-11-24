@@ -110,7 +110,7 @@ details.vx-learn summary{cursor:pointer;font:800 .95rem var(--vx-font);color:var
 .vx-map{position:relative;aspect-ratio:16/10;border-radius:22px;overflow:hidden;border:4px solid var(--vx-wood2);background:#cfe9ec}
 .vx-map>svg{position:absolute;inset:0;width:100%;height:100%}
 .vx-node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;min-width:44px;min-height:44px;border:0;background:transparent;cursor:pointer;padding:0;font:800 .78rem var(--vx-font);color:#1c2b28}
-.vx-node .dot{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff;border:4px solid var(--vx-teal);box-shadow:0 4px 0 rgba(29,90,90,.3);font:900 1.1rem var(--vx-font);color:var(--vx-teal)}
+.vx-node .dot::before{content:attr(data-dot)}.vx-node .dot{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff;border:4px solid var(--vx-teal);box-shadow:0 4px 0 rgba(29,90,90,.3);font:900 1.1rem var(--vx-font);color:var(--vx-teal)}
 .vx-node .nm{background:rgba(255,253,246,.94);border-radius:99px;padding:.1rem .55rem;max-width:8.5rem;line-height:1.15;text-align:center}
 .vx-node.done .dot{background:var(--vx-teal);color:#fff}
 .vx-node.cur .dot{background:var(--vx-gold);border-color:var(--vx-goldedge);color:#33220c;animation:vxbob 2.4s ease-in-out infinite}

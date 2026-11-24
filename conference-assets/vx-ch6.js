@@ -54,7 +54,7 @@
     const tray = DC.$('#v6tray'); if (tray) tray.innerHTML = trayHTML();
   }
   function trayHTML() {
-    return '<div class="vx-pack" role="group" aria-label="Research cards">' + CARDS.map((c) => { const on = placed(c.k), src = c.k === 'graph' || source(c.k); return '<button type="button" class="vx-card' + (on ? '' : ' ') + '" data-act="v6card" data-k="' + c.k + '" style="' + (on ? 'border-color:var(--vx-ok);background:#f1faf4' : '') + '" aria-label="' + esc(c.name) + (on ? ', placed on the poster. Press to edit or look' : src ? ', ready. Press to place on the poster' : ', not ready yet') + '">' + vx.icon(c.icon, 40) + '<span>' + esc(c.name) + '</span><small>' + (on ? '✓ on the poster' : src ? 'tap to place' : 'not ready yet') + '</small></button>'; }).join('') + '</div>';
+    return '<div class="vx-pack" role="group" aria-label="Research cards">' + CARDS.map((c) => { const on = placed(c.k), src = c.k === 'graph' || source(c.k); return '<button type="button" class="vx-card' + (on ? '' : ' ') + '" data-act="v6card" data-k="' + c.k + '" style="' + (on ? 'border-color:var(--vx-ok);background:#f1faf4' : '') + '">' + vx.icon(c.icon, 40) + '<span>' + esc(c.name) + '</span><small>' + (on ? '✓ on the poster' : src ? 'tap to place' : 'not ready yet') + '</small>' + (on ? '<span class="sr-only">. Press to edit or look</span>' : src ? '<span class="sr-only">. Press to place on the poster</span>' : '') + '</button>'; }).join('') + '</div>';
   }
   function checkChips() {
     const issues = DC.posterChecks().filter((x) => !x[0]).slice(0, 3);

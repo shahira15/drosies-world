@@ -1,0 +1,97 @@
+/* Cite Drosie's World: extends /styles.css and /seo-pages.css (same palette, type and components). */
+.group-intro{max-width:760px;margin:0 0 8px}
+.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:20px;align-items:start}
+.card-grid.single{grid-template-columns:minmax(0,1fr)}
+.cite-card{background:#fff;border:1px solid #e3e9e1;border-radius:19px;padding:22px;min-width:0}
+.cite-card:target{outline:3px solid #245f55;outline-offset:3px}
+.cite-card h3{font-size:21px;margin:8px 0 6px;letter-spacing:-.02em}
+.card-desc{font-size:14.5px!important;margin:0 0 8px}
+.card-links{font-size:14px!important;margin:0 0 8px}
+.card-note{font-size:13.5px!important;background:#fdf1cf;border-radius:10px;padding:8px 12px;color:#5a4a1c!important;margin:8px 0}
+.card-meta{display:grid;gap:2px;margin:10px 0 14px;font-size:13px;color:#4a6055}
+.card-meta div{display:flex;flex-wrap:wrap;gap:6px}
+.card-meta dt{font-weight:800;color:#245f55}.card-meta dt:after{content:":"}
+.card-meta dd{margin:0}
+.badge{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:4px 11px;border:1px solid transparent}
+.badge-pub{background:#e0f2e9;color:#1d5148;border-color:#b9dccb}
+.badge-archived{background:#245f55;color:#fff}
+.badge-future{background:#fff;color:#7a4a12;border:1px dashed #b98a3e}
+.status-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px}
+.status-card{background:#fff;border:1px solid #e3e9e1;border-radius:19px;padding:22px}
+.status-card h3{margin:10px 0 6px}.status-card p{margin:0;font-size:15px}
+.status-future{background:#fffdf6;border:2px dashed #d9bb8d}
+/* Tabs */
+.tablist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.cite-tabs:not(.is-js) .tablist{display:none}
+.cite-tabs.is-js [role=tabpanel][hidden]{display:none}
+.cite-tabs.is-js .fmt-h{display:none}
+.fmt-h{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#245f55;margin:14px 0 6px}
+[role=tab]{font:inherit;font-size:13px;font-weight:800;border:1px solid #cfe0d4;background:#f4f8f2;color:#245f55;border-radius:99px;padding:8px 14px;min-height:40px;cursor:pointer}
+[role=tab][aria-selected=true]{background:#245f55;color:#fff;border-color:#245f55}
+[role=tab]:hover{border-color:#245f55}
+.cite-text{margin:0;background:#f8f8f2;border:1px solid #e3e9e1;border-radius:12px;padding:12px 14px;font-size:14.5px!important;line-height:1.65;color:#24463c!important;overflow-wrap:anywhere;word-break:break-word}
+.cite-rich{padding-left:2.2em;text-indent:-1.6em}
+.cite-code{font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-x:auto}
+.cite-code code{font:inherit}
+.cite-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.copy-btn,.dl-btn{font:inherit;font-size:13px;font-weight:800;border-radius:99px;padding:9px 18px;min-height:44px;min-width:44px;cursor:pointer;border:1px solid #245f55}
+.copy-btn{background:#245f55;color:#fff}.copy-btn:hover{background:#19483e}
+.copy-btn.is-done{background:#1d6b3c;border-color:#1d6b3c}
+.copy-btn.is-failed{background:#8a2c1c;border-color:#8a2c1c}
+.dl-btn{background:#fff;color:#245f55}.dl-btn:hover{background:#eef5ee}
+.copy-btn:focus-visible,.dl-btn:focus-visible,[role=tab]:focus-visible,.cite-text:focus-visible,.hub-jump a:focus-visible,.dl-list a:focus-visible{outline:3px solid #245f55;outline-offset:3px}
+.dl-list{list-style:none;padding:0;display:grid;gap:14px;margin:18px 0 26px}
+.dl-list li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}
+.dl-list span{font-size:14.5px;color:#4a6055}
+.small-note{font-size:14px!important;color:#4a6055}
+.hub-section code{background:#eef5ee;padding:1px 6px;border-radius:6px;font-size:.92em}
+@media(max-width:900px){.card-grid,.status-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.cite-card{padding:18px}[role=tab]{padding:8px 12px}.cite-actions .copy-btn,.cite-actions .dl-btn{flex:1 1 auto}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.site-header,.cite-actions,.tablist,.hub-jump,.footer{display:none}.cite-tabs.is-js [role=tabpanel][hidden]{display:block}.cite-tabs.is-js .fmt-h{display:block}}
+/* The site's eyebrow colour is below 4.5:1 on the hero tint; darken it on this page. */
+.hub-hero .eyebrow{color:#86472d}.hub-hero .tiny-star{color:#8a5d17}
+.hub-hero h1 span{color:#a64f33}
+
+/* ---- Hero ---- */
+.cite-hero{background:linear-gradient(180deg,#e9f3e9 0%,#eef6ea 100%);position:relative;overflow:hidden;padding-bottom:34px}
+.cite-hero:before,.cite-hero:after{content:"";position:absolute;border:2px solid #d8e9d8;border-radius:50%;pointer-events:none}
+.cite-hero:before{width:300px;height:300px;top:-170px;left:-90px}.cite-hero:after{width:380px;height:380px;right:-120px;bottom:-230px}
+.hero-split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:44px;align-items:center;position:relative}
+.cite-hero h1{font-size:clamp(40px,6vw,72px);letter-spacing:-.05em}
+.cite-hero .lead{font-size:18px;max-width:640px}
+.cite-hero .byline{font-size:14px;max-width:640px;line-height:1.7}
+.cite-hero .byline a{color:#245f55}
+.stat-row{list-style:none;display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:20px 0 0}
+.stat-row li{background:#fff;border:1px solid #d6e8d9;border-radius:99px;padding:8px 16px;font-size:14px;color:#4a6055}
+.stat-row strong{font-family:'Nunito','Trebuchet MS',sans-serif;font-size:18px;color:#245f55;margin-right:4px}
+.how-panel{background:#fff;border:1px solid #d6e8d9;border-radius:24px;padding:26px;box-shadow:0 20px 60px rgba(36,70,60,.09);position:relative}
+.how-panel:before{content:"✿";position:absolute;top:-20px;right:22px;width:42px;height:42px;border-radius:50%;background:#f6d48c;color:#245f55;display:grid;place-items:center;font-size:24px}
+.how-panel h2{font-size:21px;margin:0 0 12px}
+.how-steps{list-style:none;counter-reset:s;padding:0;margin:0 0 16px;display:grid;gap:10px}
+.how-steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#4a6055;line-height:1.5}
+.how-steps li:before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:#245f55;color:#fff;font:800 14px/28px 'Nunito',sans-serif;text-align:center}
+.acc-box{border-top:1px dashed #cfe0d4;padding-top:14px}
+.acc-box label{display:block;font-weight:800;font-size:14px;color:#245f55;margin-bottom:6px}
+.acc-box input{font:inherit;font-size:15px;border:1.5px solid #b9d3c3;border-radius:12px;padding:10px 12px;min-height:44px;background:#fff;color:#24463c;max-width:100%}
+.acc-box input:focus-visible{outline:3px solid #245f55;outline-offset:2px}
+.acc-box p{font-size:13px!important;line-height:1.55!important;margin:8px 0 0!important}
+[hidden]{display:none!important}
+.hub-jump{margin-top:30px}
+.hub-jump .button{font-size:12.5px;padding:10px 16px;min-height:44px}
+.acc{background:#fdf1cf;border-radius:4px;padding:0 3px}
+/* ---- Sections, cards ---- */
+.hub-section h2{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.h-ico{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#e0f2e9;font-size:23px;flex:none}
+.cite-card{box-shadow:0 6px 30px rgba(40,65,45,.04);border-top:5px solid #9ccfa2;transition:box-shadow .2s,transform .2s}
+.cite-card:hover{box-shadow:0 18px 44px rgba(36,70,60,.10)}
+.cite-card.g-storybook{border-top-color:#e5b969}.cite-card.g-software{border-top-color:#9bbad7}.cite-card.g-simulation{border-top-color:#6fb48a}
+.cite-card.g-teacher{border-top-color:#d9a48f}.cite-card.g-lesson{border-top-color:#c3b6e0}.cite-card.g-more{border-top-color:#9fc9d6}.cite-card.g-platform{border-top-color:#245f55}
+.card-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-ico{font-size:22px;line-height:1}
+.status-card{box-shadow:0 6px 30px rgba(40,65,45,.04)}
+.hub-section:nth-of-type(odd){background:#fff}.hub-section:nth-of-type(even){background:#f8f8f2}
+@media(max-width:900px){.hero-split{grid-template-columns:minmax(0,1fr);gap:30px}.how-panel{max-width:560px}}
+@media(max-width:640px){.cite-hero{padding-bottom:24px}.how-panel{padding:20px}.cite-hero .lead{font-size:16px}.h-ico{width:38px;height:38px;font-size:20px}}
+@media(prefers-reduced-motion:reduce){.cite-card{transition:none}}
+.card-meta div{display:block}.card-meta dt,.card-meta dd{display:inline}.card-meta dt{margin-right:6px}
