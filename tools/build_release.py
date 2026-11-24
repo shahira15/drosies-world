@@ -25,7 +25,6 @@ PREFIX = f"drosies-world-v{VERSION}/"
 
 # (match kind, pattern, reason). kinds: "prefix" (path startswith) or "exact".
 EXCLUDE_RULES = [
-    ("prefix", "release/", "build outputs (the archive must not contain itself)"),
     ("prefix", "book-pages/", "storybook illustrations: rights reserved / unlicensed (see docs/LICENSING_AUDIT.md)"),
     ("prefix", "book-pages-web/", "storybook illustrations (web copies): rights reserved / unlicensed"),
     ("prefix", "images/", "mascot, book-cover, illustration and portrait derivatives; og-image: rights/consent undecided"),
@@ -60,6 +59,8 @@ def git_files():
     return sorted(p for p in out.decode("utf-8").split("\0") if p)
 
 def classify(path):
+    if path.startswith("release/"):
+        return None  # build outputs are skipped silently (see plan()) so they cannot change the archive
     if life_cycle_exclusion(path):
         return "mascot/illustration derivatives (life cycle stage art): rights undecided"
     for kind, pat, reason in EXCLUDE_RULES:
@@ -75,6 +76,8 @@ def sha256(data):
 def plan():
     inc, exc = [], []
     for p in git_files():
+        if p.startswith("release/"):
+            continue  # never archive build outputs, and never list them (keeps the archive reproducible)
         r = classify(p)
         (exc.append((p, r)) if r else inc.append(p))
     return inc, exc
