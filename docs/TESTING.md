@@ -107,7 +107,7 @@ Failures:
 All remaining failures are **axe-core colour-contrast violations** of muted grey text (`.hero-proof` text on the home page, a hub blurb, figure captions). They are real findings, not test errors, and are **unresolved**; they need approved darker text colours across the site (decision D-8 in the readiness report). The live-site run skips two checks that need CDN resources blocked in the test environment (the Storybook page-turn library on the live site; the archival edition vendors it and passes).
 
 ## 4. Conference suite (rerun after the conference code guards were added)
-All 30 scripts run by  were rerun after the guards were added: **1145 assertions passed, 0 failed** (including  22 and  52 axe assertions). Not part of this run: .
+All 30 scripts run by `run-all.sh` were rerun after the guards were added: **1145 assertions passed, 0 failed** (including the `a11y` (22) and `vx-a11y` (52) axe assertions). Not part of this run: `reading-load.js`.
 
 ## 5. Defects found by the new tests and fixed in this pass
 1. Home-page lesson search and the Discovery Library filter/search set the `hidden` property but a CSS `display` rule kept cards visible. Fixed with a `[hidden]` rule.
