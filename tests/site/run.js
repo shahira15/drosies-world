@@ -117,7 +117,7 @@ const brokenImages = (page) => page.evaluate(() => [...document.images].filter(i
     else for (const rel of pages) {
       const t = await L.open(browser, base, rel, { wait: rel.startsWith('lab/') ? 3500 : 800 });
       await t.page.addScriptTag({ path: process.env.AXE_PATH });
-      const res = await t.page.evaluate(async () => { const r = await axe.run({ include: [document], exclude: [['svg text[aria-hidden="true"]']] }, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } }); return r.violations.map(v => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, help: v.help, sample: v.nodes[0] && v.nodes[0].target.join(' ').slice(0, 80) })); });
+      const res = await t.page.evaluate(async () => { const r = await axe.run({ exclude: [['svg text[aria-hidden="true"]']] }, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } }); return r.violations.map(v => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, help: v.help, sample: v.nodes[0] && v.nodes[0].target.join(' ').slice(0, 80) })); });
       const serious = res.filter(v => v.impact === 'critical' || v.impact === 'serious');
       L.ok(serious.length === 0, `${rel}: no critical/serious axe violations (${res.length} total violations of any impact)`, serious.map(v => `${v.id}(${v.nodes}) ${v.sample}`).join(' | '));
       res.filter(v => !(v.impact === 'critical' || v.impact === 'serious')).forEach(v => console.log(`  INFO ${rel}: axe ${v.impact} ${v.id} x${v.nodes}`));
