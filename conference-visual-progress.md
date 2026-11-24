@@ -55,7 +55,7 @@ See the table in the final PR description; each milestone below is ticked only w
 | M4 | Ch4 detective | done (`vx-ch4.js`: evidence-board scene with 7 case pins: card sort, averages, graph reading, truncated-axis slider, seen-vs-guessed card sort, claim check, limits; Path B evidence board; 51 checks) |
 | M5 | Ch5 abstract workshop | done (`vx-ch5.js`: five arched story slots, sentence cards generated from the learner's data with wrong-number / interpretation / overclaim distractors, write-my-own with the original checker, Path B own-words slots; 42 checks) |
 | M6 | Ch6 poster studio | done (`vx-ch6.js`: live poster board, 8 research cards pinned by tap or keyboard, graph-type/layout thumbnails, colour swatches, text-size slider, original checks + print/PDF; existing posters migrate; 35 checks) |
-| M7 | Ch7–8 lobby and hall | todo |
+| M7 | Ch7–8 lobby and hall | done: vx-ch7.js (badge scan, talk-card strip) and vx-ch8.js (six distinct area scenes, one scientist question at a time, posters, stage claims, booth, reflection); tests vx-m7 (22) and vx-m8 (47); legacy m7/m8/e2e still pass |
 | M8 | Ch9 theater | todo |
 | M9 | Ch10 celebration | todo |
 | M10 | Integration, verification, polish | todo |

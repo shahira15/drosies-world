@@ -75,6 +75,7 @@
     }
   };
   const getQ = (id) => (Q[id][DC.state.path === 'B' ? 'B' : 'A'])();
+  DC.sciQuestion = getQ;   /* read-only: the visual hall asks the same questions with the same feedback */
   const bestCount = () => Object.values(DC.state.hall.sci).filter((x) => x && x.best).length;
   const visitedCount = () => DC.AREAS.filter((a) => DC.state.hall.visited[a.id]).length;
 
@@ -119,6 +120,7 @@
       '<div class="card gold"><h4>Your poster on Board #' + DC.assignment().board + '</h4>' + (DC.state.poster.started ? '<details><summary>Show my poster</summary><div class="posterwrap" tabindex="0" role="region" aria-label="Your poster">' + DC.posterHTML() + '</div></details>' : '<p>You have not started your poster yet. <button type="button" class="btn small" data-act="go" data-n="6">Open the Poster Studio</button></p>') + '<p class="hint">Look at it like a visitor. Can you tell the question from three steps away? Is the figure labeled?</p></div>';
   }
   const SUG = [12, 15, 9, 14, 11], SAL = [2, 1, 3, 0, 2];
+  DC.TALK_DATA = { sugar: SUG, salt: SAL };
   function areaStage() {
     const sg = DC.stats(SUG), sl = DC.stats(SAL);
     return '<div class="callout sim"><strong>Fictional talk.</strong> This short talk and its numbers were invented for practice. The speaker is a fictional character.</div><div class="card"><h4>Talk: "Do ants visit sugar water or salt water?" (fictional)</h4><ol class="clean"><li><strong>Question:</strong> Do ants visit cups of sugar water more than cups of salt water?</li><li><strong>Method:</strong> Five cups of each, set on the same patio at the same time. After 10 minutes, count ants at each cup.</li><li><strong>Data:</strong><div class="tblwrap"><table class="tbl"><caption>Ants counted at each cup</caption><thead><tr><th scope="col">Cup</th><th scope="col">Sugar water</th><th scope="col">Salt water</th></tr></thead><tbody>' + SUG.map((v, i) => '<tr><th scope="row">' + (i + 1) + '</th><td>' + v + '</td><td>' + SAL[i] + '</td></tr>').join('') + '<tr><th scope="row">Mean</th><td>' + DC.fmt(sg.mean, 1) + '</td><td>' + DC.fmt(sl.mean, 1) + '</td></tr></tbody></table></div></li></ol></div>' +
