@@ -145,3 +145,5 @@ details.vx-learn summary{cursor:pointer;font:800 .95rem var(--vx-font);color:var
 
 .vx-vshake{animation:vxvshake .16s linear 4;transform-box:fill-box;transform-origin:center}
 @keyframes vxvshake{25%{transform:translateX(-6px) rotate(-1deg)}75%{transform:translateX(6px) rotate(1deg)}}
+
+input[type=range]{accent-color:var(--vx-teal);width:100%;min-height:2.75rem}
