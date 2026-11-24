@@ -50,4 +50,4 @@ Literature records marked V-ABS were retrieved from **PubMed** (National Library
 
 ## Wording changes made in this pass
 
-The phrase "scientifically validated" was removed from `drosie-genetics-lab/README.md` and replaced with: *a literature-informed design and an automated technical test suite*. "Alleles verified against FlyBase" (Genetics Lab footer, in-lab text, chromosome station) now reads "compiled from FlyBase records and checked by the developer" and, on the home screen, "(not independently reviewed)". The Fruit Fly Biology byline no longer says "checked against the sources above".
+The phrase "scientifically validated" was removed from `drosie-genetics-lab/README.md` and replaced with: *a research-informed design and an automated technical test suite*. "Alleles verified against FlyBase" (Genetics Lab footer, in-lab text, chromosome station) now reads "compiled from FlyBase records and checked by the developer" and, on the home screen, "(not independently reviewed)". The Fruit Fly Biology byline no longer says "checked against the sources above".

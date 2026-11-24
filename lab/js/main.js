@@ -358,7 +358,8 @@
           h('button', { class: 'primary', html: icon('restart', 20) + ' Play again', onclick: () => DW.bus.emit('restart') }),
           h('button', { class: 'secondary', html: icon('book', 20) + ' Journal', onclick: () => ui.openJournal('badge') }),
           h('button', { class: 'secondary', html: icon('exit', 20) + ' Lab Entrance', onclick: () => { try { sessionStorage.setItem('dw.hub', '1'); } catch (e) { /* ignore */ } window.location.reload(); } }),
-          h('a', { class: 'secondary', href: 'https://drosiesworld.com', target: '_blank', rel: 'noopener', html: icon('fly', 20) + ' More at drosiesworld.com' }))));
+          h('a', { class: 'secondary', href: 'https://drosiesworld.com', target: '_blank', rel: 'noopener', html: icon('fly', 20) + ' More at drosiesworld.com' }),
+          h('a', { class: 'secondary', href: '/cite/#secret-fly-lab', target: '_blank', rel: 'noopener', html: icon('book', 20) + ' Cite This Resource' }))));
     ui.game.append(el); Lab.show(false);
     ui.awardBadge('scientist'); // fanfare + confetti
     await ui.fade(false, 700);

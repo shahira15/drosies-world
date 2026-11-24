@@ -1,6 +1,6 @@
 # Drosie Genetics Lab
 
-**Breed. Predict. Discover.** A free *Drosophila melanogaster* genetics simulator with a literature-informed design and an automated technical test suite for ages 5 through undergraduate. Part of [Drosie's World](https://drosiesworld.com).
+**Breed. Predict. Discover.** A free *Drosophila melanogaster* genetics simulator with a research-informed design and an automated technical test suite for ages 5 through undergraduate. Part of [Drosie's World](https://drosiesworld.com).
 
 Students choose parent flies from a stock center, breed them, examine offspring under a microscope, predict results with Punnett squares, explore chromosomes and crossing over, and test their data with chi-square. All of it runs on a genetics engine that is independent of the interface and covered by an automated scientific test suite.
 

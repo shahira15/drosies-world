@@ -62,9 +62,22 @@ Decisions now fixed:
 - **Licensing:** MIT is intended for eligible original software code only, subject to the outstanding IP and third-party checks (B-5, B-7); it is not applied. Rights in the mascot, characters and artwork are reserved beyond permissions already granted under existing licences. The book's CC BY-NC-ND 4.0 stands, so B-2 becomes a wording task for `ASSET_LICENSES.md`. Educational-resource licensing remains pending (B-1).
 - **ORCID** (D-4): resolved. Add it to `.zenodo.json` and `CITATION.cff` when those files are regenerated from PR #17's `metadata.json`.
 - **Illustrator:** credit preserved; portrait and social handle omitted from archives unless separately authorised (B-4 still needs a build check for the handle). Signed agreements stay private.
-- **Wording:** unsupported "scientifically validated" claims become "research-informed". Remaining occurrences in code and pages are an open implementation task (R3 used "literature-informed").
+- **Wording:** unsupported "scientifically validated" claims become "research-informed". Applied in this reconciliation (see section 1E).
 
 Still open: B-1, B-3, B-4, B-5, B-7, S-1, S-3, SC-1, I-5, I-8, the creator-name and ISBN corrections on Zenodo, and the cite-hub reconciliation.
+
+## 1E. Reconciliation with PR #17 (done 2026-11-24)
+
+PR #17 was merged to `main` (`d82b0ac`) and `main` was merged into this branch.
+
+- **One hub, one generator, one metadata source:** `tools/citation/build_cite.py` + `tools/citation/metadata.json` (from #17). Removed from this branch: its own `cite/index.html`, `cite/drosies-world.{bib,ris}`, `cite/CITATION.cff` and `tools/build_cite.py`, plus its duplicate "Cite this resource" links on 17 pages (all anchors now resolve to #17's hub).
+- **Unique functionality kept and ported into #17's generator:** the **Science Activities** hub entry (missing from #17), a downloadable `cite/CITATION.cff`, the "book and software are separate outputs" guidance, and the author's per-tool AI-contribution description on the page. Kept as-is: the Secret Fly Lab title-screen cite link.
+- **Not carried over (by decision):** the draft software version `1.0.0`/planned release date from the old hand-maintained `CITATION.cff`; the generated `CITATION.cff` leaves software DOI, version, release date and licence unset.
+- **Page fixes from this branch kept** where they did not overlap (wording, hidden-attribute CSS, hero CSS, contrast, `#ch1` link). Where both PRs fixed the same defect, #17's worksheet wrapping rule was kept and the header logo colour uses this branch's darker `#b4522f`.
+- **Wording:** "literature-informed" and "validated probability model" became "research-informed" (README, Genetics Lab README and teacher page, `.zenodo.json`, docs). The phrase "scientifically validated" no longer appears in product text.
+- **ORCID** `0009-0009-8947-7828` added to `.zenodo.json`; a test now checks `.zenodo.json` against `metadata.json`. The `.zenodo.json` book relation is still `isSupplementTo`; the earlier recommendation (`references`) awaits the author's decision.
+- **Stale artefacts (not rebuilt, by instruction):** `release/*.zip`, `SHA256SUMS` and `BUILD_VERIFICATION.md` predate these changes and must be rebuilt before any deposit.
+- **Targeted tests after reconciliation:** citation static 316/0, citation browser 47/0, conference `guide-and-site` 44/0 and `vx-a11y` 52/0, Genetics Lab engine 58/58. The full site and conference suites were not rerun.
 
 ## 2. Resolved in this pass
 
@@ -72,7 +85,7 @@ Still open: B-1, B-3, B-4, B-5, B-7, S-1, S-3, SC-1, I-5, I-8, the creator-name 
 |---|---|---|---|
 | R1 | Miller 2018 reference unresolved | PMC5873907 = PMID 29420191, *G3* 2018;8(4):1161-1171, doi:10.1534/g3.118.200021. The repository had the wrong title and journal; corrected. No substitute invented; whether it supports the CyO marker list remains open (S-3). | `docs/SCIENTIFIC_VERIFICATION_MATRIX.md` |
 | R2 | Book record unverified | Fetched live from the Zenodo API: Book, v1.0, 2026-10-22, **CC BY-NC-ND 4.0**, open access, creator Arzoo, Shahira, contributor Cavalcanti, Letícia. Relation to the software recommended: `references`, not `isSupplementTo`. | `docs/BOOK_RELATIONSHIP.md` |
-| R3 | "Scientifically validated" and "verified against FlyBase" wording | Replaced with literature-informed design, technical testing, "compiled from FlyBase records and checked by the developer (not independently reviewed)". | Genetics Lab README, UI, footer, `fruit-fly-biology` byline |
+| R3 | "Scientifically validated" and "verified against FlyBase" wording | Replaced with "research-informed" design, technical testing, "compiled from FlyBase records and checked by the developer (not independently reviewed)". | Genetics Lab README, UI, footer, `fruit-fly-biology` byline |
 | R4 | Live Supabase/Turnstile/analytics/fonts/CDN/map/video in the archived software | Removed by asserted build transformations; page-flip vendored; links made relative. Automated test: zero external requests, works from `file://` | `docs/ARCHIVAL_EDITION.md`, `tests/site` |
 | R5 | Missing images / nonfunctional pages in the archive | Full edition keeps the illustrations used by pages; placeholder edition generates same-size placeholders; tests assert no broken images on every page | `docs/TESTING.md` |
 | R6 | Licensing documents missing | Proposed MIT text (not in effect), `ASSET_LICENSES.md`, `THIRD_PARTY_NOTICES.md`, component inventory, character-in-code files identified with a separation proposal; licensing audit updated for the creator-provided illustrator-rights statement (scope flagged) | repository root and `docs/` |

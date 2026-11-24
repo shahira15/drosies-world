@@ -112,7 +112,7 @@
       }
     }
     names.forEach(([k, l, ic]) => tabs.append(h('button', { 'data-k': k, role: 'tab', html: icon(ic, 18) + '<span>' + l + '</span>', onclick: () => { A.play('click'); show(k); } })));
-    body.append(tabs, pane);
+    body.append(tabs, pane, h('p', { class: 'jhint' }, 'Using this in research or teaching materials? ', h('a', { href: '/cite/#secret-fly-lab', target: '_blank', rel: 'noopener' }, 'Cite This Resource')));
     ui.openModal('Teacher Mode', body, { cls: 'wide' });
     show('over');
   };

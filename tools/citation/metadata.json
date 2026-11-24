@@ -1,0 +1,61 @@
+{
+  "_readme": "SINGLE SOURCE OF TRUTH for scholarly metadata used by the /cite/ page, bibliography files, page <meta>/JSON-LD and CITATION.cff. Edit this file by hand; the generator (build_cite.py) only reads it. A value of null means 'not verified / does not exist yet' and is never replaced by a guess. Never put a placeholder DOI or ORCID here.",
+  "author": {
+    "given_names": "Shahira Helal",
+    "family_names": "Arzoo",
+    "display_name": "Shahira Helal Arzoo",
+    "apa_name": "Arzoo, S. H.",
+    "affiliation": "Department of Biological Sciences, Texas Tech University",
+    "affiliation_org": "Texas Tech University",
+    "orcid": "https://orcid.org/0009-0009-8947-7828",
+    "_orcid_note": "Verified: shown on the published Zenodo record (author-supplied from the API); passes the ORCID checksum."
+  },
+  "site": {
+    "url": "https://drosiesworld.com",
+    "name": "Drosie's World",
+    "year_note": "No site-wide publication date is documented; resources are cited as n.d. unless a verified date exists below."
+  },
+  "repository": {
+    "url": "https://github.com/shahira15/drosies-world"
+  },
+  "license": null,
+  "_license_note": "Software licence only. MIT is intended for eligible original code but is NOT yet applied (pending IP and third-party checks). The book's CC BY-NC-ND 4.0 is under book.license and is not affected. Educational-resource licensing is pending.",
+  "book": {
+    "title": "Drosie, the Fruit Fly",
+    "version": "1.0",
+    "doi": "10.5281/zenodo.23550876",
+    "publisher": "Zenodo",
+    "illustrator": "Letícia Cavalcanti",
+    "illustrator_note": "Illustrator attribution is preserved in every format. Artwork is used with the illustrator's permission; the licensing scope is as agreed with her and is not stated or extended here.",
+    "needs_manual_verification": [
+      "Creator name: the record lists 'Arzoo, Shahira'; the preferred professional name is 'Shahira Helal Arzoo'. Correct on Zenodo if desired (book citations follow the record until then).",
+      "ISBN recorded on Zenodo ('979-8--23424051-4'): malformed hyphenation. The 13 digits 9798234240514 do pass the ISBN-13 checksum, but the correct form must be confirmed against the book's ISBN assignment. Not used or corrected here."
+    ],
+    "published_date": "2026-10-22",
+    "creator_as_published": "Arzoo, Shahira",
+    "_creator_note": "Zenodo's creator string. Book citations follow the record; platform/software metadata use the author's professional name (author.display_name). Discrepancy flagged for manual correction.",
+    "concept_doi": "10.5281/zenodo.23550875",
+    "license": "CC BY-NC-ND 4.0",
+    "license_spdx": "CC-BY-NC-ND-4.0",
+    "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "access": "open",
+    "language": "en",
+    "resource_type": "Book",
+    "metadata_source": "https://zenodo.org/api/records/23550876",
+    "isbn_on_zenodo": "979-8--23424051-4",
+    "isbn_status": "Flagged: malformed hyphenation (double hyphen); not used anywhere and not corrected. Pending manual verification on the Zenodo record.",
+    "verified_from_zenodo_api": [
+      "Title, creator string, affiliation, ORCID, publication date 2026-10-22, Version 1.0, resource type Book, contributor Letícia Cavalcanti, language English, version DOI and concept DOI, licence CC BY-NC-ND 4.0, open access, published (author-supplied from https://zenodo.org/api/records/23550876; not re-fetched by the tooling)"
+    ]
+  },
+  "software": {
+    "title": null,
+    "doi": null,
+    "version": null,
+    "date_released": null,
+    "release_status": "none",
+    "_note": "Fill in only after a human-approved archive exists (see PR #16). doi must be the real DOI assigned by the archive."
+  },
+  "reserved_rights": "Rights in the Drosie mascot, characters and artwork are reserved beyond permissions already granted under existing licences (for example the book's CC BY-NC-ND 4.0).",
+  "educational_content_license": null
+}
