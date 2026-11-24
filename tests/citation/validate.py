@@ -139,14 +139,22 @@ for r in RS.R:
         ok(d["applicationCategory"] and d["operatingSystem"] and d["offers"]["price"] == "0", "%s: SoftwareApplication required props" % r["id"])
     if r["id"] == "storybook":
         ok(d["datePublished"] == "2026" and d["sameAs"] == "https://doi.org/" + RS.BOOK_DOI, "storybook: datePublished 2026 + Zenodo DOI")
+        ok(d["illustrator"]["name"] == "Letícia Cavalcanti", "storybook: illustrator preserved in JSON-LD")
+        ok(m.get("citation_publication_date") == "2026" and m.get("citation_doi") == RS.BOOK_DOI, "storybook: dated meta + DOI")
     else:
-        ok("datePublished" not in d, "%s: no invented datePublished" % r["id"])
+        ok("datePublished" not in d and "copyrightYear" not in d and "dateCreated" not in d, "%s: no inferred publication/copyright date in JSON-LD" % r["id"])
+        ok("citation_publication_date" not in m, "%s: no citation_publication_date meta" % r["id"])
+        ok("(n.d.)" in d["citation"], "%s: JSON-LD citation is undated (n.d.)" % r["id"])
     ok("sameAs" not in json.dumps(d.get("author")), "%s: no unverified author sameAs/ORCID" % r["id"])
 ld = [json.loads(b) for b in parse("cite/index.html").jsonld]; ok(len(ld) == 1 and ld[0]["@graph"][0]["@type"] == "WebPage", "cite page WebPage + BreadcrumbList JSON-LD")
 
 print("== Honesty guards")
 allsrc = "".join(read(f) for f in ["cite/index.html", "CITATION.cff", "cite/drosies-world-bibliography.bib", "cite/drosies-world-bibliography.ris", "cite/drosies-world-bibliography.enw"])
 ok(not re.search(r"orcid\.org|\b\d{4}-\d{4}-\d{4}-\d{3}[\dX]\b", allsrc, re.I), "no ORCID link or identifier (not verified)")
+meta = json.load(open(os.path.join(ROOT, "tools/citation/metadata.json"), encoding="utf-8"))
+ok(meta["author"]["orcid"] is None and meta["license"] is None and meta["software"]["doi"] is None, "metadata.json: ORCID, licence and software DOI are null")
+ok(meta["author"]["display_name"] == "Shahira Helal Arzoo" and meta["author"]["apa_name"] == "Arzoo, S. H.", "author name standardised (Shahira Helal Arzoo / Arzoo, S. H.)")
+ok(len(meta["book"]["needs_manual_verification"]) >= 3 and os.path.exists(os.path.join(ROOT, "tools/citation/VERIFICATION_CHECKLIST.md")), "storybook metadata flagged for manual verification (checklist file exists)")
 dois = {d.rstrip(".") for d in re.findall(r"10\.\d{4,9}/[^\s\"'<>)\]},]+", allsrc)}; ok(dois == {RS.BOOK_DOI}, "only the storybook DOI appears: %s" % dois)
 page = read("cite/index.html")
 ok("No software DOI is listed" in page and "Not yet available" in page, "software DOI section is a clearly-labelled placeholder")
@@ -154,8 +162,22 @@ for bad in ("peer-reviewed by", "endorsed by", "proven effective", "evidence-bas
     ok(bad.lower() not in page.lower(), "page does not contain %r" % bad)
 ok("AI-assisted development disclosure" in page and "Claude Code" in page, "AI disclosure present")
 ok("not mean that Texas Tech University publishes, endorses, sponsors or owns" in page, "affiliation disclaimer present")
-dates = set(re.findall(r"First committed to GitHub</dt><dd>(\d{4}-\d{2}-\d{2})", page))
-ok(dates <= {"2026-11-02", "2026-11-22", "2026-11-23"}, "only repository-history dates shown: %s" % sorted(dates))
+ok("First committed" not in page and not re.search(r"\b2026-11-(02|22|23)\b", page), "no git-commit dates shown on the page")
+ok(page.count("Not documented: cited as n.d.") == len(RS.R) - 1, "every non-storybook card says its date is not documented")
+import formats as FM
+for r in RS.R:
+    a = FM.apa(r, acc=False)
+    ok(("(2026)" in a) == (r["id"] == "storybook") and (("(n.d.)" in a) == (r["id"] != "storybook")), "%s: APA is %s" % (r["id"], "dated" if r["id"] == "storybook" else "n.d."))
+for fn in (FM.apa, FM.mla, FM.chicago, FM.bibtex, FM.ris, FM.endnote):
+    ok("Cavalcanti" in fn(RS.BY_ID["storybook"], acc=False) or fn is FM.endnote and "Cavalcanti" in fn(RS.BY_ID["storybook"]), "illustrator credited in storybook %s" % fn.__name__)
+ok("(L. Cavalcanti, Illus.)" in FM.apa(RS.BY_ID["storybook"]) or "L. Cavalcanti, Illus." in FM.apa(RS.BY_ID["storybook"]), "APA storybook uses the (Illus.) convention")
+ok("Illustrated by Letícia Cavalcanti" in read("cite/drosies-world-bibliography.ris") and "Let{\\'\\i}cia" in read("cite/drosies-world-bibliography.bib"), "illustrator attribution in downloadable RIS and BibTeX")
+ok("does not grant permission to reproduce" in page, "illustration permission scope respected on the page")
+bib_entries = read("cite/drosies-world-bibliography.bib").split("@misc{")[1:]
+ok(sum(1 for e in bib_entries if re.search(r"^\s+year\s+=", e, re.M)) == 1, "BibTeX: exactly one entry (storybook) has a year")
+ok(sum(1 for e in read("cite/drosies-world-bibliography.ris").split("\n\n") if "\nPY  - " in e) == 1, "RIS: exactly one record (storybook) has PY")
+ok("[[ACC" not in read("cite/drosies-world-bibliography.ris") + read("cite/drosies-world-bibliography.bib") + read("cite/drosies-world-bibliography.enw") + read("CITATION.cff"), "no access-date tokens leak into downloads")
+ok("Retrieved" not in read("cite/drosies-world-bibliography.ris"), "downloads carry no hard-coded access dates")
 
 print("== Bibliography files")
 bib = read("cite/drosies-world-bibliography.bib"); keys = re.findall(r"^@misc\{([^,]+),", bib, re.M)
@@ -186,6 +208,38 @@ ok("https://drosiesworld.com/cite/" in locs and len(locs) == len(set(locs)), "si
 ok(sm.count("<url>") == sm.count("</url>"), "sitemap balanced")
 bad = [l for l in locs if not resolve("sitemap.xml", l) or not os.path.exists(resolve("sitemap.xml", l)[0])]; ok(not bad, "every sitemap URL maps to a file %s" % bad)
 ok(not any("/tests" in l or ".bib" in l for l in locs), "sitemap has no test/download URLs")
+
+print("== Generator never overwrites verified or hand-maintained data")
+import tempfile, importlib
+sys.path.insert(0, os.path.join(ROOT, "tools", "citation"))
+import build_cite as B
+def guard_outcome(cff_text, metadata_env=None):
+    """Run guard_cff against a temporary CITATION.cff; return None if allowed, else the refusal message."""
+    with tempfile.TemporaryDirectory() as td:
+        open(os.path.join(td, "CITATION.cff"), "w", encoding="utf-8").write(cff_text)
+        old = B.ROOT; B.ROOT = td
+        try: B.guard_cff(False); return None
+        except SystemExit as e: return str(e)
+        finally: B.ROOT = old
+current = read("CITATION.cff")
+import yaml
+F_HEAD = "# Generated by tools/citation/build_cite.py from tools/citation/metadata.json.\n"
+ok(guard_outcome(current) is None, "regenerating over its own unchanged CITATION.cff is allowed")
+hand = "cff-version: 1.2.0\ntitle: x\nversion: '1.0.0'\ndate-released: '2026-11-24'\n"  # e.g. the hand-maintained release CFF
+ok("not generated by this script" in (guard_outcome(hand) or ""), "refuses to overwrite a hand-maintained CITATION.cff")
+ok("doi" in (guard_outcome(current + "doi: 10.5281/zenodo.99999999\n") or ""), "refuses to drop a DOI that is not in metadata.json")
+_y = yaml.safe_load(current); _y["authors"][0]["orcid"] = "https://orcid.org/0000-0002-1825-0097"
+ok("orcid" in (guard_outcome(F_HEAD + yaml.safe_dump(_y, sort_keys=False)) or ""), "refuses to drop an ORCID that is not in metadata.json")
+ok("license" in (guard_outcome(current + "license: MIT\n") or ""), "refuses to drop a licence that is not in metadata.json")
+ok("version" in (guard_outcome(current + "version: '1.0.0'\n") or ""), "refuses to drop a version that is not in metadata.json")
+# A verified software DOI entered in metadata.json flows through to the CFF and the page model (fake value, subprocess only)
+with tempfile.TemporaryDirectory() as td:
+    m = json.loads(json.dumps(meta)); m["software"].update({"doi": "10.0000/test.fake", "version": "9.9.9", "date_released": "2030-01-01"}); m["author"]["orcid"] = "https://orcid.org/0000-0000-0000-0000"
+    mp = os.path.join(td, "m.json"); json.dump(m, open(mp, "w"))
+    out = subprocess.run([sys.executable, "-c", "import sys,json; sys.path.insert(0,'%s/tools/citation'); import formats as F, resources as R; d=F.cff_data(); print(json.dumps([d.get('doi'), d.get('version'), d.get('date-released'), d['authors'][0].get('orcid'), [r['id'] for r in R.R if r['group']=='software']]))" % ROOT],
+                         env=dict(os.environ, DROSIE_CITE_METADATA=mp), capture_output=True, text=True)
+    ok(out.returncode == 0 and json.loads(out.stdout) == ["10.0000/test.fake", "9.9.9", "2030-01-01", "https://orcid.org/0000-0000-0000-0000", ["software-archive"]], "verified values entered in metadata.json flow into CFF + citable list: " + out.stdout.strip()[:100] + out.stderr[-100:])
+ok(not B.BY_ID.get("software-archive"), "default build has no software-archive entry")
 
 print("== Idempotent build")
 before = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True).stdout

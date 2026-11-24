@@ -134,7 +134,7 @@
     const ol = DC.$('#railList'); if (!ol) return;
     const html = DC.CHAPTERS.map((c) => {
       const done = DC.isDone(c.n), open = DC.canOpen(c.n), cur = DC.state.cur === c.n;
-      return '<li><button type="button" class="rbtn' + (done ? ' done' : '') + '" data-act="go" data-n="' + c.n + '"' + (cur ? ' aria-current="step"' : '') + (open ? '' : ' disabled') + ' aria-label="Chapter ' + c.n + ': ' + DC.esc(c.title) + (done ? ', complete' : open ? '' : ', locked until earlier chapters are finished') + '"><b aria-hidden="true">' + (done ? '✓' : c.n) + '</b>' + DC.esc(c.short) + '</button></li>';
+      return '<li><button type="button" class="rbtn' + (done ? ' done' : '') + '" data-act="go" data-n="' + c.n + '"' + (cur ? ' aria-current="step"' : '') + (open ? '' : ' disabled') + ' aria-label="Chapter ' + c.n + ': ' + (new RegExp('\\b' + c.short.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(c.title) ? DC.esc(c.title) : DC.esc(c.short) + ' (' + DC.esc(c.title) + ')') + (done ? ', complete' : open ? '' : ', locked until earlier chapters are finished') + '"><b aria-hidden="true" data-num="' + (done ? '✓' : c.n) + '"></b>' + DC.esc(c.short) + '</button></li>';
     }).join('');
     if (html !== lastRail) { ol.innerHTML = html; lastRail = html; }
   };

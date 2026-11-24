@@ -10,6 +10,35 @@
     window.setTimeout(function () { status.textContent = msg; }, 30);
   }
 
+  /* ---- Access date (undated web resources are cited with the reader's own access date) ---- */
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var MLA_MONTHS = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function fmt(style, y, m, d) {
+    switch (style) {
+      case 'apa': case 'chi': return MONTHS[m - 1] + ' ' + d + ', ' + y;
+      case 'mla': return d + ' ' + MLA_MONTHS[m - 1] + ' ' + y;
+      case 'iso': return y + '-' + pad(m) + '-' + pad(d);
+      case 'ris': return y + '/' + pad(m) + '/' + pad(d);
+    }
+    return '[access date]';
+  }
+  var accInput = document.getElementById('access-date');
+  function paintDates() {
+    var v = accInput && accInput.value, parts = v && /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+    document.querySelectorAll('.acc').forEach(function (el) {
+      el.textContent = parts ? fmt(el.getAttribute('data-style'), +parts[1], +parts[2], +parts[3]) : '[access date]';
+    });
+  }
+  if (accInput) {
+    var t = new Date();
+    accInput.value = t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + pad(t.getDate());
+    accInput.max = accInput.value;
+    var box = accInput.closest('.acc-box'); if (box) box.hidden = false;
+    accInput.addEventListener('input', paintDates);
+    paintDates();
+  }
+
   /* ---- Tabs ---- */
   document.querySelectorAll('[data-cite]').forEach(function (box) {
     var tabs = Array.prototype.slice.call(box.querySelectorAll('[role=tab]'));
@@ -57,8 +86,10 @@
     var rich = el.classList.contains('cite-rich');
     if (rich && navigator.clipboard && window.ClipboardItem && navigator.clipboard.write) {
       // Keep italics when pasting into Word or Google Docs; plain text is the fallback flavour.
+      var clone = el.cloneNode(true);
+      clone.querySelectorAll('.acc').forEach(function (a) { a.replaceWith(document.createTextNode(a.textContent)); });
       var item = new ClipboardItem({
-        'text/html': new Blob([el.innerHTML], { type: 'text/html' }),
+        'text/html': new Blob([clone.innerHTML], { type: 'text/html' }),
         'text/plain': new Blob([text], { type: 'text/plain' })
       });
       return navigator.clipboard.write([item]).catch(function () { return plain(text); });

@@ -1,0 +1,40 @@
+{
+  "_readme": "SINGLE SOURCE OF TRUTH for scholarly metadata used by the /cite/ page, bibliography files, page <meta>/JSON-LD and CITATION.cff. Edit this file by hand; the generator (build_cite.py) only reads it. A value of null means 'not verified / does not exist yet' and is never replaced by a guess. Never put a placeholder DOI or ORCID here.",
+  "author": {
+    "given_names": "Shahira Helal",
+    "family_names": "Arzoo",
+    "display_name": "Shahira Helal Arzoo",
+    "apa_name": "Arzoo, S. H.",
+    "affiliation": "Department of Biological Sciences, Texas Tech University",
+    "affiliation_org": "Texas Tech University",
+    "orcid": null,
+    "_orcid_note": "Leave null until the author supplies the verified identifier (https://orcid.org/0000-0000-0000-0000 form)."
+  },
+  "site": {"url": "https://drosiesworld.com", "name": "Drosie's World", "year_note": "No site-wide publication date is documented; resources are cited as n.d. unless a verified date exists below."},
+  "repository": {"url": "https://github.com/shahira15/drosies-world"},
+  "license": null,
+  "_license_note": "No licence has been chosen (see PR #16, docs/LICENSING_PROPOSAL.md). Leave null; do not add one here until the author decides.",
+  "book": {
+    "title": "Drosie, the Fruit Fly",
+    "version": "1.0",
+    "year": "2026",
+    "doi": "10.5281/zenodo.23550876",
+    "publisher": "Zenodo",
+    "illustrator": "Letícia Cavalcanti",
+    "illustrator_note": "Illustrator attribution is preserved in every format. Artwork is used with the illustrator's permission; the licensing scope is as agreed with her and is not stated or extended here.",
+    "needs_manual_verification": [
+      "Author name string on the Zenodo record (this repo uses 'Shahira Helal Arzoo'; the site and PR #16 use 'Arzoo, S.')",
+      "Publication date and version on the Zenodo record (year 2026, Version 1.0 are taken from existing site text)",
+      "Whether the Zenodo record lists the illustrator, and the record's licence/rights statement",
+      "Resource type on Zenodo (book vs. other)"
+    ]
+  },
+  "software": {
+    "title": null,
+    "doi": null,
+    "version": null,
+    "date_released": null,
+    "release_status": "none",
+    "_note": "Fill in only after a human-approved archive exists (see PR #16). doi must be the real DOI assigned by the archive."
+  }
+}

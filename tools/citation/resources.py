@@ -7,31 +7,41 @@ does not exist, and do not add dates or identifiers that are not documented.
 Documented facts used here:
   * Creator: Shahira Helal Arzoo, Department of Biological Sciences, Texas Tech University
     (site Team page and JSON-LD on team.html).
-  * Year 2026: site copyright notice ("(c) 2026 Drosie's World") and the repository history,
-    whose first commit is 2026-11-02. Exact release dates are NOT otherwise documented.
-  * Storybook DOI 10.5281/zenodo.23550876, "Version 1.0", 2026 (already published on
-    index.html JSON-LD and teacher-resources/index.html).
-  * `first_commit` = date the file was first committed to the public GitHub repository
-    (from `git log --diff-filter=A`). It is NOT claimed to be a publication date.
+  * Only the storybook has a publication year (2026, Version 1.0, Zenodo DOI), taken from text already
+    published on the site; it is flagged for manual verification in metadata.json.
+  * Every other resource is cited as undated (n.d.) with an access date. Copyright years and git commit
+    dates are NOT used as publication dates.
+  * `first_commit` is kept for maintainers only and is never shown or used in citations.
 """
 
-SITE = "https://drosiesworld.com"
-REPO = "https://github.com/shahira15/drosies-world"
-PUBLISHER = "Drosie's World"
-YEAR = "2026"
-AUTHOR_FAMILY = "Arzoo"
-AUTHOR_GIVEN = "Shahira Helal"
-AUTHOR_APA = "Arzoo, S. H."
-AUTHOR_FULL = "Shahira Helal Arzoo"
-AFFILIATION = "Department of Biological Sciences, Texas Tech University"
-AFFILIATION_ORG = "Texas Tech University"
+import json as _json
+import os as _os
+
+META_PATH = _os.environ.get("DROSIE_CITE_METADATA") or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "metadata.json")
+META = _json.load(open(META_PATH, encoding="utf-8"))
+_A, _B = META["author"], META["book"]
+SITE = META["site"]["url"]
+REPO = META["repository"]["url"]
+PUBLISHER = META["site"]["name"]
+YEAR = _B["year"]                      # applies ONLY to the storybook (dated entries); everything else is undated
+AUTHOR_FAMILY = _A["family_names"]
+AUTHOR_GIVEN = _A["given_names"]
+AUTHOR_APA = _A["apa_name"]
+AUTHOR_FULL = _A["display_name"]
+AFFILIATION = _A["affiliation"]
+AFFILIATION_ORG = _A["affiliation_org"]
+ORCID = _A["orcid"]
 AUTHOR_ID = SITE + "/team.html#author"
-BOOK_DOI = "10.5281/zenodo.23550876"
+BOOK_DOI = _B["doi"]
+ILLUSTRATOR = _B["illustrator"]
+SOFTWARE = META["software"]
+LICENSE = META["license"]
 
 # kind -> (schema.org types, RIS type, bib type)
 GROUPS = [
     ("platform", "Platform"),
     ("storybook", "Storybook"),
+    ("software", "Archived software"),
     ("simulation", "Simulations and games"),
     ("teacher", "Teacher resources"),
     ("lesson", "Individual lesson plans"),
@@ -43,6 +53,7 @@ R = []
 
 def add(**kw):
     kw.setdefault("doi", None)
+    kw.setdefault("year", None)       # None = undated (cited as n.d.)
     kw.setdefault("version", None)
     kw.setdefault("note", None)
     kw.setdefault("schema", None)
@@ -61,11 +72,11 @@ add(id="platform", group="platform", short="Drosie's World (whole platform)",
 
 add(id="storybook", group="storybook", short="Drosie, the Fruit Fly (storybook)",
     title="Drosie, the Fruit Fly", medium="Illustrated storybook", version="1.0",
-    doi=BOOK_DOI, url="https://doi.org/" + BOOK_DOI, read_url=SITE + "/storybook.html",
+    doi=BOOK_DOI, year=YEAR, illustrator=ILLUSTRATOR, url="https://doi.org/" + BOOK_DOI, read_url=SITE + "/storybook.html",
     file="storybook.html", first_commit="2026-11-02", ris="BOOK", bib="misc", publisher="Zenodo",
     desc="An illustrated children's storybook that follows Drosie the fruit fly through the life cycle, the laboratory and the discoveries scientists have made with fruit flies.",
     schema="Book", ages="5-8", status="archived",
-    note="Archived on Zenodo with a DOI. Illustrations are by Letícia Cavalcanti (see the Team page); credit the illustrator if you reproduce or discuss the artwork.")
+    note="Archived on Zenodo with a DOI. Illustrated by %s; the illustrations are used with the illustrator's permission, and citing the book does not grant permission to reproduce them." % ILLUSTRATOR)
 
 add(id="secret-fly-lab", group="simulation", short="The Secret Fly Lab",
     title="The Secret Fly Lab", medium="Interactive educational game",
@@ -180,6 +191,14 @@ add(id="discoveries", group="more", short="Drosie's Discovery Library",
     desc="Real fruit fly research explained for children and families.",
     schema="LearningResource",
     note="This library explains research done by others. For scientific claims, cite the original research as well.")
+
+# Archived software appears ONLY when a verified software DOI has been entered in metadata.json.
+if SOFTWARE.get("doi"):
+    add(id="software-archive", group="software", short="Drosie's World (archived software release)",
+        title=SOFTWARE.get("title") or "Drosie's World", medium="Software", version=SOFTWARE.get("version"),
+        doi=SOFTWARE["doi"], year=(SOFTWARE.get("date_released") or "")[:4] or None, url="https://doi.org/" + SOFTWARE["doi"],
+        read_url=SITE + "/", file="index.html", ris="COMP", bib="misc", publisher="Zenodo", status="archived",
+        desc="A versioned release of the Drosie's World source code, archived with a DOI.", schema="SoftwareApplication")
 
 # Fill first_commit for files that were not given one by looking at git history (done by build script).
 BY_ID = {r["id"]: r for r in R}

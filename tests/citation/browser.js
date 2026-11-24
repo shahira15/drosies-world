@@ -45,13 +45,15 @@ const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? '  PASS ' : '  FAIL
   await copyBtn.focus(); await page.keyboard.press('Enter');
   await copyBtn.filter({ hasText: 'Copied' }).waitFor();
   const clip = await page.evaluate(() => navigator.clipboard.readText());
-  ok(clip === "Arzoo, S. H. (2026). The Secret Fly Lab [Interactive educational game]. Drosie's World. https://drosiesworld.com/lab/", 'APA text copied via keyboard: ' + clip);
+  const iso = await page.inputValue('#access-date'); const [Y, M, D] = iso.split('-').map(Number);
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  ok(clip === `Arzoo, S. H. (n.d.). The Secret Fly Lab [Interactive educational game]. Drosie's World. Retrieved ${months[M - 1]} ${D}, ${Y}, from https://drosiesworld.com/lab/`, 'undated APA text with access date copied via keyboard: ' + clip);
   const html = await page.evaluate(async () => { const it = await navigator.clipboard.read(); const t = it[0].types; return t.includes('text/html') ? await (await it[0].getType('text/html')).text() : ''; });
   ok(html.includes('<em>The Secret Fly Lab</em>'), 'rich-text copy keeps italics');
   await page.waitForTimeout(200);
   ok((await page.locator('#cite-status').textContent()).startsWith('Copied'), 'live region announces the copy: ' + await page.locator('#cite-status').textContent());
   ok((await copyBtn.textContent()) === 'Copied', 'button label changes to Copied');
-  for (const [i, key, startsWith] of [[3, 'BibTeX', '@misc{arzoo2026secretflylab'], [4, 'RIS', 'TY  - COMP']]) {
+  for (const [i, key, startsWith] of [[3, 'BibTeX', '@misc{arzoosecretflylabnd'], [4, 'RIS', 'TY  - COMP']]) {
     await tabs.nth(i).click();
     await card.locator('[role=tabpanel]:visible [data-copy]').click();
     await card.locator('[role=tabpanel]:visible [data-copy]').filter({ hasText: 'Copied' }).waitFor();
@@ -61,6 +63,19 @@ const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? '  PASS ' : '  FAIL
   const dlp = page.waitForEvent('download');
   await card.locator('[role=tabpanel]:visible [data-download]').click();
   const d = await dlp; ok(d.suggestedFilename() === 'secret-fly-lab.ris', 'per-entry download: ' + d.suggestedFilename());
+
+  console.log('== access date control');
+  await tabs.nth(0).click();
+  await page.fill('#access-date', '2026-03-05');
+  ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === 'March 5, 2026', 'changing the access date updates APA live');
+  await tabs.nth(1).click(); ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '5 March 2026', 'MLA uses day-month-year');
+  await tabs.nth(3).click(); ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '2026-03-05', 'BibTeX urldate is ISO');
+  await tabs.nth(4).click(); ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '2026/03/05', 'RIS Y2 uses YYYY/MM/DD');
+  await tabs.nth(0).click();
+  ok((await page.locator('#storybook [role=tabpanel][data-fmt=apa] .cite-text').textContent()).startsWith('Arzoo, S. H. (2026). Drosie, the Fruit Fly (Version 1.0; L. Cavalcanti, Illus.)'), 'storybook APA is dated and credits the illustrator');
+  ok(await page.locator('#storybook .acc').count() === 0, 'storybook (dated, DOI) has no access-date field');
+  await page.fill('#access-date', '');
+  ok((await card.locator('[role=tabpanel]:visible .acc').first().textContent()) === '[access date]', 'empty date falls back to a visible placeholder');
 
   console.log('== bibliography downloads');
   for (const f of ['ris', 'bib', 'enw']) {
@@ -97,12 +112,12 @@ const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? '  PASS ' : '  FAIL
     await c.close();
   }
 
-  console.log('== axe-core accessibility (the shared header brand colour #db8669 on cream, used on every page, is excluded: pre-existing, see PR notes)');
+  console.log('== axe-core accessibility (no exclusions)');
   if (process.env.AXE_PATH) {
     for (const [name, w, dark] of [['desktop', 1280], ['phone', 375]]) {
       const c = await browser.newContext({ viewport: { width: w, height: 800 } }); const p = await c.newPage(); await p.goto(BASE + '/cite/');
       await p.addScriptTag({ path: process.env.AXE_PATH });
-      const res = await p.evaluate(() => axe.run({ exclude: [['.site-header .brand em']] }, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'] }));
+      const res = await p.evaluate(() => axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'] }));
       for (const v of res.violations) console.log('   axe', v.id, v.impact, v.nodes.length, v.nodes[0].target.join(' '));
       ok(res.violations.length === 0, name + ': axe violations ' + res.violations.length);
       await c.close();
