@@ -153,6 +153,7 @@
     mount() { ui.left = 60; stopTimer(); DC.onBind('refl.', () => DC.softUpdate());DC.onBind('prac.explain', () => { DC.state.prac.explainOk = false; DC.save(); const w = DC.$('#explWc'); if (w) w.textContent = wc(DC.state.prac.explain) + ' words'; DC.softUpdate(); });
       DC.onBind('prac.qa', (el) => { const id = el.dataset.bind.split('.')[2]; if (DC.state.prac.qaDone[id]) { DC.state.prac.qaDone[id] = false; DC.save(); const q = el.closest('.q'); if (q) q.classList.remove('done'); DC.softUpdate(); } }); }
   });
+  DC.explainCheck = explainCheck; DC.rubric = rubric; DC.AQ = AQ; DC.suggestions = suggestions; DC.revSnap = snap; DC.IDK = IDK;
   { const lastFb = (sel) => { const l = DC.$$(sel + ' .fb'); return l.length ? l[l.length - 1].innerText : ''; };
     const e = DC.acts.explCheck; DC.acts.explCheck = (b) => { e(b); DC.say(lastFb('#explFb')); };
     const q = DC.acts.qaCheck; DC.acts.qaCheck = (b) => { q(b); DC.say(lastFb('#qafb-' + b.dataset.id)); }; }
