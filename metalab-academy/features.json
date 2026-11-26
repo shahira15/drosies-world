@@ -1,35 +1,189 @@
 {
- "_note": "Statuses: planned | in_development | implemented | tested | scientifically_validated | requires_external_service | requires_expert_review. 'scientifically_validated' is reserved for items independently checked against established software or by a qualified human; nothing is currently at that level. Updated 2026-11-26.",
+ "_note": "Statuses: planned | in_development | implemented | tested (unit tests) | benchmarked (numerically matches established software, e.g. R/metafor) | scientifically_validated (benchmarked AND methodology reviewed by a qualified human expert) | requires_external_service | requires_expert_review. Benchmarking is NOT validation. Nothing is currently scientifically_validated. Updated 2026-11-26 (v0.2 batch 1).",
  "features": [
-  {"id":"stats.effect_sizes","name":"Effect-size calculators (MD, Hedges g, lnRR, lnOR, lnRR-binary, RD, Fisher z, SD/SE/CI conversions, group combining)","status":"tested","evidence":"Hand-calculation unit tests; NOT yet compared with R/metafor escalc","blocker":"R unavailable in build environment"},
-  {"id":"stats.meta_core","name":"Common-effect and random-effects pooling (DL, PM, REML), HKSJ, prediction interval, Q/I2/H2, leave-one-out","status":"tested","evidence":"Hand calcs; brute-force REML likelihood check; BCG dataset vs reference values recalled from metafor docs (pending live R confirmation)","blocker":"Run R metafor and record output in TESTING_REPORT.md; then upgrade to scientifically_validated"},
-  {"id":"stats.sims","name":"Simulations: SD vs SE, CI coverage","status":"tested","evidence":"Statistical property tests (coverage ~95%, SE matches empirical SD)"},
-  {"id":"academy.curriculum_registry","name":"84-module curriculum registry","status":"implemented","evidence":"Titles/levels only; lesson availability computed from files"},
-  {"id":"academy.lessons","name":"Full lessons","status":"requires_expert_review","evidence":"3 of 84 drafted (M3, M4, M32); AI-drafted; key references verified in PubMed; not reviewed by a qualified human expert"},
-  {"id":"academy.quizzes","name":"Quizzes with explanations and scoring","status":"tested","evidence":"Structure tests; numeric answers machine-checked; conceptual answers need expert review"},
-  {"id":"academy.onboarding","name":"Onboarding, diagnostic, pathway recommendation","status":"implemented","evidence":"Rule-based; diagnostic not psychometrically validated"},
-  {"id":"academy.flashcards_srs","name":"Flashcards and spaced repetition","status":"planned"},
-  {"id":"workspace.projects","name":"Projects, question builder, decision log","status":"tested"},
-  {"id":"workspace.audit_log","name":"Append-only audit log (DB triggers)","status":"tested"},
-  {"id":"workspace.search_log","name":"Search history logger (records searches the USER ran; the app executes none)","status":"tested"},
-  {"id":"workspace.ris_import","name":"RIS and PubMed NBIB import with raw-record preservation","status":"tested","evidence":"Synthetic test files only; real-world export variants not yet exercised"},
-  {"id":"workspace.dedup","name":"Deduplication (exact DOI/PMID/title+year; reversible)","status":"tested","evidence":"Fuzzy matching NOT implemented"},
-  {"id":"workspace.screening","name":"Single/multi-reviewer screening with conflict detection","status":"tested","evidence":"Cohen's kappa and blinding not implemented"},
-  {"id":"workspace.prisma_counts","name":"PRISMA count derivation + inconsistency warnings","status":"tested","evidence":"Counts only; flow-diagram graphic not yet drawn"},
-  {"id":"workspace.backup","name":"JSON backup/restore, CSV export","status":"tested"},
-  {"id":"workspace.first_paper_plan","name":"16-week plan with gates and progress","status":"implemented"},
-  {"id":"workspace.extraction","name":"Data extraction forms with provenance","status":"in_development","evidence":"Table exists; UI not built"},
-  {"id":"workspace.rob","name":"Risk-of-bias tools","status":"planned"},
-  {"id":"workspace.manuscript","name":"Manuscript studio and export","status":"planned"},
-  {"id":"knowledge.resources","name":"Resource registry","status":"implemented","evidence":"15 verified references (PubMed); 16 resources + 8 organisations with UNVERIFIED links (no verification dates)"},
-  {"id":"knowledge.databases_software","name":"Database and software directories","status":"planned"},
-  {"id":"network.directory","name":"External organisation directory","status":"implemented","evidence":"Links unverified; no costs/eligibility claimed"},
-  {"id":"network.toolkit","name":"Outreach templates","status":"implemented"},
-  {"id":"network.community","name":"Profiles, matching, forums, messaging","status":"requires_external_service","evidence":"Needs auth, moderation, hosting, real users. Nothing simulated."},
-  {"id":"opportunities.hub","name":"Research opportunities directory","status":"planned","evidence":"No entries until officially sourced"},
-  {"id":"ai.assistant","name":"AI assistant","status":"requires_external_service","evidence":"No API configured; prompt-generation only is planned"},
-  {"id":"viz.forest","name":"Forest plot","status":"tested","evidence":"Renders from computed results; not compared pixelwise with R"},
-  {"id":"viz.other","name":"Funnel, Baujat, RoB, network plots, exports","status":"planned"},
-  {"id":"security.local","name":"Local-only storage, parameterised SQL, no network calls","status":"implemented","evidence":"No auth (single local user); no security audit performed"}
+  {
+   "id": "stats.effect_sizes",
+   "name": "Effect-size calculators (MD, Hedges g, lnRR, lnOR, lnRR-binary, RD, Fisher z, SD/SE/CI conversions, group combining)",
+   "status": "benchmarked",
+   "evidence": "Matches R metafor 4.4.0 escalc (MD, SMD/Hedges g, ROM, RR, OR, RD, ZCOR) on metadat datasets incl. zero-event and n=2-4 cases. Defects found/fixed: RD correction, exact Hedges J, SMD variance types.",
+   "blocker": "Expert review pending; package 'meta' could not be installed to cross-check"
+  },
+  {
+   "id": "stats.meta_core",
+   "name": "Common-effect and random-effects pooling (DL, PM, REML), HKSJ, prediction interval, Q/I2/H2, leave-one-out",
+   "status": "benchmarked",
+   "evidence": "Common/random effects (REML, DL, PM), HKSJ, Q, tau2, I2, PI, leave-one-out match metafor 4.4.0 on 10 datasets + 9 edge cases (242 tests). See VALIDATION.md",
+   "blocker": "Expert review pending; rare-event/dependence methods not implemented"
+  },
+  {
+   "id": "stats.sims",
+   "name": "Simulations: SD vs SE, CI coverage",
+   "status": "tested",
+   "evidence": "Statistical property tests (coverage ~95%, SE matches empirical SD)"
+  },
+  {
+   "id": "academy.curriculum_registry",
+   "name": "84-module curriculum registry",
+   "status": "implemented",
+   "evidence": "Titles/levels only; lesson availability computed from files"
+  },
+  {
+   "id": "academy.lessons",
+   "name": "Full lessons",
+   "status": "requires_expert_review",
+   "evidence": "3 of 84 drafted (M3, M4, M32); AI-drafted; key references verified in PubMed; not reviewed by a qualified human expert"
+  },
+  {
+   "id": "academy.quizzes",
+   "name": "Quizzes with explanations and scoring",
+   "status": "tested",
+   "evidence": "Structure tests; numeric answers machine-checked; conceptual answers need expert review"
+  },
+  {
+   "id": "academy.onboarding",
+   "name": "Onboarding, diagnostic, pathway recommendation",
+   "status": "implemented",
+   "evidence": "Rule-based; diagnostic not psychometrically validated"
+  },
+  {
+   "id": "academy.flashcards_srs",
+   "name": "Flashcards and spaced repetition",
+   "status": "planned"
+  },
+  {
+   "id": "workspace.projects",
+   "name": "Projects, question builder, decision log",
+   "status": "tested"
+  },
+  {
+   "id": "workspace.audit_log",
+   "name": "Append-only audit log (DB triggers)",
+   "status": "tested"
+  },
+  {
+   "id": "workspace.search_log",
+   "name": "Search history logger (records searches the USER ran; the app executes none)",
+   "status": "tested"
+  },
+  {
+   "id": "workspace.ris_import",
+   "name": "RIS and PubMed NBIB import with raw-record preservation",
+   "status": "tested",
+   "evidence": "Synthetic test files only; real-world export variants not yet exercised"
+  },
+  {
+   "id": "workspace.dedup",
+   "name": "Deduplication (exact DOI/PMID/title+year; reversible)",
+   "status": "tested",
+   "evidence": "Fuzzy matching NOT implemented"
+  },
+  {
+   "id": "workspace.screening",
+   "name": "Single/multi-reviewer screening with conflict detection",
+   "status": "tested",
+   "evidence": "Cohen's kappa and blinding not implemented"
+  },
+  {
+   "id": "workspace.prisma_counts",
+   "name": "PRISMA count derivation + inconsistency warnings",
+   "status": "tested",
+   "evidence": "Counts only; flow-diagram graphic not yet drawn"
+  },
+  {
+   "id": "workspace.backup",
+   "name": "JSON backup/restore, CSV export",
+   "status": "tested"
+  },
+  {
+   "id": "workspace.first_paper_plan",
+   "name": "16-week plan with gates and progress",
+   "status": "implemented"
+  },
+  {
+   "id": "workspace.extraction",
+   "name": "Data extraction forms with provenance",
+   "status": "in_development",
+   "evidence": "Table exists; UI not built"
+  },
+  {
+   "id": "workspace.rob",
+   "name": "Risk-of-bias tools",
+   "status": "planned"
+  },
+  {
+   "id": "workspace.manuscript",
+   "name": "Manuscript studio and export",
+   "status": "planned"
+  },
+  {
+   "id": "knowledge.resources",
+   "name": "Resource registry",
+   "status": "implemented",
+   "evidence": "15 verified references (PubMed); 16 resources + 8 organisations with UNVERIFIED links (no verification dates)"
+  },
+  {
+   "id": "knowledge.databases_software",
+   "name": "Database and software directories",
+   "status": "planned"
+  },
+  {
+   "id": "network.directory",
+   "name": "External organisation directory",
+   "status": "implemented",
+   "evidence": "Links unverified; no costs/eligibility claimed"
+  },
+  {
+   "id": "network.toolkit",
+   "name": "Outreach templates",
+   "status": "implemented"
+  },
+  {
+   "id": "network.community",
+   "name": "Profiles, matching, forums, messaging",
+   "status": "requires_external_service",
+   "evidence": "Needs auth, moderation, hosting, real users. Nothing simulated."
+  },
+  {
+   "id": "opportunities.hub",
+   "name": "Research opportunities directory",
+   "status": "planned",
+   "evidence": "No entries until officially sourced"
+  },
+  {
+   "id": "ai.assistant",
+   "name": "AI assistant",
+   "status": "requires_external_service",
+   "evidence": "No API configured; prompt-generation only is planned"
+  },
+  {
+   "id": "viz.forest",
+   "name": "Forest plot",
+   "status": "tested",
+   "evidence": "Renders from computed results; not compared pixelwise with R"
+  },
+  {
+   "id": "viz.other",
+   "name": "Funnel, Baujat, RoB, network plots, exports",
+   "status": "planned"
+  },
+  {
+   "id": "security.local",
+   "name": "Local-only storage, parameterised SQL, no network calls",
+   "status": "implemented",
+   "evidence": "No auth (single local user); no security audit performed"
+  },
+  {
+   "id": "stats.subgroup_regression",
+   "name": "Subgroup analysis and mixed-effects meta-regression (REML/DL/PM, z and knha)",
+   "status": "benchmarked",
+   "evidence": "Matches metafor on dat.raudenbush1985 and dat.bcg (single/multiple/categorical moderators)",
+   "blocker": "Expert review pending"
+  },
+  {
+   "id": "validation.r_pipeline",
+   "name": "R reference generation + automated comparison (Mac/CI-runnable)",
+   "status": "implemented",
+   "evidence": "validation/make_reference.R, run_validation.sh, .github/workflows/metalab-ci.yml (CI not yet executed on GitHub)"
+  }
  ]
 }

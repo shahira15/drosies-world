@@ -1,11 +1,11 @@
 # Feature status (generated from features.json)
 
-Statuses: planned | in_development | implemented | tested | scientifically_validated | requires_external_service | requires_expert_review. 'scientifically_validated' is reserved for items independently checked against established software or by a qualified human; nothing is currently at that level. Updated 2026-11-26.
+Statuses: planned | in_development | implemented | tested (unit tests) | benchmarked (numerically matches established software, e.g. R/metafor) | scientifically_validated (benchmarked AND methodology reviewed by a qualified human expert) | requires_external_service | requires_expert_review. Benchmarking is NOT validation. Nothing is currently scientifically_validated. Updated 2026-11-26 (v0.2 batch 1).
 
 | Feature | Status | Evidence | Blocker |
 |---|---|---|---|
-| Effect-size calculators (MD, Hedges g, lnRR, lnOR, lnRR-binary, RD, Fisher z, SD/SE/CI conversions, group combining) | **tested** | Hand-calculation unit tests; NOT yet compared with R/metafor escalc | R unavailable in build environment |
-| Common-effect and random-effects pooling (DL, PM, REML), HKSJ, prediction interval, Q/I2/H2, leave-one-out | **tested** | Hand calcs; brute-force REML likelihood check; BCG dataset vs reference values recalled from metafor docs (pending live R confirmation) | Run R metafor and record output in TESTING_REPORT.md; then upgrade to scientifically_validated |
+| Effect-size calculators (MD, Hedges g, lnRR, lnOR, lnRR-binary, RD, Fisher z, SD/SE/CI conversions, group combining) | **benchmarked** | Matches R metafor 4.4.0 escalc (MD, SMD/Hedges g, ROM, RR, OR, RD, ZCOR) on metadat datasets incl. zero-event and n=2-4 cases. Defects found/fixed: RD correction, exact Hedges J, SMD variance types. | Expert review pending; package 'meta' could not be installed to cross-check |
+| Common-effect and random-effects pooling (DL, PM, REML), HKSJ, prediction interval, Q/I2/H2, leave-one-out | **benchmarked** | Common/random effects (REML, DL, PM), HKSJ, Q, tau2, I2, PI, leave-one-out match metafor 4.4.0 on 10 datasets + 9 edge cases (242 tests). See VALIDATION.md | Expert review pending; rare-event/dependence methods not implemented |
 | Simulations: SD vs SE, CI coverage | **tested** | Statistical property tests (coverage ~95%, SE matches empirical SD) |  |
 | 84-module curriculum registry | **implemented** | Titles/levels only; lesson availability computed from files |  |
 | Full lessons | **requires_expert_review** | 3 of 84 drafted (M3, M4, M32); AI-drafted; key references verified in PubMed; not reviewed by a qualified human expert |  |
@@ -34,3 +34,5 @@ Statuses: planned | in_development | implemented | tested | scientifically_valid
 | Forest plot | **tested** | Renders from computed results; not compared pixelwise with R |  |
 | Funnel, Baujat, RoB, network plots, exports | **planned** |  |  |
 | Local-only storage, parameterised SQL, no network calls | **implemented** | No auth (single local user); no security audit performed |  |
+| Subgroup analysis and mixed-effects meta-regression (REML/DL/PM, z and knha) | **benchmarked** | Matches metafor on dat.raudenbush1985 and dat.bcg (single/multiple/categorical moderators) | Expert review pending |
+| R reference generation + automated comparison (Mac/CI-runnable) | **implemented** | validation/make_reference.R, run_validation.sh, .github/workflows/metalab-ci.yml (CI not yet executed on GitHub) |  |

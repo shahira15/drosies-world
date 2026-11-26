@@ -1,0 +1,27 @@
+name: metalab-academy
+on:
+  push: {paths: ["metalab-academy/**", ".github/workflows/metalab-ci.yml"]}
+  pull_request: {paths: ["metalab-academy/**"]}
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: metalab-academy}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q tests
+  r-reference-regeneration:
+    # Regenerates the metafor reference with the CI's R and re-runs the benchmark suite,
+    # so reference drift (new metafor versions) is detected rather than hidden.
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: metalab-academy}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: r-lib/actions/setup-r@v2
+      - run: Rscript -e 'install.packages(c("metafor","metadat","jsonlite"), repos="https://cloud.r-project.org")'
+      - run: pip install -r requirements.txt
+      - run: ./validation/run_validation.sh

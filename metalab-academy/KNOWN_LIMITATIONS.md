@@ -1,6 +1,6 @@
 # Known limitations register
 1. **3 of 84 modules** have lessons; the rest are outlines. Lessons are AI-drafted, not expert-reviewed.
-2. Statistics validated only vs hand calculations, brute-force checks and recalled metafor reference values; **no live R comparison yet**. HKSJ and prediction intervals lack numeric reference checks.
+2. Statistics are **benchmarked** against R/metafor 4.4.0 (not 'scientifically validated': no expert review; `meta` package could not be installed here). See VALIDATION.md.
 3. Only generic meta-analysis (inverse variance; DL/PM/REML; HKSJ). No MH/Peto, multilevel, RVE, Bayesian, network, DTA, dose-response, publication-bias tests.
 4. Effect-size calculators cover MD, SMD, lnRR, lnRR(binary), lnOR, RD, Fisher z, SD/SE/CI, group combination. No HR, IRR, median→mean, test-statistic conversions, ICC/cluster adjustment, shared-control adjustment.
 5. Deduplication is exact-match only (DOI, PMID, normalised title+year). No fuzzy matching.

@@ -26,9 +26,9 @@ def bcg_es():
 
 
 def test_hedges_g_hand_calc():
-    g, v, j = S.smd(10, 2, 20, 8, 2, 20)
+    g, v, j = S.smd(10, 2, 20, 8, 2, 20, vtype="borenstein")
     d = 1.0
-    assert j == pytest.approx(1 - 3 / (4 * 38 - 1))
+    assert j == pytest.approx(S.hedges_j(38)) and abs(j - S.hedges_j_approx(38)) < 1e-4  # approximation fine at df=38
     assert g == pytest.approx(j * d)
     assert v == pytest.approx(j**2 * (40 / 400 + 1 / 80))
 
@@ -163,3 +163,17 @@ def test_sd_stable_se_shrinks():
     assert abs(out[2][1] - 2) < 0.1
     for n, sd, se, emp in out:
         assert se == pytest.approx(emp, rel=0.1)
+
+
+def test_hedges_j_exact_vs_approx():
+    assert S.hedges_j(2) == pytest.approx(0.5641895835, abs=1e-9)   # = Gamma(1)/(sqrt(1)*Gamma(1/2)) = 1/sqrt(pi)
+    assert abs(S.hedges_j(2) - S.hedges_j_approx(2)) > 5e-3          # approximation is poor for tiny df
+    assert S.hedges_j(1000) == pytest.approx(S.hedges_j_approx(1000), abs=1e-6)
+
+
+def test_smd_variance_types_documented_difference():
+    gL, vL, _ = S.smd(5, 1, 2, 4, 1.1, 2, vtype="LS")
+    gB, vB, j = S.smd(5, 1, 2, 4, 1.1, 2, vtype="borenstein")
+    assert gL == gB and vL == pytest.approx(1 / 2 + 1 / 2 + gL**2 / 8) and vB != pytest.approx(vL, rel=1e-3)
+    with pytest.raises(ValueError):
+        S.smd(5, 1, 20, 4, 1, 20, vtype="x")

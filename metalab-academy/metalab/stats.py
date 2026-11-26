@@ -19,23 +19,41 @@ def mean_difference(m1, sd1, n1, m2, sd2, n2):
     return m1 - m2, sd1**2 / n1 + sd2**2 / n2
 
 
-def smd(m1, sd1, n1, m2, sd2, n2, hedges=True):
+def hedges_j(df):
+    """Exact small-sample correction (Hedges 1981): J = Gamma(df/2) / (sqrt(df/2) * Gamma((df-1)/2)).
+    The common approximation 1 - 3/(4*df - 1) is accurate for df >~ 20 but off by ~1% at df = 2."""
+    if df < 2:
+        raise ValueError("Need df = n1 + n2 - 2 >= 2 for the small-sample correction.")
+    return math.exp(math.lgamma(df / 2) - math.lgamma((df - 1) / 2)) / math.sqrt(df / 2)
+
+
+def hedges_j_approx(df):
+    return 1 - 3 / (4 * df - 1)
+
+
+def smd(m1, sd1, n1, m2, sd2, n2, hedges=True, vtype="LS"):
     """Standardised mean difference (pooled SD). Returns (d_or_g, variance, J).
 
-    d = (m1-m2)/Sp ; J = 1 - 3/(4*df - 1) ; g = J*d
-    Var(d) = (n1+n2)/(n1*n2) + d^2/(2(n1+n2)) ; Var(g) = J^2 * Var(d)
+    d = (m1-m2)/Sp ; g = J*d with exact Hedges (1981) J.
+    Variance (two published large-sample approximations; they differ by up to ~8% at tiny n):
+      vtype="LS" (Hedges & Olkin 1985; metafor default):  (n1+n2)/(n1 n2) + es^2/(2(n1+n2)),  es = g (or d)
+      vtype="borenstein" (Borenstein et al. 2009):         J^2 * [(n1+n2)/(n1 n2) + d^2/(2(n1+n2))]
     """
     _pos(n1, n2); _nonneg(sd1, sd2)
+    if vtype not in ("LS", "borenstein"):
+        raise ValueError("vtype must be 'LS' or 'borenstein'")
     df = n1 + n2 - 2
     sp = math.sqrt(((n1 - 1) * sd1**2 + (n2 - 1) * sd2**2) / df)
     if sp == 0:
         raise ValueError("Pooled SD is zero; SMD undefined.")
     d = (m1 - m2) / sp
-    v = (n1 + n2) / (n1 * n2) + d**2 / (2 * (n1 + n2))
+    base = (n1 + n2) / (n1 * n2)
     if not hedges:
-        return d, v, 1.0
-    j = 1 - 3 / (4 * df - 1)
-    return j * d, j**2 * v, j
+        return d, base + d**2 / (2 * (n1 + n2)), 1.0
+    j = hedges_j(df)
+    g = j * d
+    v = base + g**2 / (2 * (n1 + n2)) if vtype == "LS" else j**2 * (base + d**2 / (2 * (n1 + n2)))
+    return g, v, j
 
 
 def log_response_ratio(m1, sd1, n1, m2, sd2, n2):
@@ -71,8 +89,11 @@ def log_odds_ratio(a, n1, c, n2, cc=0.0):
     return math.log((a * d) / (b * c)), 1/a + 1/b + 1/c + 1/d
 
 
-def risk_difference(a, n1, c, n2):
-    _bin(a, n1, c, n2, 0.5)
+def risk_difference(a, n1, c, n2, cc=0.0):
+    """RD with Var = p1(1-p1)/n1 + p2(1-p2)/n2. If cc>0 it is added to all four
+    cells of a table that has a zero cell (n1, n2 grow by 2*cc), as metafor does."""
+    a, b, c, d = _bin(a, n1, c, n2, cc)
+    n1, n2 = a + b, c + d
     p1, p2 = a / n1, c / n2
     return p1 - p2, p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2
 
@@ -125,6 +146,10 @@ def _nonneg(*xs):
 
 
 # ------------------------------------------------------------- meta-analysis
+class ConvergenceError(RuntimeError):
+    """Raised when a tau^2 estimator cannot be bracketed/solved. Never silently ignored."""
+
+
 @dataclass
 class MetaResult:
     k: int
@@ -136,8 +161,8 @@ class MetaResult:
     z: float
     p: float
     tau2: float
-    I2: float
-    H2: float
+    I2: float            # Q-based (Higgins & Thompson 2002): max(0,(Q-df)/Q)
+    H2: float            # Q/df
     Q: float
     Q_df: int
     Q_p: float
@@ -145,70 +170,138 @@ class MetaResult:
     pred_int: tuple | None = None
     hksj: bool = False
     notes: list = field(default_factory=list)
+    I2_tau: float = 0.0  # tau^2-based, as printed by metafor: tau2/(tau2+s2)
+    H2_tau: float = 1.0
+    pi_method: str = "riley"
 
 
-def tau2_dl(y, v):
-    w = 1 / v
-    ybar = np.sum(w * y) / np.sum(w)
-    Q = np.sum(w * (y - ybar) ** 2)
-    c = np.sum(w) - np.sum(w**2) / np.sum(w)
-    return max(0.0, (Q - (len(y) - 1)) / c)
+def _design(X, k):
+    X = np.ones((k, 1)) if X is None else np.asarray(X, float)
+    if X.ndim != 2 or X.shape[0] != k:
+        raise ValueError("Design matrix must be k x p.")
+    return X
 
 
-def tau2_pm(y, v, tol=1e-10):
-    """Paule-Mandel: tau2 solving Q(tau2) = k-1 (Viechtbauer 2005)."""
-    k = len(y)
+def _wls(y, v, X, tau2):
+    w = 1 / (v + tau2)
+    A = X.T @ (w[:, None] * X)
+    Ainv = np.linalg.inv(A)
+    beta = Ainv @ (X.T @ (w * y))
+    return w, beta, Ainv
 
-    def q(t):
-        w = 1 / (v + t)
-        yb = np.sum(w * y) / np.sum(w)
-        return np.sum(w * (y - yb) ** 2) - (k - 1)
 
-    if q(0) <= 0:
-        return 0.0
-    hi = max(1.0, np.var(y) * 10)
-    while q(hi) > 0:
+def _scale(y, v):
+    """Scale so mean(v)=1 (tau2 scales identically) - makes root finding scale-free."""
+    c = 1.0 / math.sqrt(float(np.mean(v)))
+    return y * c, v * c * c, c
+
+
+def _reml_score(t, y, v, X):
+    w, beta, Ainv = _wls(y, v, X, t)
+    r = y - X @ beta
+    h = np.einsum("ij,jk,ik->i", X, Ainv, X)
+    return -0.5 * (np.sum(w) - np.sum(w**2 * h)) + 0.5 * np.sum((w * r) ** 2)
+
+
+def _q_resid(t, y, v, X):
+    w, beta, _ = _wls(y, v, X, t)
+    return float(np.sum(w * (y - X @ beta) ** 2))
+
+
+def _bracket(f, hi0, maxdoub=80):
+    """f(0)>0 assumed. Find hi with f(hi)<=0 by doubling."""
+    hi = hi0
+    for _ in range(maxdoub):
+        if f(hi) <= 0:
+            return hi
         hi *= 2
-    return optimize.brentq(q, 0, hi, xtol=tol)
+    raise ConvergenceError("Could not bracket the tau^2 root (likelihood/estimating equation does not turn over).")
 
 
-def tau2_reml(y, v, tol=1e-10):
-    """REML via maximising the restricted log-likelihood for the intercept-only model."""
-    def negll(t):
-        w = 1 / (v + t)
-        mu = np.sum(w * y) / np.sum(w)
-        return 0.5 * (np.sum(np.log(v + t)) + np.log(np.sum(w)) + np.sum(w * (y - mu) ** 2))
+def tau2_estimate(y, v, method="REML", X=None):
+    y = np.asarray(y, float); v = np.asarray(v, float)
+    k = len(y); X = _design(X, k); pcol = X.shape[1]
+    if k - pcol < 1:
+        raise ValueError("Need more studies than model coefficients.")
+    ys, vs, c = _scale(y, v)
+    if method == "DL":
+        w = 1 / vs
+        A = X.T @ (w[:, None] * X)
+        beta = np.linalg.solve(A, X.T @ (w * ys))
+        QE = float(np.sum(w * (ys - X @ beta) ** 2))
+        trP = float(np.sum(w) - np.trace(np.linalg.solve(A, X.T @ ((w**2)[:, None] * X))))
+        t = max(0.0, (QE - (k - pcol)) / trP)
+    elif method == "PM":
+        f = lambda t: _q_resid(t, ys, vs, X) - (k - pcol)
+        if f(0.0) <= 0:
+            t = 0.0
+        else:
+            t = float(optimize.brentq(f, 0.0, _bracket(f, 1.0), xtol=1e-14, rtol=1e-13, maxiter=500))
+    elif method == "REML":
+        f = lambda t: _reml_score(t, ys, vs, X)
+        if f(0.0) <= 0:
+            t = 0.0
+        else:
+            t = float(optimize.brentq(f, 0.0, _bracket(f, 1.0), xtol=1e-14, rtol=1e-13, maxiter=500))
+    else:
+        raise ValueError(f"Unknown tau^2 estimator: {method}")
+    return t / (c * c)
 
-    ub = max(10.0, np.var(y) * 20 + v.max() * 10)
-    res = optimize.minimize_scalar(negll, bounds=(0, ub), method="bounded",
-                                   options={"xatol": tol})
-    return 0.0 if negll(0.0) <= res.fun else float(res.x)
+
+def tau2_dl(y, v): return tau2_estimate(y, v, "DL")
+def tau2_pm(y, v, tol=None): return tau2_estimate(y, v, "PM")
+def tau2_reml(y, v, tol=None): return tau2_estimate(y, v, "REML")
 
 
 TAU2 = {"DL": tau2_dl, "PM": tau2_pm, "REML": tau2_reml}
 
 
-def meta_analyze(y, v, model="random", method="REML", hksj=False, level=0.95):
-    """Pool effect sizes y with sampling variances v (inverse variance).
+def drop_missing(y, v):
+    """Listwise deletion like metafor's na.omit. Returns y, v, kept_idx, dropped_idx.
+    The UI/analysis must REPORT dropped studies; this never happens silently."""
+    y = np.asarray(y, float); v = np.asarray(v, float)
+    ok = np.isfinite(y) & np.isfinite(v)
+    return y[ok], v[ok], np.flatnonzero(ok), np.flatnonzero(~ok)
 
-    model: 'common' (a.k.a. fixed-effect) or 'random'.
-    hksj: Hartung-Knapp-Sidik-Jonkman adjustment (t, k-1 df; Q-based variance).
-    Prediction interval (random only): est +/- t_{k-2} sqrt(tau2 + se^2), k>=3.
-    """
+
+def _validate(y, v):
     y = np.asarray(y, float); v = np.asarray(v, float)
     if y.shape != v.shape or y.ndim != 1:
         raise ValueError("y and v must be 1-D arrays of equal length.")
+    if not (np.all(np.isfinite(y)) and np.all(np.isfinite(v))):
+        raise ValueError("Missing/non-finite values present: remove them with drop_missing() and report which studies were dropped.")
+    if np.any(v <= 0):
+        raise ValueError("Sampling variances must be strictly positive (a zero or negative variance is invalid; check the effect-size inputs).")
+    return y, v
+
+
+def _typical_v(v, X):
+    w = 1 / v
+    A = X.T @ (w[:, None] * X)
+    trP = float(np.sum(w) - np.trace(np.linalg.solve(A, X.T @ ((w**2)[:, None] * X))))
+    return (len(v) - X.shape[1]) / trP
+
+
+def meta_analyze(y, v, model="random", method="REML", hksj=False, level=0.95, pi_method="riley"):
+    """Pool effect sizes y with sampling variances v (inverse variance).
+
+    model: 'common' (a.k.a. fixed-effect) or 'random'.
+    method: tau^2 estimator. REML is the default as a reasonable general choice (Langan 2019), NOT a universally
+        optimal one: pre-specify it and check sensitivity to another (e.g. 'PM'). See Lesson 32.
+    hksj: Hartung-Knapp-Sidik-Jonkman adjustment (t with k-1 df, q*-scaled variance, NOT truncated at q*<1).
+    pi_method: 'riley' -> t_{k-2} (Riley et al. 2011; k>=3); 'metafor' -> z (or t_{k-1} with HKSJ) as metafor::predict.
+    """
+    y, v = _validate(y, v)
     k = len(y)
     if k < 2:
         raise ValueError("At least 2 studies are needed to pool.")
-    if np.any(v <= 0) or not np.all(np.isfinite(y)) or not np.all(np.isfinite(v)):
-        raise ValueError("Variances must be positive and all values finite.")
     notes = []
+    X = np.ones((k, 1))
     w0 = 1 / v
     yb0 = np.sum(w0 * y) / np.sum(w0)
     Q = float(np.sum(w0 * (y - yb0) ** 2)); df = k - 1
     Qp = float(stats.chi2.sf(Q, df))
-    tau2 = 0.0 if model == "common" else float(TAU2[method](y, v))
+    tau2 = 0.0 if model == "common" else float(tau2_estimate(y, v, method))
     w = 1 / (v + tau2)
     est = float(np.sum(w * y) / np.sum(w))
     se = float(math.sqrt(1 / np.sum(w)))
@@ -217,37 +310,171 @@ def meta_analyze(y, v, model="random", method="REML", hksj=False, level=0.95):
         qstar = float(np.sum(w * (y - est) ** 2) / (k - 1))
         se = float(math.sqrt(qstar / np.sum(w)))
         crit = stats.t.ppf(1 - alpha / 2, k - 1)
-        p = float(2 * stats.t.sf(abs(est / se), k - 1))
+        p = float(2 * stats.t.sf(abs(est / se), k - 1)) if se > 0 else float("nan")
         if qstar < 1:
-            notes.append("HKSJ q* < 1: some software truncates at 1 (ad hoc correction); not applied here.")
+            notes.append("HKSJ q* < 1: the interval is narrower than the Wald interval. Some software truncates q* at 1; this implementation does not (matches metafor's default).")
     else:
         crit = stats.norm.ppf(1 - alpha / 2)
-        p = float(2 * stats.norm.sf(abs(est / se)))
+        p = float(2 * stats.norm.sf(abs(est / se))) if se > 0 else float("nan")
     ci = (est - crit * se, est + crit * se)
-    # I2 and H2 (Higgins & Thompson 2002) from Q; tau2-based version for reference
+    if se == 0:
+        notes.append("Degenerate: standard error is exactly 0 (e.g. HKSJ with identical effects, q* = 0). Test statistic undefined; do not interpret this interval.")
+        zstat, p = float("nan"), float("nan")
+    else:
+        zstat = est / se
     I2 = max(0.0, (Q - df) / Q) * 100 if Q > 0 else 0.0
     H2 = Q / df
+    vt = _typical_v(v, X)
+    I2_tau = 100 * tau2 / (tau2 + vt); H2_tau = (tau2 + vt) / vt
     pi = None
     if model == "random":
-        if k >= 3:
-            t = stats.t.ppf(1 - alpha / 2, k - 2)
-            half = t * math.sqrt(tau2 + se**2)
-            pi = (est - half, est + half)
+        if pi_method == "riley":
+            if k >= 3:
+                tcrit = stats.t.ppf(1 - alpha / 2, k - 2)
+                half = tcrit * math.sqrt(tau2 + se**2); pi = (est - half, est + half)
+        elif pi_method == "metafor":
+            pc = stats.t.ppf(1 - alpha / 2, k - 1) if hksj else stats.norm.ppf(1 - alpha / 2)
+            half = pc * math.sqrt(tau2 + se**2); pi = (est - half, est + half)
+        else:
+            raise ValueError("pi_method must be 'riley' or 'metafor'")
         if k < 5:
             notes.append("Fewer than 5 studies: tau^2 and the prediction interval are very imprecise.")
     wp = 100 * w / w.sum()
     return MetaResult(k, model, method if model == "random" else "IV", est, se, ci,
-                      est / se, p, tau2, I2, H2, Q, df, Qp, wp, pi, hksj, notes)
+                      zstat, p, tau2, I2, H2, Q, df, Qp, wp, pi, hksj, notes, I2_tau, H2_tau, pi_method)
 
 
 def leave_one_out(y, v, **kw):
-    y = np.asarray(y, float); v = np.asarray(v, float)
+    y, v = _validate(y, v)
     rows = []
     for i in range(len(y)):
         m = np.ones(len(y), bool); m[i] = False
         r = meta_analyze(y[m], v[m], **kw)
         rows.append((i, r.est, r.ci[0], r.ci[1], r.tau2, r.I2))
     return rows
+
+
+@dataclass
+class RegResult:
+    k: int
+    names: list
+    beta: np.ndarray
+    se: np.ndarray
+    stat: np.ndarray       # z, or t if hksj
+    p: np.ndarray
+    ci: np.ndarray         # p x 2
+    QM: float
+    QM_df: int
+    QM_p: float
+    QE: float
+    QE_df: int
+    QE_p: float
+    tau2: float
+    tau2_total: float      # intercept-only tau^2, same estimator
+    R2: float
+    I2_tau: float
+    H2_tau: float
+    hksj: bool
+    method: str
+    notes: list = field(default_factory=list)
+
+
+def meta_regression(y, v, X, names=None, method="REML", hksj=False, level=0.95):
+    """Mixed-effects meta-regression. X must include an intercept column (first) and
+    already-coded moderators (dummy-code categoricals yourself or use design_matrix()).
+    Omnibus test QM covers all non-intercept coefficients (metafor's default btt)."""
+    y, v = _validate(y, v)
+    k = len(y); X = _design(X, k); pcol = X.shape[1]
+    if pcol < 2:
+        raise ValueError("Meta-regression needs at least one moderator besides the intercept.")
+    if k - pcol < 2:
+        raise ValueError(f"Only {k} studies for {pcol} coefficients: residual df < 2; model is not estimable/meaningful.")
+    notes = []
+    if k < 10 * (pcol - 1):
+        notes.append(f"{k} studies for {pcol-1} moderator(s): fewer than ~10 studies per moderator -> high risk of spurious/unstable results (Cochrane Handbook guidance).")
+    if np.linalg.matrix_rank(X) < pcol:
+        raise ValueError("Design matrix is rank-deficient (collinear moderators).")
+    tau2 = tau2_estimate(y, v, method, X)
+    w, beta, Ainv = _wls(y, v, X, tau2)
+    vcov = Ainv
+    r = y - X @ beta
+    df_res = k - pcol
+    alpha = 1 - level
+    if hksj:
+        s2 = float(np.sum(w * r**2) / df_res)
+        vcov = Ainv * s2
+        stat = beta / np.sqrt(np.diag(vcov))
+        pv = 2 * stats.t.sf(np.abs(stat), df_res)
+        crit = stats.t.ppf(1 - alpha / 2, df_res)
+    else:
+        stat = beta / np.sqrt(np.diag(vcov))
+        pv = 2 * stats.norm.sf(np.abs(stat))
+        crit = stats.norm.ppf(1 - alpha / 2)
+    se = np.sqrt(np.diag(vcov))
+    ci = np.column_stack([beta - crit * se, beta + crit * se])
+    b = beta[1:]; V = vcov[1:, 1:]; m = len(b)
+    qm = float(b @ np.linalg.solve(V, b))
+    if hksj:
+        QM = qm / m; QMp = float(stats.f.sf(QM, m, df_res))
+    else:
+        QM = qm; QMp = float(stats.chi2.sf(qm, m))
+    # residual heterogeneity with 1/v weights (metafor QE)
+    w0 = 1 / v
+    b0 = np.linalg.solve(X.T @ (w0[:, None] * X), X.T @ (w0 * y))
+    QE = float(np.sum(w0 * (y - X @ b0) ** 2))
+    tau2_tot = tau2_estimate(y, v, method, None)
+    R2 = max(0.0, 100 * (tau2_tot - tau2) / tau2_tot) if tau2_tot > 0 else 0.0
+    vt = _typical_v(v, X)
+    return RegResult(k, names or [f"b{i}" for i in range(pcol)], beta, se, stat, pv, ci, QM, m, QMp, QE, df_res,
+                     float(stats.chi2.sf(QE, df_res)), tau2, tau2_tot, R2, 100 * tau2 / (tau2 + vt), (tau2 + vt) / vt,
+                     hksj, method, notes)
+
+
+def design_matrix(**moderators):
+    """Build X (intercept + moderators). Numeric lists are used as-is; string lists are
+    dummy-coded with the alphabetically first level as reference (like R's factor())."""
+    cols, names = [], ["intercept"]
+    n = None
+    for name, vals in moderators.items():
+        vals = list(vals); n = len(vals)
+        if all(isinstance(x, (int, float, np.integer, np.floating)) for x in vals):
+            cols.append(np.asarray(vals, float)); names.append(name)
+        else:
+            levels = sorted(set(map(str, vals)))
+            for lv in levels[1:]:
+                cols.append(np.array([1.0 if str(x) == lv else 0.0 for x in vals])); names.append(f"{name}{lv}")
+    if n is None:
+        raise ValueError("No moderators given.")
+    return np.column_stack([np.ones(n)] + cols), names
+
+
+def subgroup_analysis(y, v, groups, model="random", method="REML", hksj=False):
+    """Separate pooled estimates per subgroup (own tau^2) + between-subgroup Q test on the
+    subgroup estimates (chi-square, G-1 df). Also returns the common-tau^2 moderator test
+    via meta_regression(). A single-study subgroup is reported but cannot estimate tau^2.
+    NOTE: a subgroup difference is NOT established by 'significant in one, not in the other'."""
+    y, v = _validate(y, v)
+    groups = np.asarray([str(g) for g in groups])
+    out, est, var = {}, [], []
+    for g in sorted(set(groups)):
+        i = groups == g
+        if i.sum() >= 2:
+            r = meta_analyze(y[i], v[i], model, method, hksj)
+            out[g] = r; est.append(r.est); var.append(r.se**2)
+        else:
+            out[g] = dict(k=1, est=float(y[i][0]), se=float(math.sqrt(v[i][0])), note="single study: no pooling/tau^2")
+            est.append(float(y[i][0])); var.append(float(v[i][0]))
+    est, var = np.array(est), np.array(var)
+    wg = 1 / var
+    Qb = float(np.sum(wg * (est - np.sum(wg * est) / np.sum(wg)) ** 2))
+    G = len(est)
+    res = dict(groups=out, Q_between=Qb, Q_between_df=G - 1, Q_between_p=float(stats.chi2.sf(Qb, G - 1)))
+    try:
+        X, names = design_matrix(group=groups)
+        res["moderator_test"] = meta_regression(y, v, X, names, method, hksj)
+    except ValueError as e:
+        res["moderator_test_error"] = str(e)
+    return res
 
 
 # ----------------------------------------------------------------- simulation

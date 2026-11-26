@@ -349,7 +349,7 @@ elif page == "First Paper Plan":
 elif page == "Statistics Lab":
     st.title("Statistics Lab")
     st.caption("All data here are SIMULATED or published example data and are clearly labelled. Never mixed with project data.")
-    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Effect-size calculators"])
+    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Subgroups & meta-regression", "Effect-size calculators"])
     with tabs[0]:
         st.markdown("**Mechanism.** The SD describes spread of individuals and does not shrink with n; the SE = SD/√n describes precision of the mean and does. "
                     "A 95% CI procedure captures the true mean in ~95% of repeated experiments.")
@@ -388,13 +388,16 @@ elif page == "Statistics Lab":
         c1, c2, c3, c4 = st.columns(4)
         model = c1.selectbox("Model", ["random", "common"]); meth = c2.selectbox("τ² estimator", ["REML", "PM", "DL"])
         hk = c3.checkbox("Hartung-Knapp (HKSJ)"); ex = c4.checkbox("Back-transform exp()")
+        pim = st.radio("Prediction-interval convention", ["riley", "metafor"], horizontal=True,
+                       help="riley: t with k-2 df (Riley 2011). metafor: z (or t with k-1 df when HKSJ), as R's metafor::predict.")
         dd = d.dropna()
         try:
-            r = S.meta_analyze(dd["yi"].to_numpy(float), dd["vi"].to_numpy(float), model, meth, hksj=hk)
+            r = S.meta_analyze(dd["yi"].to_numpy(float), dd["vi"].to_numpy(float), model, meth, hksj=hk, pi_method=pim)
             f = (lambda x: float(np.exp(x))) if ex else (lambda x: x)
             m = st.columns(5)
             m[0].metric("Pooled", f"{f(r.est):.4f}"); m[1].metric("95% CI", f"{f(r.ci[0]):.3f} to {f(r.ci[1]):.3f}")
-            m[2].metric("τ²", f"{r.tau2:.4f}"); m[3].metric("I²", f"{r.I2:.1f}%"); m[4].metric("Q (df)", f"{r.Q:.2f} ({r.Q_df})")
+            m[2].metric("τ²", f"{r.tau2:.4f}"); m[3].metric("I² (Q-based)", f"{r.I2:.1f}%", help=f"Higgins & Thompson: (Q-df)/Q. R's metafor prints a τ²-based I² instead: {r.I2_tau:.1f}%."); m[4].metric("Q (df)", f"{r.Q:.2f} ({r.Q_df})")
+            st.caption(f"τ²-based I² (as printed by R metafor): {r.I2_tau:.2f}% · H² (τ²-based): {r.H2_tau:.2f}. Both are legitimate; always state which you report.")
             if r.pred_int: st.write(f"**95% prediction interval:** {f(r.pred_int[0]):.3f} to {f(r.pred_int[1]):.3f}")
             for n_ in r.notes: st.warning(n_)
             fig = go.Figure()
@@ -420,15 +423,57 @@ elif page == "Statistics Lab":
         except ValueError as e:
             st.error(str(e))
     with tabs[2]:
+        st.markdown("**Subgroups & meta-regression** (validated against R/metafor on documented datasets - see VALIDATION.md). "
+                    "Moderators must be **pre-specified**; with few studies results are unstable. *Significant in one subgroup but not another does NOT show a subgroup difference.*")
+        ex_ = st.radio("Data", ["BCG trials: log RR with allocation method / absolute latitude (published example data)", "Enter my own"], key="msr")
+        if ex_.startswith("BCG"):
+            from metalab.datasets import BCG, BCG_MODERATORS
+            ys_, vs_ = zip(*[S.log_risk_ratio(a_, a_ + b_, c_, c_ + d_, cc=0.5) for a_, b_, c_, d_ in BCG])
+            dm = pd.DataFrame({"study": [f"Trial {i+1}" for i in range(13)], "yi": ys_, "vi": vs_, **BCG_MODERATORS})
+        else:
+            dm = pd.DataFrame({"study": ["S1", "S2", "S3", "S4", "S5", "S6"], "yi": [0.1, 0.3, 0.2, 0.6, 0.5, 0.7],
+                               "vi": [0.05] * 6, "group": ["a", "a", "a", "b", "b", "b"], "x": [1.0, 2, 3, 4, 5, 6]})
+        dm = st.data_editor(dm, num_rows="dynamic", key="subreg" + ex_[:3])
+        mode = st.radio("Analysis", ["Subgroup (categorical)", "Meta-regression (continuous/categorical moderators)"], horizontal=True)
+        mcol = st.multiselect("Moderator column(s)", [c for c in dm.columns if c not in ("study", "yi", "vi")])
+        meth2 = st.selectbox("τ² estimator", ["REML", "PM", "DL"], key="m2"); hk2 = st.checkbox("Hartung-Knapp", key="hk2")
+        try:
+            dd2 = dm.dropna(subset=["yi", "vi"] + mcol)
+            if len(dm) != len(dd2): st.warning(f"{len(dm) - len(dd2)} row(s) with missing values were dropped: {list(dm.index.difference(dd2.index))}")
+            if mcol:
+                y2, v2 = dd2["yi"].to_numpy(float), dd2["vi"].to_numpy(float)
+                if mode.startswith("Subgroup"):
+                    res = S.subgroup_analysis(y2, v2, dd2[mcol[0]].tolist(), "random", meth2, hk2)
+                    rows = [dict(group=g, k=(r.k if hasattr(r, "k") else r["k"]), est=(r.est if hasattr(r, "est") else r["est"]),
+                                 se=(r.se if hasattr(r, "se") else r["se"]), tau2=getattr(r, "tau2", float("nan"))) for g, r in res["groups"].items()]
+                    st.dataframe(pd.DataFrame(rows), hide_index=True)
+                    st.write(f"**Between-subgroup Q = {res['Q_between']:.3f}, df = {res['Q_between_df']}, p = {res['Q_between_p']:.4f}** (separate τ² per subgroup)")
+                    if "moderator_test" in res:
+                        mt = res["moderator_test"]; st.write(f"Common-τ² moderator test (metafor-style): QM = {mt.QM:.3f}, df = {mt.QM_df}, p = {mt.QM_p:.4f}")
+                        for n_ in mt.notes: st.warning(n_)
+                else:
+                    X_, names_ = S.design_matrix(**{c: dd2[c].tolist() for c in mcol})
+                    rr = S.meta_regression(y2, v2, X_, names_, meth2, hk2)
+                    st.dataframe(pd.DataFrame({"coef": rr.names, "estimate": rr.beta, "se": rr.se, "stat": rr.stat, "p": rr.p,
+                                               "ci_lb": rr.ci[:, 0], "ci_ub": rr.ci[:, 1]}), hide_index=True)
+                    st.write(f"QM = {rr.QM:.3f} (df {rr.QM_df}), p = {rr.QM_p:.4f} · residual τ² = {rr.tau2:.4f} · R² = {rr.R2:.1f}% · QE = {rr.QE:.2f} (df {rr.QE_df}) · I² (τ²-based) = {rr.I2_tau:.1f}%")
+                    for n_ in rr.notes: st.warning(n_)
+                    st.caption("R² is relative to the intercept-only τ² and is itself very imprecise with few studies. Meta-regression is observational across studies (ecological/confounding bias).")
+            else:
+                st.info("Choose at least one moderator column.")
+        except (ValueError, S.ConvergenceError) as e:
+            st.error(str(e))
+    with tabs[3]:
         calc = st.selectbox("Calculator", ["Hedges' g / Cohen's d", "Mean difference", "Log response ratio", "Risk ratio (log)", "Odds ratio (log)", "Risk difference", "Fisher's z", "SD <-> SE", "SE from CI", "Combine two groups"])
         try:
             if calc.startswith("Hedges"):
                 a = st.columns(6); v = [a[0].number_input("m1", value=10.0), a[1].number_input("sd1", value=2.0), a[2].number_input("n1", value=20),
                                         a[3].number_input("m2", value=8.0), a[4].number_input("sd2", value=2.0), a[5].number_input("n2", value=20)]
                 h = st.checkbox("Apply small-sample correction (Hedges' g)", True)
-                g, var, j = S.smd(v[0], v[1], v[2], v[3], v[4], v[5], h)
+                vt = st.radio("Variance formula", ["LS", "borenstein"], horizontal=True, help="LS = Hedges & Olkin (R metafor default); borenstein = J^2 x Var(d). They differ by up to ~8% at tiny n.")
+                g, var, j = S.smd(v[0], v[1], v[2], v[3], v[4], v[5], h, vt)
                 st.metric("g" if h else "d", f"{g:.4f}"); st.write(f"Variance {var:.5f}, SE {var**.5:.4f}, J = {j:.4f}")
-                st.latex(r"d=\frac{m_1-m_2}{S_p},\ S_p=\sqrt{\frac{(n_1-1)sd_1^2+(n_2-1)sd_2^2}{n_1+n_2-2}},\ J=1-\frac{3}{4(n_1+n_2-2)-1},\ g=Jd")
+                st.latex(r"d=\frac{m_1-m_2}{S_p},\ S_p=\sqrt{\frac{(n_1-1)sd_1^2+(n_2-1)sd_2^2}{n_1+n_2-2}},\ J=\frac{\Gamma(df/2)}{\sqrt{df/2}\,\Gamma((df-1)/2)},\ g=Jd")
                 st.caption("Assumes similar SDs in both groups and independent observations (units!). Direction: positive = group 1 higher.")
                 st.code("library(metafor)\nescalc(measure='SMD', m1i=10, sd1i=2, n1i=20, m2i=8, sd2i=2, n2i=20)", "r")
             elif calc == "Mean difference":
