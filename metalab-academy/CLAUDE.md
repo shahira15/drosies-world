@@ -10,3 +10,10 @@ Source of truth: the master specification given by the user (MetaLab Academy). R
 `app.py` UI · `metalab/` logic (stats, store, curriculum, references, resources, plan) · `content/lesson_NN.py` lessons (auto-discovered) · `tests/` · `features.json` registry · `tools/gen_docs.py`.
 ## Commands
 `./run.sh` · `python3 -m pytest -q tests` · `python3 tools/gen_docs.py`
+
+## v0.2 additions
+- Verify references: `python3 tools/verify_refs.py <date>` (edit `metalab/refs_wanted.json`; Crossref) or PubMed MCP. It rejects author/year mismatches. Resource links: `tools/check_links.py` (only definitive results recorded).
+- Statistics changes need R reference + tests (`validation/make_reference.R`, `tests/test_validation_r.py`). 'benchmarked' != 'scientifically_validated'.
+- Claims: add to `metalab/claims.json`; corrections to `metalab/corrections.json`; regenerate docs with `tools/gen_docs.py` and `tools/gen_deps.py`.
+- Virtual Lab data is FICTIONAL (metalab/vlab.py) and must stay labelled; never mix with real projects.
+- Do not choose a licence, deploy publicly, register, submit, or contact anyone without the owner's explicit approval.

@@ -1,0 +1,3 @@
+# Accessibility
+Target: WCAG 2.2 AA. **Status: not audited.** Facts: built on Streamlit's standard components (keyboard-navigable widgets, light/dark via browser theme); RoB plots print judgements as text in cells (not colour only); PRISMA diagram is SVG with title/description; mobile layout checked visually at 390 px on 2026-11-26 (screenshots); no screen-reader, keyboard-only or contrast audit yet. Known gaps: Plotly charts lack full alternative text; tables rely on Streamlit defaults; no skip links.
+Next steps: automated axe/Lighthouse run, keyboard walkthrough, screen-reader test, alt-text/long descriptions for charts.

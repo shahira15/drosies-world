@@ -9,7 +9,7 @@ def _fresh_cache():
     st.cache_resource.clear(); yield; st.cache_resource.clear()
 
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Research Workspace", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 
 @pytest.mark.parametrize("page", PAGES)
@@ -67,3 +67,16 @@ def test_workspace_renders_with_populated_project(tmp_path, monkeypatch):
     at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
     at.run(); at.sidebar.radio[0].set_value("Research Workspace").run()
     assert not at.exception, [e.value for e in at.exception]
+
+
+def test_virtual_lab_page_with_simulation_and_universal_search(tmp_path, monkeypatch):
+    from metalab.store import Store
+    from metalab import vlab
+    dbp = str(tmp_path / "v.sqlite"); monkeypatch.setenv("METALAB_DB", dbp)
+    s = Store(dbp); pid = vlab.load(s); vlab.solve_perfectly(s, pid)
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
+    at.run(); at.sidebar.radio[0].set_value("Virtual Lab").run()
+    assert not at.exception, [e.value for e in at.exception]
+    assert any("FICTIONAL" in e.value for e in at.error)
+    at.sidebar.text_input(key="usearch").set_value("pseudoreplication").run()
+    assert not at.exception

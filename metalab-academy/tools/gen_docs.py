@@ -5,7 +5,7 @@ ROOT = Path(__file__).resolve().parent.parent; sys.path.insert(0, str(ROOT))
 from metalab import curriculum, lessons
 lessons.load()
 c = curriculum.counts()
-out = [f"# Curriculum map (generated)\n\n{c['total']} modules registered; **{c['drafted']} have a lesson**; {c['outline']} are outlines (title/level only, no lesson).\n"]
+out = [f"# Curriculum map (generated)\n\n{c['specified']} modules from the master specification + {c['proposed']} proposed additions = {c['total']} registered; **{c['drafted']} have a lesson**; {c['outline']} are outlines (title/level only, no lesson).\n"]
 for lvl, name in curriculum.LEVELS.items():
     out.append(f"\n## Level {lvl}: {name}\n\n| # | Module | Part | Status |\n|---|---|---|---|")
     for m in curriculum.MODULES:

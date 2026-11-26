@@ -3,7 +3,7 @@ import json, os, time, datetime
 from pathlib import Path
 import numpy as np, pandas as pd, streamlit as st
 import plotly.graph_objects as go
-from metalab import curriculum, lessons, references, resources, stats as S
+from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, stats as S
 from metalab.store import Store, DECISIONS
 from metalab.plan import WEEKS, all_tasks
 
@@ -17,12 +17,17 @@ db = get_store()
 LES = lessons.load()
 PROFILE = db.profile()
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Research Workspace", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
+with st.sidebar.expander("🔎 Search everything", expanded=False):
+    uq = st.text_input("Lessons, formulas, glossary, resources, claims, calculators...", key="usearch")
+    if uq:
+        for d in LRN.search(uq, 8):
+            st.markdown(f"**{d['title']}**  \n*{d['type']}* · open **{d['where']}**")
+        if not LRN.search(uq, 1): st.caption("No matches. Try another word.")
 page = st.sidebar.radio("MetaLab Academy", PAGES, key="nav")
 st.sidebar.caption("Learn. Discover. Analyze. Collaborate. Publish.")
-st.sidebar.info("Early version. Only the features marked *tested* or *implemented* on the Status page work; "
-                "lessons are AI-drafted and not yet expert-reviewed.")
+st.sidebar.info("v0.2 · local-first · no accounts, no network calls. Lessons are AI-drafted, not expert-reviewed; statistics are benchmarked vs R/metafor but not expert-validated. See Status & Limitations.")
 DISCLAIM = "AI-drafted educational content; verify against primary sources. Not accredited instruction."
 
 def project_picker(key="proj"):
@@ -36,27 +41,34 @@ def project_picker(key="proj"):
 
 # ------------------------------------------------------------------ HOME
 if page == "Home":
+    from metalab.milestones import M as MILESTONES
     st.title("🧪 MetaLab Academy")
-    c = curriculum.counts()
-    done = db.completed()
+    c = curriculum.counts(); done = db.completed()
     a, b, d, e = st.columns(4)
-    a.metric("Modules in curriculum", c["total"]); b.metric("Lessons actually written", c["drafted"],
-        help="The other modules are outlines only: title and level, no lesson.")
-    d.metric("Lessons you completed", len(done)); e.metric("Projects", len(db.projects()))
-    st.warning(f"Honest status: {c['drafted']} of {c['total']} modules have a lesson. The rest are visible as outlines so you can see the roadmap.")
-    st.subheader("Start here")
-    if not PROFILE:
-        st.write("1. Go to **Onboarding** (5 minutes) to get a suggested pathway.")
-    nxt = next((m for m in (3, 4, 32) if m not in done), None)
-    if nxt:
-        st.write(f"**Next lesson:** Module {nxt} - {LES[nxt]['title']} (open it in *Learning Academy*).")
+    a.metric("Modules registered", c["total"], help=f"{c['specified']} from the specification + {c['proposed']} proposed")
+    b.metric("Lessons actually written", c["drafted"], help="The other modules are outlines only: title and level, no lesson.")
+    d.metric("Lessons you completed", len(done)); e.metric("Real projects", len([p for p in db.projects() if not p["is_teaching"]]))
+    st.warning(f"Honest status: {c['drafted']} of {c['total']} modules have a lesson (AI-drafted, not yet expert-reviewed). The rest are outlines so you can see the roadmap.")
+    st.subheader("Your next actions")
+    if not PROFILE: st.markdown("1. **Onboarding** (5 minutes): tell the academy about you - nothing leaves this computer.")
+    core = [i for i in LRN.CORE_PATH if i in LES]
+    nxt = next((i for i in core if i not in done), None)
+    real = [p for p in db.projects() if not p["is_teaching"]]
+    if nxt: st.markdown(f"**Learn:** Module {nxt} - {LES[nxt]['title']} (~{LES[nxt]['time_min']} min) → *Learning Academy → Open a lesson*")
+    else: st.success("You have completed every written core-pathway lesson. More are in development.")
+    if real:
+        dn = db.tasks_done(real[0]["id"])
+        cur = next((m for m in MILESTONES if not all(f"ms{m['id']}_qc{i}" in dn for i in range(len(m["qc"])))), None)
+        if cur: st.markdown(f"**Research:** Milestone {cur['id']} - {cur['name']} → *First Paper Plan* (task: {cur['task']})")
+        st.progress(sum(all(f"ms{m['id']}_qc{i}" in dn for i in range(len(m["qc"]))) for m in MILESTONES) / len(MILESTONES), text=f"First-paper milestones ({real[0]['name']})")
     else:
-        st.success("All three available lessons completed. More are being written - see NEXT_ACTIONS.md.")
-    st.write("Then: create your project and follow the **First Paper Plan**.")
-    p = [x for x in db.projects() if not x["is_teaching"]]
-    if p:
-        tasks = all_tasks(); dn = db.tasks_done(p[0]["id"])
-        st.progress(len(dn) / len(tasks), text=f"First-paper plan: {len(dn)}/{len(tasks)} tasks ({p[0]['name']})")
+        st.markdown("**Research:** create your real project in *Research Workspace → Projects*, then follow the *First Paper Plan* (start with the Topic Explorer).")
+    sims = [p for p in db.projects() if p["is_teaching"]]
+    due, new = db.cards_due([x["key"] for x in LRN.cards()])
+    st.markdown(f"**Practice:** {len(due)} flashcards due · {len(new)} new · {'simulated review created' if sims else 'try the Virtual Lab before using real data'}")
+    bms = db.bookmarks()
+    if bms: st.caption("Bookmarks: " + ", ".join(f"{b_['kind']} {b_['ref']}" for b_ in bms[:6]))
+    st.info("Tip: use **🔎 Search everything** in the sidebar to find lessons, formulas, glossary terms, resources, calculators and claims. The **Method Wizard** suggests what to learn for your design (with its assumptions).")
 
 # ------------------------------------------------------------ ONBOARDING
 elif page == "Onboarding":
@@ -101,7 +113,17 @@ elif page == "Onboarding":
 # ------------------------------------------------------- LEARNING ACADEMY
 elif page == "Learning Academy":
     st.title("Learning Academy")
-    tab_list, tab_lesson = st.tabs(["Curriculum (84 modules)", "Open a lesson"])
+    tab_path, tab_list, tab_lesson = st.tabs(["Pathways", "Curriculum", "Open a lesson"])
+    with tab_path:
+        st.markdown("**You never need all modules before starting research.** The *core pathway* takes a first-time researcher to a first primary analysis; extensions and specialist pathways are optional. Everything stays open to you.")
+        c = curriculum.counts(); st.caption(f"{c['drafted']} of {c['total']} registered modules ({c['specified']} specified + {c['proposed']} proposed) have lessons.")
+        def show(title, ids):
+            rows = LRN.pathway(ids); done_ = db.completed()
+            st.markdown(f"**{title}** - {sum(r['available'] for r in rows)}/{len(rows)} lessons written · {sum(r['minutes'] or 0 for r in rows)} min of written content")
+            st.dataframe(pd.DataFrame([{"Module": r["id"], "Title": r["title"], "Lesson": "available" if r["available"] else "outline only (not yet written)", "Minutes": r["minutes"], "Done": "✓" if r["id"] in done_ else ""} for r in rows]), hide_index=True, width="stretch")
+        show("Core pathway: first-time researcher (to your first primary analysis)", LRN.CORE_PATH)
+        show("Core extensions (writing, certainty, protocol details)", LRN.CORE_EXTENSIONS)
+        sp = st.selectbox("Optional specialist pathway", list(LRN.SPECIALIST)); show(sp, LRN.SPECIALIST[sp])
     with tab_list:
         qtxt = st.text_input("Search modules")
         lvl = st.multiselect("Level", list(curriculum.LEVELS.values()))
@@ -115,6 +137,11 @@ elif page == "Learning Academy":
     with tab_lesson:
         mid = st.selectbox("Module", sorted(LES), format_func=lambda i: f"{i}. {LES[i]['title']}")
         L = LES[mid]
+        bm = any(b["kind"] == "lesson" and b["ref"] == str(mid) for b in db.bookmarks())
+        if st.button(("★ Bookmarked" if bm else "☆ Bookmark this lesson"), key=f"bm{mid}"): db.toggle_bookmark("lesson", mid); st.rerun()
+        d1, d2 = st.columns(2)
+        d1.download_button("Download study notes (Markdown)", LRN.lesson_notes(mid), f"module_{mid}_notes.md")
+        d2.download_button("Download formula cheat sheet (all lessons)", LRN.cheat_sheet(), "metalab_cheat_sheet.md")
         st.caption(f"~{L['time_min']} min · v{L['version']} · {L['content_type']}")
         st.warning(f"Status: {L['status']}. Last verification: {L['last_verified']}")
         st.markdown("**Prerequisites:** " + "; ".join(L["prerequisites"]))
@@ -180,6 +207,90 @@ elif page == "Learning Academy":
             db.add_note(mid, n.strip())
         for x in db.notes(mid):
             st.caption(datetime.datetime.fromtimestamp(x["ts"]).strftime("%Y-%m-%d %H:%M")); st.write(x["body"])
+
+# ------------------------------------------------------------------ PRACTICE
+elif page == "Practice":
+    st.title("Practice")
+    t1, t2, t3 = st.tabs(["Flashcards (spaced repetition)", "Glossary", "Bookmarks & goals"])
+    with t1:
+        allc = {c["key"]: c for c in LRN.cards()}
+        due, new = db.cards_due(list(allc))
+        st.caption("Scheduling uses a simple SM-2-style heuristic (not a validated learning model). Active recall: try to answer BEFORE revealing.")
+        st.write(f"**Due now: {len(due)} · New: {len(new)}**")
+        queue = due + new[:5]
+        if not queue: st.success("Nothing due. Come back later.")
+        else:
+            key = queue[0]; c = allc[key]
+            st.markdown(f"### {c['front']}")
+            if st.toggle("Reveal answer", key=f"rv{key}"):
+                st.info(c["back"] + (f"  \n(Module {c['module']})" if c["module"] else ""))
+                q = st.radio("How well did you recall it?", [0, 1, 2, 3, 4, 5], index=None, horizontal=True, key=f"q{key}",
+                             format_func=lambda i: {0: "0 blank", 1: "1 wrong", 2: "2 wrong, familiar", 3: "3 hard", 4: "4 good", 5: "5 easy"}[i])
+                if q is not None and st.button("Save and next"):
+                    nd = db.card_review(key, q); st.toast(f"Next review: {nd}"); st.rerun()
+    with t2:
+        gq = st.text_input("Search glossary")
+        for v in LRN.glossary_search(gq):
+            st.markdown(f"**{v['term']}** - {v['definition']}" + (f"  *(Module {v['module']})*" if v["module"] else ""))
+    with t3:
+        bms = db.bookmarks(); st.markdown("**Bookmarks**")
+        for b in bms: st.write(f"{b['kind']}: {b['ref']}")
+        if not bms: st.caption("Bookmark lessons from the Learning Academy.")
+        goal = st.number_input("Weekly goal (lessons completed)", 0, 14, int(PROFILE.get("weekly_goal", 1)))
+        if st.button("Save weekly goal"): db.set_profile(weekly_goal=int(goal)); st.success("Saved")
+        done_ = db.completed(); st.progress(min(1.0, len(done_) / max(int(goal), 1)) if goal else 0.0, text=f"{len(done_)} lessons completed in total (goal counts per week; resets are manual)")
+
+# -------------------------------------------------------------- VIRTUAL LAB
+elif page == "Virtual Lab":
+    st.title("Virtual Research Laboratory")
+    st.error(f"**{vlab.BANNER}.** Compound 'Nx-7', all journals, authors, studies and numbers are FICTIONAL. The simulation lives in a separate teaching project and is never mixed with real projects.")
+    st.markdown("Complete an entire systematic review before touching real data: import → deduplicate → screen (with a simulated second reviewer and conflicts) → extract (with planted errors) → appraise risk of bias → compute effect sizes → check your work.")
+    if st.button("Create / open the simulated project"):
+        pid = vlab.load(db); st.success(f"Simulated project ready (id {pid}). Choose it in the Research Workspace project picker.")
+    sims = [p for p in db.projects() if p["is_teaching"] and p["name"].startswith("SIMULATED")]
+    if sims:
+        pid = sims[0]["id"]
+        tabs = st.tabs(["Guide", "Full-text excerpts", "Simulated reviewer", "Check my work"])
+        with tabs[0]:
+            st.markdown("1. **Research Workspace → References**: records are already imported; run deduplication.  2. **Screening**: title/abstract then full text (exclusions need reasons).  3. **Extraction**: choose *Preclinical* workflow, create studies named like `SIM-S001 Aldrin 2019`, enter values from the excerpts with source/page/table. Watch for traps!  4. **Risk of bias** (SYRCLE) for SIM-S001..S003.  5. **Effect sizes & analysis**: build lnRR and save.  6. Come back to *Check my work*.")
+            with st.expander("Spoilers: the planted problems (open only after trying)"):
+                for e in vlab.planted_errors(): st.markdown("- " + e)
+        with tabs[1]:
+            for sid in list(vlab.STUDIES) + ["SIM-S006"]:
+                with st.expander(sid): st.code(vlab.fulltext(sid))
+        with tabs[2]:
+            st.caption("Adds decisions from a FICTIONAL second reviewer who disagrees with the key on some records so you can practise conflict resolution and kappa (Screening tab).")
+            if st.button("Add simulated reviewer B decisions"):
+                try: st.success(f"{vlab.add_simulated_reviewer(db, pid)} simulated decisions added")
+                except ValueError as e: st.error(str(e))
+        with tabs[3]:
+            g = vlab.grade(db, pid)
+            for k, (score, fb) in g.items():
+                st.progress(score, text=f"{k}: {score:.0%}")
+                for f_ in fb[:6]: st.caption("• " + f_)
+            st.caption("Feedback shows what to re-check, including what to do about missing data. Scores are for practice only.")
+
+# ------------------------------------------------------------- METHOD WIZARD
+elif page == "Method Wizard":
+    st.title("Method-selection wizard")
+    st.warning("Rule-based prompts with explicit assumptions. **Not a substitute for scientific judgement or statistical advice.** They tell you what to read and discuss, and what MetaLab cannot do.")
+    c1, c2 = st.columns(2)
+    design = c1.selectbox("Main study design of the evidence", ["randomised experiments", "observational", "diagnostic accuracy", "qualitative", "mixed/other"])
+    outcome = c2.selectbox("Outcome type", ["continuous (same scale)", "continuous (different scales)", "continuous ratio-scale, positive (e.g. lifespan, biomass)", "binary", "count / rate", "time-to-event", "correlation", "proportion / prevalence"])
+    c3, c4, c5 = st.columns(3)
+    k = c3.number_input("Expected number of studies (k)", 0, 500, 8)
+    dep = c4.selectbox("Dependence among effect sizes", ["none", "shared control", "multiple outcomes/time points", "clustered labs/sites", "multiple species/phylogeny"])
+    obj = c5.selectbox("Objective", ["estimate an effect", "explore heterogeneity", "map the evidence"])
+    comp = st.checkbox("Studies estimate comparable quantities (same construct/direction/scale)", True)
+    w = LRN.wizard(design, outcome, int(k), dep, obj, comp)
+    st.subheader("Suggested direction"); st.markdown("**Review type:** " + "; ".join(w["review_types"]))
+    st.markdown("**Effect measure(s):** " + "; ".join(w["measures"]))
+    if w["models"]: st.markdown("**Analytic options:**\n" + "\n".join(f"- {m}" for m in w["models"]))
+    for c_ in w["cautions"]: st.warning(c_)
+    for n_ in w["not_supported"]: st.error("Not supported by MetaLab: " + n_)
+    st.markdown("**Learn first:** " + ", ".join(f"Module {i} ({'lesson available' if i in LES else 'outline only'})" for i in w["lessons"]))
+    with st.expander("Assumptions behind this suggestion"):
+        for a_ in w["assumptions"]: st.markdown("- " + a_)
 
 # ---------------------------------------------------- RESEARCH WORKSPACE
 elif page == "Research Workspace":
@@ -716,31 +827,84 @@ elif page == "Statistics Lab":
 # ------------------------------------------------------ KNOWLEDGE UNIVERSE
 elif page == "Knowledge Universe":
     st.title("Knowledge Universe")
-    t1, t2 = st.tabs(["Verified references (PubMed)", "Resources (links NOT yet verified)"])
+    t1, t2, t3 = st.tabs(["Resources (filterable)", "Recommended for a lesson/task", "Verified references"])
     with t1:
-        st.caption(f"Each entry's title, authors, journal and DOI were checked against {references.SOURCE} on {references.VERIFIED_ON}.")
-        for k in references.REFS: st.markdown("- " + references.link(k))
-    with t2:
-        st.warning("These are well-known official sources entered from author knowledge. Links, versions, licences, costs and availability have NOT been verified; check the official site before relying on them.")
-        f = st.text_input("Filter")
-        rows = [r for r in resources.RESOURCES if not f or f.lower() in json.dumps(r).lower()]
-        st.dataframe(pd.DataFrame([{**{k: r[k] for k in ("title", "org", "type", "topic", "level", "discipline", "url", "why")},
-                                   "modules": ", ".join(map(str, r["modules"])), "verified_on": "not verified"} for r in rows]),
+        st.warning("**Verification is layered and mostly NOT done.** Bibliographic = record exists (PubMed/Crossref). Link = URL responded on a date (build sandbox blocked nearly all hosts: run `python3 tools/check_links.py` on your machine). Full-text and claim-support = not claimed for these entries. Costs, versions and licences are 'check yourself'.")
+        c1, c2, c3 = st.columns(3)
+        q = c1.text_input("Search"); types = c2.multiselect("Type", sorted({r["type"] for r in resources.RESOURCES})); lv = c3.multiselect("Level", ["Beginner", "Intermediate", "Advanced", "All"])
+        d1, d2 = st.columns(2)
+        disc = d1.multiselect("Discipline", ["Health", "Life sciences", "Ecology", "Education", "Agriculture", "Preclinical", "Social science", "Methodology"]); free = d2.checkbox("Hide paid-only")
+        rows = resources.filter_resources(q, types, disc, lv, free)
+        st.caption(f"{len(rows)} of {len(resources.RESOURCES)} resources")
+        st.dataframe(pd.DataFrame([{"title": r["title"], "org": r["org"], "type": r["type"], "topic": r["topic"], "level": r["level"], "discipline": r["discipline"], "access": r["access"],
+                                    "link check": resources.link_status(r["url"]), "why useful": r["why"], "modules": ", ".join(map(str, r["modules"])), "url": r["url"]} for r in rows]),
                      hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+        st.caption("Not listed (not yet verified): YouTube channels, recorded lectures, online courses, funding calls, conferences with dates. Nothing is invented to fill these categories.")
+    with t2:
+        mid = st.selectbox("Module", [m["id"] for m in curriculum.MODULES], format_func=lambda i: f"{i}. {curriculum.BY_ID[i]['title']}")
+        rec = resources.recommend(mid)
+        st.markdown(f"**Resources tagged to Module {mid}** ({'lesson available' if mid in LES else 'outline only'})")
+        for r in rec["resources"]: st.markdown(f"- [{r['title']}]({r['url']}) - {r['type']} · {r['access']} · *{r['why']}*")
+        if not rec["resources"]: st.caption("No resource tagged yet for this module.")
+        if rec["references"]:
+            st.markdown("**Verified references cited by the lesson**")
+            for r in rec["references"]: st.markdown("- " + references.link(r["key"]))
+        st.caption("Recommendations are tag-based (modules assigned by the author), not personalised or evaluated.")
+    with t3:
+        st.caption(f"{len(references.REFS)} references. Bibliographic verification only (title/authors/journal/DOI matched in PubMed or Crossref); abstract/full-text examination is tracked per claim in Quality & Expert Review.")
+        for k, v in references.REFS.items(): st.markdown(f"- {references.link(k)} · verified {v['verified_on']} via {v.get('verified_via', '')}")
 
 # --------------------------------------------------------------- NETWORK
 elif page == "Network & Collaboration":
     st.title("Network & Collaboration")
-    st.info("There are no users, profiles, posts, matches or opportunities on this platform. Community features need authentication, moderation and hosting and are NOT built. "
-            "Below: a directory of real external organisations (unverified links) and outreach templates for use in your own email.")
-    st.dataframe(pd.DataFrame(resources.ORGS)[["name", "focus", "url", "membership", "cost"]], hide_index=True, width="stretch",
-                 column_config={"url": st.column_config.LinkColumn("url")})
-    T = {"Request an independent screening reviewer": "Subject: Request for independent screening support - [topic]\n\nDear [Name],\n\nI am conducting a [review type] on [question]. I am looking for a colleague to independently screen [n] records against pre-specified criteria (about [hours] hours). Contribution would be [acknowledgement/co-authorship if ICMJE criteria are met - to be agreed in writing before work begins]. Can we discuss?\n\nBest,\n[Your name]",
-         "Contact a study author for missing data": "Subject: Data query about [Title, year]\n\nDear Dr [Name],\n\nI am conducting a systematic review of [topic]. Your study reports [outcome] but not [missing item, e.g. SD/n per group]. Could you share it, or tell us where it is reported? We will cite your help and describe how the data were used. This is not a request to change any results.\n\nThank you,\n[Your name]",
-         "Request statistical advice": "Subject: Methodological question on a planned meta-analysis\n\nDear [Name],\n\nI plan to pool [effect measure] from about [k] [designs]. My concerns: [dependence, units, heterogeneity]. Could we spend [time] reviewing my analysis plan? I will send it in advance.\n\nBest,\n[Your name]",
-         "Request mentorship": "Subject: Mentorship request - evidence synthesis\n\nDear [Name],\n\nI am a [career stage] in [field] starting my first meta-analysis ([topic]). I admire your work on [specific]. Would you be open to a [30-minute] conversation or occasional feedback? I understand if you lack capacity.\n\nBest,\n[Your name]"}
-    k = st.selectbox("Template", list(T)); st.text_area("Edit and send yourself (the platform never contacts anyone)", T[k], height=220)
-    st.caption("Authorship must follow your institution/journal criteria (e.g. ICMJE): substantive contribution only; do not offer authorship in exchange for favours.")
+    st.info("There are no platform users, profiles, posts, matches or opportunities, and none are simulated. Real community features need authentication, moderation and hosting (see FUTURE_COMMUNITY_ARCHITECTURE.md). "
+            "Below: a directory of real external organisations/communities (unverified links), a LOCAL collaborator manager for people you add yourself, CRediT tracking and templates. MetaLab never contacts anyone.")
+    tabs = st.tabs(["Directory", "My collaborators (local)", "CRediT & authorship", "Templates", "Opportunities"])
+    with tabs[0]:
+        st.markdown("**Organisations and societies**")
+        st.dataframe(pd.DataFrame([{**{k: o.get(k, "") for k in ("name", "focus", "discipline", "url", "membership", "cost")}, "link check": resources.link_status(o["url"])} for o in resources.ORGS]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+        st.markdown("**Communities and forums** (public; quality varies; follow each community's rules; do not post unpublished data)")
+        st.dataframe(pd.DataFrame([{"name": o["name"], "kind": o["kind"], "focus": o["focus"], "url": o["url"], "link check": resources.link_status(o["url"])} for o in resources.COMMUNITIES]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+        st.caption("Not yet listed because unverified: university evidence-synthesis centres, research librarian services, statistical consultation services, mentorship programmes, journal clubs. Ask your own institution's library and statistics core first.")
+    with tabs[1]:
+        st.caption("Contacts you add manually are stored only in this local file. Store only what you need and only with a legitimate basis; do not add private details of others you would not want shared. Deleting removes them and their notes.")
+        with st.form("ct", clear_on_submit=True):
+            c1, c2, c3 = st.columns(3); nm = c1.text_input("Name"); rl = c2.text_input("Role/expertise"); og = c3.text_input("Organisation")
+            hm = st.text_input("How you know them / context"); ok = st.text_input("Contact preferences / consent note"); nt = st.text_area("Notes", height=70)
+            if st.form_submit_button("Add contact"):
+                try: db.add_contact(nm, rl, og, "", rl, hm, ok, nt); st.success("Added"); st.rerun()
+                except ValueError as e_: st.error(str(e_))
+        cts = db.contacts()
+        for c_ in cts:
+            with st.expander(f"{c_['name']} - {c_['role']} ({c_['org']})"):
+                st.write(c_["how_met"], "·", c_["contact_ok"]); st.write(c_["notes"])
+                with st.form(f"ia{c_['id']}", clear_on_submit=True):
+                    i1, i2, i3 = st.columns(3); dt = i1.date_input("Date", key=f"d{c_['id']}"); kd = i2.selectbox("Kind", ["email", "call", "meeting", "message", "other"], key=f"k{c_['id']}"); fu = i3.text_input("Follow-up due (YYYY-MM-DD)", key=f"f{c_['id']}")
+                    sm_ = st.text_input("Summary", key=f"s{c_['id']}")
+                    if st.form_submit_button("Log interaction"): db.log_interaction(c_["id"], str(dt), kd, sm_, fu); st.rerun()
+                for i_ in db.interactions(c_["id"]): st.caption(f"{i_['date']} · {i_['kind']} · {i_['summary']}" + (f" · follow-up {i_['followup_due']}" if i_["followup_due"] else ""))
+                if st.button("Delete this contact and its notes", key=f"del{c_['id']}"): db.delete_contact(c_["id"]); st.rerun()
+        due_ = db.followups_due()
+        if due_: st.warning("Follow-ups due: " + "; ".join(f"{x['name']} ({x['followup_due']})" for x in due_))
+        if not cts: st.info("No contacts yet. Add genuine contacts here; nothing is pre-populated.")
+    with tabs[2]:
+        from metalab import templates_lib as TL
+        p = project_picker("cr")
+        st.caption("CRediT lists 14 contributor roles describing what was actually done. It does not decide authorship; follow ICMJE/journal/institutional criteria. Gift or purchased authorship is not supported.")
+        if p:
+            with st.form("crf", clear_on_submit=True):
+                c1, c2 = st.columns(2); per = c1.text_input("Person (you or a collaborator)"); rl_ = c2.selectbox("CRediT role", TL.CREDIT_ROLES); nt_ = st.text_input("What exactly was done? (required)")
+                if st.form_submit_button("Record contribution"):
+                    try: db.add_credit(p["id"], per, rl_, nt_); st.rerun()
+                    except ValueError as e_: st.error(str(e_))
+            cr = db.credits(p["id"])
+            if cr: st.dataframe(pd.DataFrame(cr)[["person", "role", "note"]], hide_index=True, width="stretch")
+    with tabs[3]:
+        from metalab import templates_lib as TL
+        k = st.selectbox("Template", list(TL.T)); st.text_area("Edit and send yourself (the platform never contacts anyone)", TL.T[k], height=280)
+        st.caption("Authorship must follow your institution/journal criteria (e.g. ICMJE): substantive contribution only. Agreement text is a draft, not legal advice.")
+    with tabs[4]:
+        st.info("The Research Opportunities Hub is intentionally empty: no conference, fellowship, grant, course or call has been officially verified, and there is no live monitoring. Entries will be added only with an official source link and verification date. In the meantime use the organisations above (e.g. their event pages) and your library.")
 
 # ------------------------------------------------------ QUALITY / EXPERT REVIEW
 elif page == "Quality & Expert Review":
@@ -751,7 +915,7 @@ elif page == "Quality & Expert Review":
     c1.metric("Directly supported (abstract/software)", sm["supported"]); c2.metric("Partial", sm["partial"])
     c3.metric("Unverified", sm["unverified"]); c4.metric("Human-expert reviewed", sm["human_reviewed"])
     st.warning("Nothing in MetaLab is expert-reviewed yet. 'Supported' means the source's abstract (or software output) directly supports the claim - not that a qualified human checked the lesson.")
-    t1, t2, t3 = st.tabs(["Claim register", "Correction history", "Expert review packages"])
+    t1, t2, t3, t4 = st.tabs(["Claim register", "Correction history", "Expert review packages", "Curriculum coverage audit"])
     with t1:
         st.dataframe(pd.DataFrame(CL.CLAIMS).drop(columns=["verified_on"]), hide_index=True, width="stretch")
     with t2:
@@ -761,6 +925,11 @@ elif page == "Quality & Expert Review":
         pk = EX.available(); sel = st.selectbox("Package", list(pk))
         md = pk[sel](); st.download_button("Download package (Markdown)", md, file_name=sel.split(":")[0].replace(" ", "_") + "_review_package.md")
         with st.expander("Preview"): st.markdown(md)
+    with t4:
+        st.warning(LRN.AUDIT_NOTE)
+        st.dataframe(pd.DataFrame(LRN.coverage_table()), hide_index=True, width="stretch")
+        st.markdown("**Proposed additional modules (justified by gaps found while building)**")
+        st.dataframe(pd.DataFrame(LRN.PROPOSED_NEW_MODULES, columns=["id", "level", "title", "justification"]), hide_index=True, width="stretch")
 
 # ----------------------------------------------------------------- STATUS
 else:

@@ -2,7 +2,7 @@
 schema multi-user-ready). The audit log is append-only: there is deliberately
 no update/delete API for it, and triggers enforce this at the database level."""
 from __future__ import annotations
-import csv, io, json, re, sqlite3, time, hashlib
+import csv, datetime, io, json, re, sqlite3, time, hashlib
 from pathlib import Path
 
 SCHEMA = """
@@ -36,6 +36,11 @@ CREATE TABLE IF NOT EXISTS effect_sizes(effect_id TEXT, project_id INT, study_id
   control_group_id TEXT, outcome TEXT, timepoint TEXT, group_label TEXT, source TEXT, ts REAL, PRIMARY KEY(project_id, effect_id));
 CREATE TABLE IF NOT EXISTS rob(id INTEGER PRIMARY KEY, project_id INT, study_id TEXT, outcome TEXT, tool TEXT, domain TEXT, judgement TEXT,
   support TEXT, reviewer TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS cards(card_key TEXT PRIMARY KEY, ease REAL, interval INT, reps INT, lapses INT, due TEXT, last_reviewed REAL);
+CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY, name TEXT, role TEXT, org TEXT, discipline TEXT, expertise TEXT, how_met TEXT, contact_ok TEXT, notes TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS interactions(id INTEGER PRIMARY KEY, contact_id INT, date TEXT, kind TEXT, summary TEXT, followup_due TEXT, followup_done INT DEFAULT 0, ts REAL);
+CREATE TABLE IF NOT EXISTS credit(id INTEGER PRIMARY KEY, project_id INT, person TEXT, role TEXT, note TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS bookmarks(kind TEXT, ref TEXT, ts REAL, PRIMARY KEY(kind, ref));
 CREATE TABLE IF NOT EXISTS dup_candidates(id INTEGER PRIMARY KEY, project_id INT, ref_a INT, ref_b INT, score REAL, reasons TEXT,
   relation TEXT, status TEXT DEFAULT 'pending', decided_by TEXT, ts REAL);
 """
@@ -386,9 +391,71 @@ class Store:
         sql = "SELECT * FROM dup_candidates WHERE project_id=?" + (" AND status=?" if status else "") + " ORDER BY score DESC"
         return self.q(sql, (pid, status) if status else (pid,))
 
+    # ------------------------------------------------- flashcards / bookmarks
+    def card_review(self, key, quality, today=None):
+        from .learning import sm2
+        today = today or datetime.date.today()
+        r = self.q("SELECT * FROM cards WHERE card_key=?", (key,))
+        ease, interval, reps, lapses = (r[0]["ease"], r[0]["interval"], r[0]["reps"], r[0]["lapses"]) if r else (2.5, 0, 0, 0)
+        ease, interval, reps, lapsed = sm2(ease, interval, reps, quality)
+        due = (today + datetime.timedelta(days=interval)).isoformat()
+        self.x("INSERT INTO cards VALUES(?,?,?,?,?,?,?) ON CONFLICT(card_key) DO UPDATE SET ease=excluded.ease, interval=excluded.interval, reps=excluded.reps, lapses=excluded.lapses, due=excluded.due, last_reviewed=excluded.last_reviewed",
+               (key, ease, interval, reps, lapses + int(lapsed), due, time.time()))
+        return due
+
+    def cards_due(self, all_keys, today=None):
+        """Keys never seen (new) + keys whose due date has arrived, oldest-due first."""
+        today = (today or datetime.date.today()).isoformat()
+        seen = {r["card_key"]: r["due"] for r in self.q("SELECT card_key, due FROM cards")}
+        due = sorted([k for k in all_keys if k in seen and seen[k] <= today], key=lambda k: seen[k])
+        new = [k for k in all_keys if k not in seen]
+        return due, new
+
+    def toggle_bookmark(self, kind, ref):
+        if self.q("SELECT 1 FROM bookmarks WHERE kind=? AND ref=?", (kind, str(ref))):
+            self.x("DELETE FROM bookmarks WHERE kind=? AND ref=?", (kind, str(ref))); return False
+        self.x("INSERT INTO bookmarks VALUES(?,?,?)", (kind, str(ref), time.time())); return True
+
+    def bookmarks(self):
+        return self.q("SELECT * FROM bookmarks ORDER BY ts DESC")
+
+    # ------------------------------------------- local collaborator manager
+    def add_contact(self, name, role="", org="", discipline="", expertise="", how_met="", contact_ok="", notes=""):
+        """Contacts are people YOU add manually (stored only in this local file). Nothing is ever sent to them by the app."""
+        if not name.strip(): raise ValueError("Name required.")
+        cid = self.x("INSERT INTO contacts(name,role,org,discipline,expertise,how_met,contact_ok,notes,ts) VALUES(?,?,?,?,?,?,?,?,?)", (name.strip(), role, org, discipline, expertise, how_met, contact_ok, notes, time.time()))
+        self.audit("contact_added", f"contact {cid} (details not logged)"); return cid
+
+    def contacts(self): return self.q("SELECT * FROM contacts ORDER BY name")
+
+    def delete_contact(self, cid):
+        self.x("DELETE FROM interactions WHERE contact_id=?", (cid,)); self.x("DELETE FROM contacts WHERE id=?", (cid,)); self.audit("contact_deleted", f"contact {cid}")
+
+    def log_interaction(self, contact_id, date, kind, summary, followup_due=""):
+        if not self.q("SELECT 1 FROM contacts WHERE id=?", (contact_id,)): raise ValueError("No such contact.")
+        return self.x("INSERT INTO interactions(contact_id,date,kind,summary,followup_due,ts) VALUES(?,?,?,?,?,?)", (contact_id, date, kind, summary, followup_due, time.time()))
+
+    def interactions(self, contact_id=None):
+        return self.q("SELECT * FROM interactions" + (" WHERE contact_id=?" if contact_id else "") + " ORDER BY date DESC", (contact_id,) if contact_id else ())
+
+    def followups_due(self, today=None):
+        today = (today or datetime.date.today()).isoformat()
+        return self.q("SELECT i.*, c.name FROM interactions i JOIN contacts c ON c.id=i.contact_id WHERE i.followup_due!='' AND i.followup_due<=? AND i.followup_done=0 ORDER BY i.followup_due", (today,))
+
+    def complete_followup(self, interaction_id): self.x("UPDATE interactions SET followup_done=1 WHERE id=?", (interaction_id,))
+
+    def add_credit(self, pid, person, role, note=""):
+        from .templates_lib import CREDIT_ROLES
+        if role not in CREDIT_ROLES: raise ValueError("Role must be one of the 14 CRediT roles.")
+        if not note.strip(): raise ValueError("Describe the substantive contribution (CRediT roles describe what was actually done).")
+        self.x("INSERT INTO credit(project_id,person,role,note,ts) VALUES(?,?,?,?,?)", (pid, person, role, note, time.time()))
+        self.audit("credit_recorded", f"{person}: {role}", pid)
+
+    def credits(self, pid): return self.q("SELECT * FROM credit WHERE project_id=? ORDER BY person, role", (pid,))
+
     # ----------------------------------------------------------- export/backup
     def backup_json(self):
-        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates"]
+        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit"]
         return json.dumps({"format": "metalab-backup", "version": 1,
                            "tables": {t: self.q(f"SELECT * FROM {t}") for t in tables}}, indent=1)
 
@@ -397,7 +464,7 @@ class Store:
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
         cur = self.db.cursor()
-        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates"):
+        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit"):
             cur.execute(f"DELETE FROM {t}")
             valid = {r[1] for r in cur.execute(f"PRAGMA table_info({t})")}
             for row in d["tables"].get(t, []):

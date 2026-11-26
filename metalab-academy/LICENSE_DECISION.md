@@ -1,0 +1,2 @@
+# Licence decision (OPEN - owner's decision)
+No licence has been chosen. Until one is, the code is "all rights reserved" by default. Options to consider (not advice): permissive (MIT/Apache-2.0) for code; CC BY / CC BY-SA for original lesson content; separate licences for code vs content vs data. Consider: dependency licences (DEPENDENCIES.md), whether lesson text should allow commercial reuse, trademark/branding, contributor agreement. **Do not publish publicly before this is decided.**

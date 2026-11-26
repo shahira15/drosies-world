@@ -1,6 +1,6 @@
 # Curriculum map (generated)
 
-84 modules registered; **3 have a lesson**; 81 are outlines (title/level only, no lesson).
+84 modules from the master specification + 4 proposed additions = 88 registered; **12 have a lesson**; 76 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
@@ -18,18 +18,19 @@
 |---|---|---|---|
 | 3 | Introduction to evidence synthesis | Foundations of science and evidence | drafted |
 | 4 | Formulating research questions | Research question development | drafted |
-| 5 | Novelty and research gap identification | Research question development | outline |
+| 5 | Novelty and research gap identification | Research question development | drafted |
 | 6 | Feasibility and project planning | Research question development | outline |
-| 7 | Protocol development | Protocols and registration | outline |
+| 7 | Protocol development | Protocols and registration | drafted |
 | 8 | Registration and open protocols | Protocols and registration | outline |
 | 25 | Descriptive and inferential statistics | Statistics from first principles | outline |
+| 88 | Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage | Research question development | outline |
 
 ## Level 2: Applied evidence synthesis
 
 | # | Module | Part | Status |
 |---|---|---|---|
 | 9 | Bibliographic databases | Information retrieval | outline |
-| 10 | Advanced search strategies | Information retrieval | outline |
+| 10 | Advanced search strategies | Information retrieval | drafted |
 | 11 | Supplementary searching | Information retrieval | outline |
 | 12 | Literature search reproducibility | Information retrieval | outline |
 | 13 | Reference management | References and study selection | outline |
@@ -37,21 +38,22 @@
 | 15 | Study screening | References and study selection | outline |
 | 16 | PRISMA flow diagrams | References and study selection | outline |
 | 17 | Extraction framework | Data extraction and management | outline |
-| 18 | Quantitative data extraction | Data extraction and management | outline |
+| 18 | Quantitative data extraction | Data extraction and management | drafted |
 | 19 | Graph digitization and unavailable data | Data extraction and management | outline |
-| 20 | Data quality and provenance | Data extraction and management | outline |
-| 21 | Bias fundamentals | Risk of bias and appraisal | outline |
-| 22 | Critical appraisal instruments | Risk of bias and appraisal | outline |
+| 20 | Data quality and provenance | Data extraction and management | drafted |
+| 21 | Bias fundamentals | Risk of bias and appraisal | drafted |
+| 22 | Critical appraisal instruments | Risk of bias and appraisal | drafted |
 | 23 | Risk-of-bias visualization | Risk of bias and appraisal | outline |
 | 53 | Synthesis without meta-analysis | Non-quantitative synthesis | outline |
 | 55 | Scoping reviews and evidence maps | Non-quantitative synthesis | outline |
+| 85 | Units of analysis, pseudoreplication and hierarchical data in laboratory biology | Data extraction and management | outline |
 
 ## Level 3: Quantitative meta-analysis
 
 | # | Module | Part | Status |
 |---|---|---|---|
 | 26 | Statistical estimation and uncertainty | Statistics from first principles | outline |
-| 27 | Continuous outcome effect sizes | Effect sizes | outline |
+| 27 | Continuous outcome effect sizes | Effect sizes | drafted |
 | 28 | Binary and categorical outcomes | Effect sizes | outline |
 | 29 | Correlation and regression effects | Effect sizes | outline |
 | 30 | Count, rate and survival outcomes | Effect sizes | outline |
@@ -59,7 +61,7 @@
 | 32 | Principles of quantitative pooling | Core meta-analysis | drafted |
 | 33 | Common-effect models | Core meta-analysis | outline |
 | 34 | Random-effects models | Core meta-analysis | outline |
-| 35 | Heterogeneity | Core meta-analysis | outline |
+| 35 | Heterogeneity | Core meta-analysis | drafted |
 | 36 | Subgroup analysis | Core meta-analysis | outline |
 | 37 | Meta-regression | Core meta-analysis | outline |
 | 50 | Publication bias and missing evidence | Bias, robustness, certainty | outline |
@@ -101,6 +103,8 @@
 | 67 | Economics, business and policy | Discipline academies | outline |
 | 68 | Engineering and computer science | Discipline academies | outline |
 | 72 | Advanced computational reproducibility | Programming | outline |
+| 86 | Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction | Effect sizes | outline |
+| 87 | Sex as a biological variable in evidence synthesis | Effect sizes | outline |
 
 ## Level 5: Independent researcher & publication mastery
 

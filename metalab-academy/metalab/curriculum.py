@@ -99,6 +99,13 @@ for line in _M.splitlines():
     i, p, l, t = line.split(",", 3)
     MODULES.append(dict(id=int(i), part=int(p), part_name=PARTS[int(p)], level=int(l),
                         level_name=LEVELS[int(l)], title=t, status="outline"))
+# Modules proposed beyond the 84 in the master specification, each with a documented justification (learning.PROPOSED_NEW_MODULES)
+_PROPOSED = [(85, 6, 2, "Units of analysis, pseudoreplication and hierarchical data in laboratory biology"),
+             (86, 9, 4, "Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction"),
+             (87, 9, 4, "Sex as a biological variable in evidence synthesis"),
+             (88, 2, 1, "Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage")]
+for i, p, l, t in _PROPOSED:
+    MODULES.append(dict(id=i, part=p, part_name=PARTS[p], level=l, level_name=LEVELS[l], title=t, status="outline", proposed=True))
 BY_ID = {m["id"]: m for m in MODULES}
 
 def mark_drafted(ids):
@@ -107,4 +114,5 @@ def mark_drafted(ids):
 
 def counts():
     d = sum(m["status"] == "drafted" for m in MODULES)
-    return dict(total=len(MODULES), drafted=d, outline=len(MODULES) - d)
+    prop = sum(bool(m.get("proposed")) for m in MODULES)
+    return dict(total=len(MODULES), specified=len(MODULES) - prop, proposed=prop, drafted=d, outline=len(MODULES) - d)

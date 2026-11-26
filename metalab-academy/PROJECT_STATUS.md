@@ -1,3 +1,8 @@
-# Project status (2026-11-26, session 1)
-Phase 0 done. Phase 1 mostly done (dashboard, onboarding, progress, workspace, 3 lessons, quizzes, stats demos, first-paper plan). Phase 2 partly (question builder, search log, import, dedup, screening, PRISMA counts). Phase 4 seeded (core meta-analysis + calculators, unvalidated vs R). Phase 5/6 minimal (reference + org lists). Phases 3 (extraction/RoB), 7-10 not started.
-Tests: 49 passing (see TESTING_REPORT.md). Audit: AUDIT_2026-11-26.md.
+# Project status (v0.2.0, 2026-11-26)
+- Statistics: benchmarked vs R/metafor (VALIDATION.md). Defects found and fixed: see corrections.json (11 entries).
+- Academy: 12 lessons, glossary, flashcards, pathways, wizard, search, virtual lab, coverage audit.
+- Workflow: extraction/provenance, RoB, kappa, fuzzy dedup, PRISMA SVG, effect builder, SAP, reproducibility ZIP, review-type workflows.
+- First paper: 14 milestones; Topic Explorer from a real logged PubMed scan (no topic chosen - your decision).
+- Quality: claim registry (30 claims), correction history, expert review packages (per lesson, stats engine, workflow).
+- Knowledge/network: 53 resources, local collaborator manager, CRediT, templates (links unchecked).
+- Tests: 312 passing. Not done: manuscript studio, 76 lessons, interactive coding, expert review, link/accessibility/security audits.

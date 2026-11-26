@@ -1,9 +1,4 @@
-# Next actions
-**For you (the learner), now:** run `./run.sh` → Onboarding → read Module 3 → Module 4 → create your project → First Paper Plan week 1.
-**For development (priority order):**
-1. Run R/metafor on BCG + 3 more datasets; record outputs in TESTING_REPORT.md; add tests with those exact numbers; upgrade `stats.meta_core` status.
-2. Lessons next: Module 5 (novelty), 6 (feasibility), 7 (protocol), 9-10 (databases, searching), 15 (screening), 17-20 (extraction/provenance), 21-22 (bias, SYRCLE), 27 (SMD/lnRR), 35 (heterogeneity), 59 (preclinical/animal). Each: verify references in PubMed first.
-3. Novelty & feasibility workspace with required evidence links (search-log entries).
-4. Extraction form UI with provenance + validation; SYRCLE RoB tool UI.
-5. Human expert review of lessons 3/4/32 (ask a statistician/librarian mentor).
-6. Accessibility + security review; verify resource links against official sites and record dates.
+# Next actions (after v0.2.0)
+**You (learner):** `./run.sh` → Onboarding → Method Wizard → Learning Academy → Pathways (core) → Lessons 3, 4, 5 → Virtual Lab → create your real project → Topic Explorer / Milestones 1-3. Re-run two scan queries yourself and log them.
+**Needs YOUR decision/action:** (1) choose a topic after Milestone 3 (never chosen for you); (2) share lessons 3/4/32 + stats packages with a statistician/librarian (Quality & Expert Review → packages); (3) run `python3 tools/check_links.py` on your Mac (sandbox blocks hosts); (4) run `./validation/run_validation.sh` on your Mac to confirm the R reference; (5) licence choice (LICENSE_DECISION.md); (6) push/CI on GitHub only if you want it.
+**Development order:** lessons for Milestones 6, 8, 9, 11-14 (modules 6, 9, 11-17, 19, 23, 28, 31, 33, 34, 36, 37, 50-52, 74-78, 82) verifying references first; manuscript studio with verified-results-only population; hazard-ratio/survival effect sizes + modules 85-87; dependence-aware models (clubSandwich/metafor reference); PNG/PDF figure export; accessibility audit; in-app executable coding (WebR/pyodide) if desired.

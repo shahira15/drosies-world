@@ -122,6 +122,17 @@ def validate_extraction(rows, form_fields=None):
                 if cv > 3: add("warning", sd, f"{g}: CV={cv:.1f} very large - check units/transform.")
         ts = [fs.get(k) for k in ("treat_n", "treat_mean", "treat_sd", "ctrl_n", "ctrl_mean", "ctrl_sd")]
         if all(ts) and len({(x["value_clean"]) for x in ts}) == 1: add("warning", ts[0], "All six summary values identical - copy/paste error?")
+    # relative CV check: an SE entered as SD shrinks the CV by ~1/sqrt(n); compare with the typical CV of other groups
+    cvs = []
+    for (sid, exp), fs in by.items():
+        for g in ("treat", "ctrl"):
+            m, sd = fs.get(f"{g}_mean"), fs.get(f"{g}_sd")
+            if m and sd and m["value_clean"] and sd["value_clean"] is not None and m["value_clean"] > 0: cvs.append((sid, exp, g, sd, sd["value_clean"] / m["value_clean"]))
+    if len(cvs) >= 6:
+        med = sorted(c[4] for c in cvs)[len(cvs) // 2]
+        for sid, exp, g, sd, cv in cvs:
+            if med > 0 and cv < 0.4 * med and cv >= 0.01:
+                add("warning", sd, f"{g}: CV={cv:.3f} is much smaller than the typical CV of other groups ({med:.3f}) - was an SE entered as SD?")
     sig = defaultdict(list)
     for (sid, exp), fs in by.items():
         vals = tuple(fs.get(k, {}).get("value_clean") for k in ("treat_n", "treat_mean", "treat_sd", "ctrl_n", "ctrl_mean", "ctrl_sd"))

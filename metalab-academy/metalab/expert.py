@@ -36,7 +36,7 @@ def lesson_package(n):
     cs = claims.for_lesson(n)
     out.append("| id | claim | source | examined | supports directly | limitations | status |\n|---|---|---|---|---|---|---|")
     for c in cs:
-        out.append(f"| {c['id']} | {c['claim']} | {references.REFS[c['source_key']]['cite'][:70]} | {c['examined']} | {c['supports_directly']} | {c['limitations']} | {c['status']} |")
+        out.append(f"| {c['id']} | {c['claim']} | {(references.REFS[c['source_key']]['cite'][:70] if c['source_key'] else c['source_type'])} | {c['examined']} | {c['supports_directly']} | {c['limitations']} | {c['status']} |")
     if not cs: out.append("*No claim-level records yet for this lesson - everything is unverified at claim level.*")
     out.append("\n## References cited (bibliographic verification)")
     out += [f"- {references.link(k)} (verified {references.REFS[k]['verified_on']} via {references.REFS[k].get('verified_via','')})" for k in L["further"]]

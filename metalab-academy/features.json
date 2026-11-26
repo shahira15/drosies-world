@@ -23,21 +23,22 @@
   },
   {
    "id": "academy.curriculum_registry",
-   "name": "84-module curriculum registry",
+   "name": "88-module registry (84 specified + 4 proposed)",
    "status": "implemented",
-   "evidence": "Titles/levels only; lesson availability computed from files"
+   "evidence": "Lesson availability computed from files; coverage audit vs recalled Handbook structure (not re-read)"
   },
   {
    "id": "academy.lessons",
    "name": "Full lessons",
    "status": "requires_expert_review",
-   "evidence": "3 of 84 drafted (M3, M4, M32); AI-drafted; key references verified in PubMed; not reviewed by a qualified human expert"
+   "evidence": "12 of 88 registered modules (3,4,5,7,10,18,20,21,22,27,32,35). AI-drafted; numeric content machine-checked; R snippets executed in tests; claims tracked (30; 0 human-reviewed; 6 unverified)",
+   "blocker": "Qualified human review; 76 modules still outline-only"
   },
   {
    "id": "academy.quizzes",
    "name": "Quizzes with explanations and scoring",
    "status": "tested",
-   "evidence": "Structure tests; numeric answers machine-checked; conceptual answers need expert review"
+   "evidence": "Structure + numeric answers verified vs code; conceptual answers need expert review"
   },
   {
    "id": "academy.onboarding",
@@ -47,8 +48,9 @@
   },
   {
    "id": "academy.flashcards_srs",
-   "name": "Flashcards and spaced repetition",
-   "status": "planned"
+   "name": "Flashcards with SM-2-style spaced repetition (glossary + misconceptions)",
+   "status": "tested",
+   "evidence": "Scheduling properties tested; SM-2 is a heuristic, not validated"
   },
   {
    "id": "workspace.projects",
@@ -121,9 +123,10 @@
   },
   {
    "id": "knowledge.resources",
-   "name": "Resource registry",
+   "name": "Resource registry (53 resources, 11 orgs, 6 communities) with 4 verification levels",
    "status": "implemented",
-   "evidence": "15 verified references (PubMed); 16 resources + 8 organisations with UNVERIFIED links (no verification dates)"
+   "evidence": "Bibliographic via PubMed/Crossref for 77 references; link check ran for 1 URL only (sandbox blocks hosts); full-text/claim-support not claimed",
+   "blocker": "Run tools/check_links.py locally; verify costs/versions; no videos/courses/funding/conference entries yet (unverified, not invented)"
   },
   {
    "id": "knowledge.databases_software",
@@ -132,14 +135,15 @@
   },
   {
    "id": "network.directory",
-   "name": "External organisation directory",
+   "name": "External organisations/communities directory",
    "status": "implemented",
-   "evidence": "Links unverified; no costs/eligibility claimed"
+   "evidence": "Unverified links; no costs/eligibility claimed"
   },
   {
    "id": "network.toolkit",
-   "name": "Outreach templates",
-   "status": "implemented"
+   "name": "Outreach/agreement templates (collaboration, reviewer recruitment, mentor, statistician, author contact, authorship, meeting prep)",
+   "status": "implemented",
+   "evidence": "Drafts; not legal advice"
   },
   {
    "id": "network.community",
@@ -149,9 +153,9 @@
   },
   {
    "id": "opportunities.hub",
-   "name": "Research opportunities directory",
+   "name": "Research opportunities hub",
    "status": "planned",
-   "evidence": "No entries until officially sourced"
+   "evidence": "Intentionally empty: nothing officially verified; no live monitoring"
   },
   {
    "id": "ai.assistant",
@@ -224,6 +228,85 @@
    "name": "Reference verification tooling (Crossref DOI registry + PubMed)",
    "status": "tested",
    "evidence": "tools/verify_refs.py rejects author/year mismatches; caught 3 wrong recalled identifiers; bibliographic verification only"
+  },
+  {
+   "id": "academy.glossary",
+   "name": "Searchable glossary (47 terms) linked to modules",
+   "status": "tested",
+   "evidence": "Original definitions; not expert-reviewed",
+   "blocker": "Expert review"
+  },
+  {
+   "id": "academy.pathways",
+   "name": "Core first-researcher pathway + extensions + specialist pathways",
+   "status": "implemented",
+   "evidence": "Availability computed; 13 core modules (12 written/available count computed in UI)"
+  },
+  {
+   "id": "academy.method_wizard",
+   "name": "Method-selection wizard (rule-based, assumptions shown, flags unsupported methods)",
+   "status": "tested",
+   "evidence": "Scenario tests; rules not expert-reviewed",
+   "blocker": "Expert review; does not cover many designs"
+  },
+  {
+   "id": "academy.universal_search",
+   "name": "Universal search across lessons, formulas, glossary, resources, claims, calculators, workflows",
+   "status": "tested",
+   "evidence": "Simple token scoring"
+  },
+  {
+   "id": "academy.virtual_lab",
+   "name": "Virtual Research Lab: fully simulated review with planted errors, simulated 2nd reviewer, grader",
+   "status": "tested",
+   "evidence": "Perfect solver scores 100%; empty learner low; traps verified; all material labelled FICTIONAL; separate teaching project"
+  },
+  {
+   "id": "academy.study_notes",
+   "name": "Downloadable lesson notes + formula cheat sheet",
+   "status": "tested"
+  },
+  {
+   "id": "academy.interactive_coding",
+   "name": "Interactive coding tutorials (in-browser R/Python execution)",
+   "status": "planned",
+   "evidence": "Code is shown and tested but cannot be run inside the app"
+  },
+  {
+   "id": "academy.bookmarks_goals",
+   "name": "Bookmarks and weekly goal",
+   "status": "implemented"
+  },
+  {
+   "id": "knowledge.recommender",
+   "name": "Resource recommender per module (tag-based)",
+   "status": "tested",
+   "evidence": "Not personalised; tags assigned by author"
+  },
+  {
+   "id": "network.contacts",
+   "name": "Local collaborator manager (manual contacts, interactions, follow-ups) + CRediT tracking",
+   "status": "tested",
+   "evidence": "Contacts local only; details never copied to audit log; CRediT requires a described contribution"
+  },
+  {
+   "id": "oss.readiness",
+   "name": "Open-source readiness docs, issue templates, CI workflow, dependency inventory",
+   "status": "implemented",
+   "evidence": "CONTRIBUTING, DEVELOPER, SECURITY, ACCESSIBILITY, LICENSE_DECISION (open), DEPENDENCIES; CI workflow not yet run on GitHub",
+   "blocker": "Licence choice (owner); security/accessibility audits"
+  },
+  {
+   "id": "ui.browser_inspection",
+   "name": "Visual inspection in Chromium (desktop + 390px mobile)",
+   "status": "tested",
+   "evidence": "Home/Academy/First Paper/Stats Lab/Method Wizard screenshots reviewed 2026-11-26; no keyboard/screen-reader audit"
+  },
+  {
+   "id": "manuscript.studio",
+   "name": "Manuscript studio and export",
+   "status": "planned",
+   "evidence": "Reproducibility ZIP and SAP/PRISMA exports exist; no manuscript editor yet"
   }
  ]
 }
