@@ -18,7 +18,7 @@ LES = lessons.load()
 PROFILE = db.profile()
 
 PAGES = ["Home", "Onboarding", "Learning Academy", "Research Workspace", "First Paper Plan",
-         "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Status & Limitations"]
+         "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 page = st.sidebar.radio("MetaLab Academy", PAGES, key="nav")
 st.sidebar.caption("Learn. Discover. Analyze. Collaborate. Publish.")
 st.sidebar.info("Early version. Only the features marked *tested* or *implemented* on the Status page work; "
@@ -321,29 +321,69 @@ elif page == "Research Workspace":
 
 # ------------------------------------------------------ FIRST PAPER PLAN
 elif page == "First Paper Plan":
+    from metalab.milestones import M as MILESTONES
+    from metalab import topic_scan as TS
     st.title("My First Meta-Analysis Paper")
-    st.markdown("A **16-week default plan** (~5-7 h/week). It is a *scaffold*: extend it freely - rigor is never traded for the deadline. "
-                "Candidate topics (e.g. exercise and aging in *Drosophila*, insulin/TOR signalling and sex-specific longevity, dietary interventions and model-organism lifespan, "
-                "storytelling in STEM education) are **ideas only - novelty and feasibility are unverified** until you complete weeks 3-4.")
+    st.markdown("Work **one milestone at a time**. Each has: what to learn, why, a demonstration, practice, a task for your real research, a quality checklist, a deliverable and the next step. "
+                "You never need the whole academy first - only the linked lessons. Rigor is never traded for the deadline; extend freely.")
     p = project_picker("fp")
-    if p:
+    t_ms, t_scan, t_wk = st.tabs(["Milestones", "Topic Explorer (real PubMed scan)", "16-week task view"])
+    with t_ms:
+        if not p:
+            st.stop()
         if p["is_teaching"]:
-            st.warning("This is a teaching project; progress here does not count toward a real paper.")
-        dn = db.tasks_done(p["id"]); tasks = all_tasks()
-        st.progress(len(dn) / len(tasks), text=f"{len(dn)}/{len(tasks)} tasks · {sum(t[5] for t in tasks if t[3] in dn)/60:.1f} of {sum(t[5] for t in tasks)/60:.0f} planned hours")
-        nxt = next((t for t in tasks if t[3] not in dn), None)
-        if nxt: st.info(f"**Next action (week {nxt[0]}):** {nxt[4]}")
-        gates_open = [t for t in tasks if t[6] == "gate" and t[3] not in dn and nxt and t[0] <= nxt[0]]
-        catch = st.checkbox("Catch-up mode: show only unfinished tasks")
-        for w, title, phase, ts in WEEKS:
-            if catch and all(k in dn for k, *_ in ts): continue
-            with st.expander(f"Week {w}: {title}", expanded=(nxt is not None and nxt[0] == w)):
-                for k, label, mins, kind in ts:
-                    v = st.checkbox(f"{'🚧 GATE: ' if kind == 'gate' else ''}{label}  ·  ~{mins} min", value=k in dn, key=f"t{p['id']}{k}")
+            st.warning("Teaching project: progress here does not count toward a real paper.")
+        dn = db.tasks_done(p["id"])
+        def ms_done(m): return all(f"ms{m['id']}_qc{i}" in dn for i in range(len(m["qc"])))
+        finished = [m["id"] for m in MILESTONES if ms_done(m)]
+        cur = next((m for m in MILESTONES if not ms_done(m)), None)
+        st.progress(len(finished) / len(MILESTONES), text=f"{len(finished)}/{len(MILESTONES)} milestones complete")
+        if cur: st.info(f"**You are on Milestone {cur['id']}: {cur['name']}** (suggested weeks {cur['weeks']})")
+        for m in MILESTONES:
+            tag = "✅" if ms_done(m) else ("▶️" if cur and m["id"] == cur["id"] else "○")
+            with st.expander(f"{tag} Milestone {m['id']}: {m['name']}  (weeks {m['weeks']})", expanded=bool(cur and m["id"] == cur["id"])):
+                st.markdown(f"**1. What to learn:** {m['learn']}\n\n**2. Why:** {m['why']}\n\n**3. Practical demonstration:** {m['demo']}\n\n"
+                            f"**4. Practice exercise:** {m['practice']}\n\n**5. Task for YOUR research:** {m['task']}")
+                lk = [f"Module {i} ({'lesson available' if i in LES else 'outline only'})" for i in m["modules"]]
+                st.caption("Lessons: " + "; ".join(lk) + f" · Tool: {m['tool']}")
+                st.markdown("**6. Quality-control checklist** (tick only when truly satisfied)")
+                for i, q in enumerate(m["qc"]):
+                    k = f"ms{m['id']}_qc{i}"
+                    v = st.checkbox(q, value=k in dn, key=f"{p['id']}{k}")
                     if v != (k in dn):
                         db.set_task(p["id"], k, v); st.rerun()
-        if gates_open:
-            st.warning("Open quality gates: " + "; ".join(g[4] for g in gates_open))
+                st.markdown(f"**7. Deliverable:** {m['deliverable']}  \n**8. Next step:** {m['next']}")
+    with t_scan:
+        st.warning(f"**Preliminary signals, not decisions.** Every count was returned by {TS.DB} on {TS.DATE}: one database, auto-translated queries, no screening. "
+                   "Zero review hits does NOT prove novelty; a large primary literature does NOT prove usable data. You choose the topic.")
+        st.subheader("Candidate topics and open questions")
+        for c in TS.CANDIDATES:
+            with st.expander(f"{c['id']}. {c['title']}"):
+                st.markdown(f"**Why it may be interesting:** {c['why_interesting']}")
+                if c["concerns"]: st.markdown("**Concerns:**\n" + "\n".join(f"- {x}" for x in c["concerns"]))
+                st.markdown(f"**Likely design:** {c['likely_design']}  \n**Evidence (search ids):** {', '.join(c['signals'])}")
+                st.markdown("**Next steps:**\n" + "\n".join(f"- {x}" for x in c["next_steps"]))
+        st.subheader("Self-assessment rubric (your judgement, not mine)")
+        st.caption("Score each criterion 0-2 for your top candidates after doing Milestone 3. A total is only a conversation starter.")
+        for r in TS.RUBRIC: st.markdown(f"- {r}")
+        st.subheader("The searches (exact queries)")
+        sdf = pd.DataFrame(TS.SEARCHES, columns=["id", "topic", "purpose", "query", "PubMed total", "interpretation"])
+        st.dataframe(sdf, hide_index=True, width="stretch")
+        st.download_button("Download scan (CSV)", sdf.to_csv(index=False), "topic_scan_pubmed_2026-11-26.csv")
+        st.info("Teaching points: S18 shows PubMed translating 'STEM' into plant stems; S0a/S0b show zero hits from over-specified queries; S12 shows that Drosophila SR/MAs exist, so the format is accepted but each topic must still be checked.")
+    with t_wk:
+        if not p:
+            st.stop()
+        dn = db.tasks_done(p["id"]); tasks = all_tasks()
+        st.progress(len([t for t in tasks if t[3] in dn]) / len(tasks), text="16-week default tasks (alternate view of the same journey)")
+        catch = st.checkbox("Catch-up mode: show only unfinished weeks")
+        for w, title, phase, ts in WEEKS:
+            if catch and all(k in dn for k, *_ in ts): continue
+            with st.expander(f"Week {w}: {title}"):
+                for k, label, mins, kind in ts:
+                    v = st.checkbox(f"{'🚧 GATE: ' if kind == 'gate' else ''}{label} · ~{mins} min", value=k in dn, key=f"t{p['id']}{k}")
+                    if v != (k in dn):
+                        db.set_task(p["id"], k, v); st.rerun()
 
 # -------------------------------------------------------- STATISTICS LAB
 elif page == "Statistics Lab":
@@ -543,6 +583,26 @@ elif page == "Network & Collaboration":
          "Request mentorship": "Subject: Mentorship request - evidence synthesis\n\nDear [Name],\n\nI am a [career stage] in [field] starting my first meta-analysis ([topic]). I admire your work on [specific]. Would you be open to a [30-minute] conversation or occasional feedback? I understand if you lack capacity.\n\nBest,\n[Your name]"}
     k = st.selectbox("Template", list(T)); st.text_area("Edit and send yourself (the platform never contacts anyone)", T[k], height=220)
     st.caption("Authorship must follow your institution/journal criteria (e.g. ICMJE): substantive contribution only; do not offer authorship in exchange for favours.")
+
+# ------------------------------------------------------ QUALITY / EXPERT REVIEW
+elif page == "Quality & Expert Review":
+    from metalab import claims as CL, expert as EX
+    st.title("Quality & Expert Review")
+    sm = CL.summary()
+    st.metric("Claims tracked", sm["total"]); c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Directly supported (abstract/software)", sm["supported"]); c2.metric("Partial", sm["partial"])
+    c3.metric("Unverified", sm["unverified"]); c4.metric("Human-expert reviewed", sm["human_reviewed"])
+    st.warning("Nothing in MetaLab is expert-reviewed yet. 'Supported' means the source's abstract (or software output) directly supports the claim - not that a qualified human checked the lesson.")
+    t1, t2, t3 = st.tabs(["Claim register", "Correction history", "Expert review packages"])
+    with t1:
+        st.dataframe(pd.DataFrame(CL.CLAIMS).drop(columns=["verified_on"]), hide_index=True, width="stretch")
+    with t2:
+        st.caption("Every error found so far is kept here, including ones the verification tools caught.")
+        st.dataframe(pd.DataFrame(CL.CORRECTIONS), hide_index=True, width="stretch")
+    with t3:
+        pk = EX.available(); sel = st.selectbox("Package", list(pk))
+        md = pk[sel](); st.download_button("Download package (Markdown)", md, file_name=sel.split(":")[0].replace(" ", "_") + "_review_package.md")
+        with st.expander("Preview"): st.markdown(md)
 
 # ----------------------------------------------------------------- STATUS
 else:

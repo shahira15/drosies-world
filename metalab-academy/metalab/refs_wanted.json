@@ -1,0 +1,196 @@
+[
+ {
+  "key": "lund2016",
+  "doi": "10.1136/bmj.i5440",
+  "author": "Lund",
+  "year": 2016
+ },
+ {
+  "key": "robinson2021",
+  "doi": "10.1016/j.jclinepi.2020.07.020",
+  "author": "Robinson",
+  "year": 2021
+ },
+ {
+  "key": "borah2017",
+  "doi": "10.1136/bmjopen-2016-012545",
+  "author": "Borah",
+  "year": 2017
+ },
+ {
+  "key": "shamseer2015",
+  "doi": "10.1136/bmj.g7647",
+  "author": "Shamseer",
+  "year": 2015
+ },
+ {
+  "key": "moher2015",
+  "doi": "10.1186/2046-4053-4-1",
+  "author": "",
+  "year": 2015,
+  "pmid": "25554246",
+  "note": "Crossref lists no personal author (group authorship); PubMed record PMID 25554246 verified earlier for first author Moher"
+ },
+ {
+  "key": "mcgowan2016",
+  "doi": "10.1016/j.jclinepi.2016.01.021",
+  "author": "McGowan",
+  "year": 2016
+ },
+ {
+  "key": "rethlefsen2021",
+  "doi": "10.5195/jmla.2021.962",
+  "author": "Rethlefsen",
+  "year": 2021
+ },
+ {
+  "key": "arrive2020",
+  "doi": "10.1136/bmjos-2020-100115",
+  "author": "Percie du Sert",
+  "year": 2020
+ },
+ {
+  "key": "wan2014",
+  "doi": "10.1186/1471-2288-14-135",
+  "author": "Wan",
+  "year": 2014
+ },
+ {
+  "key": "mathes2017",
+  "doi": "10.1186/s12874-017-0431-4",
+  "author": "Mathes",
+  "year": 2017
+ },
+ {
+  "key": "jones2005",
+  "doi": "10.1016/j.jclinepi.2004.11.024",
+  "author": "Jones",
+  "year": 2005
+ },
+ {
+  "key": "nakagawa2012",
+  "doi": "10.1007/s10682-012-9555-5",
+  "author": "Nakagawa",
+  "year": 2012
+ },
+ {
+  "key": "nakagawa2023",
+  "doi": "10.1186/s13750-023-00301-6",
+  "author": "Nakagawa",
+  "year": 2023
+ },
+ {
+  "key": "waffenschmidt2019",
+  "doi": "10.1186/s12874-019-0782-0",
+  "author": "Waffenschmidt",
+  "year": 2019
+ },
+ {
+  "key": "hooijmans2014",
+  "doi": "10.1186/1471-2288-14-43",
+  "author": "Hooijmans",
+  "year": 2014,
+  "pmid": "24667063"
+ },
+ {
+  "key": "sterne2019rob2",
+  "doi": "10.1136/bmj.l4898",
+  "author": "Sterne",
+  "year": 2019,
+  "pmid": "31462531"
+ },
+ {
+  "key": "sterne2016robinsi",
+  "doi": "10.1136/bmj.i4919",
+  "author": "Sterne",
+  "year": 2016,
+  "pmid": "27733354"
+ },
+ {
+  "key": "mchugh2012",
+  "doi": "10.11613/BM.2012.031",
+  "author": "McHugh",
+  "year": 2012,
+  "pmid": "23092060"
+ },
+ {
+  "key": "sterne2001",
+  "doi": "10.1136/bmj.323.7304.101",
+  "author": "Sterne",
+  "year": 2001,
+  "pmid": "11451790"
+ },
+ {
+  "key": "viechtbauer2010",
+  "doi": "10.18637/jss.v036.i03",
+  "author": "Viechtbauer",
+  "year": 2010
+ },
+ {
+  "key": "viechtbauer2005",
+  "doi": "10.3102/10769986030003261",
+  "author": "Viechtbauer",
+  "year": 2005
+ },
+ {
+  "key": "hedges1981",
+  "doi": "10.3102/10769986006002107",
+  "author": "Hedges",
+  "year": 1981
+ },
+ {
+  "key": "hedges1999",
+  "doi": "10.1890/0012-9658(1999)080[1150:TMAORR]2.0.CO;2",
+  "author": "Hedges",
+  "year": 1999
+ },
+ {
+  "key": "dersimonian1986",
+  "doi": "10.1016/0197-2456(86)90046-2",
+  "author": "DerSimonian",
+  "year": 1986
+ },
+ {
+  "key": "higgins2003",
+  "doi": "10.1136/bmj.327.7414.557",
+  "author": "Higgins",
+  "year": 2003
+ },
+ {
+  "key": "inthout2014",
+  "doi": "10.1186/1471-2288-14-25",
+  "author": "IntHout",
+  "year": 2014
+ },
+ {
+  "key": "thompson2002",
+  "doi": "10.1002/sim.1187",
+  "author": "Thompson",
+  "year": 2002
+ },
+ {
+  "key": "egger1997",
+  "doi": "10.1136/bmj.315.7109.629",
+  "author": "Egger",
+  "year": 1997
+ },
+ {
+  "key": "gurevitch2018",
+  "doi": "10.1038/nature25753",
+  "author": "Gurevitch",
+  "year": 2018
+ },
+ {
+  "key": "koricheva2014",
+  "doi": "10.1111/1365-2745.12224",
+  "author": "Koricheva",
+  "year": 2014
+ },
+ {
+  "key": "higgins2009pi",
+  "doi": "10.1111/j.1467-985X.2008.00552.x",
+  "author": "Higgins",
+  "year": 2008,
+  "cite_year": 2009
+ }
+]

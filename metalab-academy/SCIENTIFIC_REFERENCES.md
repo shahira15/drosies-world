@@ -17,3 +17,35 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `langan2019`: Langan D, Higgins JPT, Jackson D, et al. A comparison of heterogeneity variance estimators in simulated random-effects meta-analyses. Res Synth Methods 2019;10:83-98. DOI: 10.1002/jrsm.1316 · PMID 30067315
 - `guyatt2008`: Guyatt GH, Oxman AD, Vist GE, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ 2008;336:924-926. DOI: 10.1136/bmj.39489.470347.AD · PMID 18436948
 - `colditz1994`: Colditz GA, Brewer TF, Berkey CS, et al. Efficacy of BCG vaccine in the prevention of tuberculosis. JAMA 1994;271:698-702. DOI: none recorded · PMID 8309034
+- `lund2016`: Lund et al. Towards evidence based research. BMJ 2016;i5440. DOI: 10.1136/bmj.i5440 · PMID None
+- `robinson2021`: Robinson et al. Evidence-Based Research Series-Paper 1: What Evidence-Based Research is and why is it important?. Journal of Clinical Epidemiology 2021;129, 151-157. DOI: 10.1016/j.jclinepi.2020.07.020 · PMID None
+- `borah2017`: Borah et al. Analysis of the time and workers needed to conduct systematic reviews of medical interventions using data from the PROSPERO registry. BMJ Open 2017;7, e012545. DOI: 10.1136/bmjopen-2016-012545 · PMID None
+- `shamseer2015`: Shamseer et al. Preferred reporting items for systematic review and meta-analysis protocols (PRISMA-P) 2015: elaboration and explanation. BMJ 2015;349, g7647-g7647. DOI: 10.1136/bmj.g7647 · PMID None
+- `mcgowan2016`: McGowan et al. PRESS Peer Review of Electronic Search Strategies: 2015 Guideline Statement. Journal of Clinical Epidemiology 2016;75, 40-46. DOI: 10.1016/j.jclinepi.2016.01.021 · PMID None
+- `rethlefsen2021`: Rethlefsen et al. PRISMA-S: an extension to the PRISMA statement for reporting literature searches in systematic reviews. Journal of the Medical Library Association 2021;109. DOI: 10.5195/jmla.2021.962 · PMID None
+- `arrive2020`: Percie du Sert et al. The ARRIVE guidelines 2.0: updated guidelines for reporting animal researchThe ARRIVE guidelines 2.0: updated guidelines for reporting animal research. BMJ Open Science 2020;44. DOI: 10.1136/bmjos-2020-100115 · PMID None
+- `wan2014`: Wan et al. Estimating the sample mean and standard deviation from the sample size, median, range and/or interquartile range. BMC Medical Research Methodology 2014;14. DOI: 10.1186/1471-2288-14-135 · PMID None
+- `mathes2017`: Mathes et al. Frequency of data extraction errors and methods to increase data extraction quality: a methodological review. BMC Medical Research Methodology 2017;17. DOI: 10.1186/s12874-017-0431-4 · PMID None
+- `jones2005`: Jones et al. High prevalence but low impact of data extraction and reporting errors were found in Cochrane systematic reviews. Journal of Clinical Epidemiology 2005;58, 741-742. DOI: 10.1016/j.jclinepi.2004.11.024 · PMID None
+- `nakagawa2012`: Nakagawa et al. Methodological issues and advances in biological meta-analysis. Evolutionary Ecology 2012;26, 1253-1274. DOI: 10.1007/s10682-012-9555-5 · PMID None
+- `nakagawa2023`: Nakagawa et al. Quantitative evidence synthesis: a practical guide on meta-analysis, meta-regression, and publication bias tests for environmental sciences. Environmental Evidence 2023;12. DOI: 10.1186/s13750-023-00301-6 · PMID None
+- `waffenschmidt2019`: Waffenschmidt et al. Single screening versus conventional double screening for study selection in systematic reviews: a methodological systematic review. BMC Medical Research Methodology 2019;19. DOI: 10.1186/s12874-019-0782-0 · PMID None
+- `hooijmans2014`: Hooijmans et al. SYRCLE’s risk of bias tool for animal studies. BMC Medical Research Methodology 2014;14. DOI: 10.1186/1471-2288-14-43 · PMID 24667063
+- `sterne2019rob2`: Sterne et al. RoB 2: a revised tool for assessing risk of bias in randomised trials. BMJ 2019;l4898. DOI: 10.1136/bmj.l4898 · PMID 31462531
+- `sterne2016robinsi`: Sterne et al. ROBINS-I: a tool for assessing risk of bias in non-randomised studies of interventions. BMJ 2016;i4919. DOI: 10.1136/bmj.i4919 · PMID 27733354
+- `mchugh2012`: McHugh Interrater reliability: the kappa statistic. Biochemia Medica 2012;276-282. DOI: 10.11613/bm.2012.031 · PMID 23092060
+- `sterne2001`: Sterne et al. Investigating and dealing with publication and other biases in meta-analysis. BMJ 2001;323, 101-105. DOI: 10.1136/bmj.323.7304.101 · PMID 11451790
+- `viechtbauer2010`: Viechtbauer Conducting Meta-Analyses in <i>R</i> with the <b>metafor</b> Package. Journal of Statistical Software 2010;36. DOI: 10.18637/jss.v036.i03 · PMID None
+- `viechtbauer2005`: Viechtbauer Bias and Efficiency of Meta-Analytic Variance Estimators in the Random-Effects Model. Journal of Educational and Behavioral Statistics 2005;30, 261-293. DOI: 10.3102/10769986030003261 · PMID None
+- `hedges1981`: Hedges Distribution Theory for Glass's Estimator of Effect size and Related Estimators. Journal of Educational Statistics 1981;6, 107-128. DOI: 10.3102/10769986006002107 · PMID None
+- `hedges1999`: Hedges et al. THE META-ANALYSIS OF RESPONSE RATIOS IN EXPERIMENTAL ECOLOGY. Ecology 1999;80, 1150-1156. DOI: 10.1890/0012-9658(1999)080[1150:tmaorr]2.0.co;2 · PMID None
+- `dersimonian1986`: DerSimonian et al. Meta-analysis in clinical trials. Controlled Clinical Trials 1986;7, 177-188. DOI: 10.1016/0197-2456(86)90046-2 · PMID None
+- `higgins2003`: Higgins et al. Measuring inconsistency in meta-analyses. BMJ 2003;327, 557-560. DOI: 10.1136/bmj.327.7414.557 · PMID None
+- `inthout2014`: IntHout et al. The Hartung-Knapp-Sidik-Jonkman method for random effects meta-analysis is straightforward and considerably outperforms the standard DerSimonian-Laird method. BMC Medical Research Methodology 2014;14. DOI: 10.1186/1471-2288-14-25 · PMID None
+- `thompson2002`: Thompson et al. How should meta‐regression analyses be undertaken and interpreted?. Statistics in Medicine 2002;21, 1559-1573. DOI: 10.1002/sim.1187 · PMID None
+- `egger1997`: Egger et al. Bias in meta-analysis detected by a simple, graphical test. BMJ 1997;315, 629-634. DOI: 10.1136/bmj.315.7109.629 · PMID None
+- `gurevitch2018`: Gurevitch et al. Meta-analysis and the science of research synthesis. Nature 2018;555, 175-182. DOI: 10.1038/nature25753 · PMID None
+- `moher2015`:  et al. Preferred reporting items for systematic review and meta-analysis protocols (PRISMA-P) 2015 statement. Systematic Reviews 2015;4. DOI: 10.1186/2046-4053-4-1 · PMID 25554246
+- `koricheva2014`: Koricheva et al. Uses and misuses of meta‐analysis in plant ecology. Journal of Ecology 2014;102, 828-844. DOI: 10.1111/1365-2745.12224 · PMID None
+- `higgins2009pi`: Higgins et al. A Re-Evaluation of Random-Effects Meta-Analysis. Journal of the Royal Statistical Society Series A: Statistics in Society 2009;172, 137-159. DOI: 10.1111/j.1467-985x.2008.00552.x · PMID None
+- `swindell2017`: Swindell Meta-Analysis of 29 Experiments Evaluating the Effects of Rapamycin on Life Span in the Laboratory Mouse. J Gerontol A Biol Sci Med Sci 2017;72. DOI: 10.1093/gerona/glw153 · PMID 27519886

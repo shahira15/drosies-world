@@ -23,7 +23,21 @@ REFS = {
 for r in REFS.values():
     r.update(verified=True, verified_on=VERIFIED_ON, verified_via=SOURCE)
 
+import json as _json
+from pathlib import Path as _P
+_extra = _P(__file__).with_name("refs_verified.json")
+if _extra.exists():
+    for _k, _v in _json.loads(_extra.read_text()).items():
+        _auth = _v["first_author"] + (" et al." if _v["n_authors"] > 1 else "")
+        _loc = ", ".join(x for x in [_v["volume"], _v["pages"]] if x)
+        REFS[_k] = dict(cite=f"{_auth} {_v['title']}. {_v['journal']} {_v['year']}" + (f";{_loc}" if _loc else "") + ".",
+                        doi=_v["doi"], pmid=_v.get("pmid"), verified=True, verified_on=_v["verified_on"],
+                        verified_via=_v["verified_via"], verification=_v["verification"])
+for _r in REFS.values():
+    _r.setdefault("verification", "bibliographic")
+
+
 def link(key):
     r = REFS[key]
     url = f"https://doi.org/{r['doi']}" if r["doi"] else f"https://pubmed.ncbi.nlm.nih.gov/{r['pmid']}/"
-    return f"{r['cite']} [{'DOI' if r['doi'] else 'PubMed'}]({url}) · PMID {r['pmid']}"
+    return f"{r['cite']} [{'DOI' if r['doi'] else 'PubMed'}]({url})" + (f" · PMID {r['pmid']}" if r.get("pmid") else "")

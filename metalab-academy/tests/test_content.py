@@ -39,3 +39,35 @@ def test_references_verified_fields():
 def test_resources_never_claim_verification():
     for d in resources.RESOURCES + resources.ORGS:
         assert d["verified_on"] is None and d["url"].startswith("https://")
+
+
+def test_topic_scan_is_honest():
+    from metalab import topic_scan as T
+    assert T.DATE == "2026-11-26" and T.DB.startswith("PubMed")
+    ids = {s[0] for s in T.SEARCHES}
+    assert len(ids) == len(T.SEARCHES)
+    for c in T.CANDIDATES:
+        assert set(c["signals"]) <= ids
+    for s in T.SEARCHES:
+        assert isinstance(s[4], int) and s[3].strip() and s[5].strip()
+    # zero-hit searches must carry an explicit 'does not prove novelty' caveat
+    assert all("NOT" in s[5] or "DO NOT" in s[5] for s in T.SEARCHES if s[4] == 0)
+
+
+def test_claims_registry_integrity():
+    from metalab import claims, references
+    ids = [c["id"] for c in claims.CLAIMS]
+    assert len(ids) == len(set(ids))
+    for c in claims.CLAIMS:
+        assert c["source_key"] in references.REFS, c["id"]
+        assert c["human_review"] == "none"          # no claim is human-reviewed yet; change only with a real signed review
+        assert c["supports_directly"] in ("yes", "partial", "unverified") or c["supports_directly"].startswith("yes")
+        if c["supports_directly"] == "unverified":
+            assert "UNVERIFIED" in c["status"] and "not examined" in c["examined"]
+    assert len(claims.CORRECTIONS) >= 10
+
+
+def test_all_references_have_ids_and_verification_dates():
+    from metalab import references
+    for k, r in references.REFS.items():
+        assert r["verified_on"] and (r["doi"] or r["pmid"]), k
