@@ -1,0 +1,2 @@
+# Security notes
+Local single-user; no auth; no network calls; parameterised SQL (f-strings only for fixed table/column names in backup/restore, where column names come from our own backup file - restore validates column names against the schema (tested), but still only restore files you created). SQLite file unencrypted. No dependency audit yet. Uploaded files are read as text only. Do not expose the Streamlit port publicly.

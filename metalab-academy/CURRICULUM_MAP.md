@@ -1,0 +1,118 @@
+# Curriculum map (generated)
+
+84 modules registered; **3 have a lesson**; 81 are outlines (title/level only, no lesson).
+
+
+## Level 0: Research foundations
+
+| # | Module | Part | Status |
+|---|---|---|---|
+| 1 | Scientific reasoning | Foundations of science and evidence | outline |
+| 2 | Research study designs | Foundations of science and evidence | outline |
+| 24 | Mathematical foundations | Statistics from first principles | outline |
+| 69 | R programming from scratch | Programming | outline |
+
+## Level 1: Systematic review fundamentals
+
+| # | Module | Part | Status |
+|---|---|---|---|
+| 3 | Introduction to evidence synthesis | Foundations of science and evidence | drafted |
+| 4 | Formulating research questions | Research question development | drafted |
+| 5 | Novelty and research gap identification | Research question development | outline |
+| 6 | Feasibility and project planning | Research question development | outline |
+| 7 | Protocol development | Protocols and registration | outline |
+| 8 | Registration and open protocols | Protocols and registration | outline |
+| 25 | Descriptive and inferential statistics | Statistics from first principles | outline |
+
+## Level 2: Applied evidence synthesis
+
+| # | Module | Part | Status |
+|---|---|---|---|
+| 9 | Bibliographic databases | Information retrieval | outline |
+| 10 | Advanced search strategies | Information retrieval | outline |
+| 11 | Supplementary searching | Information retrieval | outline |
+| 12 | Literature search reproducibility | Information retrieval | outline |
+| 13 | Reference management | References and study selection | outline |
+| 14 | Deduplication | References and study selection | outline |
+| 15 | Study screening | References and study selection | outline |
+| 16 | PRISMA flow diagrams | References and study selection | outline |
+| 17 | Extraction framework | Data extraction and management | outline |
+| 18 | Quantitative data extraction | Data extraction and management | outline |
+| 19 | Graph digitization and unavailable data | Data extraction and management | outline |
+| 20 | Data quality and provenance | Data extraction and management | outline |
+| 21 | Bias fundamentals | Risk of bias and appraisal | outline |
+| 22 | Critical appraisal instruments | Risk of bias and appraisal | outline |
+| 23 | Risk-of-bias visualization | Risk of bias and appraisal | outline |
+| 53 | Synthesis without meta-analysis | Non-quantitative synthesis | outline |
+| 55 | Scoping reviews and evidence maps | Non-quantitative synthesis | outline |
+
+## Level 3: Quantitative meta-analysis
+
+| # | Module | Part | Status |
+|---|---|---|---|
+| 26 | Statistical estimation and uncertainty | Statistics from first principles | outline |
+| 27 | Continuous outcome effect sizes | Effect sizes | outline |
+| 28 | Binary and categorical outcomes | Effect sizes | outline |
+| 29 | Correlation and regression effects | Effect sizes | outline |
+| 30 | Count, rate and survival outcomes | Effect sizes | outline |
+| 31 | Effect-size transformations | Effect sizes | outline |
+| 32 | Principles of quantitative pooling | Core meta-analysis | drafted |
+| 33 | Common-effect models | Core meta-analysis | outline |
+| 34 | Random-effects models | Core meta-analysis | outline |
+| 35 | Heterogeneity | Core meta-analysis | outline |
+| 36 | Subgroup analysis | Core meta-analysis | outline |
+| 37 | Meta-regression | Core meta-analysis | outline |
+| 50 | Publication bias and missing evidence | Bias, robustness, certainty | outline |
+| 51 | Sensitivity and influence analysis | Bias, robustness, certainty | outline |
+| 52 | Certainty of evidence | Bias, robustness, certainty | outline |
+| 70 | Meta-analysis in R | Programming | outline |
+| 71 | Python for evidence synthesis | Programming | outline |
+| 73 | Scientific visualization | Visualization and communication | outline |
+| 74 | Interpretation and communication | Visualization and communication | outline |
+
+## Level 4: Advanced & specialized methods
+
+| # | Module | Part | Status |
+|---|---|---|---|
+| 38 | Dependent effect sizes | Advanced meta-analysis | outline |
+| 39 | Multilevel and multivariate meta-analysis | Advanced meta-analysis | outline |
+| 40 | Robust variance estimation | Advanced meta-analysis | outline |
+| 41 | Bayesian meta-analysis | Advanced meta-analysis | outline |
+| 42 | Network meta-analysis | Advanced meta-analysis | outline |
+| 43 | Dose-response meta-analysis | Advanced meta-analysis | outline |
+| 44 | Diagnostic test accuracy meta-analysis | Advanced meta-analysis | outline |
+| 45 | Prognostic and prediction model synthesis | Advanced meta-analysis | outline |
+| 46 | Individual participant data meta-analysis | Advanced meta-analysis | outline |
+| 47 | Prevalence and incidence meta-analysis | Advanced meta-analysis | outline |
+| 48 | Rare-event meta-analysis | Advanced meta-analysis | outline |
+| 49 | Additional specialized quantitative methods | Advanced meta-analysis | outline |
+| 54 | Qualitative evidence synthesis | Non-quantitative synthesis | outline |
+| 56 | Umbrella, rapid, living and realist reviews | Non-quantitative synthesis | outline |
+| 57 | Clinical medicine and healthcare | Discipline academies | outline |
+| 58 | Public health and epidemiology | Discipline academies | outline |
+| 59 | Preclinical and animal research | Discipline academies | outline |
+| 60 | Molecular biology, genetics and biotechnology | Discipline academies | outline |
+| 61 | Plant biology and agriculture | Discipline academies | outline |
+| 62 | Microbiology and infectious disease | Discipline academies | outline |
+| 63 | Ecology, evolution and environmental science | Discipline academies | outline |
+| 64 | Psychology and behavioral science | Discipline academies | outline |
+| 65 | Education and social science | Discipline academies | outline |
+| 66 | Nutrition, food science and exercise | Discipline academies | outline |
+| 67 | Economics, business and policy | Discipline academies | outline |
+| 68 | Engineering and computer science | Discipline academies | outline |
+| 72 | Advanced computational reproducibility | Programming | outline |
+
+## Level 5: Independent researcher & publication mastery
+
+| # | Module | Part | Status |
+|---|---|---|---|
+| 75 | Scientific writing | Manuscript and publication | outline |
+| 76 | Reporting guidelines | Manuscript and publication | outline |
+| 77 | Journal selection | Manuscript and publication | outline |
+| 78 | Submission and peer review | Manuscript and publication | outline |
+| 79 | Research dissemination and impact | Manuscript and publication | outline |
+| 80 | Research integrity | Ethics, AI, open science | outline |
+| 81 | Responsible AI-assisted evidence synthesis | Ethics, AI, open science | outline |
+| 82 | Open science and data governance | Ethics, AI, open science | outline |
+| 83 | Research collaboration and leadership | Ethics, AI, open science | outline |
+| 84 | Independent evidence synthesis mastery (capstone) | Ethics, AI, open science | outline |

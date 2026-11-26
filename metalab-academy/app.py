@@ -1,0 +1,510 @@
+"""MetaLab Academy - local-first Streamlit app. Run: ./run.sh"""
+import json, os, time, datetime
+from pathlib import Path
+import numpy as np, pandas as pd, streamlit as st
+import plotly.graph_objects as go
+from metalab import curriculum, lessons, references, resources, stats as S
+from metalab.store import Store, DECISIONS
+from metalab.plan import WEEKS, all_tasks
+
+st.set_page_config(page_title="MetaLab Academy", page_icon="🧪", layout="wide")
+ROOT = Path(__file__).parent
+
+@st.cache_resource
+def get_store():
+    return Store(os.environ.get("METALAB_DB") or str(ROOT / "data" / "metalab.sqlite"))
+db = get_store()
+LES = lessons.load()
+PROFILE = db.profile()
+
+PAGES = ["Home", "Onboarding", "Learning Academy", "Research Workspace", "First Paper Plan",
+         "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Status & Limitations"]
+page = st.sidebar.radio("MetaLab Academy", PAGES, key="nav")
+st.sidebar.caption("Learn. Discover. Analyze. Collaborate. Publish.")
+st.sidebar.info("Early version. Only the features marked *tested* or *implemented* on the Status page work; "
+                "lessons are AI-drafted and not yet expert-reviewed.")
+DISCLAIM = "AI-drafted educational content; verify against primary sources. Not accredited instruction."
+
+def project_picker(key="proj"):
+    ps = db.projects()
+    if not ps:
+        st.info("No project yet. Create one in the Research Workspace.")
+        return None
+    labels = {p["id"]: f"{p['name']}  {'[TEACHING DATA]' if p['is_teaching'] else ''}" for p in ps}
+    pid = st.selectbox("Project", list(labels), format_func=labels.get, key=key)
+    return next(p for p in ps if p["id"] == pid)
+
+# ------------------------------------------------------------------ HOME
+if page == "Home":
+    st.title("🧪 MetaLab Academy")
+    c = curriculum.counts()
+    done = db.completed()
+    a, b, d, e = st.columns(4)
+    a.metric("Modules in curriculum", c["total"]); b.metric("Lessons actually written", c["drafted"],
+        help="The other modules are outlines only: title and level, no lesson.")
+    d.metric("Lessons you completed", len(done)); e.metric("Projects", len(db.projects()))
+    st.warning(f"Honest status: {c['drafted']} of {c['total']} modules have a lesson. The rest are visible as outlines so you can see the roadmap.")
+    st.subheader("Start here")
+    if not PROFILE:
+        st.write("1. Go to **Onboarding** (5 minutes) to get a suggested pathway.")
+    nxt = next((m for m in (3, 4, 32) if m not in done), None)
+    if nxt:
+        st.write(f"**Next lesson:** Module {nxt} - {LES[nxt]['title']} (open it in *Learning Academy*).")
+    else:
+        st.success("All three available lessons completed. More are being written - see NEXT_ACTIONS.md.")
+    st.write("Then: create your project and follow the **First Paper Plan**.")
+    p = [x for x in db.projects() if not x["is_teaching"]]
+    if p:
+        tasks = all_tasks(); dn = db.tasks_done(p[0]["id"])
+        st.progress(len(dn) / len(tasks), text=f"First-paper plan: {len(dn)}/{len(tasks)} tasks ({p[0]['name']})")
+
+# ------------------------------------------------------------ ONBOARDING
+elif page == "Onboarding":
+    st.title("Onboarding")
+    st.caption("Stored only in a local file on this computer. Nothing is sent anywhere.")
+    with st.form("onb"):
+        disc = st.text_input("Academic discipline", PROFILE.get("discipline", ""))
+        exp = st.select_slider("Research experience", ["none", "some", "substantial"], PROFILE.get("research_exp", "some"))
+        stat = st.select_slider("Statistics experience", ["none", "basic", "intermediate", "advanced"], PROFILE.get("stats_exp", "basic"))
+        code = st.select_slider("Coding experience", ["none", "basic", "intermediate", "advanced"], PROFILE.get("code_exp", "basic"))
+        sr = st.select_slider("Familiarity with systematic reviews", ["none", "heard of", "read some", "done one"], PROFILE.get("sr_fam", "none"))
+        ma = st.select_slider("Familiarity with meta-analysis", ["none", "heard of", "read some", "done one"], PROFILE.get("ma_fam", "none"))
+        hrs = st.number_input("Study hours per week", 1, 40, int(PROFILE.get("hours", 6)))
+        lang = st.selectbox("Preferred language", ["R", "Python", "Either", "None yet"], ["R", "Python", "Either", "None yet"].index(PROFILE.get("lang", "R")))
+        goal = st.text_area("Research goal / intended project", PROFILE.get("goal", ""))
+        path = st.selectbox("Starting pathway", ["Complete beginner", "Preclinical researcher", "Clinician", "Plant scientist", "Microbiologist",
+                            "Ecologist", "Public health researcher", "Social scientist", "Education researcher", "Advanced statistician",
+                            "Research librarian", "Faculty instructor", "Independent researcher"])
+        if st.form_submit_button("Save profile"):
+            db.set_profile(discipline=disc, research_exp=exp, stats_exp=stat, code_exp=code, sr_fam=sr, ma_fam=ma,
+                           hours=hrs, lang=lang, goal=goal, pathway=path)
+            st.success("Saved."); st.rerun()
+    st.subheader("Diagnostic (6 questions, ungraded for access - nothing is locked)")
+    DIAG = [
+      ("The standard error of the mean describes...", ["Spread of individual observations", "Precision of the sample mean", "Bias of the study", "The p-value"], 1),
+      ("A 95% confidence interval means...", ["95% of the data lie inside it", "Procedure captures the true value in ~95% of repeated samples", "p = 0.95", "The effect is real"], 1),
+      ("A meta-analysis is...", ["Any literature review", "A statistical combination of results from several studies", "A type of clinical trial", "A reporting guideline"], 1),
+      ("Larger studies in a pooled analysis typically get...", ["Less weight", "More weight (smaller variance)", "Equal weight", "Zero weight"], 1),
+      ("PECO differs from PICO by using...", ["Exposure instead of Intervention", "A different outcome", "No comparator", "Only humans"], 0),
+      ("In fly experiments the independent experimental unit is often...", ["Each fly regardless of vial", "The vial/cage", "The lab", "The gene"], 1)]
+    ans = []
+    for i, (q, o, k) in enumerate(DIAG):
+        ans.append(o.index(st.radio(q, o, index=None, key=f"d{i}")) if st.session_state.get(f"d{i}") else -1)
+    if st.button("Score diagnostic"):
+        sc = sum(a == k for a, (_, _, k) in zip(ans, DIAG))
+        st.write(f"**{sc}/6**")
+        rec = "Start with Modules 3 -> 4 -> 32, using the Statistics Lab alongside." if sc < 5 else \
+              "You can skim Module 3/4 and focus on Module 32 and the Workspace."
+        st.info(rec + " (This is a rough self-check, not a validated test. All content stays open to you.)")
+        db.set_profile(diagnostic=sc)
+
+# ------------------------------------------------------- LEARNING ACADEMY
+elif page == "Learning Academy":
+    st.title("Learning Academy")
+    tab_list, tab_lesson = st.tabs(["Curriculum (84 modules)", "Open a lesson"])
+    with tab_list:
+        qtxt = st.text_input("Search modules")
+        lvl = st.multiselect("Level", list(curriculum.LEVELS.values()))
+        only = st.checkbox("Only modules with a lesson")
+        rows = [m for m in curriculum.MODULES if (not qtxt or qtxt.lower() in m["title"].lower())
+                and (not lvl or m["level_name"] in lvl) and (not only or m["status"] == "drafted")]
+        df = pd.DataFrame([{"#": m["id"], "Module": m["title"], "Level": f"{m['level']} {m['level_name']}",
+                            "Part": m["part_name"], "Status": "LESSON AVAILABLE" if m["status"] == "drafted" else "outline only",
+                            "Done": "✓" if m["id"] in db.completed() else ""} for m in rows])
+        st.dataframe(df, hide_index=True, width="stretch")
+    with tab_lesson:
+        mid = st.selectbox("Module", sorted(LES), format_func=lambda i: f"{i}. {LES[i]['title']}")
+        L = LES[mid]
+        st.caption(f"~{L['time_min']} min · v{L['version']} · {L['content_type']}")
+        st.warning(f"Status: {L['status']}. Last verification: {L['last_verified']}")
+        st.markdown("**Prerequisites:** " + "; ".join(L["prerequisites"]))
+        st.markdown("**Objectives**\n" + "\n".join(f"- {o}" for o in L["objectives"]))
+        st.markdown(f"**Why it matters.** {L['why']}")
+        lvl_t = st.radio("Depth", ["Plain-language", "Intermediate", "Advanced"], horizontal=True)
+        st.markdown({"Plain-language": L["plain"], "Intermediate": L["intermediate"], "Advanced": L["advanced"]}[lvl_t])
+        if L["formulas"]:
+            with st.expander("Formulas and symbols"):
+                for f in L["formulas"]:
+                    st.markdown(f"**{f['name']}**"); st.latex(f["tex"])
+                    st.markdown(", ".join(f"`{k}` = {v}" for k, v in f["symbols"].items()))
+        with st.expander("Assumptions"):
+            st.markdown("\n".join(f"- {a}" for a in L["assumptions"]))
+        with st.expander("Worked example", expanded=True):
+            st.markdown(L["worked_example"])
+        with st.expander("Examples across disciplines"):
+            for d, t in L["examples"]:
+                st.markdown(f"- **{d}:** {t}")
+        with st.expander("Common mistakes / misconceptions / controversies"):
+            st.markdown("**Mistakes**\n" + "\n".join(f"- {x}" for x in L["mistakes"]))
+            st.markdown("**Misconceptions**\n" + "\n".join(f"- *{a}* - {b}" for a, b in L["misconceptions"]))
+            st.markdown("**Open controversies**\n" + "\n".join(f"- {x}" for x in L["controversies"]))
+        with st.expander("Decision tree"):
+            for q, a in L["decision_tree"]:
+                st.markdown(f"- **{q}** → {a}")
+        with st.expander("Exercises"):
+            st.markdown("\n".join(f"{i+1}. {x}" for i, x in enumerate(L["exercises"])))
+        if L.get("coding"):
+            with st.expander("Code (R and Python)"):
+                st.code(L["coding"]["r"], "r"); st.code(L["coding"]["python"], "python")
+        st.error("Research integrity: " + L["integrity"])
+        st.markdown(L["application"])
+        with st.expander("References (verified in PubMed on " + references.VERIFIED_ON + ")"):
+            for k in L["further"]:
+                st.markdown("- " + references.link(k))
+        st.subheader("Quiz")
+        with st.form(f"quiz{mid}"):
+            chosen = []
+            for i, q in enumerate(L["quiz"]):
+                pick = st.radio(f"{i+1}. {q['q']}", q["opts"], index=None, key=f"q{mid}_{i}")
+                chosen.append(q["opts"].index(pick) if pick is not None else -1)
+            if st.form_submit_button("Submit"):
+                key = [q["ans"] for q in L["quiz"]]
+                sc = db.record_quiz(mid, chosen, key)
+                st.write(f"**Score: {sc}/{len(key)}**")
+                for i, q in enumerate(L["quiz"]):
+                    ok = chosen[i] == q["ans"]
+                    st.markdown(f"{'✅' if ok else '❌'} Q{i+1}: {q['why']}")
+        best = db.best_quiz(mid)
+        st.caption(f"Best score so far: {'none' if best is None else f'{best:.0%}'}")
+        st.markdown("**Completion checklist**")
+        for c in L["checklist"]:
+            st.checkbox(c, key=f"cl{mid}{c}")
+        if st.button("Mark module complete", key=f"done{mid}"):
+            if (best or 0) < 0.8:
+                st.error("Complete the quiz with at least 80% first (self-set standard; internal record only, not a qualification).")
+            else:
+                db.set_complete(mid); st.success("Recorded as an internal learning record.")
+        st.markdown("**Notes**")
+        n = st.text_area("Add a note", key=f"note{mid}")
+        if st.button("Save note", key=f"sn{mid}") and n.strip():
+            db.add_note(mid, n.strip())
+        for x in db.notes(mid):
+            st.caption(datetime.datetime.fromtimestamp(x["ts"]).strftime("%Y-%m-%d %H:%M")); st.write(x["body"])
+
+# ---------------------------------------------------- RESEARCH WORKSPACE
+elif page == "Research Workspace":
+    st.title("Research Workspace")
+    t = st.tabs(["Projects", "Question Builder", "Search Log", "References & Dedup", "Screening", "PRISMA counts", "Decisions", "Audit log", "Backup & export"])
+    with t[0]:
+        with st.form("np"):
+            nm = st.text_input("Project name"); dc = st.text_input("Discipline")
+            rt = st.selectbox("Review type", ["Systematic review", "Systematic review + meta-analysis", "Scoping review", "Umbrella review", "Evidence map", "Rapid review", "Living review", "Other"])
+            teach = st.checkbox("This is a TEACHING project (practice data; never mixed with real research)")
+            if st.form_submit_button("Create project"):
+                try:
+                    db.create_project(nm, dc, rt, teach); st.success("Created."); st.rerun()
+                except ValueError as e:
+                    st.error(str(e))
+        for p in db.projects():
+            st.markdown(f"- **{p['name']}** - {p['review_type']} - {p['discipline']} {'*(teaching)*' if p['is_teaching'] else ''}")
+    with t[1]:
+        p = project_picker("pq")
+        if p:
+            q0 = db.get_question(p["id"])
+            fw = st.selectbox("Framework", ["PICO", "PECO", "PCC (scoping)"], key="fw")
+            labels = {"PICO": ["Population", "Intervention", "Comparator", "Outcome (primary)", "Outcome (secondary)", "Study design", "Unit of analysis"],
+                      "PECO": ["Population", "Exposure", "Comparator", "Outcome (primary)", "Outcome (secondary)", "Study design", "Unit of analysis"],
+                      "PCC (scoping)": ["Population", "Concept", "Context", "Study design / sources", "Unit of analysis"]}[fw]
+            vals = {l: st.text_area(l, q0.get(l, ""), height=70, key=f"qb{l}{fw}") for l in labels}
+            vals["_status"] = st.selectbox("Status", ["provisional", "novelty checked", "protocol-approved"], index=0)
+            if st.button("Save question"):
+                db.save_question(p["id"], vals); st.success("Saved")
+            miss = [l for l in labels if not vals[l].strip()]
+            if miss:
+                st.warning("Not yet defined: " + ", ".join(miss) + ". A question with undefined elements is not reviewable (Module 4).")
+            else:
+                st.success("All elements filled. Completeness is not quality - check Module 4 critique questions.")
+    with t[2]:
+        p = project_picker("ps")
+        if p:
+            st.caption("Record searches YOU ran. This app does not query databases, so it can never claim a search happened by itself.")
+            with st.form("sl"):
+                c1, c2, c3 = st.columns(3)
+                dbn = c1.text_input("Database"); plat = c2.text_input("Platform/interface"); dt = c3.date_input("Date searched")
+                qy = st.text_area("Exact query (copy-paste)"); fl = st.text_input("Filters/limits")
+                n1, n2 = st.columns(2); nr = n1.number_input("Results", 0); ne = n2.number_input("Exported", 0)
+                op = st.text_input("Searcher", "me"); nt = st.text_input("Notes / access limitations")
+                if st.form_submit_button("Log search"):
+                    try:
+                        db.log_search(p["id"], dbn, plat, str(dt), qy, fl, int(nr), int(ne), op, nt); st.success("Logged")
+                    except ValueError as e:
+                        st.error(str(e))
+            sdf = pd.DataFrame(db.searches(p["id"]))
+            if len(sdf):
+                st.dataframe(sdf.drop(columns=["project_id", "ts"]), hide_index=True, width="stretch")
+                st.download_button("Download search log (CSV)", db.to_csv(db.searches(p["id"])), "search_log.csv")
+    with t[3]:
+        p = project_picker("pr")
+        if p:
+            up = st.file_uploader("Import RIS or PubMed NBIB export", type=["ris", "txt", "nbib"])
+            pasted = st.text_area("...or paste records", height=100)
+            if st.button("Import"):
+                txt = up.getvalue().decode("utf-8", "ignore") if up else pasted
+                try:
+                    n = db.import_refs(p["id"], txt, up.name if up else "pasted"); st.success(f"Imported {n} records (originals preserved).")
+                except ValueError as e:
+                    st.error(str(e))
+            if st.button("Run exact-match deduplication"):
+                st.info(f"{db.deduplicate(p['id'])} records marked as duplicates. Review them below; every merge is reversible. Fuzzy matching is not implemented.")
+            rs = db.refs(p["id"])
+            if rs:
+                st.dataframe(pd.DataFrame(rs)[["id", "title", "authors", "year", "doi", "pmid", "dup_of", "dup_reason"]], hide_index=True, width="stretch")
+                dups = [r for r in rs if r["dup_of"]]
+                if dups:
+                    rid = st.selectbox("Undo duplicate flag for record", [d["id"] for d in dups])
+                    if st.button("Undo"):
+                        db.undo_duplicate(rid, p["id"]); st.rerun()
+    with t[4]:
+        p = project_picker("pscr")
+        if p:
+            rs = db.refs(p["id"], include_dups=False)
+            reviewer = st.text_input("Reviewer label (human only)", "human:self")
+            stage = st.radio("Stage", ["title_abstract", "full_text"], horizontal=True)
+            st.caption("Single-reviewer screening is a documented limitation, not equivalent to independent duplicate screening. AI cannot be recorded as a reviewer.")
+            done = {r_id for (r_id, rev) in db.latest_decisions(p["id"], stage) if rev == reviewer}
+            todo = [r for r in rs if r["id"] not in done]
+            if not rs:
+                st.info("Import references first.")
+            elif not todo:
+                st.success(f"All {len(rs)} records have a {stage} decision from {reviewer}.")
+            else:
+                r = todo[0]
+                st.markdown(f"**{r['title']}**  \n{r['authors']} ({r['year']}) · {r['journal']}  \nDOI: {r['doi'] or '-'} · PMID: {r['pmid'] or '-'}")
+                st.write(r["abstract"] or "*(no abstract in record)*")
+                dec = st.selectbox("Decision", DECISIONS); why = st.text_input("Reason (required for full-text exclusion)")
+                if st.button("Record decision"):
+                    try:
+                        db.screen(p["id"], r["id"], stage, dec, why, reviewer); st.rerun()
+                    except ValueError as e:
+                        st.error(str(e))
+                st.caption(f"{len(todo)} remaining")
+    with t[5]:
+        p = project_picker("pp")
+        if p:
+            c, w = db.prisma_counts(p["id"])
+            st.table(pd.DataFrame({"Item": ["Records identified", "Duplicates removed", "Records screened (unique)", "Excluded at title/abstract",
+                                            "Reports sought for full text", "Excluded at full text", "Studies/reports included"],
+                                   "n": [c["identified"], c["duplicates_removed"], c["screened"], c["excluded_title_abstract"],
+                                         c["reports_sought"], c["excluded_full_text"], c["included"]]}))
+            if c["exclusion_reasons"]:
+                st.write("Full-text exclusion reasons:", c["exclusion_reasons"])
+            for x in w: st.warning(x)
+            if not w and c["identified"]: st.success("Counts are internally consistent.")
+            st.caption("Counts are derived only from stored records. 'Records' vs 'reports' vs 'studies' are distinct in PRISMA 2020 - linking multiple reports to one study is not yet implemented here.")
+    with t[6]:
+        p = project_picker("pd")
+        if p:
+            k = st.selectbox("Type", ["decision", "protocol deviation", "amendment"])
+            txt = st.text_area("Describe the decision and why")
+            if st.button("Log") and txt.strip():
+                db.add_decision(p["id"], txt, k); st.rerun()
+            for d in db.decisions(p["id"]):
+                st.markdown(f"**{d['kind']}** · {datetime.datetime.fromtimestamp(d['ts']):%Y-%m-%d %H:%M} - {d['text']}")
+    with t[7]:
+        rows = db.audit_rows()
+        st.caption("Append-only (enforced by database triggers).")
+        if rows:
+            df = pd.DataFrame(rows); df["ts"] = pd.to_datetime(df["ts"], unit="s")
+            st.dataframe(df, hide_index=True, width="stretch")
+    with t[8]:
+        st.download_button("Full backup (JSON)", db.backup_json(), "metalab_backup.json")
+        up = st.file_uploader("Restore from backup (REPLACES current data except the audit log)", type="json")
+        if up and st.button("Restore"):
+            try:
+                db.restore_json(up.getvalue().decode()); st.success("Restored")
+            except Exception as e:
+                st.error(f"Restore failed: {e}")
+        p = project_picker("pb")
+        if p:
+            st.download_button("References (CSV)", db.to_csv(db.refs(p["id"])), "references.csv")
+            st.download_button("Audit log (CSV)", db.to_csv(db.audit_rows(p["id"])), "audit.csv")
+
+# ------------------------------------------------------ FIRST PAPER PLAN
+elif page == "First Paper Plan":
+    st.title("My First Meta-Analysis Paper")
+    st.markdown("A **16-week default plan** (~5-7 h/week). It is a *scaffold*: extend it freely - rigor is never traded for the deadline. "
+                "Candidate topics (e.g. exercise and aging in *Drosophila*, insulin/TOR signalling and sex-specific longevity, dietary interventions and model-organism lifespan, "
+                "storytelling in STEM education) are **ideas only - novelty and feasibility are unverified** until you complete weeks 3-4.")
+    p = project_picker("fp")
+    if p:
+        if p["is_teaching"]:
+            st.warning("This is a teaching project; progress here does not count toward a real paper.")
+        dn = db.tasks_done(p["id"]); tasks = all_tasks()
+        st.progress(len(dn) / len(tasks), text=f"{len(dn)}/{len(tasks)} tasks · {sum(t[5] for t in tasks if t[3] in dn)/60:.1f} of {sum(t[5] for t in tasks)/60:.0f} planned hours")
+        nxt = next((t for t in tasks if t[3] not in dn), None)
+        if nxt: st.info(f"**Next action (week {nxt[0]}):** {nxt[4]}")
+        gates_open = [t for t in tasks if t[6] == "gate" and t[3] not in dn and nxt and t[0] <= nxt[0]]
+        catch = st.checkbox("Catch-up mode: show only unfinished tasks")
+        for w, title, phase, ts in WEEKS:
+            if catch and all(k in dn for k, *_ in ts): continue
+            with st.expander(f"Week {w}: {title}", expanded=(nxt is not None and nxt[0] == w)):
+                for k, label, mins, kind in ts:
+                    v = st.checkbox(f"{'🚧 GATE: ' if kind == 'gate' else ''}{label}  ·  ~{mins} min", value=k in dn, key=f"t{p['id']}{k}")
+                    if v != (k in dn):
+                        db.set_task(p["id"], k, v); st.rerun()
+        if gates_open:
+            st.warning("Open quality gates: " + "; ".join(g[4] for g in gates_open))
+
+# -------------------------------------------------------- STATISTICS LAB
+elif page == "Statistics Lab":
+    st.title("Statistics Lab")
+    st.caption("All data here are SIMULATED or published example data and are clearly labelled. Never mixed with project data.")
+    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Effect-size calculators"])
+    with tabs[0]:
+        st.markdown("**Mechanism.** The SD describes spread of individuals and does not shrink with n; the SE = SD/√n describes precision of the mean and does. "
+                    "A 95% CI procedure captures the true mean in ~95% of repeated experiments.")
+        mu = st.number_input("True mean", value=10.0); sg = st.number_input("True SD", value=2.0, min_value=0.1)
+        n = st.slider("Sample size n for CI demo", 3, 200, 10); seed = st.number_input("Random seed", value=1, step=1)
+        res = S.simulate_sd_vs_se(mu, sg, [3, 5, 10, 30, 100, 300], reps=1500, seed=int(seed))
+        dfr = pd.DataFrame(res, columns=["n", "mean sample SD", "mean SE", "empirical SD of sample means"])
+        st.dataframe(dfr, hide_index=True, width="stretch")
+        fig = go.Figure()
+        fig.add_scatter(x=dfr["n"], y=dfr["mean sample SD"], name="SD (stays ≈ σ)")
+        fig.add_scatter(x=dfr["n"], y=dfr["mean SE"], name="SE (shrinks)")
+        fig.update_layout(xaxis_type="log", xaxis_title="n", yaxis_title="value", title="SIMULATED data")
+        st.plotly_chart(fig, width="stretch")
+        cov, lo, hi = S.ci_coverage(mu, sg, n, reps=3000, seed=int(seed))
+        st.metric(f"Empirical coverage of 95% t-intervals (n={n}, 3000 simulations)", f"{cov:.1%}")
+        f2 = go.Figure()
+        for i, (a, b) in enumerate(zip(lo, hi)):
+            f2.add_scatter(x=[a, b], y=[i, i], mode="lines", line=dict(color="crimson" if not (a <= mu <= b) else "gray"), showlegend=False)
+        f2.add_vline(x=mu); f2.update_layout(title="First 50 simulated CIs (red misses the true mean)", yaxis_visible=False)
+        st.plotly_chart(f2, width="stretch")
+        st.markdown("**Interpretation questions:** (1) Why does the SD column not shrink? (2) What would coverage be if you used 1.96 instead of the t-quantile at n=5? "
+                    "*Simplification:* normal data, independent observations.")
+        st.code("set.seed(1); x <- replicate(1500, sd(rnorm(10, 10, 2)))  # SD stays ~2\nmean(x)", "r")
+    with tabs[1]:
+        src = st.radio("Data", ["Teaching example (3 studies, lesson 32)", "BCG vaccine trials (Colditz 1994; metafor's dat.bcg) - published example data", "Enter my own"], key="msrc")
+        if src.startswith("Teaching"):
+            d = pd.DataFrame({"study": ["A", "B", "C"], "yi": [0.2, 0.5, 0.8], "vi": [0.04, 0.04, 0.16]})
+        elif src.startswith("BCG"):
+            from metalab.datasets import BCG
+            ys, vs = zip(*[S.log_risk_ratio(a, a + b, c, c + dd) for a, b, c, dd in BCG])
+            d = pd.DataFrame({"study": [f"Trial {i+1}" for i in range(13)], "yi": ys, "vi": vs})
+            st.caption("Effect = log risk ratio computed here from 2x2 counts. " + references.link("colditz1994"))
+        else:
+            d = pd.DataFrame({"study": ["S1", "S2", "S3"], "yi": [0.0, 0.0, 0.0], "vi": [0.1, 0.1, 0.1]})
+        d = st.data_editor(d, num_rows="dynamic", key="meta_ed" + src[:4])
+        c1, c2, c3, c4 = st.columns(4)
+        model = c1.selectbox("Model", ["random", "common"]); meth = c2.selectbox("τ² estimator", ["REML", "PM", "DL"])
+        hk = c3.checkbox("Hartung-Knapp (HKSJ)"); ex = c4.checkbox("Back-transform exp()")
+        dd = d.dropna()
+        try:
+            r = S.meta_analyze(dd["yi"].to_numpy(float), dd["vi"].to_numpy(float), model, meth, hksj=hk)
+            f = (lambda x: float(np.exp(x))) if ex else (lambda x: x)
+            m = st.columns(5)
+            m[0].metric("Pooled", f"{f(r.est):.4f}"); m[1].metric("95% CI", f"{f(r.ci[0]):.3f} to {f(r.ci[1]):.3f}")
+            m[2].metric("τ²", f"{r.tau2:.4f}"); m[3].metric("I²", f"{r.I2:.1f}%"); m[4].metric("Q (df)", f"{r.Q:.2f} ({r.Q_df})")
+            if r.pred_int: st.write(f"**95% prediction interval:** {f(r.pred_int[0]):.3f} to {f(r.pred_int[1]):.3f}")
+            for n_ in r.notes: st.warning(n_)
+            fig = go.Figure()
+            yy = list(range(len(dd), 0, -1))
+            se = np.sqrt(dd["vi"].to_numpy(float)); y = dd["yi"].to_numpy(float)
+            fig.add_scatter(x=[f(a) for a in y], y=yy, mode="markers", marker=dict(size=6 + 0.6 * r.weights, symbol="square"),
+                            error_x=dict(type="data", symmetric=False, array=[f(a + 1.96 * s) - f(a) for a, s in zip(y, se)],
+                                         arrayminus=[f(a) - f(a - 1.96 * s) for a, s in zip(y, se)]),
+                            text=list(dd["study"]), hovertemplate="%{text}<br>%{x:.3f}<extra></extra>", name="studies")
+            fig.add_scatter(x=[f(r.ci[0]), f(r.est), f(r.ci[1]), f(r.est)], y=[0, 0.25, 0, -0.25], fill="toself", mode="lines", name="pooled")
+            fig.add_vline(x=1.0 if ex else 0.0, line_dash="dash")
+            fig.update_layout(yaxis=dict(tickvals=yy + [0], ticktext=list(dd["study"]) + ["Pooled"]), title="Forest plot (marker size ∝ weight)", xaxis_title="exp(effect)" if ex else "effect")
+            st.plotly_chart(fig, width="stretch")
+            st.dataframe(pd.DataFrame({"study": dd["study"], "yi": y, "vi": dd["vi"], "weight %": r.weights}), hide_index=True)
+            with st.expander("Leave-one-out"):
+                st.dataframe(pd.DataFrame(S.leave_one_out(y, dd["vi"].to_numpy(float), model=model, method=meth, hksj=hk),
+                                          columns=["omitted index", "est", "ci_lo", "ci_hi", "tau2", "I2"]), hide_index=True)
+            st.markdown(f"**Method:** inverse-variance, {'common-effect' if model=='common' else f'random-effects ({meth}'+(', HKSJ)' if hk else ')')}. "
+                        "Assumes independent studies on the same scale with accurate variances. Heterogeneity statistics from few studies are imprecise. "
+                        + references.link("borenstein2010"))
+            st.code(S.r_code_meta(meth, hk), "r")
+            st.caption("Implementation tested against hand calculations and reference values; confirm with R/metafor before publication use (see Status page).")
+        except ValueError as e:
+            st.error(str(e))
+    with tabs[2]:
+        calc = st.selectbox("Calculator", ["Hedges' g / Cohen's d", "Mean difference", "Log response ratio", "Risk ratio (log)", "Odds ratio (log)", "Risk difference", "Fisher's z", "SD <-> SE", "SE from CI", "Combine two groups"])
+        try:
+            if calc.startswith("Hedges"):
+                a = st.columns(6); v = [a[0].number_input("m1", value=10.0), a[1].number_input("sd1", value=2.0), a[2].number_input("n1", value=20),
+                                        a[3].number_input("m2", value=8.0), a[4].number_input("sd2", value=2.0), a[5].number_input("n2", value=20)]
+                h = st.checkbox("Apply small-sample correction (Hedges' g)", True)
+                g, var, j = S.smd(v[0], v[1], v[2], v[3], v[4], v[5], h)
+                st.metric("g" if h else "d", f"{g:.4f}"); st.write(f"Variance {var:.5f}, SE {var**.5:.4f}, J = {j:.4f}")
+                st.latex(r"d=\frac{m_1-m_2}{S_p},\ S_p=\sqrt{\frac{(n_1-1)sd_1^2+(n_2-1)sd_2^2}{n_1+n_2-2}},\ J=1-\frac{3}{4(n_1+n_2-2)-1},\ g=Jd")
+                st.caption("Assumes similar SDs in both groups and independent observations (units!). Direction: positive = group 1 higher.")
+                st.code("library(metafor)\nescalc(measure='SMD', m1i=10, sd1i=2, n1i=20, m2i=8, sd2i=2, n2i=20)", "r")
+            elif calc == "Mean difference":
+                a = st.columns(6); v = [a[0].number_input("m1", value=10.0), a[1].number_input("sd1", value=2.0), a[2].number_input("n1", value=20),
+                                        a[3].number_input("m2", value=8.0), a[4].number_input("sd2", value=2.0), a[5].number_input("n2", value=20)]
+                e, var = S.mean_difference(*v); st.metric("MD", f"{e:.4f}"); st.write(f"Variance {var:.5f}")
+                st.code("escalc(measure='MD', m1i=10, sd1i=2, n1i=20, m2i=8, sd2i=2, n2i=20)", "r")
+            elif calc.startswith("Log response"):
+                a = st.columns(6); v = [a[0].number_input("m1", value=12.0), a[1].number_input("sd1", value=3.0), a[2].number_input("n1", value=10),
+                                        a[3].number_input("m2", value=10.0), a[4].number_input("sd2", value=2.0), a[5].number_input("n2", value=10)]
+                e, var = S.log_response_ratio(*v); st.metric("lnRR", f"{e:.4f}"); st.write(f"Variance {var:.5f}; ratio = {np.exp(e):.3f}")
+                st.caption("Requires positive ratio-scale means; not valid for data that can be zero/negative or interval-scaled.")
+                st.code("escalc(measure='ROM', m1i=12, sd1i=3, n1i=10, m2i=10, sd2i=2, n2i=10)", "r")
+            elif calc in ("Risk ratio (log)", "Odds ratio (log)", "Risk difference"):
+                a = st.columns(4); ev1 = a[0].number_input("events, group 1", value=10); n1 = a[1].number_input("n, group 1", value=50)
+                ev2 = a[2].number_input("events, group 2", value=5); n2 = a[3].number_input("n, group 2", value=50)
+                cc = st.number_input("Continuity correction (applied only if a zero cell)", 0.0, 1.0, 0.5)
+                if calc.startswith("Risk ratio"): e, var = S.log_risk_ratio(ev1, n1, ev2, n2, cc); st.metric("ln RR", f"{e:.4f}"); st.write(f"RR = {np.exp(e):.3f}, variance {var:.5f}")
+                elif calc.startswith("Odds"): e, var = S.log_odds_ratio(ev1, n1, ev2, n2, cc); st.metric("ln OR", f"{e:.4f}"); st.write(f"OR = {np.exp(e):.3f}, variance {var:.5f}")
+                else: e, var = S.risk_difference(ev1, n1, ev2, n2); st.metric("RD", f"{e:.4f}"); st.write(f"variance {var:.5f}")
+                st.caption("Zero cells: corrections are a sensitivity-analysis topic (Module 48, outline only); prefer rare-event methods.")
+                st.code("escalc(measure='RR', ai=10, n1i=50, ci=5, n2i=50)   # or 'OR', 'RD'", "r")
+            elif calc == "Fisher's z":
+                r_ = st.number_input("r", -0.999, 0.999, 0.5); n_ = st.number_input("n", 4, 100000, 30)
+                z, var = S.fisher_z(r_, int(n_)); st.metric("z", f"{z:.4f}"); st.write(f"variance {var:.5f}")
+                st.code(f"escalc(measure='ZCOR', ri={r_}, ni={n_})", "r")
+            elif calc == "SD <-> SE":
+                v = st.number_input("value", 0.0, value=1.0); n_ = st.number_input("n", 1, 100000, 25)
+                st.write(f"SE → SD: {S.sd_from_se(v, int(n_)):.4f} · SD → SE: {S.se_from_sd(v, int(n_)):.4f}")
+            elif calc == "SE from CI":
+                lo = st.number_input("lower", value=0.4); hi = st.number_input("upper", value=1.6); n_ = st.number_input("n (0 = use normal approx.)", 0, 100000, 0)
+                st.metric("SE", f"{S.se_from_ci(lo, hi, int(n_) or None):.4f}")
+                st.caption("Only valid for symmetric CIs on the analysis scale. For ratio measures, take logs of the limits first. Uses t(n−1) if n is given (small samples).")
+            else:
+                a = st.columns(6); v = [a[0].number_input("n1", value=12), a[1].number_input("mean1", value=5.0), a[2].number_input("sd1", value=2.0),
+                                        a[3].number_input("n2", value=30), a[4].number_input("mean2", value=7.0), a[5].number_input("sd2", value=3.0)]
+                n, m, sd = S.combine_groups(*v); st.write(f"Combined n = {n}, mean = {m:.4f}, SD = {sd:.4f}")
+                st.caption("Cochrane Handbook formula; treats groups as independent subsamples of one population.")
+        except ValueError as e:
+            st.error(str(e))
+
+# ------------------------------------------------------ KNOWLEDGE UNIVERSE
+elif page == "Knowledge Universe":
+    st.title("Knowledge Universe")
+    t1, t2 = st.tabs(["Verified references (PubMed)", "Resources (links NOT yet verified)"])
+    with t1:
+        st.caption(f"Each entry's title, authors, journal and DOI were checked against {references.SOURCE} on {references.VERIFIED_ON}.")
+        for k in references.REFS: st.markdown("- " + references.link(k))
+    with t2:
+        st.warning("These are well-known official sources entered from author knowledge. Links, versions, licences, costs and availability have NOT been verified; check the official site before relying on them.")
+        f = st.text_input("Filter")
+        rows = [r for r in resources.RESOURCES if not f or f.lower() in json.dumps(r).lower()]
+        st.dataframe(pd.DataFrame([{**{k: r[k] for k in ("title", "org", "type", "topic", "level", "discipline", "url", "why")},
+                                   "modules": ", ".join(map(str, r["modules"])), "verified_on": "not verified"} for r in rows]),
+                     hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+
+# --------------------------------------------------------------- NETWORK
+elif page == "Network & Collaboration":
+    st.title("Network & Collaboration")
+    st.info("There are no users, profiles, posts, matches or opportunities on this platform. Community features need authentication, moderation and hosting and are NOT built. "
+            "Below: a directory of real external organisations (unverified links) and outreach templates for use in your own email.")
+    st.dataframe(pd.DataFrame(resources.ORGS)[["name", "focus", "url", "membership", "cost"]], hide_index=True, width="stretch",
+                 column_config={"url": st.column_config.LinkColumn("url")})
+    T = {"Request an independent screening reviewer": "Subject: Request for independent screening support - [topic]\n\nDear [Name],\n\nI am conducting a [review type] on [question]. I am looking for a colleague to independently screen [n] records against pre-specified criteria (about [hours] hours). Contribution would be [acknowledgement/co-authorship if ICMJE criteria are met - to be agreed in writing before work begins]. Can we discuss?\n\nBest,\n[Your name]",
+         "Contact a study author for missing data": "Subject: Data query about [Title, year]\n\nDear Dr [Name],\n\nI am conducting a systematic review of [topic]. Your study reports [outcome] but not [missing item, e.g. SD/n per group]. Could you share it, or tell us where it is reported? We will cite your help and describe how the data were used. This is not a request to change any results.\n\nThank you,\n[Your name]",
+         "Request statistical advice": "Subject: Methodological question on a planned meta-analysis\n\nDear [Name],\n\nI plan to pool [effect measure] from about [k] [designs]. My concerns: [dependence, units, heterogeneity]. Could we spend [time] reviewing my analysis plan? I will send it in advance.\n\nBest,\n[Your name]",
+         "Request mentorship": "Subject: Mentorship request - evidence synthesis\n\nDear [Name],\n\nI am a [career stage] in [field] starting my first meta-analysis ([topic]). I admire your work on [specific]. Would you be open to a [30-minute] conversation or occasional feedback? I understand if you lack capacity.\n\nBest,\n[Your name]"}
+    k = st.selectbox("Template", list(T)); st.text_area("Edit and send yourself (the platform never contacts anyone)", T[k], height=220)
+    st.caption("Authorship must follow your institution/journal criteria (e.g. ICMJE): substantive contribution only; do not offer authorship in exchange for favours.")
+
+# ----------------------------------------------------------------- STATUS
+else:
+    st.title("Status & Limitations")
+    F = json.load(open(ROOT / "features.json"))
+    st.caption(F["_note"])
+    st.dataframe(pd.DataFrame(F["features"]).fillna(""), hide_index=True, width="stretch")
+    c = curriculum.counts()
+    st.markdown(f"**Curriculum:** {c['total']} modules registered; **{c['drafted']} have lessons**; {c['outline']} are outlines only.")
+    st.markdown("See `KNOWN_LIMITATIONS.md`, `TESTING_REPORT.md`, `PROJECT_STATUS.md` in the project folder.")

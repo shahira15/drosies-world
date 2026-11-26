@@ -1,0 +1,64 @@
+LESSON = dict(
+ id=32, title="Principles of quantitative pooling: weights, common-effect and random-effects",
+ time_min=110, version="0.1.0", status="AI-drafted; calculations machine-tested; awaiting qualified human expert review",
+ content_type="Established methodology (estimator choice has active literature)",
+ last_verified="2026-11-26 (Borenstein 2010, Higgins 2002, Riley 2011, Veroniki 2016, Langan 2019, Hartung 2001, Rücker 2008 verified in PubMed; formulas re-derived and tested in tests/test_stats.py)",
+ prerequisites=["Module 3", "Basic algebra; mean and variance (Module 24/25 are outlines only - this lesson is self-contained for the maths used)."],
+ objectives=["Explain why studies are weighted by inverse variance.",
+  "Compute a common-effect pooled estimate by hand.",
+  "Explain what the random-effects model assumes and what its pooled value means.",
+  "Interpret tau², Q, I² and a prediction interval, and explain why I² alone cannot decide the model.",
+  "Know the main tau² estimators and the evidence on them."],
+ why="Pooling turns many noisy results into one interpretable number - if the assumptions hold. Misreading a pooled estimate, or choosing a model by a heterogeneity threshold, is among the commonest errors in published meta-analyses.",
+ plain="""Imagine three labs measure the same effect. A big, careful lab gives a precise estimate; a small lab gives a noisy one. Averaging them *equally* wastes information, so we give more weight to precise studies. The usual weight is **1 / variance**.
+
+If every study is measuring the *same true effect* (common-effect model), differences are just sampling noise. If true effects genuinely *differ* between studies (different strains, doses, settings) the random-effects model adds a between-study variance, **tau²**, to every study's variance. That makes weights more equal and the confidence interval wider.""",
+ intermediate="""**Common-effect (a.k.a. 'fixed-effect') model:** one true effect θ; y_i ~ N(θ, v_i). Pooled estimate θ̂ = Σ w_i y_i / Σ w_i with w_i = 1/v_i; SE = √(1/Σ w_i).
+
+**Random-effects model:** y_i ~ N(θ_i, v_i), θ_i ~ N(μ, τ²). Weights w*_i = 1/(v_i + τ²). The pooled value estimates μ, the *mean of the distribution of true effects* - not 'the' effect. Its confidence interval describes uncertainty about μ; the **prediction interval** μ̂ ± t_{k-2}·√(τ̂² + SE²) describes where a *new* study's true effect might fall (Riley et al. 2011).
+
+**Heterogeneity:** Cochran's **Q** = Σ w_i (y_i − θ̂)² (df = k−1). **I²** = max(0,(Q−df)/Q) is the share of observed variability beyond sampling error (Higgins & Thompson 2002). I² depends on study precision: with huge studies I² approaches 100% even for small, unimportant τ² (Rücker et al. 2008). So **never choose a model by an I² cut-off**; choose on conceptual grounds (are true effects plausibly the same?) and report τ² and the prediction interval.
+
+**tau² estimators:** DerSimonian–Laird (DL), Paule–Mandel (PM), REML, and others. Veroniki et al. (2016) found PM generally and REML for continuous data better than DL; Langan et al. (2019) recommend REML, found DL negatively biased with small studies/rare binary outcomes, and found PM can be positively biased with large size differences. **Hartung–Knapp–Sidik–Jonkman (HKSJ)** intervals (Hartung & Knapp 2001) use t with k−1 df and generally keep nominal coverage better, especially with few studies; Langan et al. found HKSJ robust to the estimator choice.""",
+ advanced="""REML maximises the likelihood of the residuals after estimating μ, reducing the small-sample bias of ML for τ². For k studies with intercept only, the restricted log-likelihood is −½[Σ log(v_i+τ²) + log Σ 1/(v_i+τ²) + Σ (y_i−μ̂)²/(v_i+τ²)] + const; the Platform solves this numerically with bounded optimisation at τ²≥0 (the test-suite cross-checks it against brute-force likelihood search). PM solves Q(τ²)=k−1. DL uses the moment estimator τ̂²=(Q−(k−1))/(Σw−Σw²/Σw).
+
+τ² itself is estimated very imprecisely when k is small (e.g. <10); wide uncertainty around τ² and I² is the rule, not the exception. Weighting by 1/(v+τ²) assumes the v_i are *known*; with small within-study n or when v_i correlate with y_i (e.g. log odds ratios, SMD) this is an approximation. Known issues beyond this lesson: dependence among effect sizes (Module 38), small-study effects (Module 50), rare events (Module 48).""",
+ formulas=[
+  dict(name="Inverse-variance weight", tex=r"w_i = \frac{1}{v_i}", symbols={"w_i":"weight","v_i":"sampling variance of y_i"}),
+  dict(name="Pooled estimate (common-effect)", tex=r"\hat\theta=\frac{\sum w_i y_i}{\sum w_i},\quad SE=\sqrt{\frac{1}{\sum w_i}}", symbols={"y_i":"study effect size","k":"number of studies"}),
+  dict(name="Random-effects weight", tex=r"w_i^* = \frac{1}{v_i+\tau^2}", symbols={"\\tau^2":"between-study variance of true effects"}),
+  dict(name="Cochran's Q and I²", tex=r"Q=\sum w_i(y_i-\hat\theta)^2,\quad I^2=\max\!\left(0,\frac{Q-(k-1)}{Q}\right)", symbols={"Q":"weighted squared deviations; ~chi-square(k-1) if no heterogeneity","I^2":"proportion of variability beyond sampling error"}),
+  dict(name="Prediction interval (random effects, k≥3)", tex=r"\hat\mu \pm t_{k-2,\,0.975}\sqrt{\hat\tau^2+SE(\hat\mu)^2}", symbols={"t_{k-2}":"t quantile with k−2 df"}),
+ ],
+ assumptions=["Effects are on the same scale (e.g. all log risk ratios; all Hedges' g in the same direction).","Study-level estimates are independent (no shared controls or duplicate reports).","Sampling variances are accurate (units of analysis correct - vial vs fly!).","Random effects: true effects ≈ normally distributed; τ² estimated from adequate k.","Model chosen by principle and stated in the protocol, not by results."],
+ worked_example="""**Three studies** (effect size y, variance v): y = 0.2, 0.5, 0.8; v = 0.04, 0.04, 0.16.
+Weights: 25, 25, 6.25 (sum 56.25). Pooled θ̂ = (25×0.2 + 25×0.5 + 6.25×0.8)/56.25 = 22.5/56.25 = **0.40**; SE = √(1/56.25) = 0.1333; 95% CI 0.40 ± 1.96×0.1333 = [0.139, 0.661]. The imprecise third study (v=0.16) gets 11% of the weight.
+Open the **Statistics Lab -> Meta-analysis** to reproduce this, switch to random effects and watch weights equalise and the CI widen. The BCG vaccine dataset (Colditz 1994, a published meta-analysis dataset distributed with the R package metafor) is built in as a real-data example: it shows extreme heterogeneity and why a prediction interval matters.""",
+ examples=[("Clinical","Pooling RCT log risk ratios; random effects with HKSJ for k=6."),("Preclinical","Lifespan hazard or standardised differences across labs; vial-level units; tau² reflects strain/lab differences."),("Ecology","Log response ratios across sites; random effects is the default because true effects plausibly differ."),("Education","Hedges' g across classrooms; cluster adjustment needed first."),("Psychology","Fisher's z correlations; heterogeneity is usually substantial.")],
+ mistakes=["Choosing fixed vs random from p(Q) or I².","Reporting only the pooled CI and omitting the prediction interval.","Treating 'random effects' as correcting dependence or bias (it does not).","Pooling effect sizes on different scales (OR with RR; g with raw MD).","Double-counting a shared control group.","Interpreting tau² estimated from k=3 as precise."],
+ misconceptions=[("'Fixed-effect means the effect is fixed in nature.'","It is a *model assumption* of one common true effect; 'common-effect' is the clearer name."),("'I² = 0 proves studies are homogeneous.'","Low power with few/small studies can hide real heterogeneity."),("'Random effects always gives wider CIs, so it is the safe choice.'","True here, but it also reweights toward small studies, which can amplify small-study bias.")],
+ controversies=["Best tau² estimator (REML vs PM vs DL) - see Veroniki 2016; Langan 2019.","Routine use of HKSJ and its handling when q*<1.","Common-effect vs random-effects as the default; Borenstein 2010 argues the choice should reflect the question, not a test."],
+ decision_tree=[("Is it plausible that all studies share one true effect (near-identical populations, interventions, methods)?","Yes -> common-effect is defensible, stated a priori. No/uncertain -> random effects."),
+  ("Is k small (<~10)?","Use HKSJ (or a t-based interval), report τ² uncertainty cautiously, avoid subgroup/meta-regression overreach."),
+  ("Are effect sizes dependent?","Yes -> do NOT use this model; see Module 38-40."),
+  ("Could pooling mislead (non-comparable studies)?","Yes -> synthesis without meta-analysis.")],
+ exercises=["By hand: y = (0.1, 0.3, 0.9), v = (0.02, 0.05, 0.10). Compute weights, pooled estimate, SE.",
+  "In the lab, add one huge study (v=0.0001) at y=0.4 to the BCG data. What happens to I² and τ²? Why?",
+  "Explain in two sentences why 'I² > 50% so I used random effects' is a poor justification.",
+  "Interpretation: BCG REML estimate is a log RR of about -0.71. Convert to a risk ratio and describe the prediction interval in words."],
+ coding=dict(r='library(metafor)\n# dat.bcg ships with metafor\ndat <- escalc(measure="RR", ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg)\nres <- rma(yi, vi, data=dat, method="REML")   # random effects, REML\nsummary(res)                                   # est, tau^2, I^2, Q\npredict(res, transf=exp)                        # RR scale incl. prediction interval\nrma(yi, vi, data=dat, method="REML", test="knha")  # Hartung-Knapp-Sidik-Jonkman',
+   python='import numpy as np\n# y: effect sizes, v: sampling variances (same scale)\ny = np.array([0.2, 0.5, 0.8]); v = np.array([0.04, 0.04, 0.16])\nw = 1 / v\ntheta = np.sum(w * y) / np.sum(w)\nse = np.sqrt(1 / np.sum(w))\nprint(theta, se)   # 0.4, 0.1333\n# full estimators (DL/PM/REML/HKSJ): metalab.stats.meta_analyze(y, v)'),
+ integrity="Specify the model, estimator and sensitivity analyses in the protocol. Do not switch models after seeing which gives p<0.05. Do not remove 'outlier' studies merely because they change significance.",
+ further=["borenstein2010","higgins2002","rucker2008","riley2011","veroniki2016","langan2019","hartung2001","colditz1994"],
+ application="**First-paper task:** in your analysis-plan draft write: effect measure, direction, model (common vs random + reason), tau² estimator, CI method (e.g. HKSJ), prediction interval, heterogeneity reporting, and sensitivity analyses. Mark each *pre-specified*.",
+ checklist=["I can compute a weighted mean by hand.","I can explain tau², Q, I² and the prediction interval.","I know why I² cannot choose the model.","I drafted a model statement for my protocol."],
+ quiz=[
+  dict(q="Studies: y=(0.2,0.5,0.8), v=(0.04,0.04,0.16). Common-effect pooled estimate?", opts=["0.40","0.50","0.45","0.33"], ans=0, why="Weights 25,25,6.25; (5+12.5+5)/56.25 = 0.40 (the simple mean 0.50 ignores precision).", numeric=True),
+  dict(q="Standard error of that pooled estimate?", opts=["0.133","0.040","0.250","0.500"], ans=0, why="SE = sqrt(1/Σw) = sqrt(1/56.25) = 0.1333.", numeric=True),
+  dict(q="Why can't I² decide between common and random effects?", opts=["I² is always 0.","I² depends on study precision and is imprecise with few studies; model choice should rest on whether true effects plausibly differ.","I² is illegal.","Random effects is always right."], ans=1, why="Rücker 2008; Higgins & Thompson 2002; Borenstein 2010."),
+  dict(q="What does the random-effects pooled value estimate?", opts=["The single true effect shared by all studies.","The mean of the distribution of true effects.","The largest study's effect.","The median observed effect."], ans=1, why="Under RE each study has its own θ_i; the pooled value estimates μ."),
+  dict(q="Which interval says where a NEW study's true effect may lie?", opts=["Confidence interval of the pooled estimate","Prediction interval","Credible interval always","Range of observed effects"], ans=1, why="Prediction interval incorporates τ² (Riley 2011)."),
+  dict(q="Adding τ² to every study's variance does what to weights?", opts=["Makes them more unequal.","Makes them more equal (small studies gain relative weight).","Nothing.","Sets small studies to zero."], ans=1, why="w*=1/(v+τ²): v matters less relative to τ²."),
+  dict(q="A meta-analysis uses two comparisons that share the same control group as independent studies. Problem?", opts=["None.","Double-counting the control inflates precision; dependence must be handled (Module 38).","Random effects fixes it.","Only a problem for odds ratios."], ans=1, why="Shared controls induce correlated effect sizes; the standard model assumes independence."),
+  dict(q="Which tau² estimator did Langan et al. (2019) recommend?", opts=["DerSimonian-Laird","REML","Method of moments only","None"], ans=1, why="They recommended REML, noting DL is negatively biased in several scenarios (verified abstract)."),
+ ])

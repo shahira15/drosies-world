@@ -1,0 +1,2 @@
+# Research integrity rules (enforced in code where possible)
+No fabricated refs/data/users/opportunities. Full-text exclusions require reasons. AI cannot be logged as a reviewer. Search log records only user-run searches. Duplicates flagged, never deleted. Audit log append-only. Platform never registers, submits, contacts or publishes. Teaching projects are flagged to avoid mixing with real data. Learning completion = internal record, not a qualification.
