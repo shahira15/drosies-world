@@ -49,3 +49,8 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `koricheva2014`: Koricheva et al. Uses and misuses of meta‐analysis in plant ecology. Journal of Ecology 2014;102, 828-844. DOI: 10.1111/1365-2745.12224 · PMID None
 - `higgins2009pi`: Higgins et al. A Re-Evaluation of Random-Effects Meta-Analysis. Journal of the Royal Statistical Society Series A: Statistics in Society 2009;172, 137-159. DOI: 10.1111/j.1467-985x.2008.00552.x · PMID None
 - `swindell2017`: Swindell Meta-Analysis of 29 Experiments Evaluating the Effects of Rapamycin on Life Span in the Laboratory Mouse. J Gerontol A Biol Sci Med Sci 2017;72. DOI: 10.1093/gerona/glw153 · PMID 27519886
+- `whiting2011`: Whiting et al. QUADAS-2: A Revised Tool for the Quality Assessment of Diagnostic Accuracy Studies. Annals of Internal Medicine 2011;155, 529-536. DOI: 10.7326/0003-4819-155-8-201110180-00009 · PMID None
+- `cohen1960`: Cohen A Coefficient of Agreement for Nominal Scales. Educational and Psychological Measurement 1960;20, 37-46. DOI: 10.1177/001316446002000104 · PMID None
+- `landis1977`: Landis et al. The Measurement of Observer Agreement for Categorical Data. Biometrics 1977;33, 159. DOI: 10.2307/2529310 · PMID None
+- `higgins2011rob`: Higgins et al. The Cochrane Collaboration's tool for assessing risk of bias in randomised trials. BMJ 2011;343, d5928-d5928. DOI: 10.1136/bmj.d5928 · PMID None
+- `haddaway2018roses`: Haddaway et al. ROSES RepOrting standards for Systematic Evidence Syntheses: pro forma, flow-diagram and descriptive summary of the plan and conduct of environmental systematic reviews and systematic maps. Environmental Evidence 2018;7. DOI: 10.1186/s13750-018-0121-7 · PMID None

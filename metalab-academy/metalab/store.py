@@ -25,6 +25,19 @@ CREATE TABLE IF NOT EXISTS screening(id INTEGER PRIMARY KEY, project_id INT, ref
 CREATE TABLE IF NOT EXISTS plan_tasks(project_id INT, task_key TEXT, done INT, ts REAL, PRIMARY KEY(project_id, task_key));
 CREATE TABLE IF NOT EXISTS extraction(id INTEGER PRIMARY KEY, project_id INT, study_id TEXT, field TEXT, reported_value TEXT,
   unit TEXT, source_doc TEXT, page TEXT, table_fig TEXT, reviewer TEXT, status TEXT, uncertainty TEXT, notes TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS studies(project_id INT, study_id TEXT, label TEXT, notes TEXT, ts REAL, PRIMARY KEY(project_id, study_id));
+CREATE TABLE IF NOT EXISTS reports(project_id INT, report_id TEXT, study_id TEXT, ref_id INT, relation TEXT, ts REAL, PRIMARY KEY(project_id, report_id));
+CREATE TABLE IF NOT EXISTS project_forms(project_id INT PRIMARY KEY, workflow TEXT, schema TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS extracted(id INTEGER PRIMARY KEY, project_id INT, study_id TEXT, report_id TEXT, experiment_id TEXT, field TEXT,
+  value_raw TEXT, unit_raw TEXT, value_clean REAL, unit_clean TEXT, transform TEXT, source_doc TEXT, page TEXT, table_fig TEXT,
+  reviewer TEXT, uncertainty TEXT, missing_reason TEXT, notes TEXT, verification TEXT DEFAULT 'unverified', verifier TEXT,
+  supersedes INT, ts REAL);
+CREATE TABLE IF NOT EXISTS effect_sizes(effect_id TEXT, project_id INT, study_id TEXT, experiment_id TEXT, measure TEXT, yi REAL, vi REAL,
+  control_group_id TEXT, outcome TEXT, timepoint TEXT, group_label TEXT, source TEXT, ts REAL, PRIMARY KEY(project_id, effect_id));
+CREATE TABLE IF NOT EXISTS rob(id INTEGER PRIMARY KEY, project_id INT, study_id TEXT, outcome TEXT, tool TEXT, domain TEXT, judgement TEXT,
+  support TEXT, reviewer TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS dup_candidates(id INTEGER PRIMARY KEY, project_id INT, ref_a INT, ref_b INT, score REAL, reasons TEXT,
+  relation TEXT, status TEXT DEFAULT 'pending', decided_by TEXT, ts REAL);
 """
 DECISIONS = ["include", "exclude", "uncertain", "awaiting_full_text", "needs_translation", "needs_author_clarification"]
 STAGES = ["title_abstract", "full_text"]
@@ -246,9 +259,136 @@ class Store:
     def tasks_done(self, pid):
         return {r["task_key"] for r in self.q("SELECT task_key FROM plan_tasks WHERE project_id=? AND done=1", (pid,))}
 
+    # -------------------------------------------------------- identifiers
+    def new_study(self, pid, label, notes=""):
+        n = self.q("SELECT COUNT(*) c FROM studies WHERE project_id=?", (pid,))[0]["c"] + 1
+        sid = f"S{n:03d}"
+        self.x("INSERT INTO studies VALUES(?,?,?,?,?)", (pid, sid, label, notes, time.time()))
+        self.audit("study_created", f"{sid} {label}", pid); return sid
+
+    def studies(self, pid):
+        return self.q("SELECT * FROM studies WHERE project_id=? ORDER BY study_id", (pid,))
+
+    def link_report(self, pid, study_id, ref_id=None, relation="primary report"):
+        n = self.q("SELECT COUNT(*) c FROM reports WHERE project_id=? AND study_id=?", (pid, study_id))[0]["c"] + 1
+        rid = f"{study_id}-R{n}"
+        self.x("INSERT INTO reports VALUES(?,?,?,?,?,?)", (pid, rid, study_id, ref_id, relation, time.time()))
+        self.audit("report_linked", f"{rid} ref={ref_id} ({relation})", pid); return rid
+
+    def reports(self, pid):
+        return self.q("SELECT * FROM reports WHERE project_id=? ORDER BY report_id", (pid,))
+
+    # ---------------------------------------------------------- forms
+    def set_form(self, pid, workflow, schema):
+        self.x("INSERT INTO project_forms VALUES(?,?,?,?) ON CONFLICT(project_id) DO UPDATE SET workflow=excluded.workflow, schema=excluded.schema, ts=excluded.ts",
+               (pid, workflow, json.dumps(schema), time.time()))
+        self.audit("extraction_form_set", f"workflow={workflow} fields={len(schema)}", pid)
+
+    def get_form(self, pid):
+        r = self.q("SELECT * FROM project_forms WHERE project_id=?", (pid,))
+        return (r[0]["workflow"], json.loads(r[0]["schema"])) if r else (None, [])
+
+    # -------------------------------------------------------- extraction
+    def extract(self, pid, study_id, field, value_raw, unit_raw="", source_doc="", page="", table_fig="", reviewer="human:self",
+                experiment_id="E1", report_id=None, uncertainty="reported", missing_reason="", notes="", value_clean=None, unit_clean=None, transform="none"):
+        """Append-only: a correction is a NEW row that supersedes the old one; raw history is never overwritten."""
+        if reviewer.lower().startswith(("ai", "llm", "model")):
+            raise ValueError("AI output cannot be recorded as a human extractor. Record suggestions in notes; a human must enter the value.")
+        if uncertainty not in ("reported", "estimated", "reconstructed", "imputed", "calculated"):
+            raise ValueError("uncertainty must be reported/estimated/reconstructed/imputed/calculated")
+        if str(value_raw).strip() == "" and not missing_reason.strip():
+            raise ValueError("Empty value requires a missing_reason (missing is not zero).")
+        if uncertainty != "reported" and not notes.strip():
+            raise ValueError("Non-reported values (estimated/reconstructed/imputed/calculated) require a note describing the method.")
+        if not source_doc.strip() and str(value_raw).strip() != "":
+            raise ValueError("Every extracted value needs a source document (and ideally page/table).")
+        prev = self.q("SELECT id FROM extracted WHERE project_id=? AND study_id=? AND experiment_id=? AND field=? ORDER BY id DESC LIMIT 1", (pid, study_id, experiment_id, field))
+        if value_clean is None and str(value_raw).strip() != "":
+            try: value_clean = float(str(value_raw).replace(",", ""))
+            except ValueError: value_clean = None
+        eid = self.x("INSERT INTO extracted(project_id,study_id,report_id,experiment_id,field,value_raw,unit_raw,value_clean,unit_clean,transform,source_doc,page,table_fig,reviewer,uncertainty,missing_reason,notes,supersedes,ts) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                     (pid, study_id, report_id, experiment_id, field, str(value_raw), unit_raw, value_clean, unit_clean or unit_raw, transform, source_doc, page, table_fig, reviewer, uncertainty, missing_reason, notes, prev[0]["id"] if prev else None, time.time()))
+        self.audit("value_extracted", f"{study_id}/{experiment_id}/{field}={value_raw} {unit_raw} [{uncertainty}]", pid, actor=reviewer); return eid
+
+    def verify_extraction(self, pid, extracted_id, verifier, agrees, note=""):
+        r = self.q("SELECT * FROM extracted WHERE id=? AND project_id=?", (extracted_id, pid))
+        if not r: raise ValueError("No such extracted value.")
+        if verifier == r[0]["reviewer"]:
+            raise ValueError("Verification must be by a different person than the extractor (self-verification is not independent).")
+        if verifier.lower().startswith(("ai", "llm", "model")):
+            raise ValueError("AI cannot verify extracted data.")
+        self.x("UPDATE extracted SET verification=?, verifier=? WHERE id=?", ("verified" if agrees else "disputed", verifier, extracted_id))
+        self.audit("extraction_verified" if agrees else "extraction_disputed", f"id {extracted_id} {note}", pid, actor=verifier)
+
+    def current_extracted(self, pid):
+        rows = self.q("SELECT * FROM extracted WHERE project_id=? ORDER BY id", (pid,))
+        sup = {r["supersedes"] for r in rows if r["supersedes"]}
+        return [r for r in rows if r["id"] not in sup]
+
+    def extraction_history(self, pid, study_id, experiment_id, field):
+        return self.q("SELECT * FROM extracted WHERE project_id=? AND study_id=? AND experiment_id=? AND field=? ORDER BY id", (pid, study_id, experiment_id, field))
+
+    def save_effect(self, pid, study_id, experiment_id, measure, yi, vi, control_group_id="", outcome="", timepoint="", group_label="", source=""):
+        n = self.q("SELECT COUNT(*) c FROM effect_sizes WHERE project_id=?", (pid,))[0]["c"] + 1
+        eid = f"{study_id}-{experiment_id}-ES{n}"
+        self.x("INSERT INTO effect_sizes VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", (eid, pid, study_id, experiment_id, measure, yi, vi, control_group_id, outcome, timepoint, group_label, source, time.time()))
+        self.audit("effect_size_saved", f"{eid} {measure} yi={yi:.4g} vi={vi:.4g}", pid); return eid
+
+    def effects(self, pid):
+        return self.q("SELECT * FROM effect_sizes WHERE project_id=? ORDER BY effect_id", (pid,))
+
+    # ------------------------------------------------------ risk of bias
+    def rate_rob(self, pid, study_id, tool, domain, judgement, support, reviewer="human:self", outcome="overall"):
+        from .rob_tools import TOOLS
+        if reviewer.lower().startswith(("ai", "llm", "model")):
+            raise ValueError("AI cannot be recorded as a risk-of-bias reviewer.")
+        t = TOOLS.get(tool)
+        if not t or domain not in t["domains"] and tool != "CUSTOM":
+            raise ValueError("Unknown tool/domain.")
+        if judgement not in t["judgements"]:
+            raise ValueError(f"Judgement must be one of {t['judgements']}.")
+        if not support.strip():
+            raise ValueError("A supporting quote/rationale is required for every judgement.")
+        self.x("INSERT INTO rob(project_id,study_id,outcome,tool,domain,judgement,support,reviewer,ts) VALUES(?,?,?,?,?,?,?,?,?)", (pid, study_id, outcome, tool, domain, judgement, support, reviewer, time.time()))
+        self.audit("rob_rated", f"{study_id} {tool}/{domain}={judgement}", pid, actor=reviewer)
+
+    def rob_current(self, pid, reviewer=None):
+        rows = self.q("SELECT * FROM rob WHERE project_id=? ORDER BY id", (pid,))
+        last = {}
+        for r in rows:
+            last[(r["study_id"], r["outcome"], r["tool"], r["domain"], r["reviewer"])] = r
+        out = list(last.values())
+        return [r for r in out if reviewer is None or r["reviewer"] == reviewer]
+
+    # ------------------------------------------------- fuzzy dedup (human)
+    def find_dup_candidates(self, pid, threshold=0.88):
+        from .workflow import fuzzy_pairs
+        refs = [r for r in self.refs(pid) if r["dup_of"] is None]
+        existing = {(c["ref_a"], c["ref_b"]) for c in self.q("SELECT ref_a, ref_b FROM dup_candidates WHERE project_id=?", (pid,))}
+        n = 0
+        for a, b, score, reasons, relation in fuzzy_pairs(refs, threshold):
+            if (a, b) in existing: continue
+            self.x("INSERT INTO dup_candidates(project_id,ref_a,ref_b,score,reasons,relation,ts) VALUES(?,?,?,?,?,?,?)", (pid, a, b, round(score, 3), reasons, relation, time.time())); n += 1
+        self.audit("fuzzy_dedup_candidates", f"{n} new candidate pairs (threshold {threshold}); NOTHING merged until a human confirms", pid); return n
+
+    def decide_dup(self, pid, cand_id, confirm, decided_by="human:self"):
+        if decided_by.lower().startswith(("ai", "llm", "model")):
+            raise ValueError("Duplicate decisions must be made by a human.")
+        c = self.q("SELECT * FROM dup_candidates WHERE id=? AND project_id=?", (cand_id, pid))
+        if not c: raise ValueError("No such candidate.")
+        c = c[0]
+        self.x("UPDATE dup_candidates SET status=?, decided_by=?, ts=? WHERE id=?", ("confirmed" if confirm else "rejected", decided_by, time.time(), cand_id))
+        if confirm:
+            self.x("UPDATE refs SET dup_of=?, dup_reason=? WHERE id=?", (c["ref_a"], f"fuzzy ({c['relation']}; score {c['score']}) confirmed by {decided_by}", c["ref_b"]))
+        self.audit("dup_confirmed" if confirm else "dup_rejected", f"pair {c['ref_a']}-{c['ref_b']} score {c['score']}", pid, actor=decided_by)
+
+    def dup_candidates(self, pid, status=None):
+        sql = "SELECT * FROM dup_candidates WHERE project_id=?" + (" AND status=?" if status else "") + " ORDER BY score DESC"
+        return self.q(sql, (pid, status) if status else (pid,))
+
     # ----------------------------------------------------------- export/backup
     def backup_json(self):
-        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction"]
+        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates"]
         return json.dumps({"format": "metalab-backup", "version": 1,
                            "tables": {t: self.q(f"SELECT * FROM {t}") for t in tables}}, indent=1)
 
@@ -257,7 +397,7 @@ class Store:
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
         cur = self.db.cursor()
-        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction"):
+        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates"):
             cur.execute(f"DELETE FROM {t}")
             valid = {r[1] for r in cur.execute(f"PRAGMA table_info({t})")}
             for row in d["tables"].get(t, []):

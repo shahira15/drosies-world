@@ -184,7 +184,7 @@ elif page == "Learning Academy":
 # ---------------------------------------------------- RESEARCH WORKSPACE
 elif page == "Research Workspace":
     st.title("Research Workspace")
-    t = st.tabs(["Projects", "Question Builder", "Search Log", "References & Dedup", "Screening", "PRISMA counts", "Decisions", "Audit log", "Backup & export"])
+    t = st.tabs(["Projects", "Question Builder", "Search Log", "References & Dedup", "Screening", "PRISMA", "Extraction", "Risk of bias", "Effect sizes & analysis", "Decisions", "Audit log", "Backup & export"])
     with t[0]:
         with st.form("np"):
             nm = st.text_input("Project name"); dc = st.text_input("Discipline")
@@ -254,6 +254,20 @@ elif page == "Research Workspace":
                     rid = st.selectbox("Undo duplicate flag for record", [d["id"] for d in dups])
                     if st.button("Undo"):
                         db.undo_duplicate(rid, p["id"]); st.rerun()
+            st.markdown("**Fuzzy duplicate candidates (human confirmation required; nothing is merged automatically)**")
+            thr = st.slider("Title-similarity threshold", 0.80, 0.99, 0.88, 0.01)
+            if st.button("Find fuzzy candidates"):
+                st.info(f"{db.find_dup_candidates(p['id'], thr)} new candidate pairs found.")
+            byid = {r["id"]: r for r in db.refs(p["id"])}
+            for cnd in db.dup_candidates(p["id"], "pending"):
+                ra, rb = byid[cnd["ref_a"]], byid[cnd["ref_b"]]
+                with st.container(border=True):
+                    st.markdown(f"**{cnd['relation']}** · score {cnd['score']} · {cnd['reasons']}")
+                    st.markdown(f"A (#{ra['id']}): {ra['title']} - {ra['authors']} ({ra['year']}) {ra['journal']} {ra['doi']}  \nB (#{rb['id']}): {rb['title']} - {rb['authors']} ({rb['year']}) {rb['journal']} {rb['doi']}")
+                    c1, c2 = st.columns(2)
+                    if c1.button("Confirm: B duplicates A", key=f"cf{cnd['id']}"): db.decide_dup(p["id"], cnd["id"], True); st.rerun()
+                    if c2.button("Reject (distinct)", key=f"rj{cnd['id']}"): db.decide_dup(p["id"], cnd["id"], False); st.rerun()
+                    st.caption("Preprint vs published article and multiple reports of one study need judgement: link them as reports of one study in Extraction rather than discarding information.")
     with t[4]:
         p = project_picker("pscr")
         if p:
@@ -278,6 +292,19 @@ elif page == "Research Workspace":
                     except ValueError as e:
                         st.error(str(e))
                 st.caption(f"{len(todo)} remaining")
+        if p:
+            from metalab import workflow as WF
+            with st.expander("Inter-reviewer agreement (Cohen's kappa)"):
+                revs = sorted({k[1] for k in db.latest_decisions(p["id"], stage)})
+                if len(revs) < 2: st.caption("Needs two human reviewers with decisions on the same records (use different reviewer labels).")
+                else:
+                    r1 = st.selectbox("Reviewer 1", revs, key="k1"); r2 = st.selectbox("Reviewer 2", [r for r in revs if r != r1], key="k2")
+                    L = db.latest_decisions(p["id"], stage); both = sorted({i for (i, r) in L if r == r1} & {i for (i, r) in L if r == r2})
+                    if both:
+                        res = WF.cohens_kappa([L[(i, r1)]["decision"] for i in both], [L[(i, r2)]["decision"] for i in both])
+                        kap = res["kappa"]; kap_txt = "undefined" if kap is None else f"{kap:.3f}"
+                        st.write(f"n = {res['n']} · agreement = {res['po']:.1%} · kappa = {kap_txt}")
+                        st.caption("Kappa depends on prevalence/marginals; report percent agreement too. Benchmarks (Landis & Koch) are conventions. Conflicts must be resolved by discussion/third reviewer, then recorded.")
     with t[5]:
         p = project_picker("pp")
         if p:
@@ -290,8 +317,137 @@ elif page == "Research Workspace":
                 st.write("Full-text exclusion reasons:", c["exclusion_reasons"])
             for x in w: st.warning(x)
             if not w and c["identified"]: st.success("Counts are internally consistent.")
-            st.caption("Counts are derived only from stored records. 'Records' vs 'reports' vs 'studies' are distinct in PRISMA 2020 - linking multiple reports to one study is not yet implemented here.")
+            st.caption("Counts are derived only from stored records; 'records', 'reports' and 'studies' are distinct in PRISMA 2020 (link reports to studies in Extraction).")
+            from metalab import workflow as WF
+            svg = WF.prisma_svg(c)
+            import streamlit.components.v1 as components
+            components.html(svg, height=480 + 16 * max(1, len(c["exclusion_reasons"])))
+            st.download_button("Download flow diagram (SVG)", svg, "prisma_flow.svg", "image/svg+xml")
+            st.caption("PNG/PDF export not yet implemented; open the SVG in a browser/Inkscape. Simplified template: databases only; 'reports not retrieved' not tracked.")
     with t[6]:
+        from metalab import workflows as WFS, workflow as WF
+        p = project_picker("pe")
+        if p:
+            wf, schema = db.get_form(p["id"])
+            if not wf:
+                st.info("Choose a review workflow to create the extraction form. Different review types need different forms.")
+                key = st.selectbox("Workflow", list(WFS.WORKFLOWS), format_func=lambda k: WFS.WORKFLOWS[k]["label"])
+                w = WFS.WORKFLOWS[key]
+                st.markdown(f"**Effect measures:** {', '.join(w['effect_measures'])}  \n**Suggested appraisal tools:** {', '.join(w['rob']) or 'none required'}  \n**Reporting guideline:** {w['guideline']}")
+                for x in w["warnings"]: st.warning(x)
+                if st.button("Use this form"): db.set_form(p["id"], key, w["fields"]); st.rerun()
+            else:
+                st.caption(f"Workflow: {WFS.WORKFLOWS[wf]['label']} - extraction form has {len(schema)} fields. (Form can be reset by re-selecting in the database; custom fields: edit `metalab/workflows.py`.)")
+                c1, c2 = st.columns(2)
+                with c1:
+                    lbl = st.text_input("New study label (e.g. 'Smith 2020')")
+                    if st.button("Create study ID") and lbl.strip(): st.success(db.new_study(p["id"], lbl.strip())); st.rerun()
+                studies = db.studies(p["id"])
+                if not studies: st.stop()
+                sid = c2.selectbox("Study", [x["study_id"] for x in studies], format_func=lambda i: f"{i} - {next(x['label'] for x in studies if x['study_id'] == i)}")
+                refs_ = db.refs(p["id"], include_dups=False)
+                with st.expander("Link a report (reference) to this study"):
+                    rid = st.selectbox("Reference", [r["id"] for r in refs_], format_func=lambda i: next(r["title"][:80] for r in refs_ if r["id"] == i)) if refs_ else None
+                    rel = st.selectbox("Relation", ["primary report", "secondary report (same study)", "preprint of published report", "conference abstract", "protocol/registry entry", "supplement"])
+                    if refs_ and st.button("Link report"): st.success(db.link_report(p["id"], sid, rid, rel))
+                    for r_ in [r for r in db.reports(p["id"]) if r["study_id"] == sid]: st.caption(f"{r_['report_id']} · ref {r_['ref_id']} · {r_['relation']}")
+                st.markdown("**Enter a value** (every value needs a source; estimates need a method note; missing is not zero)")
+                with st.form("ex", clear_on_submit=True):
+                    f1, f2, f3 = st.columns(3)
+                    field = f1.selectbox("Field", [x["name"] for x in schema]); exp = f2.text_input("Experiment ID", "E1"); rev = f3.text_input("Extractor (human)", "human:self")
+                    v1, v2, v3 = st.columns(3)
+                    val = v1.text_input("Value as reported"); unit = v2.text_input("Unit"); unc = v3.selectbox("Value type", ["reported", "calculated", "estimated", "reconstructed", "imputed"])
+                    s1, s2, s3 = st.columns(3)
+                    src = s1.text_input("Source document"); pg = s2.text_input("Page"); tf = s3.text_input("Table/figure")
+                    mr = st.text_input("If missing: reason"); nt = st.text_input("Notes / method for non-reported values")
+                    if st.form_submit_button("Save value"):
+                        try: db.extract(p["id"], sid, field, val, unit, src, pg, tf, rev, exp, None, unc, mr, nt); st.success("Saved (previous values, if any, are kept as history).")
+                        except ValueError as e: st.error(str(e))
+                rows = db.current_extracted(p["id"])
+                if rows:
+                    st.dataframe(pd.DataFrame(rows)[["id", "study_id", "experiment_id", "field", "value_raw", "unit_raw", "uncertainty", "source_doc", "page", "table_fig", "reviewer", "verification", "verifier", "missing_reason"]], hide_index=True, width="stretch")
+                    v1, v2, v3 = st.columns(3)
+                    vid = v1.selectbox("Verify value id", [r["id"] for r in rows]); vby = v2.text_input("Verifier (different person)", "human:B"); agree = v3.radio("Verifier agrees with source?", ["yes", "no"], horizontal=True)
+                    if st.button("Record verification"):
+                        try: db.verify_extraction(p["id"], vid, vby, agree == "yes"); st.rerun()
+                        except ValueError as e: st.error(str(e))
+                    issues = WF.validate_extraction(rows)
+                    st.markdown(f"**Automated checks** ({len(issues)} prompts for human review)")
+                    for i in issues: (st.error if i["severity"] == "error" else st.warning if i["severity"] == "warning" else st.info)(f"{i['study']}/{i['experiment']}/{i['field']}: {i['message']}")
+    with t[7]:
+        from metalab import rob_tools as RT
+        import plotly.express as px
+        p = project_picker("pr2")
+        if p and db.studies(p["id"]):
+            tool = st.selectbox("Tool", list(RT.TOOLS), format_func=lambda k: RT.TOOLS[k]["name"]); T = RT.TOOLS[tool]
+            st.markdown(f"**Designed for:** {T['design']}")
+            st.info(T["note"] + " Only domain names are stored; use the official tool's guidance (check licence). Reporting guidelines (ARRIVE/CONSORT) are not risk-of-bias tools.")
+            if T["ref"]: st.markdown("Source: " + references.link(T["ref"]))
+            sid = st.selectbox("Study", [x["study_id"] for x in db.studies(p["id"])], key="robs")
+            with st.form("rb", clear_on_submit=True):
+                dom = st.selectbox("Domain", T["domains"]); jd = st.radio("Judgement", T["judgements"], horizontal=True)
+                sup = st.text_area("Supporting quote / rationale (required)"); rv = st.text_input("Reviewer (human)", "human:self")
+                if st.form_submit_button("Save judgement"):
+                    try: db.rate_rob(p["id"], sid, tool, dom, jd, sup, rv); st.success("Saved")
+                    except ValueError as e: st.error(str(e))
+            cur = [r for r in db.rob_current(p["id"]) if r["tool"] == tool]
+            if cur:
+                df = pd.DataFrame(cur)
+                if df["reviewer"].nunique() > 1: rvw = st.selectbox("Show reviewer", sorted(df["reviewer"].unique())); df = df[df["reviewer"] == rvw]
+                col = {"low": "#2e8b57", "unclear": "#e0b100", "some concerns": "#e0b100", "moderate": "#e0b100", "high": "#c0392b", "serious": "#c0392b", "critical": "#7b1f1f", "no information": "#9aa5b1"}
+                mat = df.pivot_table(index="study_id", columns="domain", values="judgement", aggfunc="last")
+                fig = px.imshow([[list(col).index(x) if isinstance(x, str) else None for x in row] for row in mat.values], x=list(mat.columns), y=list(mat.index),
+                                color_continuous_scale=[(0, "#2e8b57"), (0.5, "#e0b100"), (1, "#c0392b")], aspect="auto", title="Risk-of-bias traffic lights (hover for judgement)")
+                fig.update_traces(text=mat.values, texttemplate="%{text}", hovertemplate="%{y} · %{x}: %{text}<extra></extra>"); fig.update_coloraxes(showscale=False)
+                st.plotly_chart(fig, width="stretch")
+                summ = df.groupby(["domain", "judgement"]).size().reset_index(name="n")
+                st.plotly_chart(px.bar(summ, x="domain", y="n", color="judgement", color_discrete_map=col, title="Domain summary"), width="stretch")
+                st.caption("Text labels are in the cells for colour-blind accessibility. Unclear/no information is not 'low'.")
+            revs = sorted({r["reviewer"] for r in db.rob_current(p["id"]) if r["tool"] == tool})
+            if len(revs) >= 2:
+                from metalab import workflow as WF
+                cur_all = db.rob_current(p["id"]); r1, r2 = revs[:2]
+                d1 = {(r["study_id"], r["domain"]): r["judgement"] for r in cur_all if r["tool"] == tool and r["reviewer"] == r1}
+                d2 = {(r["study_id"], r["domain"]): r["judgement"] for r in cur_all if r["tool"] == tool and r["reviewer"] == r2}
+                common = sorted(set(d1) & set(d2))
+                if common:
+                    k = WF.cohens_kappa([d1[i] for i in common], [d2[i] for i in common]); st.write(f"Reviewer agreement {r1} vs {r2}: {k['po']:.0%} over {k['n']} domains" + ("" if k["kappa"] is None else f", kappa {k['kappa']:.2f}"))
+                    for i in common:
+                        if d1[i] != d2[i]: st.warning(f"Disagreement {i}: {r1}={d1[i]} / {r2}={d2[i]} - resolve by discussion and record")
+        else:
+            st.info("Create studies in the Extraction tab first.")
+    with t[8]:
+        from metalab import workflow as WF
+        p = project_picker("pa")
+        if p:
+            rows = db.current_extracted(p["id"])
+            meas = st.selectbox("Effect measure", ["SMD", "MD", "lnRR", "lnOR", "lnRR_binary"]); vt = st.radio("SMD variance", ["LS", "borenstein"], horizontal=True)
+            eff, skipped = WF.build_effects(rows, meas, vt)
+            for s_ in skipped: st.warning(f"Skipped {s_[0]}/{s_[1]}: {s_[2]} (never imputed)")
+            if eff:
+                st.dataframe(pd.DataFrame(eff), hide_index=True, width="stretch")
+                sh = [e for e in eff if e["control_group_id"]]
+                from collections import Counter
+                for (sid_, cid_), n_ in Counter((e["study_id"], e["control_group_id"]) for e in sh).items():
+                    if n_ > 1: st.error(f"Study {sid_}: {n_} effect sizes share control '{cid_}' -> dependent. The simple model assumes independence; do not pool naively.")
+                if st.button("Save as analysis dataset (replaces nothing; adds new effect IDs)"):
+                    for e in eff: db.save_effect(p["id"], e["study_id"], e["experiment_id"], e["measure"], e["yi"], e["vi"], e["control_group_id"], e["outcome"], e["timepoint"], e["group_label"], "built from extraction")
+                    st.success("Saved with stable effect IDs")
+            saved = db.effects(p["id"])
+            if saved:
+                st.markdown("**Saved analysis dataset**"); st.dataframe(pd.DataFrame(saved), hide_index=True, width="stretch")
+                ex_ = pd.DataFrame(saved)
+                if len(ex_) >= 2:
+                    try:
+                        r = S.meta_analyze(ex_["yi"].to_numpy(), ex_["vi"].to_numpy(), "random", "REML", hksj=True)
+                        st.write(f"Quick look (REML + HKSJ): pooled {r.est:.3f} [{r.ci[0]:.3f}, {r.ci[1]:.3f}], tau² {r.tau2:.3f}, k = {r.k}. Use the Statistics Lab for the pre-specified analysis; this is a convenience view only.")
+                        for n_ in r.notes: st.warning(n_)
+                    except (ValueError, S.ConvergenceError) as e: st.error(str(e))
+            st.markdown("**Statistical analysis plan template**")
+            from metalab import workflows as WFS
+            wfk = db.get_form(p["id"])[0]
+            st.download_button("Download SAP draft (Markdown)", WF.sap_markdown(WFS.WORKFLOWS[wfk]["label"] if wfk else "unspecified", meas), "SAP_draft.md")
+    with t[9]:
         p = project_picker("pd")
         if p:
             k = st.selectbox("Type", ["decision", "protocol deviation", "amendment"])
@@ -300,13 +456,13 @@ elif page == "Research Workspace":
                 db.add_decision(p["id"], txt, k); st.rerun()
             for d in db.decisions(p["id"]):
                 st.markdown(f"**{d['kind']}** · {datetime.datetime.fromtimestamp(d['ts']):%Y-%m-%d %H:%M} - {d['text']}")
-    with t[7]:
+    with t[10]:
         rows = db.audit_rows()
         st.caption("Append-only (enforced by database triggers).")
         if rows:
             df = pd.DataFrame(rows); df["ts"] = pd.to_datetime(df["ts"], unit="s")
             st.dataframe(df, hide_index=True, width="stretch")
-    with t[8]:
+    with t[11]:
         st.download_button("Full backup (JSON)", db.backup_json(), "metalab_backup.json")
         up = st.file_uploader("Restore from backup (REPLACES current data except the audit log)", type="json")
         if up and st.button("Restore"):
@@ -316,6 +472,8 @@ elif page == "Research Workspace":
                 st.error(f"Restore failed: {e}")
         p = project_picker("pb")
         if p:
+            from metalab import workflow as WF
+            st.download_button("Reproducibility package (ZIP: all stages, R script, SAP draft, PRISMA, audit log, SHA-256 manifest)", WF.export_package(db, p["id"], p["name"]), f"{p['name']}_package.zip")
             st.download_button("References (CSV)", db.to_csv(db.refs(p["id"])), "references.csv")
             st.download_button("Audit log (CSV)", db.to_csv(db.audit_rows(p["id"])), "audit.csv")
 

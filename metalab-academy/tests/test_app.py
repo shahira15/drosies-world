@@ -48,3 +48,22 @@ def test_expert_packages_build_and_never_claim_review():
         md = fn()
         assert "Reviewer sign-off" in md and "expert-reviewed" in md.lower() or "sign" in md.lower()
         assert "Reviewer sign-off" in md
+
+
+def test_workspace_renders_with_populated_project(tmp_path, monkeypatch):
+    from metalab.store import Store
+    from metalab import workflow as W, workflows
+    dbp = str(tmp_path / "p.sqlite"); monkeypatch.setenv("METALAB_DB", dbp)
+    s = Store(dbp); pid = s.create_project("Pop", "Bio", "Systematic review")
+    s.import_refs(pid, "TY  - JOUR\nTI  - A study of things in flies\nAU  - Lee, B\nPY  - 2020\nER  -\n\nTY  - JOUR\nTI  - A study of things in flies.\nAU  - Lee, B\nPY  - 2020\nER  -\n")
+    s.set_form(pid, "preclinical", workflows.WORKFLOWS["preclinical"]["fields"])
+    sid = s.new_study(pid, "Lee 2020")
+    for f, v in dict(treat_n=10, treat_mean=12, treat_sd=3, ctrl_n=10, ctrl_mean=10, ctrl_sd=2).items():
+        s.extract(pid, sid, f, v, "days", "Lee2020.pdf", "3", "Tab1")
+    s.rate_rob(pid, sid, "SYRCLE", "Sequence generation", "low", "random table"); s.rate_rob(pid, sid, "SYRCLE", "Random housing", "unclear", "not stated")
+    eff, _ = W.build_effects(s.current_extracted(pid), "SMD")
+    for e in eff: s.save_effect(pid, e["study_id"], e["experiment_id"], e["measure"], e["yi"], e["vi"])
+    s.find_dup_candidates(pid)
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
+    at.run(); at.sidebar.radio[0].set_value("Research Workspace").run()
+    assert not at.exception, [e.value for e in at.exception]

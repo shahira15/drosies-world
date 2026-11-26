@@ -16,13 +16,13 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Append-only audit log (DB triggers) | **tested** |  |  |
 | Search history logger (records searches the USER ran; the app executes none) | **tested** |  |  |
 | RIS and PubMed NBIB import with raw-record preservation | **tested** | Synthetic test files only; real-world export variants not yet exercised |  |
-| Deduplication (exact DOI/PMID/title+year; reversible) | **tested** | Fuzzy matching NOT implemented |  |
-| Single/multi-reviewer screening with conflict detection | **tested** | Cohen's kappa and blinding not implemented |  |
-| PRISMA count derivation + inconsistency warnings | **tested** | Counts only; flow-diagram graphic not yet drawn |  |
+| Deduplication: exact DOI/PMID/title+year plus fuzzy candidates with human confirmation (reversible) | **tested** | Fuzzy: title similarity + year + author, preprint/conference-abstract hints; never auto-merges | Not tuned on real exports; no author-level fuzzy beyond first author |
+| Screening with multi-reviewer labels, conflict detection and Cohen's kappa | **tested** | Kappa verified vs hand-computed textbook example; no blinding mode; no active-learning prioritisation |  |
+| PRISMA counts + accessible SVG flow diagram from stored records | **tested** | SVG validated as XML; simplified PRISMA 2020 template (databases only); reports-not-retrieved not tracked; no PNG/PDF export |  |
 | JSON backup/restore, CSV export | **tested** |  |  |
 | 16-week plan with gates and progress | **implemented** |  |  |
-| Data extraction forms with provenance | **in_development** | Table exists; UI not built |  |
-| Risk-of-bias tools | **planned** |  |  |
+| Configurable extraction forms per review type, study/report/experiment/effect IDs, provenance, versioned (append-only) values, independent verification, missing-data tracking, uncertainty labels | **tested** | tests/test_workflow.py; per-value source required; self-verification and AI extractor refused; validation prompts (units, CV, shared control, duplicates, missing SD) | Unit conversion helpers limited to manual 'transform' labelling; no automatic unit conversion; expert review pending |
+| Risk-of-bias recorder (SYRCLE, RoB 2, ROBINS-I, QUADAS-2, custom) + traffic-light and domain plots + reviewer agreement | **tested** | Domain names only (no official guidance text); every judgement needs rationale; AI refused; tool references verified (Crossref/PubMed) | Must be used with the official tool guidance; not reviewed by an expert; NOS/JBI/CASP/MMAT not included |
 | Manuscript studio and export | **planned** |  |  |
 | Resource registry | **implemented** | 15 verified references (PubMed); 16 resources + 8 organisations with UNVERIFIED links (no verification dates) |  |
 | Database and software directories | **planned** |  |  |
@@ -36,3 +36,9 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Local-only storage, parameterised SQL, no network calls | **implemented** | No auth (single local user); no security audit performed |  |
 | Subgroup analysis and mixed-effects meta-regression (REML/DL/PM, z and knha) | **benchmarked** | Matches metafor on dat.raudenbush1985 and dat.bcg (single/multiple/categorical moderators) | Expert review pending |
 | R reference generation + automated comparison (Mac/CI-runnable) | **implemented** | validation/make_reference.R, run_validation.sh, .github/workflows/metalab-ci.yml (CI not yet executed on GitHub) |  |
+| Effect-size builder from verified extraction, stable effect IDs, SAP template, shared-control warnings | **tested** | Matches stats engine; skips (never imputes) incomplete experiments |  |
+| Reproducibility package ZIP (all stages, R script, SAP, PRISMA, audit log, SHA-256 manifest) | **tested** |  |  |
+| Workflow templates: preclinical, clinical, observational, ecological, qualitative, scoping | **implemented** | Forms/tools/measures/guidelines differ by type; qualitative/scoping have no effect-size path | Templates need domain-expert review |
+| 14-milestone guided pathway (8 elements each) + Topic Explorer with real PubMed scan | **implemented** | Scan = 18 logged PubMed searches (2026-11-26); signals only, not novelty determination |  |
+| Claim-level verification registry + correction history + expert review packages | **implemented** | 15 claims; 0 human-reviewed; 11 corrections logged |  |
+| Reference verification tooling (Crossref DOI registry + PubMed) | **tested** | tools/verify_refs.py rejects author/year mismatches; caught 3 wrong recalled identifiers; bibliographic verification only |  |

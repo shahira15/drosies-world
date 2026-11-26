@@ -73,21 +73,22 @@
   },
   {
    "id": "workspace.dedup",
-   "name": "Deduplication (exact DOI/PMID/title+year; reversible)",
+   "name": "Deduplication: exact DOI/PMID/title+year plus fuzzy candidates with human confirmation (reversible)",
    "status": "tested",
-   "evidence": "Fuzzy matching NOT implemented"
+   "evidence": "Fuzzy: title similarity + year + author, preprint/conference-abstract hints; never auto-merges",
+   "blocker": "Not tuned on real exports; no author-level fuzzy beyond first author"
   },
   {
    "id": "workspace.screening",
-   "name": "Single/multi-reviewer screening with conflict detection",
+   "name": "Screening with multi-reviewer labels, conflict detection and Cohen's kappa",
    "status": "tested",
-   "evidence": "Cohen's kappa and blinding not implemented"
+   "evidence": "Kappa verified vs hand-computed textbook example; no blinding mode; no active-learning prioritisation"
   },
   {
    "id": "workspace.prisma_counts",
-   "name": "PRISMA count derivation + inconsistency warnings",
+   "name": "PRISMA counts + accessible SVG flow diagram from stored records",
    "status": "tested",
-   "evidence": "Counts only; flow-diagram graphic not yet drawn"
+   "evidence": "SVG validated as XML; simplified PRISMA 2020 template (databases only); reports-not-retrieved not tracked; no PNG/PDF export"
   },
   {
    "id": "workspace.backup",
@@ -101,14 +102,17 @@
   },
   {
    "id": "workspace.extraction",
-   "name": "Data extraction forms with provenance",
-   "status": "in_development",
-   "evidence": "Table exists; UI not built"
+   "name": "Configurable extraction forms per review type, study/report/experiment/effect IDs, provenance, versioned (append-only) values, independent verification, missing-data tracking, uncertainty labels",
+   "status": "tested",
+   "evidence": "tests/test_workflow.py; per-value source required; self-verification and AI extractor refused; validation prompts (units, CV, shared control, duplicates, missing SD)",
+   "blocker": "Unit conversion helpers limited to manual 'transform' labelling; no automatic unit conversion; expert review pending"
   },
   {
    "id": "workspace.rob",
-   "name": "Risk-of-bias tools",
-   "status": "planned"
+   "name": "Risk-of-bias recorder (SYRCLE, RoB 2, ROBINS-I, QUADAS-2, custom) + traffic-light and domain plots + reviewer agreement",
+   "status": "tested",
+   "evidence": "Domain names only (no official guidance text); every judgement needs rationale; AI refused; tool references verified (Crossref/PubMed)",
+   "blocker": "Must be used with the official tool guidance; not reviewed by an expert; NOS/JBI/CASP/MMAT not included"
   },
   {
    "id": "workspace.manuscript",
@@ -184,6 +188,42 @@
    "name": "R reference generation + automated comparison (Mac/CI-runnable)",
    "status": "implemented",
    "evidence": "validation/make_reference.R, run_validation.sh, .github/workflows/metalab-ci.yml (CI not yet executed on GitHub)"
+  },
+  {
+   "id": "workspace.analysis_dataset",
+   "name": "Effect-size builder from verified extraction, stable effect IDs, SAP template, shared-control warnings",
+   "status": "tested",
+   "evidence": "Matches stats engine; skips (never imputes) incomplete experiments"
+  },
+  {
+   "id": "workspace.repro_export",
+   "name": "Reproducibility package ZIP (all stages, R script, SAP, PRISMA, audit log, SHA-256 manifest)",
+   "status": "tested"
+  },
+  {
+   "id": "workspace.review_type_workflows",
+   "name": "Workflow templates: preclinical, clinical, observational, ecological, qualitative, scoping",
+   "status": "implemented",
+   "evidence": "Forms/tools/measures/guidelines differ by type; qualitative/scoping have no effect-size path",
+   "blocker": "Templates need domain-expert review"
+  },
+  {
+   "id": "first_paper.milestones",
+   "name": "14-milestone guided pathway (8 elements each) + Topic Explorer with real PubMed scan",
+   "status": "implemented",
+   "evidence": "Scan = 18 logged PubMed searches (2026-11-26); signals only, not novelty determination"
+  },
+  {
+   "id": "quality.claims_registry",
+   "name": "Claim-level verification registry + correction history + expert review packages",
+   "status": "implemented",
+   "evidence": "15 claims; 0 human-reviewed; 11 corrections logged"
+  },
+  {
+   "id": "knowledge.references_verification",
+   "name": "Reference verification tooling (Crossref DOI registry + PubMed)",
+   "status": "tested",
+   "evidence": "tools/verify_refs.py rejects author/year mismatches; caught 3 wrong recalled identifiers; bibliographic verification only"
   }
  ]
 }
