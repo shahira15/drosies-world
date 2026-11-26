@@ -42,7 +42,7 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | 14-milestone guided pathway (8 elements each) + Topic Explorer with real PubMed scan | **implemented** | Scan = 18 logged PubMed searches (2026-11-26); signals only, not novelty determination |  |
 | Claim-level verification registry + correction history + expert review packages | **implemented** | 15 claims; 0 human-reviewed; 11 corrections logged |  |
 | Reference verification tooling (Crossref DOI registry + PubMed) | **tested** | tools/verify_refs.py rejects author/year mismatches; caught 3 wrong recalled identifiers; bibliographic verification only |  |
-| Searchable glossary (47 terms) linked to modules | **tested** | Original definitions; not expert-reviewed | Expert review |
+| Searchable glossary (49 terms) linked to modules | **tested** | Original definitions; not expert-reviewed | Expert review |
 | Core first-researcher pathway + extensions + specialist pathways | **implemented** | Availability computed; 13 core modules (12 written/available count computed in UI) |  |
 | Method-selection wizard (rule-based, assumptions shown, flags unsupported methods) | **tested** | Scenario tests; rules not expert-reviewed | Expert review; does not cover many designs |
 | Universal search across lessons, formulas, glossary, resources, claims, calculators, workflows | **tested** | Simple token scoring |  |

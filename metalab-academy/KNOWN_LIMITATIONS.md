@@ -1,6 +1,6 @@
 # Known limitations register (v0.2, 2026-11-26)
 **Curriculum**
-1. 12 of 88 registered modules have lessons (AI-drafted, NOT expert-reviewed). 76 are outlines. Core first-researcher pathway: 13 modules, 12 of which... see Learning Academy → Pathways for computed availability.
+1. 12 of 88 registered modules have lessons (AI-drafted, NOT expert-reviewed). 76 are outlines. Core first-researcher pathway: 12 of its 13 modules have lessons (Module 15, screening, does not yet).
 2. Curriculum coverage audit is against the chapter structure of handbooks *as recalled*, not re-read.
 3. Lesson claims: 30 tracked; 6 unverified (RoB domain lists, evidence-based-research claim); most others verified at abstract/title level only. Cochrane Handbook, JBI Manual, GRADE guidance not re-read.
 4. Interactive coding tutorials do not exist (code is displayed and tested, not executable in-app). No video content.
