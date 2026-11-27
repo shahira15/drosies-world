@@ -177,7 +177,7 @@
 
   /* ---------- hooks: run after every view / soft update ---------- */
   const baseView = DC.view, baseSoft = DC.softUpdate;
-  DC.view = function (o) { baseView.call(DC, o); document.body.dataset.vxChapter = String(DC.state.cur); vx.checkCards(); };
+  DC.view = function (o) { baseView.call(DC, o); if (DC.state) document.body.dataset.vxChapter = String(DC.state.cur); vx.checkCards(); };
   DC.softUpdate = function () { baseSoft.call(DC); vx.checkCards(); };
 
   /* elements that are not <button>s but carry role="button" + data-act (SVG flies, hot zones) must work with Enter and Space */

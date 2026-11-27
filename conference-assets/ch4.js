@@ -207,7 +207,7 @@
       return body + prog;
     },
     mount() {
-      let lastNarrow = window.innerWidth < 560; window.addEventListener('resize', () => { const n = window.innerWidth < 560; if (n !== lastNarrow && DC.state.cur === 4) { lastNarrow = n; DC.refresh(); } });
+      let lastNarrow = window.innerWidth < 560; window.addEventListener('resize', () => { const n = window.innerWidth < 560; if (n !== lastNarrow && DC.state && DC.state.cur === 4) { lastNarrow = n; DC.refresh(); } });
       if (DC.state.path === 'A' && DC.aComplete()) { const b = DC.$('#gBox'); if (b) DC.chart.attach(b, DC.$('#gOut')); }
       DC.onBind('b.chart.kind', () => DC.refresh());
       DC.onBind('b.chart', () => { const gr = DC.$('#bGraph'); if (gr) { gr.innerHTML = bGraphHTML(); const bb = DC.$('#bBox'); if (bb) DC.chart.attach(bb, DC.$('#bOut')); } DC.softUpdate(); });

@@ -100,6 +100,7 @@ def build_downloads():
     write("cite/drosies-world-bibliography.ris", "\n\n".join(strip(F.ris)) + "\n")
     write("cite/drosies-world-bibliography.enw", "\n\n".join(strip(F.endnote)) + "\n")
     write("CITATION.cff", F.cff())
+    write("cite/CITATION.cff", F.cff())
     flags = META["book"].get("needs_manual_verification", [])
     ver = META["book"].get("verified_from_zenodo_api", [])
     write("tools/citation/VERIFICATION_CHECKLIST.md",
@@ -190,7 +191,7 @@ def meta_block(r, with_jsonld):
     return "\n".join(lines) + "\n"
 
 
-META_ONLY = {"teacher-resources", "fruit-fly-biology", "life-cycle-activities"}
+META_ONLY = {"teacher-resources", "fruit-fly-biology", "life-cycle-activities", "science-activities"}
 SKIP_PAGES = {"platform", "cite", "software-archive"}
 
 
@@ -217,7 +218,7 @@ def inject_head():
 
 # ------------------------------------------------------------------ page
 GROUP_INTRO = {
-    "storybook": "The only resource with a Zenodo record and DOI. When you cite the book, cite the DOI rather than the website.",
+    "storybook": "The only resource with a Zenodo record and DOI. When you cite the book, cite the DOI rather than the website. The book and the software are separate scholarly outputs: cite the book for the story and illustrations, and the platform (or a software release, once one exists) for the software.",
     "software": "A versioned software release archived with a DOI.",
     "simulation": "Interactive resources that run in a web browser. Their outputs are <strong>simulated</strong>: cite them as educational tools, never as sources of experimental data.",
     "teacher": "Guides, worksheets and documentation for educators.",
@@ -384,6 +385,7 @@ def page():
 <li><a class="button button-dark" href="/cite/drosies-world-bibliography.ris" download>Download RIS (.ris)</a><span>Zotero, Mendeley and EndNote. Best all-round choice.</span></li>
 <li><a class="button button-dark" href="/cite/drosies-world-bibliography.bib" download>Download BibTeX (.bib)</a><span>Zotero, Mendeley, JabRef, LaTeX and Overleaf.</span></li>
 <li><a class="button button-light" href="/cite/drosies-world-bibliography.enw" download>Download EndNote import (.enw)</a><span>EndNote's own tagged format, as an alternative to RIS.</span></li>
+<li><a class="button button-light" href="/cite/CITATION.cff" download>Download CITATION.cff</a><span>Citation File Format record for the platform (no software DOI is listed in it).</span></li>
 </ul>
 <h3>How to import</h3>
 <ul><li><strong>Zotero:</strong> File → Import…, then choose the .ris or .bib file.</li>
@@ -407,9 +409,9 @@ def page():
 
 <section class="hub-section" id="ai-disclosure" aria-labelledby="ai-h"><div class="container narrow">
 <h2 id="ai-h"><span class="h-ico" aria-hidden="true">🤖</span>AI-assisted development disclosure</h2>
-<p>Parts of this website's source code, automated tests and technical documentation were developed with AI coding assistance. The repository's commit history records the use of Claude Code (Anthropic) in co-author trailers. The creator also reports using ChatGPT (OpenAI) for development assistance; its scope is not recorded in the repository history. {esc(AUTHOR_FULL)} directs the project and approves what is published.</p>
-<p>AI assistance does not replace checking the science: factual claims about fruit fly biology should be verified against the sources cited on the Fruit Fly Biology page and in the primary literature. Consistent with common scholarly guidance, AI tools are not listed as authors in the citations on this page.</p>
-<p>This disclosure covers software development. It does not describe how the storybook's text or artwork were made; see the <a href="/team.html">Team page</a> for those credits.</p>
+<p>Drosie's World was developed with the help of generative AI tools. The creator, {esc(AUTHOR_FULL)}, directs the scientific and educational content and is responsible for it. As described by the creator, ChatGPT (OpenAI) assisted with project conceptualisation, brainstorming, educational content development, simulation specifications, scientific explanations, prompt development, code generation, troubleshooting and feature planning. Claude Code (Anthropic) assisted with repository-level implementation, interface development, code generation, debugging, testing, documentation and release preparation; the repository's commit history records it in co-author trailers. The repository cannot confirm which files or passages each tool produced.</p>
+<p>Scientific explanations were developed with AI assistance and checked by the creator; they have not been independently expert reviewed. Factual claims about fruit fly biology should be verified against the sources cited on the Fruit Fly Biology page and in the primary literature. Consistent with common scholarly guidance, AI tools are not listed as authors in the citations on this page.</p>
+<p>This disclosure does not describe how the storybook's text was made. The storybook illustrations are credited to the human illustrator, {esc(ILLUSTRATOR)}; see the <a href="/team.html">Team page</a> for credits.</p>
 </div></section>
 </main>
 {footer()}

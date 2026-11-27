@@ -1,0 +1,21 @@
+# EXAMPLE ONLY (not active): a GitHub Actions workflow that would run the site tests on Chromium, Firefox and WebKit.
+# To use it, copy it to .github/workflows/site-tests.yml. It is deliberately not installed in this branch.
+name: site-tests
+on: [pull_request]
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save playwright@1.63.0 axe-core@4.10.2
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: python3 tools/build_archive.py --extract /tmp/edition --edition full
+      - run: BROWSER=${{ matrix.browser }} SITE_ROOT=/tmp/edition EXPECT_NO_EXTERNAL=1 AXE_PATH=$PWD/node_modules/axe-core/axe.min.js node tests/site/run.js
+        env: { NODE_PATH: "${{ github.workspace }}/node_modules" }
+      - run: cd drosie-genetics-lab && node tests/run-tests.mjs

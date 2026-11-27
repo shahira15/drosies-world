@@ -52,7 +52,7 @@ Arm lengths shown in the physical-map view (Release 6, approximate): X ≈ 23.5 
 
 - FlyBase gene/allele/balancer reports listed above (https://flybase.org).
 - Hurd TR, Liang FX, Lehmann R (2015) *Curly* encodes dual oxidase, which acts with heme peroxidase Curly Su to shape the adult *Drosophila* wing. *PLoS Genet* 11(11): e1005625.
-- Miller DE, Cook KR, Hawley RS et al. (2018) The evolutionary history of *Drosophila* balancer chromosomes. *Genetics* (PMC5873907) — origin of CyO and its markers.
+- Miller DE, Cook KR, Hemenway EA, Fang V, Miller AL, Hales KG, Hawley RS (2018) The molecular and genetic characterization of second chromosome balancers in *Drosophila melanogaster*. *G3* 8(4):1161-1171. doi:10.1534/g3.118.200021 (PMID 29420191; PMC5873907) — molecular breakpoints and mutations of the second-chromosome balancers SM1, SM5, CyO and SM6a. *Citation corrected 2026-11-24:* an earlier version of this file gave the wrong title and journal. The abstract was checked via PubMed; the full text was not read here, so this reference is not yet confirmed to support the specific list of CyO markers (*Cy*, *cn*<sup>2</sup>, *pr*<sup>1</sup>, *dpy*<sup>lvI</sup>) given above. Confirm that list against FlyBase FBba0000025.
 - Lindsley DL, Grell EH (1972) *Genetic Variations of* Drosophila melanogaster; Lindsley DL, Zimm GG (1992) *The Genome of* Drosophila melanogaster ("Red Book").
 - Morgan TH (1910) Sex limited inheritance in *Drosophila*. *Science* 32:120–122.
 - Sturtevant AH (1913) The linear arrangement of six sex-linked factors in *Drosophila*, as shown by their mode of association. *J Exp Zool* 14:43–59.

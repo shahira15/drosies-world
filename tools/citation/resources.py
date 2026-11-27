@@ -174,6 +174,11 @@ for n, t, d in LESSONS:
         first_commit="2026-11-02", ris="GEN", bib="misc", desc=d, schema="LearningResource", ages="5-8",
         parent="teacher-resources")
 
+add(id="science-activities", group="more", short="Science activities (hub)",
+    title="Free Science Activities for Kids: Fruit Fly Games and Worksheets", medium="Educator resource page",
+    url=SITE + "/science-activities/", file="science-activities/index.html", first_commit=None, ris="ELEC", bib="misc",
+    desc="The hub that lists every game, simulation and printable by age group.", schema="CollectionPage", ages="5-12")
+
 add(id="life-cycle-activities", group="more", short="Fruit fly life cycle activities",
     title="Fruit Fly Life Cycle Activities for Kids: Free Games and Worksheets", medium="Educator resource page",
     url=SITE + "/fruit-fly-life-cycle-activities/", file="fruit-fly-life-cycle-activities/index.html", first_commit="2026-11-23", ris="ELEC", bib="misc",

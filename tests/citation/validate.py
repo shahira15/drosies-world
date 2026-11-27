@@ -128,7 +128,7 @@ for r in RS.R:
         try: docs.append(json.loads(blk))
         except Exception as e: ok(False, "%s: JSON-LD parses (%s)" % (r["id"], e))
     types = {t for d in docs for ts in walk_types(d) for t in ts}
-    if r["id"] in ("teacher-resources", "fruit-fly-biology", "life-cycle-activities"):
+    if r["id"] in ("teacher-resources", "fruit-fly-biology", "life-cycle-activities", "science-activities"):
         ok(bool(docs), "%s: existing JSON-LD retained" % r["id"]); continue
     mine = [d for d in docs if d.get("citation")]
     ok(len(mine) == 1, "%s: one citation JSON-LD block" % r["id"])
@@ -216,6 +216,16 @@ if cc:
     r = subprocess.run([cc, "--validate", "-i", os.path.join(ROOT, "CITATION.cff")], capture_output=True, text=True)
     ok(r.returncode == 0, "cffconvert --validate: " + (r.stdout + r.stderr).strip().splitlines()[-1][:120])
 else: print("  SKIP cffconvert not installed")
+
+print("== .zenodo.json stays consistent with the single metadata source")
+if os.path.exists(os.path.join(ROOT, ".zenodo.json")):
+    z = json.load(open(os.path.join(ROOT, ".zenodo.json"), encoding="utf-8"))
+    cr = z["creators"][0]
+    ok(cr["name"] == "%s, %s" % (meta["author"]["family_names"], meta["author"]["given_names"]), ".zenodo.json creator = metadata.json author")
+    ok(cr.get("orcid") == meta["author"]["orcid"].replace("https://orcid.org/", ""), ".zenodo.json ORCID = metadata.json ORCID")
+    ok("license" not in z and "doi" not in z and (z.get("related_identifiers") or [{}])[0].get("identifier") == meta["book"]["doi"], ".zenodo.json has no licence or software DOI and references the book DOI")
+else:
+    print("  SKIP no .zenodo.json in this tree")
 
 print("== Sitemap")
 sm = read("sitemap.xml"); locs = re.findall(r"<loc>([^<]+)</loc>", sm)

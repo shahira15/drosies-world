@@ -52,7 +52,7 @@
     ui.vsScope = h('button', { class: 'vs', html: icon('scope', 18) + '<span>Microscope</span>', disabled: true, onclick: () => { DW.audio.play('click'); DW.bus.emit('nav', 'scope'); } });
     ui.viewSwitch = h('div', { class: 'viewswitch' }, ui.vsLab, ui.vsScope);
 
-    ui.inv = h('div', { class: 'inventory', 'aria-label': 'Inventory' });
+    ui.inv = h('div', { class: 'inventory', role: 'group', 'aria-label': 'Inventory' });
     ui.minimap = h('div', { class: 'minimap', 'aria-hidden': 'true' });
 
     ui.hud = h('div', { class: 'hud' }, ui.missionCard, ui.hudBtns, ui.viewSwitch, ui.minimap, ui.inv);

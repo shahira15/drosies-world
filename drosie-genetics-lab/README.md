@@ -1,12 +1,12 @@
 # Drosie Genetics Lab
 
-**Breed. Predict. Discover.** A free, scientifically validated *Drosophila melanogaster* genetics simulator for ages 5 through undergraduate. Part of [Drosie's World](https://drosiesworld.com).
+**Breed. Predict. Discover.** A free *Drosophila melanogaster* genetics simulator with a research-informed design and an automated technical test suite for ages 5 through undergraduate. Part of [Drosie's World](https://drosiesworld.com).
 
 Students choose parent flies from a stock center, breed them, examine offspring under a microscope, predict results with Punnett squares, explore chromosomes and crossing over, and test their data with chi-square. All of it runs on a genetics engine that is independent of the interface and covered by an automated scientific test suite.
 
 ## Features
 - **Genetics engine** (`js/engine/`): autosomal and X-linked inheritance with male hemizygosity; independent assortment; linkage and recombination from classical map distances (Kosambi, Haldane or linear mapping); **no meiotic crossing over in males**; recessive lethality with separate zygote and adult distributions; a simplified, documented CyO balancer; a FlyBase-style genotype parser and formatter; seeded, reproducible sampling; and chi-square with exact p-values.
-- **Real alleles**, checked against FlyBase: *w*<sup>1118</sup>, *y*<sup>1</sup>, *vg*<sup>1</sup>, *e*<sup>1</sup>, *b*<sup>1</sup> (*Adc*<sup>b-1</sup>), *Cy*<sup>1</sup> (*Duox*<sup>Cy</sup>), *Sb*<sup>1</sup>, plus the CyO balancer. One clearly labelled fictional lethal, *l(2)DEMO*, is used for teaching balancers.
+- **Real alleles**, compiled from FlyBase records and checked by the developer (not yet independently reviewed): *w*<sup>1118</sup>, *y*<sup>1</sup>, *vg*<sup>1</sup>, *e*<sup>1</sup>, *b*<sup>1</sup> (*Adc*<sup>b-1</sup>), *Cy*<sup>1</sup> (*Duox*<sup>Cy</sup>), *Sb*<sup>1</sup>, plus the CyO balancer. One clearly labelled fictional lethal, *l(2)DEMO*, is used for teaching balancers.
 - **Illustrated laboratory** with 8 interactive stations: Fly Stock Center, Breeding Station, Genetics Microscope, Punnett Workbench, Chromosome Explorer, Data Analysis Computer, Research Notebook and Challenge Board. Dr. Maya and Drosie guide the player.
 - **Four levels:** Little Geneticist (5–8), Junior (9–12), Researcher (13–17) and University.
 - **16 research missions**, each driven by real experiments and graded from the player's own data.

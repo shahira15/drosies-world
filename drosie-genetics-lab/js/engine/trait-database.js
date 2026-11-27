@@ -137,7 +137,7 @@ export const BALANCERS = {
     alleles: { Cy: 'Cy1' },
     realMarkers: 'Duox[Cy], cn[2], pr[1], dpy[lvI] (cn2, pr1 and dpy[lvI] loci are not modeled)',
     notes: 'Multiply inverted chromosome 2 (In(2LR)O superimposed on In(2L)Cy + In(2R)Cy). Suppresses recovery of crossover chromosomes across chromosome 2. Dominant marker Curly; CyO/CyO is lethal.',
-    sources: ['https://flybase.org/reports/FBba0000025', 'https://flybase.org/reports/FBab0004786', 'Miller et al. 2018 Genetics (PMC5873907)']
+    sources: ['https://flybase.org/reports/FBba0000025', 'https://flybase.org/reports/FBab0004786', 'Miller et al. 2018 G3 8:1161 (PMC5873907)']
   }
 };
 

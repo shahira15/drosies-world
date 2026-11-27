@@ -65,7 +65,7 @@ export function renderChromosomes(app, el, params) {
       <figure class="panel karyo"><svg viewBox="0 0 ${W} ${svgH}" role="img" aria-label="Drosophila melanogaster chromosomes with modeled genes">${rows.join('')}</svg>
         <figcaption class="small">${view === 'genetic'
           ? 'Genetic (recombination) map positions in centimorgans from classical maps (Lindsley & Grell 1972; FlyBase). Map positions are measured within each chromosome, from 0 at the left tip. * = fictional teaching locus at an illustrative position. Centromere positions are approximate.'
-          : 'Physical lengths of chromosome arms are approximate (Release 6 assembly). Gene coordinates are shown only where verified against FlyBase/NCBI; physical and genetic distances are not proportional — recombination rate varies along chromosomes and is suppressed near centromeres.'}</figcaption></figure>
+          : 'Physical lengths of chromosome arms are approximate (Release 6 assembly). Gene coordinates are shown only where the developer checked them against FlyBase/NCBI; physical and genetic distances are not proportional — recombination rate varies along chromosomes and is suppressed near centromeres.'}</figcaption></figure>
       <aside class="panel gene-info">${info}</aside>
     </div>
     <h3>Parents' homologous chromosomes</h3>
