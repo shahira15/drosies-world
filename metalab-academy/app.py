@@ -3,7 +3,7 @@ import json, os, time, datetime
 from pathlib import Path
 import numpy as np, pandas as pd, streamlit as st
 import plotly.graph_objects as go
-from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, manuscript as MS, verification as VER, stats as S
+from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, manuscript as MS, verification as VER, assessments as AS, stats as S
 from metalab.store import Store, DECISIONS
 from metalab.plan import WEEKS, all_tasks
 
@@ -139,6 +139,16 @@ elif page == "Learning Academy":
             rows = LRN.pathway(ids); done_ = db.completed()
             st.markdown(f"**{title}** - {sum(r['available'] for r in rows)}/{len(rows)} lessons written · {sum(r['minutes'] or 0 for r in rows)} min of written content")
             st.dataframe(pd.DataFrame([{"Module": r["id"], "Title": r["title"], "Lesson": "available" if r["available"] else "outline only (not yet written)", "Minutes": r["minutes"], "Done": "✓" if r["id"] in done_ else ""} for r in rows]), hide_index=True, width="stretch")
+        pp = AS.personal_pathway(PROFILE)
+        st.markdown("**My pathway** (from your Onboarding profile; you can combine any tracks)")
+        if PROFILE and pp["tracks"]: st.write("Suggested discipline tracks: " + ", ".join(pp["tracks"]))
+        else: st.caption("Complete Onboarding (discipline/goals) to get discipline tracks, or pick tracks below.")
+        for n_ in pp["notes"]: st.caption(n_)
+        chosen = st.multiselect("Tracks to combine", list(AS.DISCIPLINE_TRACKS), default=pp["tracks"])
+        ids_ = list(LRN.CORE_PATH); [ids_.append(m) for t_ in chosen for m in AS.DISCIPLINE_TRACKS[t_]["extra"] if m not in ids_]
+        show("My combined pathway", ids_)
+        st.download_button("Download study-notes bundle for this pathway (ZIP of Markdown)", AS.notes_bundle(ids_), "metalab_pathway_notes.zip")
+        st.caption("Only written lessons are included; outline-only modules are listed as missing in the README inside the ZIP. Practice → Assessments tests the written ones.")
         show("Core pathway: first-time researcher (to your first primary analysis)", LRN.CORE_PATH)
         show("Core extensions (writing, certainty, protocol details)", LRN.CORE_EXTENSIONS)
         sp = st.selectbox("Optional specialist pathway", list(LRN.SPECIALIST)); show(sp, LRN.SPECIALIST[sp])
@@ -229,7 +239,7 @@ elif page == "Learning Academy":
 # ------------------------------------------------------------------ PRACTICE
 elif page == "Practice":
     st.title("Practice")
-    t1, t2, t3 = st.tabs(["Flashcards (spaced repetition)", "Glossary", "Bookmarks & goals"])
+    t1, t2, t3, t4 = st.tabs(["Flashcards (spaced repetition)", "Glossary", "Bookmarks & goals", "Assessments"])
     with t1:
         allc = {c["key"]: c for c in LRN.cards()}
         due, new = db.cards_due(list(allc))
@@ -257,6 +267,30 @@ elif page == "Practice":
         goal = st.number_input("Weekly goal (lessons completed)", 0, 14, int(PROFILE.get("weekly_goal", 1)))
         if st.button("Save weekly goal"): db.set_profile(weekly_goal=int(goal)); st.success("Saved")
         done_ = db.completed(); st.progress(min(1.0, len(done_) / max(int(goal), 1)) if goal else 0.0, text=f"{len(done_)} lessons completed in total (goal counts per week; resets are manual)")
+
+    with t4:
+        st.markdown("**Mastery assessments** built from the lessons' quizzes (AI-drafted questions, not psychometrically validated; internal self-assessment only, not a qualification). Mastery = 80%+.")
+        writ = sorted(LES)
+        mode = st.radio("Exam scope", ["Chosen modules", "A discipline/core pathway"], horizontal=True)
+        if mode == "Chosen modules":
+            mods = st.multiselect("Modules (written lessons only)", writ, default=writ[:3], format_func=lambda i: f"{i}. {LES[i]['title'][:60]}")
+        else:
+            tr = st.selectbox("Pathway", ["Core first-researcher path"] + list(AS.DISCIPLINE_TRACKS)); ids = LRN.CORE_PATH if tr.startswith("Core") else AS.DISCIPLINE_TRACKS[tr]["core"] + AS.DISCIPLINE_TRACKS[tr]["extra"]
+            mods = [m for m in ids if m in LES]; st.caption(f"{len(mods)} of {len(ids)} pathway modules have lessons; the others cannot be examined yet.")
+        npm = st.slider("Questions per module", 1, 6, 3); seed = st.number_input("Exam seed (same seed = same exam)", 1, 9999, 1)
+        if mods:
+            qs = AS.exam(mods, npm, int(seed)); st.write(f"**{len(qs)} questions**")
+            with st.form(f"exam_{seed}_{npm}_{len(mods)}"):
+                picks = [st.radio(f"{i+1}. (Module {q['module']}) {q['q']}", q["opts"], index=None, key=f"ex{seed}{q['qid']}") for i, q in enumerate(qs)]
+                if st.form_submit_button("Submit exam"):
+                    ans = [q["opts"].index(p_) if p_ is not None else None for q, p_ in zip(qs, picks)]; res = AS.score(qs, ans)
+                    st.success(f"Score {res['correct']}/{res['total']} ({res['pct']:.0%}) - " + ("mastery level reached" if res["mastery"] else "below mastery: review the modules listed")) if res["mastery"] else st.warning(f"Score {res['correct']}/{res['total']} ({res['pct']:.0%}) - below 80%: review modules {res['weak_modules']}")
+                    for m_, (k_, n_) in sorted(res["by_module"].items()): st.write(f"Module {m_}: {k_}/{n_}")
+                    for m_ in res["by_module"]:
+                        ix = [i for i, q in enumerate(qs) if q["module"] == m_]; db.record_quiz(m_, [ans[i] if ans[i] is not None else -1 for i in ix], [qs[i]["ans"] for i in ix])
+                    for f_ in AS.feedback(qs, ans):
+                        st.markdown(f"{'✅' if f_['correct'] else '❌'} Module {f_['module']}: right answer **{f_['right']}** - {f_['why']}")
+        else: st.info("Pick at least one module with a written lesson.")
 
 # --------------------------------------------------------------- CODING LAB
 elif page == "Coding Lab":
@@ -757,7 +791,7 @@ elif page == "First Paper Plan":
                         db.set_task(p["id"], k, v); st.rerun()
                 st.markdown(f"**7. Deliverable:** {m['deliverable']}  \n**8. Next step:** {m['next']}")
     with t_scan:
-        st.warning(f"**Preliminary signals, not decisions.** Every count was returned by {TS.DB} on {TS.DATE}: one database, auto-translated queries, no screening. "
+        st.warning(f"**Preliminary signals, not decisions.** Every count was returned by {TS.DB} (S1-S18 on {TS.DATE}; S19-S30 on {TS.EXT_DATE}): one database, auto-translated queries, no screening. "
                    "Zero review hits does NOT prove novelty; a large primary literature does NOT prove usable data. You choose the topic.")
         st.header("Candidate topics and open questions")
         for c in TS.CANDIDATES:

@@ -107,3 +107,12 @@ def test_manuscript_studio_renders_with_populated_project(tmp_path, monkeypatch)
     at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
     at.run(); at.sidebar.radio[0].set_value("Manuscript Studio").run()
     assert not at.exception, [e.value for e in at.exception]
+
+
+def test_assessment_tab_and_pathway_tab_render(tmp_path, monkeypatch):
+    monkeypatch.setenv("METALAB_DB", str(tmp_path / "x.sqlite"))
+    from metalab.store import Store
+    Store(str(tmp_path / "x.sqlite")).set_profile(discipline="Drosophila aging", pathway="Preclinical researcher")
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
+    for pg in ("Practice", "Learning Academy"):
+        at.run(); at.sidebar.radio[0].set_value(pg).run(); assert not at.exception, (pg, [e.value for e in at.exception])

@@ -348,6 +348,19 @@
    "name": "Cohesive navigation: area icons, breadcrumbs, research-journey map with go-to buttons, related-links footer",
    "status": "tested",
    "evidence": "Visually inspected; every page renders in AppTest"
+  },
+  {
+   "id": "academy.assessments",
+   "name": "Mastery assessments (module/pathway exams from lesson quizzes, seeded, per-module feedback, 80% mastery) + personal/discipline pathways + study-notes ZIP bundles",
+   "status": "tested",
+   "evidence": "tests/test_assessments.py; questions AI-drafted, not psychometrically validated; self-assessment only",
+   "blocker": "Expert review of question quality; only written lessons can be examined"
+  },
+  {
+   "id": "first_paper.topic_scan",
+   "name": "Topic Explorer: 30 logged PubMed searches across aging, metabolism, neuroscience, biotechnology, plant science (signals only; no topic chosen)",
+   "status": "implemented",
+   "evidence": "S1-S18 (2026-11-26), S19-S30 (2026-11-27); education/public health need other databases (not scanned)"
   }
  ]
 }

@@ -7,6 +7,7 @@ investigate*, NOT a novelty or feasibility determination. Zero review hits does 
 The user must repeat/extend these searches in the Search Log and decide.
 """
 DATE = "2026-11-26"; DB = "PubMed (NCBI)"
+EXT_DATE = "2026-11-27"   # searches S19-S30 were run on this later date (same connector, same caveats)
 SEARCHES = [
  # id, topic, purpose, exact query, total_count
  ("S1","Drosophila exercise","existing reviews","(Drosophila OR fruit fly OR invertebrate model) AND (exercise OR physical activity OR exercise training) AND (meta-analysis[pt] OR systematic review[pt])",4,"4 hits, none on fly exercise (off-topic: body-fat GWAS, bioturbation, metabolic scaling, snail toxicity)"),
@@ -29,6 +30,19 @@ SEARCHES = [
  ("S18","Science education: storytelling","existing reviews","(storytelling OR narrative) AND (science education OR STEM education) AND (meta-analysis[pt] OR systematic review[pt])",1340,"INVALID QUERY: PubMed translated 'STEM' into plant stems / electron microscopy -> noise. PubMed is also the wrong database for education research (use ERIC, Web of Science, Scopus). Lesson: always read the query translation."),
  ("S0a","(narrow queries, shown for the lesson)","over-specification","Drosophila exercise lifespan meta-analysis",0,"0 hits because terms were AND-ed as free text; DO NOT read as novelty"),
  ("S0b","(narrow queries, shown for the lesson)","over-specification","dietary restriction lifespan model organisms systematic review",0,"0 hits for the same reason; DO NOT read as novelty"),
+ # ---- v0.3 extension (run 2026-11-27 via the same PubMed connector; same caveats)
+ ("S19","Intermittent fasting / time-restricted feeding and lifespan (model organisms)","existing reviews","(intermittent fasting OR time-restricted feeding) AND (lifespan OR longevity) AND (meta-analysis[pt] OR systematic review[pt]) AND (animals OR Drosophila OR mice OR \"Caenorhabditis elegans\")",0,"0 hits (does NOT prove novelty; the strict AND of several concept blocks may hide reviews)"),
+ ("S20","Intermittent fasting / time-restricted feeding and lifespan (model organisms)","primary-study volume","(intermittent fasting OR time-restricted feeding) AND (lifespan OR longevity) AND (Drosophila OR mice OR \"Caenorhabditis elegans\")",113,"moderate literature; outcome heterogeneity and regimen definitions likely"),
+ ("S21","Metformin and lifespan (model organisms)","existing reviews","metformin AND (lifespan OR longevity) AND (meta-analysis[pt] OR systematic review[pt]) AND (Drosophila OR mice OR \"Caenorhabditis elegans\" OR animals)",5,"5 hits; includes Triggle 2022 (broad metformin review, PMID 35640743) and Ivimey-Cook 2025 (rapamycin vs metformin in vertebrates, PMID 40532901) seen in S6; remaining hits not inspected"),
+ ("S22","Metformin and lifespan (model organisms)","primary-study volume","metformin AND (lifespan OR longevity) AND (Drosophila OR mice OR \"Caenorhabditis elegans\")",167,"moderate literature"),
+ ("S23","Drosophila neurodegeneration models and lifespan","existing reviews","Drosophila AND (Alzheimer OR neurodegeneration OR Parkinson) AND (lifespan OR survival) AND (meta-analysis[pt] OR systematic review[pt])",2,"2 hits; one is the 2026 Friedreich's-ataxia modifiers SR/MA (PMID 42303002, seen in S12); the other not inspected"),
+ ("S24","Drosophila neurodegeneration models and lifespan","primary-study volume","Drosophila AND (Alzheimer OR neurodegeneration OR Parkinson) AND (lifespan OR survival)",1213,"large literature; many disease models/genotypes -> comparability must be narrowed"),
+ ("S25","NAD+ precursors and lifespan","existing reviews","(NAD OR nicotinamide riboside OR nicotinamide mononucleotide) AND (lifespan OR longevity) AND (meta-analysis[pt] OR systematic review[pt])",1,"1 hit (PMID 31917996) - NOT inspected, so its relevance is unknown"),
+ ("S26","NAD+ precursors and lifespan","primary-study volume","(NAD OR nicotinamide riboside OR nicotinamide mononucleotide) AND (lifespan OR longevity) AND (Drosophila OR mice OR \"Caenorhabditis elegans\")",432,"large literature; 'NAD' also matches unrelated biochemistry"),
+ ("S27","Plant biostimulants (seaweed, humic) and crop growth/yield","existing reviews","(biostimulant OR seaweed extract OR humic) AND (crop yield OR plant growth) AND (meta-analysis[pt] OR systematic review[pt])",12,"Crowded: 12 hits (not individually inspected); PubMed's 'crop' term also maps to avian crop (noise)"),
+ ("S28","Plant biostimulants (seaweed, humic) and crop growth/yield","primary-study volume","(biostimulant OR seaweed extract OR humic) AND (crop yield OR plant growth)",3444,"very large literature (plus noise)"),
+ ("S29","RNAi / dsRNA efficacy in insect pests (biotechnology)","existing reviews","(RNAi OR dsRNA) AND (insect OR pest) AND (mortality OR efficacy) AND (meta-analysis[pt] OR systematic review[pt])",0,"0 hits (does NOT prove novelty; agricultural databases such as CAB Abstracts/AGRIS and Web of Science were not searched)"),
+ ("S30","RNAi / dsRNA efficacy in insect pests (biotechnology)","primary-study volume","(RNAi OR dsRNA) AND (insect OR pest) AND (mortality OR efficacy)",1561,"large literature; huge heterogeneity in species, delivery, target gene expected"),
 ]
 CANDIDATES = [
  dict(id="A", title="Exercise training and lifespan/mortality in Drosophila",
@@ -49,9 +63,22 @@ CANDIDATES = [
       concerns=["Very heterogeneous interventions (axenic vs gnotobiotic vs probiotic; species/strains; diets).","Husbandry/housing confounders.","Zero-hit result is not proof of novelty."],
       likely_design="SR; MA only within narrow, defined contrasts (e.g. axenic vs conventional).",
       next_steps=["Define one contrast","Check feasibility by screening a sample"]),
+
+ dict(id="F", title="Intermittent fasting / time-restricted feeding and lifespan in model organisms",
+      why_interesting="Fits aging + metabolism; 0 review hits in this PubMed query (S19) with 113 primary records (S20).",
+      signals=["S19","S20"], concerns=["Regimen definitions vary widely (feeding window, fasting duration, diet composition).","Zero reviews could be a query artefact.","Species differences (fly, worm, mouse) may make pooling meaningless without a narrow focus."],
+      likely_design="SR; MA only within one organism and a defined regimen family.", next_steps=["Re-search without the review filter and read the closest DR reviews (S4, S6) for overlap","Pilot-screen 100 records for eligibility/extractable data"]),
+ dict(id="G", title="RNAi / dsRNA efficacy against insect pests (biotechnology)",
+      why_interesting="Biotechnology-relevant; 0 review hits in PubMed (S29) vs 1561 primary records (S30).",
+      signals=["S29","S30"], concerns=["Extreme heterogeneity (species, delivery, target gene, dose).","Agricultural databases not searched.","Outcome definitions (mortality, knockdown) differ."],
+      likely_design="Scoping review / evidence map may be more appropriate than meta-analysis; MA only for a narrow species-target-delivery combination.", next_steps=["Search CAB Abstracts/AGRIS/Web of Science","Map outcome types before choosing an effect size"]),
+ dict(id="H", title="NAD+ precursors and lifespan; Drosophila neurodegeneration-model survival",
+      why_interesting="Molecular/metabolic and neuroscience angles from your background; S25 shows 1 review hit (uninspected), S23 shows 2 (one off-target).",
+      signals=["S23","S24","S25","S26"], concerns=["Large, heterogeneous primary literature.","Must inspect the single NAD+ review hit before judging novelty.","Disease-model and genotype comparability."],
+      likely_design="Narrow SR; MA only with strict eligibility.", next_steps=["Read PMID 31917996 and the S23 non-Friedreich hit","Define one precursor/one organism or one disease model"]),
  dict(id="X", title="Crowded or poorly-suited in PubMed-only scan",
-      why_interesting="Rapamycin/DR lifespan: multiple recent meta-analyses (S4, S6) - needs a clearly different question to justify. Plant mycorrhiza-drought: 9 existing reviews (S17). Education/storytelling: PubMed scan invalid (S18) - needs ERIC/Scopus.",
-      signals=["S4","S6","S17","S18"], concerns=[], likely_design="-", next_steps=["Only revisit with a distinct, defensible gap"]),
+      why_interesting="Rapamycin/DR lifespan: multiple recent meta-analyses (S4, S6) - needs a clearly different question to justify. Plant mycorrhiza-drought: 9 existing reviews (S17); plant biostimulants: 12 review hits (S27). Metformin lifespan: several reviews incl. a vertebrate comparison with rapamycin (S21). Education/storytelling and public health: PubMed scan invalid or out of scope (S18) - needs ERIC/Scopus/Web of Science; not yet scanned.",
+      signals=["S4","S6","S17","S18","S21","S27"], concerns=[], likely_design="-", next_steps=["Only revisit with a distinct, defensible gap"]),
 ]
 RUBRIC = ["Scientifically meaningful question", "Manageable scope", "Accessible primary literature", "Sufficient comparable data (effect + variance extractable)",
           "Appropriate statistical methods you can learn in time", "Realistic timeline (weeks 3-16 of the plan)", "Genuine publication potential (not 'easy to publish')",
