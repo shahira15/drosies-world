@@ -126,5 +126,54 @@ miss <- data.frame(y = c(0.2, NA, 0.5, 0.4), v = c(0.04, 0.05, NA, 0.06))
 okm <- complete.cases(miss)
 ref$edge$missing_rows <- c(list(y = miss$y, v = miss$v, kept = which(okm)), pool_case(miss$y[okm], miss$v[okm]))
 
+
+## ======================= advanced methods (v0.3) =============================
+ref$mh <- list(); ref$peto <- list(); ref$bias <- list(); ref$cumul <- list(); ref$confint <- list(); ref$influence <- list(); ref$mv <- list(); ref$rates <- list(); ref$prev <- list()
+for (nm in c("bcg", "nielweise")) {
+  d <- if (nm == "bcg") data.frame(a = bcg$tpos, b = bcg$tneg, c = bcg$cpos, d = bcg$cneg) else data.frame(a = nw$ai, b = nw$n1i - nw$ai, c = nw$ci, d = nw$n2i - nw$ci)
+  ref$mh[[nm]] <- list(data = d)
+  for (m in c("OR", "RR", "RD")) {
+    r <- tryCatch(rma.mh(ai = d$a, bi = d$b, ci = d$c, di = d$d, measure = m, add = 1/2, to = "only0", drop00 = TRUE), error = function(e) e)
+    ref$mh[[nm]][[m]] <- if (inherits(r, "condition")) list(error = conditionMessage(r)) else
+      list(est = as.numeric(r$beta), se = r$se, z = r$zval, p = r$pval, ci = c(r$ci.lb, r$ci.ub), k = r$k, QE = r$QE, QEp = r$QEp, MH = r$MH, MHp = r$MHp, TA = r$TA, TAp = r$TAp)
+  }
+  r <- tryCatch(rma.peto(ai = d$a, bi = d$b, ci = d$c, di = d$d, add = 1/2, to = "only0", drop00 = TRUE), error = function(e) e)
+  ref$peto[[nm]] <- list(data = d, res = if (inherits(r, "condition")) list(error = conditionMessage(r)) else list(est = as.numeric(r$beta), se = r$se, z = r$zval, p = r$pval, ci = c(r$ci.lb, r$ci.ub), k = r$k, QE = r$QE, QEp = r$QEp))
+}
+bias_sets <- list(bcg_RR = ref$escalc$bcg_RR, raudenbush = list(yi = dat.raudenbush1985$yi, vi = dat.raudenbush1985$vi),
+                  bangertdrowns = list(yi = dat.bangertdrowns2004$yi, vi = dat.bangertdrowns2004$vi), hackshaw = list(yi = dat.hackshaw1998$yi, vi = dat.hackshaw1998$vi))
+for (n in names(bias_sets)) {
+  y <- bias_sets[[n]]$yi; v <- bias_sets[[n]]$vi; ok <- !is.na(y) & !is.na(v); y <- y[ok]; v <- v[ok]
+  r <- rma(y, v, method = "REML", control = CTRL)
+  rt <- regtest(r, model = "lm", predictor = "sei"); rk <- ranktest(r)
+  ref$bias[[n]] <- list(yi = y, vi = v, egger = list(z = rt$zval, p = rt$pval, df = rt$dfs, coefs = as.numeric(coef(rt$fit))), begg = list(tau = as.numeric(rk$tau), p = rk$pval))
+}
+rb2 <- dat.raudenbush1985[order(dat.raudenbush1985$year), ]
+rc <- cumul(rma(yi, vi, data = rb2, method = "REML", control = CTRL), order = seq_len(nrow(rb2)))
+ref$cumul$raudenbush_by_year <- list(yi = rb2$yi, vi = rb2$vi, est = as.numeric(rc$estimate), se = as.numeric(rc$se), ci_lb = as.numeric(rc$ci.lb), ci_ub = as.numeric(rc$ci.ub), tau2 = as.numeric(rc$tau2), I2 = as.numeric(rc$I2))
+for (n in c("bcg_RR", "raudenbush_SMD", "normand_SMD", "bangertdrowns_SMD")) {
+  y <- ref$pool[[n]]$yi; v <- ref$pool[[n]]$vi
+  for (m in c("PM", "DL")) {
+    r <- rma(y, v, method = m, control = CTRL); ci <- confint(r)
+    ref$confint[[paste0(n, "_", m)]] <- list(yi = y, vi = v, method = m, tau2 = as.numeric(ci$random["tau^2", ]), I2 = as.numeric(ci$random["I^2(%)", ]), H2 = as.numeric(ci$random["H^2", ]))
+  }
+}
+for (n in c("bcg_RR", "raudenbush_SMD", "normand_SMD")) {
+  y <- ref$pool[[n]]$yi; v <- ref$pool[[n]]$vi; r <- rma(y, v, method = "REML", control = CTRL); inf <- influence(r)$inf
+  ref$influence[[n]] <- list(yi = y, vi = v, rstudent = as.numeric(inf$rstudent), cook = as.numeric(inf$cook.d), hat = as.numeric(inf$hat), weight = as.numeric(inf$weight), tau2_del = as.numeric(inf$tau2.del))
+}
+kon <- dat.konstantopoulos2011
+mv <- rma.mv(yi, vi, random = ~ 1 | district/school, data = kon, method = "REML")
+rob <- robust(mv, cluster = kon$district, clubSandwich = FALSE)
+ref$mv$konstantopoulos <- list(yi = kon$yi, vi = kon$vi, district = kon$district, school = kon$school, sigma2 = as.numeric(mv$sigma2), est = as.numeric(mv$beta), se = mv$se, ll = as.numeric(logLik(mv)),
+  robust = list(se = rob$se, ci = c(rob$ci.lb, rob$ci.ub), df = rob$dfs, p = rob$pval, stat = rob$zval))
+irr <- data.frame(x1i = c(10, 0, 25, 7, 3), t1i = c(100, 80, 250, 90, 40), x2i = c(15, 2, 20, 12, 0), t2i = c(110, 85, 240, 95, 45))
+ref$rates$irr <- c(list(data = irr), es("IRR", x1i = irr$x1i, t1i = irr$t1i, x2i = irr$x2i, t2i = irr$t2i))
+pz <- dat.pritz1997
+ref$prev$data <- pz[, c("xi", "ni")]
+for (m in c("PR", "PLO", "PFT", "PAS")) ref$prev[[m]] <- es(m, xi = pz$xi, ni = pz$ni)
+pz0 <- data.frame(xi = c(0, 3, 10, 20), ni = c(20, 30, 40, 20)); ref$prev$edge_data <- pz0
+for (m in c("PLO", "PFT")) ref$prev[[paste0("edge_", m)]] <- es(m, xi = pz0$xi, ni = pz0$ni)
+
 writeLines(toJSON(ref, auto_unbox = TRUE, digits = NA, na = "null", null = "null"), "validation/reference/reference.json")
 cat("wrote validation/reference/reference.json  (", R.version.string, ", metafor", as.character(packageVersion("metafor")), ")\n")

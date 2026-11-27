@@ -658,7 +658,7 @@ elif page == "First Paper Plan":
 elif page == "Statistics Lab":
     st.title("Statistics Lab")
     st.caption("All data here are SIMULATED or published example data and are clearly labelled. Never mixed with project data.")
-    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Subgroups & meta-regression", "Effect-size calculators"])
+    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Subgroups & meta-regression", "Effect-size calculators", "Advanced methods"])
     with tabs[0]:
         st.markdown("**Mechanism.** The SD describes spread of individuals and does not shrink with n; the SE = SD/√n describes precision of the mean and does. "
                     "A 95% CI procedure captures the true mean in ~95% of repeated experiments.")
@@ -824,6 +824,76 @@ elif page == "Statistics Lab":
         except ValueError as e:
             st.error(str(e))
 
+    with tabs[4]:
+        from metalab import advanced as AD
+        import plotly.express as px
+        st.markdown("**Advanced methods - each benchmarked against R/metafor 4.4.0** (see VALIDATION.md). Several need specialist judgement: use them with a methodologist, and pre-specify.")
+        sub = st.selectbox("Method", ["Mantel-Haenszel / Peto (binary, sparse data)", "Small-study effects: funnel plot, Egger, Begg", "Cumulative meta-analysis", "tau² confidence interval (Q-profile)", "Influence diagnostics", "Three-level model + cluster-robust variance", "Rates, prevalence & design effect"])
+        if sub.startswith("Mantel"):
+            from metalab.datasets import BCG
+            st.caption("Cells: a,b = treated events/non-events; c,d = control events/non-events. MH/Peto use uncorrected tables (valid with zero cells); the 0.5 correction only affects the per-study effects behind Q. MH assumes one common effect. Peto is biased with large effects/unbalanced arms.")
+            tab = st.data_editor(pd.DataFrame(BCG, columns=["a", "b", "c", "d"]), num_rows="dynamic", key="mhed")
+            m_ = st.radio("Measure", ["OR", "RR", "RD"], horizontal=True)
+            try:
+                r_ = AD.mantel_haenszel(tab["a"], tab["b"], tab["c"], tab["d"], m_); ex_ = m_ != "RD"
+                st.write(f"**MH {m_}:** {np.exp(r_['est']) if ex_ else r_['est']:.4f} (95% CI {np.exp(r_['ci'][0]) if ex_ else r_['ci'][0]:.4f} to {np.exp(r_['ci'][1]) if ex_ else r_['ci'][1]:.4f}) · Q = {r_['Q']:.2f} (df {r_['Q_df']}) · k = {r_['k']}")
+                if m_ == "OR":
+                    p_ = AD.peto_or(tab["a"], tab["b"], tab["c"], tab["d"]); st.write(f"**Peto OR:** {np.exp(p_['est']):.4f} ({np.exp(p_['ci'][0]):.4f} to {np.exp(p_['ci'][1]):.4f})")
+                st.code(f'library(metafor)\nrma.mh(ai=a, bi=b, ci=c, di=d, measure="{m_}", data=dat, add=1/2, to="only0", drop00=TRUE)' + ('\nrma.peto(ai=a, bi=b, ci=c, di=d, data=dat)' if m_ == "OR" else ""), "r")
+            except (ValueError, KeyError) as e: st.error(str(e))
+        elif sub.startswith("Small-study"):
+            from metalab.datasets import BCG
+            ys_, vs_ = zip(*[S.log_risk_ratio(a_, a_ + b_, c_, c_ + d_, cc=0.5) for a_, b_, c_, d_ in BCG]); dd_ = st.data_editor(pd.DataFrame({"yi": ys_, "vi": vs_}), num_rows="dynamic", key="funnel")
+            try:
+                y_, v_ = dd_["yi"].to_numpy(float), dd_["vi"].to_numpy(float); pooled = S.meta_analyze(y_, v_, "common").est; se_ = np.sqrt(v_)
+                fg = go.Figure(); fg.add_scatter(x=y_, y=se_, mode="markers", name="studies"); sx = np.linspace(0, se_.max() * 1.05, 20)
+                fg.add_scatter(x=pooled - 1.96 * sx, y=sx, mode="lines", line=dict(dash="dash"), name="pseudo 95% limits"); fg.add_scatter(x=pooled + 1.96 * sx, y=sx, mode="lines", line=dict(dash="dash"), showlegend=False)
+                fg.update_yaxes(autorange="reversed", title="standard error"); fg.update_layout(title="Funnel plot (common-effect centre)", xaxis_title="effect size"); st.plotly_chart(fg, width="stretch")
+                eg = AD.egger_test(y_, v_); bg = AD.begg_test(y_, v_)
+                st.write(f"**Egger:** intercept {eg['intercept']:.3f}, t = {eg['t']:.3f} (df {eg['df']}), p = {eg['p']:.3f} · **Begg:** tau = {bg['tau']:.3f}, p = {bg['p']:.3f}")
+                if "warning" in eg: st.warning(eg["warning"])
+                st.warning("Funnel-plot asymmetry does NOT prove publication bias (heterogeneity, chance, true small-study differences, or the effect measure itself can cause it). With k<10 these tests have little power. Trim-and-fill, selection models and PET-PEESE are not implemented.")
+            except (ValueError, S.ConvergenceError) as e: st.error(str(e))
+        elif sub.startswith("Cumulative"):
+            st.caption("Order must be pre-specified (e.g. year). This is descriptive; it is not a stopping rule (trial sequential analysis is not implemented).")
+            ex_ = pd.DataFrame({"year": [1985, 1986, 1987, 1988, 1989, 1990], "yi": [0.1, 0.3, 0.2, 0.5, 0.35, 0.4], "vi": [0.08, 0.06, 0.05, 0.04, 0.03, 0.03]}); cd_ = st.data_editor(ex_.sort_values("year"), num_rows="dynamic", key="cum")
+            try:
+                cd_ = cd_.sort_values("year"); rows_ = AD.cumulative(cd_["yi"].to_numpy(float), cd_["vi"].to_numpy(float))
+                fg = go.Figure(); fg.add_scatter(x=cd_["year"], y=[r["est"] for r in rows_], error_y=dict(type="data", symmetric=False, array=[r["ci"][1] - r["est"] for r in rows_], arrayminus=[r["est"] - r["ci"][0] for r in rows_]), mode="markers+lines")
+                fg.update_layout(title="Cumulative pooled estimate (REML) after each study", xaxis_title="year", yaxis_title="effect"); st.plotly_chart(fg, width="stretch")
+            except (ValueError, S.ConvergenceError) as e: st.error(str(e))
+        elif sub.startswith("tau"):
+            from metalab.datasets import BCG
+            ys_, vs_ = zip(*[S.log_risk_ratio(a_, a_ + b_, c_, c_ + d_, cc=0.5) for a_, b_, c_, d_ in BCG]); r_ = AD.tau2_ci_qprofile(ys_, vs_); pt = S.meta_analyze(ys_, vs_)
+            st.write(f"BCG trials (log RR): REML τ² = {pt.tau2:.3f}; **Q-profile 95% CI for τ²: {r_['tau2'][0]:.3f} to {r_['tau2'][1]:.3f}**; I² CI {r_['I2'][0]:.1f}% to {r_['I2'][1]:.1f}%")
+            st.caption("Heterogeneity estimates are far less certain than their point values suggest (Veroniki 2016 recommends the Q-profile interval). Paste your own data in the Meta-analysis tab for the point estimates.")
+        elif sub.startswith("Influence"):
+            from metalab.datasets import BCG
+            ys_, vs_ = zip(*[S.log_risk_ratio(a_, a_ + b_, c_, c_ + d_, cc=0.5) for a_, b_, c_, d_ in BCG]); rows_ = AD.influence_diagnostics(ys_, vs_)
+            df_ = pd.DataFrame(rows_); df_["study"] = [f"Trial {i+1}" for i in df_["i"]]; st.dataframe(df_[["study", "rstudent", "cook", "hat", "weight_pct", "tau2_del"]], hide_index=True)
+            st.warning("Large |rstudent| or Cook's distance is a prompt to investigate (data error? different population?), NOT a reason to delete a study. Do not remove studies to change significance.")
+        elif sub.startswith("Three"):
+            from metalab.datasets import KON_YI, KON_VI, KON_DISTRICT
+            st.caption("Konstantopoulos (2011) multisite trials: 56 school effects in 11 districts (published example data, metadat). Model: effect = overall mean + district effect + school effect + sampling error (diagonal V).")
+            try:
+                fit = AD.multilevel_meta(KON_YI, KON_VI, KON_DISTRICT); rb = AD.robust_cr1(fit)
+                st.write(f"Overall mean = {fit['beta'][0]:.4f} (model SE {fit['se'][0]:.4f}); between-district variance = {fit['sigma2_cluster']:.4f}; within-district (school) variance = {fit['sigma2_effect']:.4f}; REML log-lik = {fit['loglik_reml']:.3f}")
+                st.write(f"Cluster-robust (CR1) SE = {rb['se'][0]:.4f}, t({rb['df']}) p = {rb['p'][0]:.4f}, 95% CI {rb['ci'][0][0]:.3f} to {rb['ci'][1][0]:.3f}")
+                for w_ in [fit["warning"]] if fit["warning"] else []: st.warning(w_)
+                st.warning("Not covered: shared-control covariance (needs a full V matrix), CR2/Satterthwaite small-sample correction (clubSandwich), meta-regression in multilevel models, Bayesian/GLMM. With few clusters CR1 can be anti-conservative.")
+                st.code('library(metafor)\nres <- rma.mv(yi, vi, random = ~ 1 | district/school, data = dat.konstantopoulos2011, method = "REML")\nrobust(res, cluster = district, clubSandwich = FALSE)', "r")
+            except (ValueError, S.ConvergenceError) as e: st.error(str(e))
+        else:
+            c1, c2, c3 = st.columns(3)
+            x1 = c1.number_input("events group 1", 0, value=10); t1 = c1.number_input("person-time group 1", 0.1, value=100.0); x2 = c2.number_input("events group 2", 0, value=15); t2 = c2.number_input("person-time group 2", 0.1, value=110.0)
+            try: y_, v_ = AD.log_irr(x1, t1, x2, t2); st.write(f"ln IRR = {y_:.4f} (IRR {np.exp(y_):.3f}), variance {v_:.4f}")
+            except ValueError as e: st.error(str(e))
+            xs = c3.number_input("events (prevalence)", 0, value=12); ns = c3.number_input("n (prevalence)", 1, value=80)
+            try:
+                for m_ in ("PR", "PLO", "PFT", "PAS"): y_, v_ = AD.proportion_es(int(xs), int(ns), m_); st.write(f"{m_}: {y_:.4f} (variance {v_:.5f})")
+                st.caption("Freeman-Tukey back-transformation depends on one 'n' and can mislead; logit/GLMM approaches are often preferred (not implemented here).")
+            except ValueError as e: st.error(str(e))
+            m_c = st.number_input("cluster size m", 1, value=10); icc = st.number_input("ICC", 0.0, 1.0, 0.1); st.write(f"Design effect = {AD.design_effect(int(m_c), icc):.2f}; effective n = n / DEFF (equal clusters only)")
 # ------------------------------------------------------ KNOWLEDGE UNIVERSE
 elif page == "Knowledge Universe":
     st.title("Knowledge Universe")

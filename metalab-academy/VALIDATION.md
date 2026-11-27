@@ -37,3 +37,9 @@ No qualified statistician has reviewed the code or lessons. See `expert_review/`
 ./validation/run_validation.sh   # needs R + metafor + metadat + jsonlite; CI does the same
 python3 -m pytest -q tests       # uses the committed reference.json; no R needed
 ```
+
+
+## v0.3 addendum: advanced methods (benchmarked vs R/metafor 4.4.0)
+Mantel-Haenszel OR/RR/RD and Peto OR (bcg, nielweise incl. zero cells), Egger regression and Begg rank tests (4 datasets), cumulative meta-analysis, Q-profile CI for tau2/I2, influence diagnostics (rstudent, Cook, hat, tau2.del), three-level REML (`rma.mv`, REML log-likelihood agrees to 1e-8) with cluster-robust CR1 variance, IRR, prevalence transforms (PR/PLO/PFT/PAS incl. zero and full counts), design effect (hand-checked).
+Findings: (1) metafor computes the MH/Peto estimate and variance from UNCORRECTED tables; the 0.5 correction only affects per-study effects used for Q (my first version corrected the tables: wrong for zero-cell studies). (2) metafor's RD variance is the Sato et al. estimator, not Greenland-Robins. (3) Begg's p matches R's EXACT Kendall test when n<50 and no ties. (4) metafor's confint() uses uniroot with abs tolerance ~1.2e-4; our Q-profile root is closer to the exact solution (asserted in tests).
+NOT implemented (stated in the UI): trim-and-fill, selection models, PET-PEESE, CR2/Satterthwaite robust variance, shared-control covariance matrices, GLMM/Bayesian/network/DTA/dose-response, trial sequential analysis.

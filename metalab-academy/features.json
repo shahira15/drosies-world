@@ -307,6 +307,13 @@
    "name": "Manuscript studio and export",
    "status": "planned",
    "evidence": "Reproducibility ZIP and SAP/PRISMA exports exist; no manuscript editor yet"
+  },
+  {
+   "id": "stats.advanced",
+   "name": "Advanced methods: MH, Peto, Egger/Begg, cumulative, Q-profile tau2 CI, influence, three-level REML + CR1, IRR, prevalence transforms, design effect",
+   "status": "benchmarked",
+   "evidence": "30+ benchmarks vs metafor 4.4.0 (VALIDATION.md addendum)",
+   "blocker": "Expert review; trim-and-fill/selection models/CR2/NMA/DTA/dose-response/Bayesian not implemented"
   }
  ]
 }

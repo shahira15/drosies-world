@@ -6,7 +6,7 @@
 4. Interactive coding tutorials do not exist (code is displayed and tested, not executable in-app). No video content.
 **Statistics**
 5. Benchmarked vs R/metafor 4.4.0 (not expert-validated). `meta` package could not be installed (cross-check missing). Methods implemented: effect sizes (MD, SMD, lnRR, lnOR, lnRR-binary, RD, Fisher z), common/random-effects (REML, DL, PM, HKSJ), PI, Q/I²/H², leave-one-out, subgroup, meta-regression.
-6. NOT implemented: hazard/rate ratios, medians→mean estimators, cluster/design-effect adjustment, MH/Peto/GLMM/rare-event models, multilevel/RVE/Bayesian/network/DTA/dose-response, publication-bias tests, trim-and-fill, certainty tools, sample-size calculators.
+6. NOT implemented: hazard-ratio effect-size helpers beyond log-scale CI conversion, medians→mean estimators, GLMM/Bayesian/network/DTA/dose-response, trim-and-fill/selection models/PET-PEESE, CR2 robust variance, shared-control covariance matrices, trial sequential analysis, certainty tools, sample-size calculators. (MH, Peto, Egger/Begg, cumulative, Q-profile CI, influence, three-level REML+CR1, IRR, prevalence, design effect ARE implemented and benchmarked.)
 7. Riley t(k-2) prediction interval checked against our own formula (not independent software).
 **Workflow**
 8. Extraction: no automatic unit conversion; effect builder handles two-group continuous and 2x2 binary only. Dependence is flagged, not modelled.

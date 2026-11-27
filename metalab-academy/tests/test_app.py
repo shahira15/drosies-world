@@ -80,3 +80,13 @@ def test_virtual_lab_page_with_simulation_and_universal_search(tmp_path, monkeyp
     assert any("FICTIONAL" in e.value for e in at.error)
     at.sidebar.text_input(key="usearch").set_value("pseudoreplication").run()
     assert not at.exception
+
+
+@pytest.mark.parametrize("sub", ["Mantel-Haenszel / Peto (binary, sparse data)", "Small-study effects: funnel plot, Egger, Begg", "Cumulative meta-analysis", "tau² confidence interval (Q-profile)",
+                                 "Influence diagnostics", "Three-level model + cluster-robust variance", "Rates, prevalence & design effect"])
+def test_advanced_stats_tab_every_method_renders(sub, tmp_path, monkeypatch):
+    monkeypatch.setenv("METALAB_DB", str(tmp_path / "a.sqlite"))
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
+    at.run(); at.sidebar.radio[0].set_value("Statistics Lab").run()
+    at.selectbox[[s.label for s in at.selectbox].index("Method")].set_value(sub).run()
+    assert not at.exception, [e.value for e in at.exception]
