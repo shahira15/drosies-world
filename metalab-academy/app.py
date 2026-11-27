@@ -3,7 +3,7 @@ import json, os, time, datetime
 from pathlib import Path
 import numpy as np, pandas as pd, streamlit as st
 import plotly.graph_objects as go
-from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, stats as S
+from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, stats as S
 from metalab.store import Store, DECISIONS
 from metalab.plan import WEEKS, all_tasks
 
@@ -17,7 +17,7 @@ db = get_store()
 LES = lessons.load()
 PROFILE = db.profile()
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 with st.sidebar.expander("🔎 Search everything", expanded=False):
     uq = st.text_input("Lessons, formulas, glossary, resources, claims, calculators...", key="usearch")
@@ -239,6 +239,34 @@ elif page == "Practice":
         goal = st.number_input("Weekly goal (lessons completed)", 0, 14, int(PROFILE.get("weekly_goal", 1)))
         if st.button("Save weekly goal"): db.set_profile(weekly_goal=int(goal)); st.success("Saved")
         done_ = db.completed(); st.progress(min(1.0, len(done_) / max(int(goal), 1)) if goal else 0.0, text=f"{len(done_)} lessons completed in total (goal counts per week; resets are manual)")
+
+# --------------------------------------------------------------- CODING LAB
+elif page == "Coding Lab":
+    st.title("Coding Lab")
+    st.warning("Your code runs in a separate process on **this computer** with a time limit and CPU/memory limits, in a temporary folder. This is **not a security sandbox**: it has your user's privileges. Only run code you understand.")
+    passed = set(PROFILE.get("coding_passed", []))
+    st.progress(len(passed) / len(CODE.T), text=f"{len(passed)}/{len(CODE.T)} tutorials passed")
+    langs = st.radio("Language", ["python", "r"], horizontal=True, format_func=lambda x: {"python": "Python", "r": "R (needs Rscript + metafor)"}[x])
+    tl = [t for t in CODE.T if t["lang"] == langs]
+    tid = st.selectbox("Tutorial", [t["id"] for t in tl], format_func=lambda i: f"{'✓ ' if i in passed else ''}{CODE.BY_ID[i]['title']} (Module {CODE.BY_ID[i]['module']})")
+    t = CODE.BY_ID[tid]
+    st.markdown(f"**Goal:** {t['goal']}")
+    code = st.text_area("Your code (replace the `None`/`NULL` placeholders)", t["starter"], height=320, key=f"code_{tid}")
+    c1, c2 = st.columns(2)
+    if c1.button("Run and check", type="primary", key=f"run_{tid}"):
+        r = CODE.run(t, code)
+        if r["ok"]:
+            st.success("All hidden checks passed.")
+            passed.add(tid); db.set_profile(coding_passed=sorted(passed))
+        else:
+            st.error("Not yet:"); st.code(r["error"] or "failed")
+        if r["stdout"]: st.text(r["stdout"])
+    if c2.button("Reset to starter", key=f"rs_{tid}"): st.session_state.pop(f"code_{tid}", None); st.rerun()
+    with st.expander("Hints"):
+        for h in t["hints"]: st.markdown("- " + h)
+    with st.expander("Reference solution (try first!)"):
+        st.code(t["solution"], t["lang"])
+    st.caption("Tutorials are checked against the benchmarked statistics engine; the reference solutions run in the automated tests.")
 
 # -------------------------------------------------------------- VIRTUAL LAB
 elif page == "Virtual Lab":

@@ -9,7 +9,7 @@ def _fresh_cache():
     st.cache_resource.clear(); yield; st.cache_resource.clear()
 
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 
 @pytest.mark.parametrize("page", PAGES)
