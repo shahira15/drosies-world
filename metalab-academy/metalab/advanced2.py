@@ -298,8 +298,9 @@ def _network_connected(X, sidx_unused=None):
     return np.linalg.matrix_rank(X) == X.shape[1]
 
 
-def nma(study, treat, y, v, reference=None, model="random", higher_is_better=False):
+def nma(study, treat, y, v, reference=None, model="random", *, higher_is_better):
     """Frequentist contrast-based NMA. model 'common' or 'random' (REML, ONE common tau^2; within multi-arm studies tau^2/2 covariance).
+    higher_is_better (REQUIRED, no default: the ranking direction is a substantive decision) states whether larger effects favour the treatment (e.g. cessation OR) or smaller ones (e.g. mortality OR).
     Returns basic parameters, full league table (all pairwise contrasts with SE), P-scores (Rucker & Schwarzer 2015), and global heterogeneity Q.
     NOT implemented: node-splitting / design-by-treatment inconsistency tests, component NMA, meta-regression, class effects -> use netmeta/gemtc externally
     (lesson 'Network meta-analysis' gives the R workflow). Consistency is ASSUMED, not tested, by this function."""

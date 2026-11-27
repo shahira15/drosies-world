@@ -1,6 +1,6 @@
 # Curriculum map (generated)
 
-84 modules from the master specification + 4 proposed additions = 88 registered; **52 have a lesson**; 36 are outlines (title/level only, no lesson).
+84 modules from the master specification + 4 proposed additions = 88 registered; **68 have a lesson**; 20 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
@@ -9,7 +9,7 @@
 |---|---|---|---|
 | 1 | Scientific reasoning | Foundations of science and evidence | drafted |
 | 2 | Research study designs | Foundations of science and evidence | drafted |
-| 24 | Mathematical foundations | Statistics from first principles | outline |
+| 24 | Mathematical foundations | Statistics from first principles | drafted |
 | 69 | R programming from scratch | Programming | outline |
 
 ## Level 1: Systematic review fundamentals
@@ -22,7 +22,7 @@
 | 6 | Feasibility and project planning | Research question development | drafted |
 | 7 | Protocol development | Protocols and registration | drafted |
 | 8 | Registration and open protocols | Protocols and registration | drafted |
-| 25 | Descriptive and inferential statistics | Statistics from first principles | outline |
+| 25 | Descriptive and inferential statistics | Statistics from first principles | drafted |
 | 88 | Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage | Research question development | outline |
 
 ## Level 2: Applied evidence synthesis
@@ -52,11 +52,11 @@
 
 | # | Module | Part | Status |
 |---|---|---|---|
-| 26 | Statistical estimation and uncertainty | Statistics from first principles | outline |
+| 26 | Statistical estimation and uncertainty | Statistics from first principles | drafted |
 | 27 | Continuous outcome effect sizes | Effect sizes | drafted |
 | 28 | Binary and categorical outcomes | Effect sizes | drafted |
-| 29 | Correlation and regression effects | Effect sizes | outline |
-| 30 | Count, rate and survival outcomes | Effect sizes | outline |
+| 29 | Correlation and regression effects | Effect sizes | drafted |
+| 30 | Count, rate and survival outcomes | Effect sizes | drafted |
 | 31 | Effect-size transformations | Effect sizes | drafted |
 | 32 | Principles of quantitative pooling | Core meta-analysis | drafted |
 | 33 | Common-effect models | Core meta-analysis | drafted |
@@ -77,17 +77,17 @@
 | # | Module | Part | Status |
 |---|---|---|---|
 | 38 | Dependent effect sizes | Advanced meta-analysis | drafted |
-| 39 | Multilevel and multivariate meta-analysis | Advanced meta-analysis | outline |
-| 40 | Robust variance estimation | Advanced meta-analysis | outline |
-| 41 | Bayesian meta-analysis | Advanced meta-analysis | outline |
-| 42 | Network meta-analysis | Advanced meta-analysis | outline |
-| 43 | Dose-response meta-analysis | Advanced meta-analysis | outline |
-| 44 | Diagnostic test accuracy meta-analysis | Advanced meta-analysis | outline |
-| 45 | Prognostic and prediction model synthesis | Advanced meta-analysis | outline |
-| 46 | Individual participant data meta-analysis | Advanced meta-analysis | outline |
-| 47 | Prevalence and incidence meta-analysis | Advanced meta-analysis | outline |
-| 48 | Rare-event meta-analysis | Advanced meta-analysis | outline |
-| 49 | Additional specialized quantitative methods | Advanced meta-analysis | outline |
+| 39 | Multilevel and multivariate meta-analysis | Advanced meta-analysis | drafted |
+| 40 | Robust variance estimation | Advanced meta-analysis | drafted |
+| 41 | Bayesian meta-analysis | Advanced meta-analysis | drafted |
+| 42 | Network meta-analysis | Advanced meta-analysis | drafted |
+| 43 | Dose-response meta-analysis | Advanced meta-analysis | drafted |
+| 44 | Diagnostic test accuracy meta-analysis | Advanced meta-analysis | drafted |
+| 45 | Prognostic and prediction model synthesis | Advanced meta-analysis | drafted |
+| 46 | Individual participant data meta-analysis | Advanced meta-analysis | drafted |
+| 47 | Prevalence and incidence meta-analysis | Advanced meta-analysis | drafted |
+| 48 | Rare-event meta-analysis | Advanced meta-analysis | drafted |
+| 49 | Additional specialized quantitative methods | Advanced meta-analysis | drafted |
 | 54 | Qualitative evidence synthesis | Non-quantitative synthesis | outline |
 | 56 | Umbrella, rapid, living and realist reviews | Non-quantitative synthesis | outline |
 | 57 | Clinical medicine and healthcare | Discipline academies | outline |

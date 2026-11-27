@@ -492,5 +492,201 @@
   "doi": "10.1097/xeb.0000000000000050",
   "author": "Peters",
   "year": 2015
+ },
+ {
+  "key": "rucker2015pscore",
+  "doi": "10.1186/s12874-015-0060-8",
+  "author": "Rücker",
+  "year": 2015
+ },
+ {
+  "key": "lu2004",
+  "doi": "10.1002/sim.1875",
+  "author": "Lu",
+  "year": 2004
+ },
+ {
+  "key": "rover2021",
+  "doi": "10.1002/jrsm.1475",
+  "author": "Röver",
+  "year": 2021
+ },
+ {
+  "key": "greenland1992",
+  "doi": "10.1093/oxfordjournals.aje.a116237",
+  "author": "Greenland",
+  "year": 1992
+ },
+ {
+  "key": "orsini2012",
+  "doi": "10.1093/aje/kwr265",
+  "author": "Orsini",
+  "year": 2011,
+  "cite_year": 2012,
+  "pmid": "22135359",
+  "note": "Crossref issued year 2011 (online 1 Dec 2011); print volume 175 issue 1 is Jan 2012 (PubMed PMID 22135359)"
+ },
+ {
+  "key": "reitsma2005",
+  "doi": "10.1016/j.jclinepi.2005.02.022",
+  "author": "Reitsma",
+  "year": 2005
+ },
+ {
+  "key": "wolff2019probast",
+  "doi": "10.7326/M18-1376",
+  "author": "Wolff",
+  "year": 2019
+ },
+ {
+  "key": "riley2010ipd",
+  "doi": "10.1136/bmj.c221",
+  "author": "Riley",
+  "year": 2010
+ },
+ {
+  "key": "barendregt2013",
+  "doi": "10.1136/jech-2013-203104",
+  "author": "Barendregt",
+  "year": 2013
+ },
+ {
+  "key": "thomas2008",
+  "doi": "10.1186/1471-2288-8-45",
+  "author": "Thomas",
+  "year": 2008
+ },
+ {
+  "key": "lewin2018cerqual",
+  "doi": "10.1186/s13012-017-0688-3",
+  "author": "Lewin",
+  "year": 2018
+ },
+ {
+  "key": "aromataris2015",
+  "doi": "10.1097/xeb.0000000000000055",
+  "author": "Aromataris",
+  "year": 2015
+ },
+ {
+  "key": "garritty2021",
+  "doi": "10.1016/j.jclinepi.2020.10.007",
+  "author": "Garritty",
+  "year": 2021
+ },
+ {
+  "key": "elliott2014",
+  "doi": "10.1371/journal.pmed.1001603",
+  "author": "Elliott",
+  "year": 2014
+ },
+ {
+  "key": "wong2013",
+  "doi": "10.1186/1741-7015-11-21",
+  "author": "Wong",
+  "year": 2013
+ },
+ {
+  "key": "sandve2013",
+  "doi": "10.1371/journal.pcbi.1003285",
+  "author": "Sandve",
+  "year": 2013
+ },
+ {
+  "key": "anzures2010",
+  "doi": "10.1002/jrsm.6",
+  "author": "Anzures",
+  "year": 2010
+ },
+ {
+  "key": "altman2005",
+  "doi": "10.1136/bmj.331.7521.903",
+  "author": "Altman",
+  "year": 2005
+ },
+ {
+  "key": "fanelli2009",
+  "doi": "10.1371/journal.pone.0005738",
+  "author": "Fanelli",
+  "year": 2009
+ },
+ {
+  "key": "efthimiou2018",
+  "doi": "10.1136/eb-2018-102911",
+  "author": "Efthimiou",
+  "year": 2018
+ },
+ {
+  "key": "moons2014charms",
+  "doi": "10.1371/journal.pmed.1001744",
+  "author": "Moons",
+  "year": 2014
+ },
+ {
+  "key": "riley2013progress",
+  "doi": "10.1371/journal.pmed.1001380",
+  "author": "Riley",
+  "year": 2013
+ },
+ {
+  "key": "balduzzi2019",
+  "doi": "10.1136/ebmental-2019-300117",
+  "author": "Balduzzi",
+  "year": 2019
+ },
+ {
+  "key": "osc2015",
+  "doi": "10.1126/science.aac4716",
+  "author": "",
+  "year": 2015,
+  "note": "Group authorship (Open Science Collaboration); Crossref lists no personal author"
+ },
+ {
+  "key": "higgins2012incons",
+  "doi": "10.1002/jrsm.1044",
+  "author": "Higgins",
+  "year": 2012
+ },
+ {
+  "key": "salanti2011",
+  "doi": "10.1016/j.jclinepi.2010.03.016",
+  "author": "Salanti",
+  "year": 2011
+ },
+ {
+  "key": "kitchenham2009",
+  "doi": "10.1016/j.infsof.2008.09.009",
+  "author": "Kitchenham",
+  "year": 2009
+ },
+ {
+  "key": "stanley2008",
+  "doi": "10.1016/j.socec.2006.12.030",
+  "author": "Stanley",
+  "year": 2008
+ },
+ {
+  "key": "cumpston2019",
+  "doi": "10.1002/14651858.ed000142",
+  "author": "Cumpston",
+  "year": 2019
+ },
+ {
+  "key": "wilson2017",
+  "doi": "10.1371/journal.pcbi.1005510",
+  "author": "Wilson",
+  "year": 2017
+ },
+ {
+  "key": "kvarven2019",
+  "doi": "10.1038/s41562-019-0787-z",
+  "author": "Kvarven",
+  "year": 2019
+ },
+ {
+  "key": "cheung2019",
+  "doi": "10.1007/s11065-019-09415-6",
+  "author": "Cheung",
+  "year": 2019
  }
 ]

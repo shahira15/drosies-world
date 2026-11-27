@@ -27,6 +27,6 @@ def test_personal_pathway_from_profile_and_honesty_about_outlines():
     assert all(m in curriculum.BY_ID for t in AS.DISCIPLINE_TRACKS.values() for m in t["core"] + t["extra"])
 
 def test_notes_bundle_contents():
-    z = zipfile.ZipFile(io.BytesIO(AS.notes_bundle([27, 32, 41]))); names = set(z.namelist())
-    assert {"module_27_notes.md", "module_32_notes.md", "formula_cheat_sheet.md", "README.txt"} <= names and "module_41_notes.md" not in names
-    assert "outline only" in z.read("README.txt").decode().lower() and "41" in z.read("README.txt").decode() and b"expert-reviewed" in z.read("module_27_notes.md").lower().replace(b"not expert", b"not expert")
+    z = zipfile.ZipFile(io.BytesIO(AS.notes_bundle([27, 32, 9999]))); names = set(z.namelist())
+    assert {"module_27_notes.md", "module_32_notes.md", "formula_cheat_sheet.md", "README.txt"} <= names and "module_9999_notes.md" not in names
+    assert "outline only" in z.read("README.txt").decode().lower() and "9999" in z.read("README.txt").decode() and b"expert-reviewed" in z.read("module_27_notes.md").lower().replace(b"not expert", b"not expert")

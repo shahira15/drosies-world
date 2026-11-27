@@ -99,3 +99,35 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `arksey2005`: Arksey et al. Scoping studies: towards a methodological framework. International Journal of Social Research Methodology 2005;8, 19-32. DOI: 10.1080/1364557032000119616 · PMID None
 - `levac2010`: Levac et al. Scoping studies: advancing the methodology. Implementation Science 2010;5. DOI: 10.1186/1748-5908-5-69 · PMID None
 - `peters2015`: Peters et al. Guidance for conducting systematic scoping reviews. International Journal of Evidence-Based Healthcare 2015;13, 141-146. DOI: 10.1097/xeb.0000000000000050 · PMID None
+- `rucker2015pscore`: Rücker et al. Ranking treatments in frequentist network meta-analysis works without resampling methods. BMC Medical Research Methodology 2015;15. DOI: 10.1186/s12874-015-0060-8 · PMID None
+- `lu2004`: Lu et al. Combination of direct and indirect evidence in mixed treatment comparisons. Statistics in Medicine 2004;23, 3105-3124. DOI: 10.1002/sim.1875 · PMID None
+- `rover2021`: Röver et al. On weakly informative prior distributions for the heterogeneity parameter in Bayesian random‐effects meta‐analysis. Research Synthesis Methods 2021;12, 448-474. DOI: 10.1002/jrsm.1475 · PMID None
+- `greenland1992`: Greenland et al. Methods for Trend Estimation from Summarized Dose-Response Data, with Applications to Meta-Analysis. American Journal of Epidemiology 1992;135, 1301-1309. DOI: 10.1093/oxfordjournals.aje.a116237 · PMID None
+- `reitsma2005`: Reitsma et al. Bivariate analysis of sensitivity and specificity produces informative summary measures in diagnostic reviews. Journal of Clinical Epidemiology 2005;58, 982-990. DOI: 10.1016/j.jclinepi.2005.02.022 · PMID None
+- `wolff2019probast`: Wolff et al. PROBAST: A Tool to Assess the Risk of Bias and Applicability of Prediction Model Studies. Annals of Internal Medicine 2019;170, 51-58. DOI: 10.7326/m18-1376 · PMID None
+- `riley2010ipd`: Riley et al. Meta-analysis of individual participant data: rationale, conduct, and reporting. BMJ 2010;340, c221-c221. DOI: 10.1136/bmj.c221 · PMID None
+- `barendregt2013`: Barendregt et al. Meta-analysis of prevalence. Journal of Epidemiology and Community Health 2013;67, 974-978. DOI: 10.1136/jech-2013-203104 · PMID None
+- `thomas2008`: Thomas et al. Methods for the thematic synthesis of qualitative research in systematic reviews. BMC Medical Research Methodology 2008;8. DOI: 10.1186/1471-2288-8-45 · PMID None
+- `lewin2018cerqual`: Lewin et al. Applying GRADE-CERQual to qualitative evidence synthesis findings: introduction to the series. Implementation Science 2018;13. DOI: 10.1186/s13012-017-0688-3 · PMID None
+- `aromataris2015`: Aromataris et al. Summarizing systematic reviews. International Journal of Evidence-Based Healthcare 2015;13, 132-140. DOI: 10.1097/xeb.0000000000000055 · PMID None
+- `garritty2021`: Garritty et al. Cochrane Rapid Reviews Methods Group offers evidence-informed guidance to conduct rapid reviews. Journal of Clinical Epidemiology 2021;130, 13-22. DOI: 10.1016/j.jclinepi.2020.10.007 · PMID None
+- `elliott2014`: Elliott et al. Living Systematic Reviews: An Emerging Opportunity to Narrow the Evidence-Practice Gap. PLoS Medicine 2014;11, e1001603. DOI: 10.1371/journal.pmed.1001603 · PMID None
+- `wong2013`: Wong et al. RAMESES publication standards: realist syntheses. BMC Medicine 2013;11. DOI: 10.1186/1741-7015-11-21 · PMID None
+- `sandve2013`: Sandve et al. Ten Simple Rules for Reproducible Computational Research. PLoS Computational Biology 2013;9, e1003285. DOI: 10.1371/journal.pcbi.1003285 · PMID None
+- `anzures2010`: Anzures‐Cabrera et al. Graphical displays for meta‐analysis: An overview with suggestions for practice. Research Synthesis Methods 2010;1, 66-80. DOI: 10.1002/jrsm.6 · PMID None
+- `altman2005`: Altman et al. Standard deviations and standard errors. BMJ 2005;331, 903. DOI: 10.1136/bmj.331.7521.903 · PMID None
+- `fanelli2009`: Fanelli How Many Scientists Fabricate and Falsify Research? A Systematic Review and Meta-Analysis of Survey Data. PLoS ONE 2009;4, e5738. DOI: 10.1371/journal.pone.0005738 · PMID None
+- `efthimiou2018`: Efthimiou Practical guide to the meta-analysis of rare events. Evidence Based Mental Health 2018;21, 72-76. DOI: 10.1136/eb-2018-102911 · PMID None
+- `moons2014charms`: Moons et al. Critical Appraisal and Data Extraction for Systematic Reviews of Prediction Modelling Studies: The CHARMS Checklist. PLoS Medicine 2014;11, e1001744. DOI: 10.1371/journal.pmed.1001744 · PMID None
+- `riley2013progress`: Riley et al. Prognosis Research Strategy (PROGRESS) 2: Prognostic Factor Research. PLoS Medicine 2013;10, e1001380. DOI: 10.1371/journal.pmed.1001380 · PMID None
+- `balduzzi2019`: Balduzzi et al. How to perform a meta-analysis with R: a practical tutorial. Evidence Based Mental Health 2019;22, 153-160. DOI: 10.1136/ebmental-2019-300117 · PMID None
+- `osc2015`:  Estimating the reproducibility of psychological science. Science 2015;349. DOI: 10.1126/science.aac4716 · PMID None
+- `higgins2012incons`: Higgins et al. Consistency and inconsistency in network meta‐analysis: concepts and models for multi‐arm studies. Research Synthesis Methods 2012;3, 98-110. DOI: 10.1002/jrsm.1044 · PMID None
+- `salanti2011`: Salanti et al. Graphical methods and numerical summaries for presenting results from multiple-treatment meta-analysis: an overview and tutorial. Journal of Clinical Epidemiology 2011;64, 163-171. DOI: 10.1016/j.jclinepi.2010.03.016 · PMID None
+- `kitchenham2009`: Kitchenham et al. Systematic literature reviews in software engineering – A systematic literature review. Information and Software Technology 2009;51, 7-15. DOI: 10.1016/j.infsof.2008.09.009 · PMID None
+- `stanley2008`: Stanley et al. Meta-regression analysis as the socio-economics of economics research. The Journal of Socio-Economics 2008;37, 276-292. DOI: 10.1016/j.socec.2006.12.030 · PMID None
+- `cumpston2019`: Cumpston et al. Updated guidance for trusted systematic reviews: a new edition of the Cochrane Handbook for Systematic Reviews of Interventions. Cochrane Database of Systematic Reviews 2019. DOI: 10.1002/14651858.ed000142 · PMID None
+- `wilson2017`: Wilson et al. Good enough practices in scientific computing. PLOS Computational Biology 2017;13, e1005510. DOI: 10.1371/journal.pcbi.1005510 · PMID None
+- `kvarven2019`: Kvarven et al. Comparing meta-analyses and preregistered multiple-laboratory replication projects. Nature Human Behaviour 2019;4, 423-434. DOI: 10.1038/s41562-019-0787-z · PMID None
+- `cheung2019`: Cheung A Guide to Conducting a Meta-Analysis with Non-Independent Effect Sizes. Neuropsychology Review 2019;29, 387-396. DOI: 10.1007/s11065-019-09415-6 · PMID None
+- `orsini2012`: Orsini et al. Meta-Analysis for Linear and Nonlinear Dose-Response Relations: Examples, an Evaluation of Approximations, and Software. American Journal of Epidemiology 2012;175, 66-73. DOI: 10.1093/aje/kwr265 · PMID 22135359

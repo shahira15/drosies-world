@@ -120,16 +120,16 @@ def _nma_inputs():
     return st, tr, np.log((x_ + .5) / (n - x_ + .5)), 1 / (x_ + .5) + 1 / (n - x_ + .5)
 
 def test_nma_common_matches_rma_mv():
-    st, tr, y, v = _nma_inputs(); r = B.nma(st, tr, y, v, reference="no_contact", model="common"); ref = REF["nma"]
+    st, tr, y, v = _nma_inputs(); r = B.nma(st, tr, y, v, reference="no_contact", model="common", higher_is_better=True); ref = REF["nma"]
     assert r["treatments"] == ref["treatments"]; close(r["beta"], ref["common"]["beta"], rtol=1e-7); close(r["se"], ref["common"]["se"], rtol=1e-7)
     close(r["Q"], ref["common"]["QE"], rtol=1e-7); close(r["vcov"].ravel(), ref["common"]["vcov"], rtol=1e-6, atol=1e-10)
 
 def test_nma_random_matches_rma_mv():
-    st, tr, y, v = _nma_inputs(); r = B.nma(st, tr, y, v, reference="no_contact", model="random"); ref = REF["nma"]["random"]
+    st, tr, y, v = _nma_inputs(); r = B.nma(st, tr, y, v, reference="no_contact", model="random", higher_is_better=True); ref = REF["nma"]["random"]
     close(r["tau2"], ref["tau2"], rtol=1e-4); close(r["beta"], ref["beta"], rtol=1e-5); close(r["se"], ref["se"], rtol=1e-4)
 
 def test_nma_invariances():
-    st, tr, y, v = _nma_inputs(); a = B.nma(st, tr, y, v, reference="no_contact", model="random"); b = B.nma(st, tr, y, v, reference="self_help", model="random")
+    st, tr, y, v = _nma_inputs(); a = B.nma(st, tr, y, v, reference="no_contact", model="random", higher_is_better=True); b = B.nma(st, tr, y, v, reference="self_help", model="random", higher_is_better=True)
     ia = {t: i for i, t in enumerate(a["treatments"])}; ib = {t: i for i, t in enumerate(b["treatments"])}
     for t1 in ia:
         for t2 in ia: close(a["league"][ia[t1], ia[t2]], b["league"][ib[t1], ib[t2]], rtol=1e-5, atol=1e-7, what="league table independent of reference")
@@ -139,12 +139,12 @@ def test_nma_invariances():
 
 def test_nma_direct_only_reduces_to_pairwise():
     y = np.array([.2, .0, .5, .1, .3, .2]); v = np.array([.04] * 6); st = [1, 1, 2, 2, 3, 3]; tr = ["B", "A"] * 3
-    r = B.nma(st, tr, y, v, reference="A", model="common"); ref = S.meta_analyze(y[::2] - y[1::2], v[::2] + v[1::2], "common"); close(r["beta"][0], ref.est)
+    r = B.nma(st, tr, y, v, reference="A", model="common", higher_is_better=True); ref = S.meta_analyze(y[::2] - y[1::2], v[::2] + v[1::2], "common"); close(r["beta"][0], ref.est)
 
 def test_nma_disconnected_and_invalid():
-    with pytest.raises(ValueError, match="disconnected"): B.nma([1, 1, 2, 2], ["A", "B", "C", "D"], [0, 1, 0, 1], [.1] * 4)
-    with pytest.raises(ValueError): B.nma([1, 1], ["A", "A"], [0, 1], [.1, .1])
-    with pytest.raises(ValueError): B.nma([1, 1], ["A", "B"], [0, 1], [.1, 0])
+    with pytest.raises(ValueError, match="disconnected"): B.nma([1, 1, 2, 2], ["A", "B", "C", "D"], [0, 1, 0, 1], [.1] * 4, higher_is_better=True)
+    with pytest.raises(ValueError): B.nma([1, 1], ["A", "A"], [0, 1], [.1, .1], higher_is_better=True)
+    with pytest.raises(ValueError): B.nma([1, 1], ["A", "B"], [0, 1], [.1, 0], higher_is_better=True)
 
 # ---------------- phylogenetic
 def test_phylo_matches_metafor_rma_mv():
@@ -230,7 +230,7 @@ def test_multivariate_missing_outcome_in_some_studies():
     r = B.multivariate_meta(y[keep], Vb2, outcome[keep], study[keep], 2); assert np.all(np.isfinite(r["beta"]))
 
 def test_nma_unconnected_but_valid_two_component_rejected_and_multiarm_ok():
-    st_, tr, y, v = _nma_inputs(); r = B.nma(st_, tr, y, v, model="common"); assert r["n_contrasts"] == len(set(st_)) + sum(1 for s in set(st_) if st_.count(s) == 3)
+    st_, tr, y, v = _nma_inputs(); r = B.nma(st_, tr, y, v, model="common", higher_is_better=True); assert r["n_contrasts"] == len(set(st_)) + sum(1 for s in set(st_) if st_.count(s) == 3)
 
 def test_bayes_extreme_inputs():
     r = B.bayes_meta([0.1, 0.1, 0.1], [0.01, 0.01, 0.01], "halfnormal", 0.5); assert r["tau_median"] < 0.1 and abs(r["mu_mean"] - 0.1) < 1e-6
@@ -241,3 +241,11 @@ def test_cc_sensitivity_invalid_measure():
 
 def test_ipd_two_stage_invalid():
     with pytest.raises(ValueError): B.ipd_two_stage([1, 1, 1], [0, 0, 0], [1, 2, 3])
+
+
+def test_nma_ranking_direction_is_explicit_and_reverses_pscores():
+    st_, tr, y, v = _nma_inputs()
+    with pytest.raises(TypeError): B.nma(st_, tr, y, v, reference="no_contact")       # direction must be chosen deliberately
+    up = B.nma(st_, tr, y, v, reference="no_contact", higher_is_better=True)["pscore"]; dn = B.nma(st_, tr, y, v, reference="no_contact", higher_is_better=False)["pscore"]
+    for t in up: close(up[t] + dn[t], 1.0, rtol=1e-9)
+    assert up["no_contact"] < 0.1 and max(up, key=up.get) in ("ind_counseling", "grp_counseling")

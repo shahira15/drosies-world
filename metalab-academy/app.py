@@ -1091,7 +1091,7 @@ elif page == "Statistics Lab":
             elif sub2.startswith("Network"):
                 ar_ = DS.HASSELBLAD; st_ = [a[0] for a in ar_]; tr_ = [a[1] for a in ar_]; x_ = np.array([a[2] for a in ar_], float); n_ = np.array([a[3] for a in ar_], float)
                 mdl = st.radio("Model", ["random", "common"], horizontal=True); ref_ = st.selectbox("Reference treatment", ["no_contact", "ind_counseling", "grp_counseling", "self_help"])
-                r_ = AD2.nma(st_, tr_, np.log((x_ + .5) / (n_ - x_ + .5)), 1 / (x_ + .5) + 1 / (n_ - x_ + .5), reference=ref_, model=mdl)
+                r_ = AD2.nma(st_, tr_, np.log((x_ + .5) / (n_ - x_ + .5)), 1 / (x_ + .5) + 1 / (n_ - x_ + .5), reference=ref_, model=mdl, higher_is_better=True)
                 T_ = r_["treatments"]; lg = pd.DataFrame(np.exp(r_["league"]), index=T_, columns=T_).round(3); st.markdown("**League table: odds ratio of ROW vs COLUMN** (cessation; >1 favours the row treatment)"); st.dataframe(lg)
                 st.write(f"tau² = {r_['tau2']:.4f} · global Q = {r_['Q']:.1f} (df {r_['Q_df']}, p = {r_['Q_p']:.3g}) · P-scores: " + ", ".join(f"{k}: {v:.2f}" for k, v in r_["pscore"].items()))
                 for w_ in r_["warnings"]: st.warning(w_)
