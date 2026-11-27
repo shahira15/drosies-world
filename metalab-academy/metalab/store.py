@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS results(project_id INT, key TEXT, value TEXT, source 
 CREATE TABLE IF NOT EXISTS manuscript_versions(id INTEGER PRIMARY KEY, project_id INT, section TEXT, text TEXT, author TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS ms_claims(id INTEGER PRIMARY KEY, project_id INT, claim TEXT, evidence_key TEXT, status TEXT DEFAULT 'unresolved', ts REAL);
 CREATE TABLE IF NOT EXISTS ms_checklist(project_id INT, item TEXT, location TEXT, status TEXT, PRIMARY KEY(project_id, item));
+CREATE TABLE IF NOT EXISTS resource_verifications(id INTEGER PRIMARY KEY, url TEXT, verifier TEXT, verified_on TEXT, page_title_seen TEXT, matches_description TEXT, access_cost_seen TEXT, version_or_date_seen TEXT, notes TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS bookmarks(kind TEXT, ref TEXT, ts REAL, PRIMARY KEY(kind, ref));
 CREATE TABLE IF NOT EXISTS dup_candidates(id INTEGER PRIMARY KEY, project_id INT, ref_a INT, ref_b INT, score REAL, reasons TEXT,
   relation TEXT, status TEXT DEFAULT 'pending', decided_by TEXT, ts REAL);
@@ -499,9 +500,23 @@ class Store:
         self.x("INSERT INTO ms_checklist VALUES(?,?,?,?) ON CONFLICT(project_id,item) DO UPDATE SET location=excluded.location, status=excluded.status", (pid, item, location, status))
     def checklist(self, pid): return {r["item"]: r for r in self.q("SELECT * FROM ms_checklist WHERE project_id=?", (pid,))}
 
+    # ------------------------------------------- resource verification ledger
+    def add_verification(self, url, verifier, verified_on, page_title_seen, matches_description, access_cost_seen="", version_or_date_seen="", notes=""):
+        if verifier.lower().startswith(("ai", "llm", "model", "system")): raise ValueError("Only a human who visited the official page can verify a resource.")
+        try: datetime.date.fromisoformat(verified_on)
+        except ValueError: raise ValueError("verified_on must be an ISO date (YYYY-MM-DD) - the day you actually looked.")
+        if not page_title_seen.strip(): raise ValueError("Record the page title (or heading) you actually saw on the official page.")
+        if matches_description not in ("yes", "partly", "no"): raise ValueError("matches_description must be yes, partly or no.")
+        vid = self.x("INSERT INTO resource_verifications(url,verifier,verified_on,page_title_seen,matches_description,access_cost_seen,version_or_date_seen,notes,ts) VALUES(?,?,?,?,?,?,?,?,?)",
+                     (url, verifier, verified_on, page_title_seen, matches_description, access_cost_seen, version_or_date_seen, notes, time.time()))
+        self.audit("resource_verified", f"{url} ({matches_description})", actor=verifier); return vid
+
+    def verifications(self, url=None):
+        return self.q("SELECT * FROM resource_verifications" + (" WHERE url=?" if url else "") + " ORDER BY id DESC", (url,) if url else ())
+
     # ----------------------------------------------------------- export/backup
     def backup_json(self):
-        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist"]
+        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications"]
         return json.dumps({"format": "metalab-backup", "version": 1,
                            "tables": {t: self.q(f"SELECT * FROM {t}") for t in tables}}, indent=1)
 
@@ -510,7 +525,7 @@ class Store:
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
         cur = self.db.cursor()
-        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist"):
+        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications"):
             cur.execute(f"DELETE FROM {t}")
             valid = {r[1] for r in cur.execute(f"PRAGMA table_info({t})")}
             for row in d["tables"].get(t, []):

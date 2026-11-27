@@ -79,3 +79,25 @@ def test_srs_persistence_and_due_logic():
     assert s.toggle_bookmark("lesson", 32) is True and s.toggle_bookmark("lesson", 32) is False
     s2 = Store(":memory:"); s.toggle_bookmark("lesson", 5); s2.restore_json(s.backup_json())
     assert len(s2.bookmarks()) == 1 and s2.q("SELECT COUNT(*) c FROM cards")[0]["c"] == 2
+
+
+def test_search_covers_every_content_type_and_every_item():
+    from metalab import resources, coding, scenarios, milestones, templates_lib, rob_tools, curriculum, claims, references
+    docs = LRN._index(); titles = {d["title"] for d in docs}
+    assert all(any(r["title"] == d["title"] for d in docs) for r in resources.RESOURCES)
+    assert all(any(o["name"] == d["title"] for d in docs) for o in resources.ORGS + resources.COMMUNITIES + resources.OPPORTUNITY_DIRECTORIES)
+    assert all(any(f"Module {m['id']}:" in d["title"] and d["type"].startswith("Module") for d in docs) for m in curriculum.MODULES)
+    assert all(any(f"Module {n}:" in d["title"] and d["type"] == "Lesson" for d in docs) for n in lessons.load())
+    assert all(any(m["name"] in d["title"] and d["type"] == "First-paper milestone" for d in docs) for m in milestones.M)
+    assert all(any(t["title"] in d["title"] and d["type"] == "Coding tutorial" for d in docs) for t in coding.T)
+    assert all(any(name == d["title"] for d in docs) for name in templates_lib.T) and all(any(k == d["title"] for d in docs) for k in templates_lib.CREDIT_ROLES)
+    assert all(any(sc.title in d["title"] and d["type"] == "Virtual Lab scenario" for d in docs) for sc in scenarios.ALL.values())
+    assert all(any(tl["name"] == d["title"] for d in docs) for tl in rob_tools.TOOLS.values()) and all(any(nm == d["title"] for d in docs) for nm, _, _ in LRN.METHODS)
+    kinds = {d["type"].split(" (")[0] for d in docs}
+    assert {"Lesson", "Module", "Formula", "Glossary", "Resource", "Organisation", "Community", "Opportunity directory", "Reference", "Claim", "Workflow", "Calculator", "Coding tutorial", "Virtual Lab scenario", "First-paper milestone", "Template", "CRediT role", "Appraisal tool", "Statistical method"} <= kinds
+
+def test_search_finds_new_items_by_natural_queries():
+    where = lambda q: {d["title"] for d in LRN.search(q, 10)}
+    assert any("Mantel" in t for t in where("sparse zero cells MH")) and any("Egger" in t for t in where("funnel asymmetry"))
+    assert any("Coding" in d["type"] for d in LRN.search("hedges g by hand", 10)) and any("scenario" in d["type"] for d in LRN.search("split-plot pots", 10))
+    assert any(d["type"].startswith("Opportunity") for d in LRN.search("conference colloquium", 10)) and any(d["type"].startswith("Template") for d in LRN.search("independent reviewer recruitment", 10))

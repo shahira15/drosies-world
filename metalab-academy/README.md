@@ -18,6 +18,6 @@ Run the tests: `python3 -m pytest -q tests`
 - **First paper:** 14 milestones + Topic Explorer (a real, logged PubMed scan; no topic chosen for you).
 - **Statistics Lab:** simulations; meta-analysis (REML/DL/PM, HKSJ, PI, forest, leave-one-out); subgroups & meta-regression; calculators - **benchmarked vs R/metafor** (VALIDATION.md).
 - **Quality:** claim registry, correction history, expert-review packages.
-- **Knowledge/Network:** 80 verified references (PubMed/Crossref), 53 resources (links unchecked), local collaborator manager, CRediT, templates. **No users or community exist.**
+- **Knowledge/Network:** 80 verified references (PubMed/Crossref), 111 resources (links unchecked), local collaborator manager, CRediT, templates. **No users or community exist.**
 
 See `FEATURE_STATUS.md`, `KNOWN_LIMITATIONS.md`, `VALIDATION.md`, `AUDIT_2026-11-26.md`, `NEXT_ACTIONS.md`, `CONTRIBUTING.md`.

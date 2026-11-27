@@ -99,7 +99,35 @@ def _index():
     docs += [dict(type="Calculator", title=t, text=t, where="Statistics Lab", ref=t) for t in
              ["Hedges' g / Cohen's d", "Mean difference", "Log response ratio", "Risk ratio", "Odds ratio", "Risk difference", "Fisher's z", "SD to SE conversion", "SE from confidence interval", "Combine two groups",
               "Random-effects meta-analysis REML DerSimonian-Laird Paule-Mandel Hartung-Knapp", "Meta-regression and subgroup analysis"]]
+    # ---- v0.3 additions: communities, opportunity directories, tutorials, scenarios, milestones, templates, methods, appraisal tools
+    for o in resources.COMMUNITIES: docs.append(dict(type="Community (candidate)", title=o["name"], text=o["name"] + " " + o["focus"] + " " + o["kind"], where="Network & Collaboration", ref=o["url"]))
+    for o in resources.OPPORTUNITY_DIRECTORIES: docs.append(dict(type="Opportunity directory (candidate)", title=o["name"], text=" ".join([o["name"], o["kind"], o["note"]]), where="Network & Collaboration", ref=o["url"]))
+    from . import coding, scenarios, milestones, templates_lib, rob_tools, vlab
+    for t in coding.T: docs.append(dict(type="Coding tutorial", title=f"{t['title']} ({t['lang']})", text=" ".join([t["title"], t["goal"], " ".join(t["hints"])]), where="Coding Lab", ref=t["id"]))
+    for sc in scenarios.ALL.values(): docs.append(dict(type="Virtual Lab scenario", title=f"{sc.discipline}: {sc.title}", text=sc.intro + " " + " ".join(sc.planted), where="Virtual Lab", ref=sc.id))
+    docs.append(dict(type="Virtual Lab scenario", title="Preclinical: Nx-7 and Drosophila lifespan", text="Drosophila lifespan vial pseudoreplication SEM hours shared control missing SD " + " ".join(vlab.planted_errors()), where="Virtual Lab", ref="preclinical"))
+    for m in milestones.M: docs.append(dict(type="First-paper milestone", title=f"Milestone {m['id']}: {m['name']}", text=" ".join([m["learn"], m["why"], m["task"], m["deliverable"]]), where="First Paper Plan", ref=m["id"]))
+    for name, txt in templates_lib.T.items(): docs.append(dict(type="Template", title=name, text=txt[:400], where="Network & Collaboration", ref=name))
+    for role in templates_lib.CREDIT_ROLES: docs.append(dict(type="CRediT role", title=role, text="CRediT contributor role " + role, where="Network & Collaboration", ref=role))
+    for k, tl in rob_tools.TOOLS.items(): docs.append(dict(type="Appraisal tool", title=tl["name"], text=" ".join([tl["name"], tl["design"], " ".join(tl["domains"]), tl["note"]]), where="Research Workspace", ref=k))
+    docs += [dict(type="Template", title=t, text=t, where="Research Workspace", ref=t) for t in ["Statistical analysis plan (SAP) draft", "Protocol skeleton", "Search log CSV", "Extraction form per review type", "PRISMA flow diagram (SVG)", "PRISMA 2020 checklist tracker", "Reproducibility package (ZIP)", "Manuscript skeleton with verified-result tokens", "Study characteristics table", "Forest plot (SVG)"]]
+    for nm, where, txt in METHODS: docs.append(dict(type="Statistical method", title=nm, text=nm + " " + txt, where=where, ref=nm))
     return docs
+
+METHODS = [
+ ("Inverse-variance common-effect meta-analysis", "Statistics Lab → Meta-analysis", "fixed-effect weights 1/variance Q I2"), ("Random-effects meta-analysis (REML, Paule-Mandel, DerSimonian-Laird)", "Statistics Lab → Meta-analysis", "tau2 estimator heterogeneity"),
+ ("Hartung-Knapp-Sidik-Jonkman confidence interval", "Statistics Lab → Meta-analysis", "HKSJ t distribution few studies"), ("Prediction interval", "Statistics Lab → Meta-analysis", "Riley metafor new study true effect"),
+ ("Leave-one-out analysis", "Statistics Lab → Meta-analysis", "sensitivity influence"), ("Subgroup analysis and test for subgroup differences", "Statistics Lab → Subgroups & meta-regression", "interaction moderator Q between"),
+ ("Mixed-effects meta-regression", "Statistics Lab → Subgroups & meta-regression", "moderators QM R2 residual heterogeneity"), ("Mantel-Haenszel pooled OR RR RD", "Statistics Lab → Advanced methods", "sparse data zero cells binary"),
+ ("Peto odds ratio", "Statistics Lab → Advanced methods", "rare events one-step"), ("Egger regression test", "Statistics Lab → Advanced methods", "funnel plot asymmetry small-study effects"),
+ ("Begg rank correlation test", "Statistics Lab → Advanced methods", "Kendall tau funnel"), ("Cumulative meta-analysis", "Statistics Lab → Advanced methods", "sequential by year"),
+ ("Q-profile confidence interval for tau-squared", "Statistics Lab → Advanced methods", "heterogeneity uncertainty I2 interval"), ("Influence diagnostics (studentised residual, Cook's distance)", "Statistics Lab → Advanced methods", "outlier leverage"),
+ ("Three-level (multilevel) meta-analysis", "Statistics Lab → Advanced methods", "dependent effect sizes cluster random effects rma.mv"), ("Cluster-robust variance estimation (CR1)", "Statistics Lab → Advanced methods", "robust variance dependence few clusters"),
+ ("Incidence rate ratio", "Statistics Lab → Advanced methods", "person-time counts"), ("Prevalence transformations (logit, Freeman-Tukey, arcsine)", "Statistics Lab → Advanced methods", "proportion PLO PFT PAS"),
+ ("Design effect and effective sample size", "Statistics Lab → Advanced methods", "cluster ICC classroom"), ("Fisher z transformation of correlations", "Statistics Lab → Effect-size calculators", "correlation"),
+ ("Standardised mean difference (Hedges' g)", "Statistics Lab → Effect-size calculators", "exact J small sample LS Borenstein variance"), ("Log response ratio", "Statistics Lab → Effect-size calculators", "ratio of means ecology"),
+ ("Cohen's kappa", "Research Workspace → Screening", "inter-rater agreement"), ("p-value to standard error conversion", "Statistics Lab → Effect-size calculators", "exact two-sided p z"),
+]
 
 def search(q, limit=25):
     qt = _tokens(q)

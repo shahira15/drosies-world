@@ -3,7 +3,7 @@ import json, os, time, datetime
 from pathlib import Path
 import numpy as np, pandas as pd, streamlit as st
 import plotly.graph_objects as go
-from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, manuscript as MS, stats as S
+from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, manuscript as MS, verification as VER, stats as S
 from metalab.store import Store, DECISIONS
 from metalab.plan import WEEKS, all_tasks
 
@@ -1007,32 +1007,53 @@ elif page == "Statistics Lab":
 # ------------------------------------------------------ KNOWLEDGE UNIVERSE
 elif page == "Knowledge Universe":
     st.title("Knowledge Universe")
-    t1, t2, t3 = st.tabs(["Resources (filterable)", "Recommended for a lesson/task", "Verified references"])
+    vs = VER.summary(db)
+    st.caption(f"{vs['total']} registry entries · {vs['page examined by a human']} verified by a human · {vs['link-checked']} link-checked · {vs['candidate']} candidates (not verified). Plus {len(references.REFS)} bibliographically verified papers.")
+    t1, t2, t3, t4 = st.tabs(["Resources (filterable)", "Recommended for a lesson/task", "Verified papers", "Verify resources (local workflow)"])
     with t1:
-        st.warning("**Verification is layered and mostly NOT done.** Bibliographic = record exists (PubMed/Crossref). Link = URL responded on a date (build sandbox blocked nearly all hosts: run `python3 tools/check_links.py` on your machine). Full-text and claim-support = not claimed for these entries. Costs, versions and licences are 'check yourself'.")
+        st.warning("**Most entries are CANDIDATES** chosen from author knowledge: the build sandbox could not reach their sites. Status shows exactly what has been checked. Costs, versions and licences are 'check yourself'. 'SEARCH:' entries are search links, not endorsements.")
         c1, c2, c3 = st.columns(3)
-        q = c1.text_input("Search"); types = c2.multiselect("Type", sorted({r["type"] for r in resources.RESOURCES})); lv = c3.multiselect("Level", ["Beginner", "Intermediate", "Advanced", "All"])
-        d1, d2 = st.columns(2)
-        disc = d1.multiselect("Discipline", ["Health", "Life sciences", "Ecology", "Education", "Agriculture", "Preclinical", "Social science", "Methodology"]); free = d2.checkbox("Hide paid-only")
-        rows = resources.filter_resources(q, types, disc, lv, free)
+        q = c1.text_input("Search"); cats = c2.multiselect("Category", sorted({resources.category(r) for r in resources.RESOURCES})); lv = c3.multiselect("Level", ["Beginner", "Intermediate", "Advanced", "All"])
+        d1, d2, d3 = st.columns(3)
+        disc = d1.multiselect("Discipline", ["Health", "Life sciences", "Ecology", "Education", "Agriculture", "Preclinical", "Social science", "Methodology", "Ageing", "Genetics"]); free = d2.checkbox("Hide paid-only"); only_v = d3.checkbox("Only human-verified")
+        rows = resources.filter_resources(q, (), disc, lv, free, cats)
+        rows = [r for r in rows if not only_v or VER.status(r["url"], db)["level"] == VER.LEVELS[2]]
         st.caption(f"{len(rows)} of {len(resources.RESOURCES)} resources")
-        st.dataframe(pd.DataFrame([{"title": r["title"], "org": r["org"], "type": r["type"], "topic": r["topic"], "level": r["level"], "discipline": r["discipline"], "access": r["access"],
-                                    "link check": resources.link_status(r["url"]), "why useful": r["why"], "modules": ", ".join(map(str, r["modules"])), "url": r["url"]} for r in rows]),
+        st.dataframe(pd.DataFrame([{"title": r["title"], "category": resources.category(r), "org": r["org"], "type": r["type"], "level": r["level"], "discipline": r["discipline"], "access": r["access"],
+                                    "status": VER.status(r["url"], db)["level"], "why useful": r["why"], "modules": ", ".join(map(str, r["modules"])), "url": r["url"]} for r in rows]),
                      hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
-        st.caption("Not listed (not yet verified): YouTube channels, recorded lectures, online courses, funding calls, conferences with dates. Nothing is invented to fill these categories.")
+        st.caption("Not yet listed (nothing verified, nothing invented): specific YouTube channels, named recorded lectures, specific fellowships/grant calls/summer schools. Use the SEARCH entries and the Opportunities directory in Network & Collaboration.")
     with t2:
         mid = st.selectbox("Module", [m["id"] for m in curriculum.MODULES], format_func=lambda i: f"{i}. {curriculum.BY_ID[i]['title']}")
         rec = resources.recommend(mid)
         st.markdown(f"**Resources tagged to Module {mid}** ({'lesson available' if mid in LES else 'outline only'})")
-        for r in rec["resources"]: st.markdown(f"- [{r['title']}]({r['url']}) - {r['type']} · {r['access']} · *{r['why']}*")
+        for r in rec["resources"]: st.markdown(f"- [{r['title']}]({r['url']}) - {resources.category(r)} · {r['access']} · *{r['why']}* · `{VER.status(r['url'], db)['level']}`")
         if not rec["resources"]: st.caption("No resource tagged yet for this module.")
         if rec["references"]:
             st.markdown("**Verified references cited by the lesson**")
             for r in rec["references"]: st.markdown("- " + references.link(r["key"]))
         st.caption("Recommendations are tag-based (modules assigned by the author), not personalised or evaluated.")
     with t3:
-        st.caption(f"{len(references.REFS)} references. Bibliographic verification only (title/authors/journal/DOI matched in PubMed or Crossref); abstract/full-text examination is tracked per claim in Quality & Expert Review.")
-        for k, v in references.REFS.items(): st.markdown(f"- {references.link(k)} · verified {v['verified_on']} via {v.get('verified_via', '')}")
+        st.caption(f"{len(references.REFS)} papers. Bibliographic verification only (title/authors/journal/DOI matched in PubMed or Crossref); abstract/full-text examination is tracked per claim in Quality & Expert Review.")
+        pq = st.text_input("Filter papers")
+        for k, v in references.REFS.items():
+            if not pq or pq.lower() in v["cite"].lower(): st.markdown(f"- {references.link(k)} · verified {v['verified_on']} via {v.get('verified_via', '')}")
+    with t4:
+        st.markdown("**How to verify on your own machine** (the sandbox could not): (1) run `python3 tools/check_links.py` (link level only); (2) download the queue below, open each official page, fill the columns *verifier, verified_on, page_title_seen, matches_description* (+ cost/version/notes); (3) upload it back. Rows without a verifier are skipped; invalid rows are rejected with a reason. Only a human who actually looked can verify; AI cannot.")
+        st.download_button("Download verification queue (CSV)", VER.export_queue(db), "verification_queue.csv")
+        up = st.file_uploader("Upload filled queue", type="csv")
+        if up and st.button("Import verification results"):
+            res = VER.import_results(db, up.getvalue().decode("utf-8", "ignore")); st.success(f"Imported {res['imported']}, skipped {res['skipped']} unfilled rows.")
+            for ln, msg in res["errors"][:20]: st.error(f"Row {ln}: {msg}")
+        with st.form("onev"):
+            es = VER.entries(); u = st.selectbox("Entry", [e["url"] for e in es], format_func=lambda x: next(e["name"] for e in es if e["url"] == x))
+            c1, c2, c3 = st.columns(3); who = c1.text_input("Verifier (human)", "human:self"); dt = c2.text_input("Date you looked (YYYY-MM-DD)", str(datetime.date.today())); mt = c3.selectbox("Matches the description?", ["yes", "partly", "no"])
+            pt = st.text_input("Page title / heading you saw (required)"); ac = st.text_input("Access / cost you saw"); vd = st.text_input("Version / date on the page"); nt = st.text_input("Notes")
+            if st.form_submit_button("Record verification"):
+                try: db.add_verification(u, who, dt, pt, mt, ac, vd, nt); st.success("Recorded"); st.rerun()
+                except ValueError as e_: st.error(str(e_))
+        ver = db.verifications()
+        if ver: st.dataframe(pd.DataFrame(ver)[["url", "verifier", "verified_on", "page_title_seen", "matches_description", "access_cost_seen", "version_or_date_seen", "notes"]], hide_index=True, width="stretch")
 
 # --------------------------------------------------------------- NETWORK
 elif page == "Network & Collaboration":
@@ -1042,10 +1063,10 @@ elif page == "Network & Collaboration":
     tabs = st.tabs(["Directory", "My collaborators (local)", "CRediT & authorship", "Templates", "Opportunities"])
     with tabs[0]:
         st.markdown("**Organisations and societies**")
-        st.dataframe(pd.DataFrame([{**{k: o.get(k, "") for k in ("name", "focus", "discipline", "url", "membership", "cost")}, "link check": resources.link_status(o["url"])} for o in resources.ORGS]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+        st.dataframe(pd.DataFrame([{**{k: o.get(k, "") for k in ("name", "focus", "discipline", "url", "membership", "cost")}, "status": VER.status(o["url"], db)["level"]} for o in resources.ORGS]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
         st.markdown("**Communities and forums** (public; quality varies; follow each community's rules; do not post unpublished data)")
-        st.dataframe(pd.DataFrame([{"name": o["name"], "kind": o["kind"], "focus": o["focus"], "url": o["url"], "link check": resources.link_status(o["url"])} for o in resources.COMMUNITIES]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
-        st.caption("Not yet listed because unverified: university evidence-synthesis centres, research librarian services, statistical consultation services, mentorship programmes, journal clubs. Ask your own institution's library and statistics core first.")
+        st.dataframe(pd.DataFrame([{"name": o["name"], "kind": o["kind"], "focus": o["focus"], "url": o["url"], "status": VER.status(o["url"], db)["level"]} for o in resources.COMMUNITIES]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+        st.caption("Mentoring/training organisations are marked in the focus column (e.g. NRMN, CIMER, Open Life Science, The Carpentries, ReproducibiliTea). Not listed because nothing is verified: specific university evidence-synthesis centres, named librarians, statistical-consultation services, named mentors. Ask your own institution's library and statistics/biostatistics core first - they are often the best first contact.")
     with tabs[1]:
         st.caption("Contacts you add manually are stored only in this local file. Store only what you need and only with a legitimate basis; do not add private details of others you would not want shared. Deleting removes them and their notes.")
         with st.form("ct", clear_on_submit=True):
@@ -1084,7 +1105,9 @@ elif page == "Network & Collaboration":
         k = st.selectbox("Template", list(TL.T)); st.text_area("Edit and send yourself (the platform never contacts anyone)", TL.T[k], height=280)
         st.caption("Authorship must follow your institution/journal criteria (e.g. ICMJE): substantive contribution only. Agreement text is a draft, not legal advice.")
     with tabs[4]:
-        st.info("The Research Opportunities Hub is intentionally empty: no conference, fellowship, grant, course or call has been officially verified, and there is no live monitoring. Entries will be added only with an official source link and verification date. In the meantime use the organisations above (e.g. their event pages) and your library.")
+        st.info("**Opportunities directory, not a feed.** These are recurring events, funder portals and training directories where genuine opportunities are announced. No specific call, deadline, fee, eligibility or 'currently open' status is asserted, and there is no live monitoring. Check each official page; record what you find in your own notes or via the verification workflow.")
+        st.dataframe(pd.DataFrame([{**o, "status": VER.status(o["url"], db)["level"]} for o in resources.OPPORTUNITY_DIRECTORIES]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
+        st.caption("Filters you will want when you add verified opportunities yourself: discipline, country, remote participation, career stage, cost, deadline, funding, eligibility - the verification ledger records the date and what you saw.")
 
 # ------------------------------------------------------ QUALITY / EXPERT REVIEW
 elif page == "Quality & Expert Review":

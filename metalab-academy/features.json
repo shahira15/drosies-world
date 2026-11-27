@@ -123,10 +123,10 @@
   },
   {
    "id": "knowledge.resources",
-   "name": "Resource registry (53 resources, 11 orgs, 6 communities) with 4 verification levels",
+   "name": "Resource library: 111 resources in 15 categories + 23 organisations + 13 communities + 10 opportunity directories; status levels candidate / link-checked / human page-examined",
    "status": "implemented",
-   "evidence": "Bibliographic via PubMed/Crossref for 77 references; link check ran for 1 URL only (sandbox blocks hosts); full-text/claim-support not claimed",
-   "blocker": "Run tools/check_links.py locally; verify costs/versions; no videos/courses/funding/conference entries yet (unverified, not invented)"
+   "evidence": "All entries are CANDIDATES (sandbox blocked hosts); 1 link-checked; 0 human-verified. No video channel, named lecture, specific call or deadline is asserted; SEARCH entries are labelled search links",
+   "blocker": "Run tools/check_links.py locally; verify via the queue workflow; verify costs/versions/licences"
   },
   {
    "id": "knowledge.databases_software",
@@ -316,6 +316,24 @@
    "status": "benchmarked",
    "evidence": "30+ benchmarks vs metafor 4.4.0 (VALIDATION.md addendum)",
    "blocker": "Expert review; trim-and-fill/selection models/CR2/NMA/DTA/dose-response/Bayesian not implemented"
+  },
+  {
+   "id": "knowledge.local_verification",
+   "name": "Local verification workflow: queue CSV export/import, human ledger with date/page title/match/cost/version, AI refused",
+   "status": "tested",
+   "evidence": "tests/test_verification.py (roundtrip, rejections, level logic)"
+  },
+  {
+   "id": "network.opportunities_directory",
+   "name": "Opportunities directories (recurring events, funder portals, training directories, search links)",
+   "status": "implemented",
+   "evidence": "Directories only; no specific call/deadline/fee/eligibility asserted; no live monitoring"
+  },
+  {
+   "id": "search.universal",
+   "name": "Universal search across lessons, modules, formulas, glossary, resources, organisations, communities, opportunities, claims, calculators, methods, tutorials, scenarios, milestones, templates, appraisal tools",
+   "status": "tested",
+   "evidence": "Coverage test asserts every registered item is indexed"
   }
  ]
 }
