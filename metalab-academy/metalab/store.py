@@ -156,7 +156,11 @@ class Store:
         return self.q("SELECT * FROM search_log WHERE project_id=? ORDER BY id", (pid,))
 
     # ------------------------------------------------------------ references
+    MAX_IMPORT_BYTES = 50 * 1024 * 1024
+    MAX_RESTORE_BYTES = 500 * 1024 * 1024
+
     def import_refs(self, pid, text, filename="pasted"):
+        if len(text.encode("utf-8", "ignore")) > self.MAX_IMPORT_BYTES: raise ValueError("Import file is larger than 50 MB; split it.")
         recs = parse_ris(text) if "TY  -" in text else parse_pubmed_nbib(text) if "PMID- " in text else []
         if not recs:
             raise ValueError("No records recognised. Supported: RIS (TY  -) and PubMed NBIB/MEDLINE (PMID- ).")
@@ -454,7 +458,7 @@ class Store:
         if role not in CREDIT_ROLES: raise ValueError("Role must be one of the 14 CRediT roles.")
         if not note.strip(): raise ValueError("Describe the substantive contribution (CRediT roles describe what was actually done).")
         self.x("INSERT INTO credit(project_id,person,role,note,ts) VALUES(?,?,?,?,?)", (pid, person, role, note, time.time()))
-        self.audit("credit_recorded", f"{person}: {role}", pid)
+        self.audit("credit_recorded", f"role {role} recorded (contributor name not logged)", pid)
 
     def credits(self, pid): return self.q("SELECT * FROM credit WHERE project_id=? ORDER BY person, role", (pid,))
 
@@ -500,6 +504,18 @@ class Store:
         self.x("INSERT INTO ms_checklist VALUES(?,?,?,?) ON CONFLICT(project_id,item) DO UPDATE SET location=excluded.location, status=excluded.status", (pid, item, location, status))
     def checklist(self, pid): return {r["item"]: r for r in self.q("SELECT * FROM ms_checklist WHERE project_id=?", (pid,))}
 
+    # ------------------------------------------------------ project deletion
+    PROJECT_TABLES = ("decisions", "search_log", "refs", "screening", "plan_tasks", "extraction", "studies", "reports", "project_forms", "extracted", "effect_sizes", "rob", "dup_candidates", "credit", "results", "manuscript_versions", "ms_claims", "ms_checklist")
+
+    def delete_project(self, pid, confirm_name):
+        """Irreversibly delete one project's records (the user's right to delete). Requires typing the project name. The append-only audit log keeps a
+        deletion event; EARLIER audit rows may still mention project details - delete the SQLite file to remove everything."""
+        r = self.q("SELECT name FROM projects WHERE id=?", (pid,))
+        if not r: raise ValueError("No such project.")
+        if confirm_name != r[0]["name"]: raise ValueError("Type the exact project name to confirm deletion.")
+        for t in self.PROJECT_TABLES: self.x(f"DELETE FROM {t} WHERE project_id=?", (pid,))
+        self.x("DELETE FROM projects WHERE id=?", (pid,)); self.audit("project_deleted", f"project {pid} and its records deleted by the user", pid)
+
     # ------------------------------------------- resource verification ledger
     def add_verification(self, url, verifier, verified_on, page_title_seen, matches_description, access_cost_seen="", version_or_date_seen="", notes=""):
         if verifier.lower().startswith(("ai", "llm", "model", "system")): raise ValueError("Only a human who visited the official page can verify a resource.")
@@ -515,12 +531,16 @@ class Store:
         return self.q("SELECT * FROM resource_verifications" + (" WHERE url=?" if url else "") + " ORDER BY id DESC", (url,) if url else ())
 
     # ----------------------------------------------------------- export/backup
-    def backup_json(self):
+    PERSONAL_TABLES = ("contacts", "interactions", "credit", "profile", "notes")
+
+    def backup_json(self, include_personal=True):
+        """include_personal=False omits contacts, interactions, CRediT person names, profile and notes (safer for sharing with an expert/mentor)."""
         tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications"]
-        return json.dumps({"format": "metalab-backup", "version": 1,
-                           "tables": {t: self.q(f"SELECT * FROM {t}") for t in tables}}, indent=1)
+        return json.dumps({"format": "metalab-backup", "version": 1, "personal_data_included": include_personal,
+                           "tables": {t: ([] if (not include_personal and t in self.PERSONAL_TABLES) else self.q(f"SELECT * FROM {t}")) for t in tables}}, indent=1)
 
     def restore_json(self, text):
+        if len(text) > self.MAX_RESTORE_BYTES: raise ValueError("Backup file is unreasonably large; refusing to restore.")
         d = json.loads(text)
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
@@ -538,10 +558,20 @@ class Store:
         self.audit("backup_restored", f"{sum(len(v) for v in d['tables'].values())} rows")
 
     @staticmethod
+    def _csv_safe(v):
+        """Neutralise spreadsheet formula injection: cells starting with = + - @ (or tab/CR) are prefixed with an apostrophe.
+        Pure numbers (including negatives) are left untouched so data stay numeric."""
+        if isinstance(v, str) and v[:1] in ("=", "+", "-", "@", "\t", "\r"):
+            try: float(v); return v
+            except ValueError: return "'" + v
+        return v
+
+    @staticmethod
     def to_csv(rows):
         if not rows:
             return ""
-        s = io.StringIO(); w = csv.DictWriter(s, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+        s = io.StringIO(); w = csv.DictWriter(s, fieldnames=list(rows[0])); w.writeheader()
+        w.writerows([{k: Store._csv_safe(v) for k, v in r.items()} for r in rows])
         return s.getvalue()
 
 

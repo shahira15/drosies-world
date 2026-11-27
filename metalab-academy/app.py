@@ -8,6 +8,13 @@ from metalab.store import Store, DECISIONS
 from metalab.plan import WEEKS, all_tasks
 
 st.set_page_config(page_title="MetaLab Academy", page_icon="🧪", layout="wide")
+# Accessibility styling (static CSS only): stronger caption contrast, always-visible keyboard focus ring, smaller h2 (we use real h2 headings), reduced motion.
+st.markdown("""<style>
+[data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] *, .stCaption, small { color: #3d434d !important; opacity: 1 !important; }
+*:focus-visible { outline: 3px solid #0b5fff !important; outline-offset: 2px !important; }
+h2 { font-size: 1.6rem !important; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>""", unsafe_allow_html=True)
 ROOT = Path(__file__).parent
 
 @st.cache_resource
@@ -25,9 +32,15 @@ with st.sidebar.expander("🔎 Search everything", expanded=False):
         for d in LRN.search(uq, 8):
             st.markdown(f"**{d['title']}**  \n*{d['type']}* · open **{d['where']}**")
         if not LRN.search(uq, 1): st.caption("No matches. Try another word.")
-page = st.sidebar.radio("MetaLab Academy", PAGES, key="nav")
-st.sidebar.caption("Learn. Discover. Analyze. Collaborate. Publish.")
-st.sidebar.info("v0.2 · local-first · no accounts, no network calls. Lessons are AI-drafted, not expert-reviewed; statistics are benchmarked vs R/metafor but not expert-validated. See Status & Limitations.")
+AREAS = {"Home": "Start", "Onboarding": "Learn", "Learning Academy": "Learn", "Practice": "Learn", "Coding Lab": "Learn", "Virtual Lab": "Learn", "Method Wizard": "Learn",
+         "First Paper Plan": "Research", "Research Workspace": "Research", "Manuscript Studio": "Research", "Statistics Lab": "Research",
+         "Knowledge Universe": "Library & people", "Network & Collaboration": "Library & people", "Quality & Expert Review": "Trust", "Status & Limitations": "Trust"}
+ICONS = {"Start": "🏠", "Learn": "📚", "Research": "🔬", "Library & people": "🌐", "Trust": "✅"}
+def goto(p): st.session_state["nav"] = p
+page = st.sidebar.radio("MetaLab Academy", PAGES, key="nav", format_func=lambda p: f"{ICONS[AREAS[p]]} {p}")
+st.caption(f"{ICONS[AREAS[page]]} {AREAS[page]}  ›  {page}")
+st.sidebar.markdown("<p style='color:#3d434d;font-size:0.85rem'>Learn. Discover. Analyze. Collaborate. Publish.</p>", unsafe_allow_html=True)
+st.sidebar.info("v0.3 · local-first · no accounts, no network calls. Lessons are AI-drafted, not expert-reviewed; statistics are benchmarked vs R/metafor but not expert-validated. See Status & Limitations.")
 DISCLAIM = "AI-drafted educational content; verify against primary sources. Not accredited instruction."
 
 def project_picker(key="proj"):
@@ -49,7 +62,7 @@ if page == "Home":
     b.metric("Lessons actually written", c["drafted"], help="The other modules are outlines only: title and level, no lesson.")
     d.metric("Lessons you completed", len(done)); e.metric("Real projects", len([p for p in db.projects() if not p["is_teaching"]]))
     st.warning(f"Honest status: {c['drafted']} of {c['total']} modules have a lesson (AI-drafted, not yet expert-reviewed). The rest are outlines so you can see the roadmap.")
-    st.subheader("Your next actions")
+    st.header("Your next actions")
     if not PROFILE: st.markdown("1. **Onboarding** (5 minutes): tell the academy about you - nothing leaves this computer.")
     core = [i for i in LRN.CORE_PATH if i in LES]
     nxt = next((i for i in core if i not in done), None)
@@ -68,6 +81,11 @@ if page == "Home":
     st.markdown(f"**Practice:** {len(due)} flashcards due · {len(new)} new · {'simulated review created' if sims else 'try the Virtual Lab before using real data'}")
     bms = db.bookmarks()
     if bms: st.caption("Bookmarks: " + ", ".join(f"{b_['kind']} {b_['ref']}" for b_ in bms[:6]))
+    st.header("The research journey")
+    st.caption("Steps: Learn · Practise (Virtual Lab) · Plan (First Paper Plan) · Review = search, screen, extract, appraise (Research Workspace) · Analyse · Write · Check quality. Each button opens the tool that supports it. You never need every lesson first - follow the First Paper Plan one milestone at a time.")
+    steps = [("1 Learn", "Learning Academy"), ("2 Practise", "Virtual Lab"), ("3 Plan", "First Paper Plan"), ("4 Review", "Research Workspace"), ("5 Analyse", "Statistics Lab"), ("6 Write", "Manuscript Studio"), ("7 Check", "Quality & Expert Review")]
+    jc = st.columns(len(steps))
+    for c_, (lab, p_) in zip(jc, steps): c_.button(lab, key=f"jr_{p_}", on_click=goto, args=(p_,), help=f"Open {p_}")
     st.info("Tip: use **🔎 Search everything** in the sidebar to find lessons, formulas, glossary terms, resources, calculators and claims. The **Method Wizard** suggests what to learn for your design (with its assumptions).")
 
 # ------------------------------------------------------------ ONBOARDING
@@ -91,7 +109,7 @@ elif page == "Onboarding":
             db.set_profile(discipline=disc, research_exp=exp, stats_exp=stat, code_exp=code, sr_fam=sr, ma_fam=ma,
                            hours=hrs, lang=lang, goal=goal, pathway=path)
             st.success("Saved."); st.rerun()
-    st.subheader("Diagnostic (6 questions, ungraded for access - nothing is locked)")
+    st.header("Diagnostic (6 questions, ungraded for access - nothing is locked)")
     DIAG = [
       ("The standard error of the mean describes...", ["Spread of individual observations", "Precision of the sample mean", "Bias of the study", "The p-value"], 1),
       ("A 95% confidence interval means...", ["95% of the data lie inside it", "Procedure captures the true value in ~95% of repeated samples", "p = 0.95", "The effect is real"], 1),
@@ -178,7 +196,7 @@ elif page == "Learning Academy":
         with st.expander("References (verified in PubMed on " + references.VERIFIED_ON + ")"):
             for k in L["further"]:
                 st.markdown("- " + references.link(k))
-        st.subheader("Quiz")
+        st.header("Quiz")
         with st.form(f"quiz{mid}"):
             chosen = []
             for i, q in enumerate(L["quiz"]):
@@ -221,7 +239,7 @@ elif page == "Practice":
         if not queue: st.success("Nothing due. Come back later.")
         else:
             key = queue[0]; c = allc[key]
-            st.markdown(f"### {c['front']}")
+            st.markdown(f"## {c['front']}")
             if st.toggle("Reveal answer", key=f"rv{key}"):
                 st.info(c["back"] + (f"  \n(Module {c['module']})" if c["module"] else ""))
                 q = st.radio("How well did you recall it?", [0, 1, 2, 3, 4, 5], index=None, horizontal=True, key=f"q{key}",
@@ -319,7 +337,7 @@ elif page == "Method Wizard":
     obj = c5.selectbox("Objective", ["estimate an effect", "explore heterogeneity", "map the evidence"])
     comp = st.checkbox("Studies estimate comparable quantities (same construct/direction/scale)", True)
     w = LRN.wizard(design, outcome, int(k), dep, obj, comp)
-    st.subheader("Suggested direction"); st.markdown("**Review type:** " + "; ".join(w["review_types"]))
+    st.header("Suggested direction"); st.markdown("**Review type:** " + "; ".join(w["review_types"]))
     st.markdown("**Effect measure(s):** " + "; ".join(w["measures"]))
     if w["models"]: st.markdown("**Analytic options:**\n" + "\n".join(f"- {m}" for m in w["models"]))
     for c_ in w["cautions"]: st.warning(c_)
@@ -610,7 +628,8 @@ elif page == "Research Workspace":
             df = pd.DataFrame(rows); df["ts"] = pd.to_datetime(df["ts"], unit="s")
             st.dataframe(df, hide_index=True, width="stretch")
     with t[11]:
-        st.download_button("Full backup (JSON)", db.backup_json(), "metalab_backup.json")
+        st.download_button("Full backup (JSON, includes personal notes/contacts)", db.backup_json(), "metalab_backup.json")
+        st.download_button("Shareable backup (JSON, WITHOUT contacts/profile/notes)", db.backup_json(include_personal=False), "metalab_backup_no_personal.json")
         up = st.file_uploader("Restore from backup (REPLACES current data except the audit log)", type="json")
         if up and st.button("Restore"):
             try:
@@ -619,6 +638,11 @@ elif page == "Research Workspace":
                 st.error(f"Restore failed: {e}")
         p = project_picker("pb")
         if p:
+            with st.expander("Delete this project (irreversible)"):
+                nm_ = st.text_input("Type the exact project name to confirm", key="delname")
+                if st.button("Delete project permanently"):
+                    try: db.delete_project(p["id"], nm_); st.success("Deleted."); st.rerun()
+                    except ValueError as e_: st.error(str(e_))
             from metalab import workflow as WF
             st.download_button("Reproducibility package (ZIP: all stages, R script, SAP draft, PRISMA, audit log, SHA-256 manifest)", WF.export_package(db, p["id"], p["name"]), f"{p['name']}_package.zip")
             st.download_button("References (CSV)", db.to_csv(db.refs(p["id"])), "references.csv")
@@ -735,17 +759,17 @@ elif page == "First Paper Plan":
     with t_scan:
         st.warning(f"**Preliminary signals, not decisions.** Every count was returned by {TS.DB} on {TS.DATE}: one database, auto-translated queries, no screening. "
                    "Zero review hits does NOT prove novelty; a large primary literature does NOT prove usable data. You choose the topic.")
-        st.subheader("Candidate topics and open questions")
+        st.header("Candidate topics and open questions")
         for c in TS.CANDIDATES:
             with st.expander(f"{c['id']}. {c['title']}"):
                 st.markdown(f"**Why it may be interesting:** {c['why_interesting']}")
                 if c["concerns"]: st.markdown("**Concerns:**\n" + "\n".join(f"- {x}" for x in c["concerns"]))
                 st.markdown(f"**Likely design:** {c['likely_design']}  \n**Evidence (search ids):** {', '.join(c['signals'])}")
                 st.markdown("**Next steps:**\n" + "\n".join(f"- {x}" for x in c["next_steps"]))
-        st.subheader("Self-assessment rubric (your judgement, not mine)")
+        st.header("Self-assessment rubric (your judgement, not mine)")
         st.caption("Score each criterion 0-2 for your top candidates after doing Milestone 3. A total is only a conversation starter.")
         for r in TS.RUBRIC: st.markdown(f"- {r}")
-        st.subheader("The searches (exact queries)")
+        st.header("The searches (exact queries)")
         sdf = pd.DataFrame(TS.SEARCHES, columns=["id", "topic", "purpose", "query", "PubMed total", "interpretation"])
         st.dataframe(sdf, hide_index=True, width="stretch")
         st.download_button("Download scan (CSV)", sdf.to_csv(index=False), "topic_scan_pubmed_2026-11-26.csv")
@@ -1143,3 +1167,15 @@ else:
     c = curriculum.counts()
     st.markdown(f"**Curriculum:** {c['total']} modules registered; **{c['drafted']} have lessons**; {c['outline']} are outlines only.")
     st.markdown("See `KNOWN_LIMITATIONS.md`, `TESTING_REPORT.md`, `PROJECT_STATUS.md` in the project folder.")
+
+
+# ------------------------------------------------------- cross-page "what next" links (consistent footer)
+NEXT = {"Home": ["Onboarding", "Learning Academy", "First Paper Plan"], "Onboarding": ["Method Wizard", "Learning Academy"], "Learning Academy": ["Practice", "Coding Lab", "First Paper Plan"],
+        "Practice": ["Learning Academy", "Virtual Lab"], "Coding Lab": ["Statistics Lab", "Learning Academy"], "Virtual Lab": ["Research Workspace", "Coding Lab"],
+        "Method Wizard": ["Learning Academy", "Statistics Lab"], "First Paper Plan": ["Research Workspace", "Learning Academy", "Knowledge Universe"],
+        "Research Workspace": ["Manuscript Studio", "Statistics Lab", "Virtual Lab"], "Manuscript Studio": ["Research Workspace", "Quality & Expert Review"],
+        "Statistics Lab": ["Research Workspace", "Coding Lab"], "Knowledge Universe": ["Network & Collaboration", "Learning Academy"], "Network & Collaboration": ["Knowledge Universe", "First Paper Plan"],
+        "Quality & Expert Review": ["Status & Limitations", "Learning Academy"], "Status & Limitations": ["Quality & Expert Review", "Home"]}
+st.divider()
+cols = st.columns(len(NEXT[page]) + 1); cols[0].caption("Related:")
+for c_, p_ in zip(cols[1:], NEXT[page]): c_.button(f"{ICONS[AREAS[p_]]} {p_}", key=f"foot_{page}_{p_}", on_click=goto, args=(p_,))

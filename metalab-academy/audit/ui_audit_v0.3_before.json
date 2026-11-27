@@ -1,0 +1,301 @@
+{
+ "pages": {
+  "desktop:Home": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    },
+    {
+     "id": "heading-order",
+     "impact": "moderate",
+     "help": "Heading levels should only increase by one",
+     "nodes": 1,
+     "example": "<h3 id=\"your-next-actions\" aria-labelledby=\":r2:\">"
+    }
+   ],
+   "passes": 43
+  },
+  "desktop:Onboarding": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    },
+    {
+     "id": "heading-order",
+     "impact": "moderate",
+     "help": "Heading levels should only increase by one",
+     "nodes": 1,
+     "example": "<h3 id=\"diagnostic-6-questions-ungraded-for-access-nothing-is-locked\" aria-labelledby=\":r2:\">"
+    }
+   ],
+   "passes": 42
+  },
+  "desktop:Learning Academy": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 49
+  },
+  "desktop:Practice": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    },
+    {
+     "id": "heading-order",
+     "impact": "moderate",
+     "help": "Heading levels should only increase by one",
+     "nodes": 1,
+     "example": "<h3 id=\"define-bias\" aria-labelledby=\":r92:\">"
+    }
+   ],
+   "passes": 43
+  },
+  "desktop:Coding Lab": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 43
+  },
+  "desktop:Virtual Lab": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 47
+  },
+  "desktop:Method Wizard": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    },
+    {
+     "id": "heading-order",
+     "impact": "moderate",
+     "help": "Heading levels should only increase by one",
+     "nodes": 1,
+     "example": "<h3 id=\"suggested-direction\" aria-labelledby=\":ref:\">"
+    }
+   ],
+   "passes": 44
+  },
+  "desktop:Research Workspace": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 47
+  },
+  "desktop:Manuscript Studio": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 45
+  },
+  "desktop:First Paper Plan": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 46
+  },
+  "desktop:Statistics Lab": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 48
+  },
+  "desktop:Knowledge Universe": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 3,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 49
+  },
+  "desktop:Network & Collaboration": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 48
+  },
+  "desktop:Quality & Expert Review": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 1,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 48
+  },
+  "desktop:Status & Limitations": {
+   "violations": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "example": "<p>Learn. Discover. Analyze. Collaborate. Publish.</p>"
+    }
+   ],
+   "passes": 46
+  },
+  "mobile:Home": {
+   "error": "could not open: Locator.click: Timeout 8000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"H"
+  },
+  "mobile:Learning Academy": {
+   "error": "could not open: Locator.click: Timeout 8000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"L"
+  },
+  "mobile:Research Workspace": {
+   "error": "could not open: Locator.click: Timeout 8000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"R"
+  }
+ },
+ "keyboard": {
+  "tab_presses": 40,
+  "distinct_focus_targets": 10,
+  "reached_body_only": false,
+  "sample": [
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Deploy",
+    "outline": "none 3px rgba(38, 39, 48, 0.2) 0px 0px "
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Main menu",
+    "outline": "none 3px rgba(38, 39, 48, 0.2) 0px 0px "
+   },
+   {
+    "tag": "MAIN",
+    "role": null,
+    "label": "\ud83e\uddea MetaLab Academy\n\nModules registered\n\n",
+    "outline": "none 3px none"
+   },
+   {
+    "tag": "A",
+    "role": null,
+    "label": "Link to heading",
+    "outline": "none 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Help for Modules registered",
+    "outline": "none 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Help for Lessons actually written",
+    "outline": "none 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "A",
+    "role": null,
+    "label": "Link to heading",
+    "outline": "none 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BODY",
+    "role": null,
+    "label": "Skip to main content\nkeyboard_arrow_righ",
+    "outline": "none 3px none"
+   },
+   {
+    "tag": "A",
+    "role": null,
+    "label": "Skip to main content",
+    "outline": "none 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "SUMMARY",
+    "role": null,
+    "label": "keyboard_arrow_right\n\n\ud83d\udd0e Search everythi",
+    "outline": "none 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "INPUT",
+    "role": null,
+    "label": "",
+    "outline": "auto 1px none"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Deploy",
+    "outline": "none 3px rgba(38, 39, 48, 0.2) 0px 0px "
+   }
+  ],
+  "focus_style_missing": []
+ }
+}

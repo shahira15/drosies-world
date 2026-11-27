@@ -33,7 +33,7 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | AI assistant | **requires_external_service** | No API configured; prompt-generation only is planned |  |
 | Forest plot | **tested** | Renders from computed results; not compared pixelwise with R |  |
 | Funnel, Baujat, RoB, network plots, exports | **planned** |  |  |
-| Local-only storage, parameterised SQL, no network calls | **implemented** | No auth (single local user); no security audit performed |  |
+| Security and privacy safeguards (CSV injection, escaping, size limits, no network calls, shareable backup, project deletion, pip-audit) | **tested** | tests/test_security_privacy.py; pip-audit clean 2026-11-27 | No pen-test; no encryption at rest; Coding Lab is not a sandbox |
 | Subgroup analysis and mixed-effects meta-regression (REML/DL/PM, z and knha) | **benchmarked** | Matches metafor on dat.raudenbush1985 and dat.bcg (single/multiple/categorical moderators) | Expert review pending |
 | R reference generation + automated comparison (Mac/CI-runnable) | **implemented** | validation/make_reference.R, run_validation.sh, .github/workflows/metalab-ci.yml (CI not yet executed on GitHub) |  |
 | Effect-size builder from verified extraction, stable effect IDs, SAP template, shared-control warnings | **tested** | Matches stats engine; skips (never imputes) incomplete experiments |  |
@@ -59,3 +59,5 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Local verification workflow: queue CSV export/import, human ledger with date/page title/match/cost/version, AI refused | **tested** | tests/test_verification.py (roundtrip, rejections, level logic) |  |
 | Opportunities directories (recurring events, funder portals, training directories, search links) | **implemented** | Directories only; no specific call/deadline/fee/eligibility asserted; no live monitoring |  |
 | Universal search across lessons, modules, formulas, glossary, resources, organisations, communities, opportunities, claims, calculators, methods, tutorials, scenarios, milestones, templates, appraisal tools | **tested** | Coverage test asserts every registered item is indexed |  |
+| Accessibility + keyboard audit (axe-core in Chromium; keyboard walk) | **tested** | 0 axe violations on 18 views after fixes; no screen-reader testing | Manual screen-reader/zoom/cognitive review |
+| Cohesive navigation: area icons, breadcrumbs, research-journey map with go-to buttons, related-links footer | **tested** | Visually inspected; every page renders in AppTest |  |

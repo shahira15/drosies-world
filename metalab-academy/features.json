@@ -176,9 +176,10 @@
   },
   {
    "id": "security.local",
-   "name": "Local-only storage, parameterised SQL, no network calls",
-   "status": "implemented",
-   "evidence": "No auth (single local user); no security audit performed"
+   "name": "Security and privacy safeguards (CSV injection, escaping, size limits, no network calls, shareable backup, project deletion, pip-audit)",
+   "status": "tested",
+   "evidence": "tests/test_security_privacy.py; pip-audit clean 2026-11-27",
+   "blocker": "No pen-test; no encryption at rest; Coding Lab is not a sandbox"
   },
   {
    "id": "stats.subgroup_regression",
@@ -334,6 +335,19 @@
    "name": "Universal search across lessons, modules, formulas, glossary, resources, organisations, communities, opportunities, claims, calculators, methods, tutorials, scenarios, milestones, templates, appraisal tools",
    "status": "tested",
    "evidence": "Coverage test asserts every registered item is indexed"
+  },
+  {
+   "id": "quality.accessibility_audit",
+   "name": "Accessibility + keyboard audit (axe-core in Chromium; keyboard walk)",
+   "status": "tested",
+   "evidence": "0 axe violations on 18 views after fixes; no screen-reader testing",
+   "blocker": "Manual screen-reader/zoom/cognitive review"
+  },
+  {
+   "id": "ui.cohesive_navigation",
+   "name": "Cohesive navigation: area icons, breadcrumbs, research-journey map with go-to buttons, related-links footer",
+   "status": "tested",
+   "evidence": "Visually inspected; every page renders in AppTest"
   }
  ]
 }
