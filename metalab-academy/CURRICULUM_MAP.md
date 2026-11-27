@@ -1,6 +1,6 @@
 # Curriculum map (generated)
 
-84 modules from the master specification + 4 proposed additions = 88 registered; **23 have a lesson**; 65 are outlines (title/level only, no lesson).
+84 modules from the master specification + 4 proposed additions = 88 registered; **38 have a lesson**; 50 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
@@ -31,8 +31,8 @@
 |---|---|---|---|
 | 9 | Bibliographic databases | Information retrieval | drafted |
 | 10 | Advanced search strategies | Information retrieval | drafted |
-| 11 | Supplementary searching | Information retrieval | outline |
-| 12 | Literature search reproducibility | Information retrieval | outline |
+| 11 | Supplementary searching | Information retrieval | drafted |
+| 12 | Literature search reproducibility | Information retrieval | drafted |
 | 13 | Reference management | References and study selection | drafted |
 | 14 | Deduplication | References and study selection | drafted |
 | 15 | Study screening | References and study selection | drafted |
@@ -59,18 +59,18 @@
 | 30 | Count, rate and survival outcomes | Effect sizes | outline |
 | 31 | Effect-size transformations | Effect sizes | drafted |
 | 32 | Principles of quantitative pooling | Core meta-analysis | drafted |
-| 33 | Common-effect models | Core meta-analysis | outline |
-| 34 | Random-effects models | Core meta-analysis | outline |
+| 33 | Common-effect models | Core meta-analysis | drafted |
+| 34 | Random-effects models | Core meta-analysis | drafted |
 | 35 | Heterogeneity | Core meta-analysis | drafted |
-| 36 | Subgroup analysis | Core meta-analysis | outline |
-| 37 | Meta-regression | Core meta-analysis | outline |
-| 50 | Publication bias and missing evidence | Bias, robustness, certainty | outline |
-| 51 | Sensitivity and influence analysis | Bias, robustness, certainty | outline |
-| 52 | Certainty of evidence | Bias, robustness, certainty | outline |
+| 36 | Subgroup analysis | Core meta-analysis | drafted |
+| 37 | Meta-regression | Core meta-analysis | drafted |
+| 50 | Publication bias and missing evidence | Bias, robustness, certainty | drafted |
+| 51 | Sensitivity and influence analysis | Bias, robustness, certainty | drafted |
+| 52 | Certainty of evidence | Bias, robustness, certainty | drafted |
 | 70 | Meta-analysis in R | Programming | outline |
 | 71 | Python for evidence synthesis | Programming | outline |
 | 73 | Scientific visualization | Visualization and communication | outline |
-| 74 | Interpretation and communication | Visualization and communication | outline |
+| 74 | Interpretation and communication | Visualization and communication | drafted |
 
 ## Level 4: Advanced & specialized methods
 
@@ -110,13 +110,13 @@
 
 | # | Module | Part | Status |
 |---|---|---|---|
-| 75 | Scientific writing | Manuscript and publication | outline |
-| 76 | Reporting guidelines | Manuscript and publication | outline |
-| 77 | Journal selection | Manuscript and publication | outline |
-| 78 | Submission and peer review | Manuscript and publication | outline |
+| 75 | Scientific writing | Manuscript and publication | drafted |
+| 76 | Reporting guidelines | Manuscript and publication | drafted |
+| 77 | Journal selection | Manuscript and publication | drafted |
+| 78 | Submission and peer review | Manuscript and publication | drafted |
 | 79 | Research dissemination and impact | Manuscript and publication | outline |
 | 80 | Research integrity | Ethics, AI, open science | outline |
 | 81 | Responsible AI-assisted evidence synthesis | Ethics, AI, open science | outline |
-| 82 | Open science and data governance | Ethics, AI, open science | outline |
+| 82 | Open science and data governance | Ethics, AI, open science | drafted |
 | 83 | Research collaboration and leadership | Ethics, AI, open science | outline |
 | 84 | Independent evidence synthesis mastery (capstone) | Ethics, AI, open science | outline |

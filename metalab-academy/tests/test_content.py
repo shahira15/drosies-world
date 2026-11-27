@@ -143,3 +143,31 @@ def test_batch1_numbers_match_code():
     assert S.se_from_p(0.5, 0.05) == pytest.approx(0.2551, abs=1e-4) and S.se_from_p(0.5, 0.05, df=18) == pytest.approx(0.2380, abs=1e-4)
     assert 1.9 * math.sqrt(8) == pytest.approx(5.374, abs=1e-3) and 1176 / 24 == 49 and 1.2 * math.sqrt(8) == pytest.approx(3.394, abs=1e-3)
     assert 0.22 * 900 == pytest.approx(198)
+
+
+def test_batch2_numbers_come_from_r_reference():
+    import json, math
+    R = json.loads((_Pth(__file__).parent.parent / "validation" / "reference" / "reference.json").read_text())
+    t33, t34, t36, t37, t50 = (LESSONS[n]["worked_example"] for n in (33, 34, 36, 37, 50))
+    mh = R["mh"]["bcg"]["OR"]; pe = R["peto"]["bcg"]["res"]; p = R["pool"]["bcg_RR"]
+    assert f"{p['common']['est']:.3f}".replace("-", "−") in t33 and f"{p['REML']['est']:.4f}".replace("-", "−") in t33
+    assert f"{math.exp(mh['est']):.3f}" in t33 and f"{math.exp(pe['est']):.3f}" in t33
+    for m in ("REML", "PM", "DL"): assert f"{p[m]['tau2']:.4f}" in t34
+    assert f"{p['REML']['est']:.4f}".replace("-", "−") in t34 and f"{p['REML_knha']['ci'][0]:.3f}".replace("-", "−") in t34 and f"{p['REML_knha']['ci'][1]:.3f}".replace("-", "−") in t34
+    sg = R["subgroup"]["bcg_alloc"]; q = sg["mods_REML"]
+    assert f"{q['QM']:.3f}" in t36 and f"{q['QMp']:.3f}" in t36
+    for g in ("random", "alternate", "systematic"): assert f"{sg['by_group'][g]['est']:.3f}".replace("-", "−") in t36
+    rg = R["regression"]["bcg_ablat"]["REML"]
+    assert f"{rg['beta'][1]:.4f}".replace("-", "−") in t37 and f"{rg['QM']:.2f}" in t37 and f"{rg['tau2']:.4f}" in t37 and f"{rg['R2']:.1f}" in t37 and f"{rg['QE']:.2f}" in t37
+    eg = R["bias"]["bcg_RR"]; assert f"{eg['egger']['z']:.2f}".replace("-", "−") in t50 and f"{eg['egger']['p']:.3f}" in t50 and f"{eg['begg']['p']:.3f}" in t50
+    # BCG pooled RR prediction interval quoted in lesson 34
+    from metalab import stats as S
+    pi = np.exp(S.meta_analyze(p["yi"], p["vi"]).pred_int); assert f"{pi[0]:.2f}" in t34 and f"{pi[1]:.2f}" in t34
+    ans = lambda n, i: LESSONS[n]["quiz"][i]["opts"][LESSONS[n]["quiz"][i]["ans"]]
+    assert ans(34, 3) == "0.313" and ans(50, 2) == "0.189" and ans(37, 1) == "-0.029"
+    assert ans(36, 1).startswith("1.77")
+
+
+def test_lesson12_uses_real_logged_count():
+    from metalab import topic_scan as T
+    assert dict((s[0], s[4]) for s in T.SEARCHES)["S5"] == 869 and "869" in LESSONS[12]["worked_example"]
