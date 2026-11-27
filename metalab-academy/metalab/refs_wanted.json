@@ -390,5 +390,107 @@
   "doi": "10.1002/9780470743386",
   "author": "Borenstein",
   "year": 2009
+ },
+ {
+  "key": "hurlbert1984",
+  "doi": "10.2307/1942661",
+  "author": "Hurlbert",
+  "year": 1984
+ },
+ {
+  "key": "lazic2010",
+  "doi": "10.1186/1471-2202-11-5",
+  "author": "Lazic",
+  "year": 2010
+ },
+ {
+  "key": "lazic2018",
+  "doi": "10.1371/journal.pbio.2005282",
+  "author": "Lazic",
+  "year": 2018
+ },
+ {
+  "key": "guyot2012",
+  "doi": "10.1186/1471-2288-12-9",
+  "author": "Guyot",
+  "year": 2012
+ },
+ {
+  "key": "parmar1998",
+  "doi": "10.1002/(sici)1097-0258(19981230)17:24<2815::aid-sim110>3.0.co;2-8",
+  "author": "Parmar",
+  "year": 1998
+ },
+ {
+  "key": "tierney2007",
+  "doi": "10.1186/1745-6215-8-16",
+  "author": "Tierney",
+  "year": 2007
+ },
+ {
+  "key": "beery2011",
+  "doi": "10.1016/j.neubiorev.2010.07.002",
+  "author": "Beery",
+  "year": 2011
+ },
+ {
+  "key": "garciasifuentes2021",
+  "doi": "10.7554/elife.70817",
+  "author": "Garcia-Sifuentes",
+  "year": 2021
+ },
+ {
+  "key": "hedges2010rve",
+  "doi": "10.1002/jrsm.5",
+  "author": "Hedges",
+  "year": 2010
+ },
+ {
+  "key": "vesterinen2014",
+  "doi": "10.1016/j.jneumeth.2013.09.010",
+  "author": "Vesterinen",
+  "year": 2014
+ },
+ {
+  "key": "hedges2007cluster",
+  "doi": "10.3102/1076998606298043",
+  "author": "Hedges",
+  "year": 2007
+ },
+ {
+  "key": "ioannidis2005",
+  "doi": "10.1371/journal.pmed.0020124",
+  "author": "Ioannidis",
+  "year": 2005
+ },
+ {
+  "key": "booth2012",
+  "doi": "10.1186/2046-4053-1-2",
+  "author": "Booth",
+  "year": 2012
+ },
+ {
+  "key": "pieper2022",
+  "doi": "10.1186/s13643-021-01877-1",
+  "author": "Pieper",
+  "year": 2022
+ },
+ {
+  "key": "arksey2005",
+  "doi": "10.1080/1364557032000119616",
+  "author": "Arksey",
+  "year": 2005
+ },
+ {
+  "key": "levac2010",
+  "doi": "10.1186/1748-5908-5-69",
+  "author": "Levac",
+  "year": 2010
+ },
+ {
+  "key": "peters2015",
+  "doi": "10.1097/xeb.0000000000000050",
+  "author": "Peters",
+  "year": 2015
  }
 ]

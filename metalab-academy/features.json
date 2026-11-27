@@ -31,7 +31,7 @@
    "id": "academy.lessons",
    "name": "Full lessons",
    "status": "requires_expert_review",
-   "evidence": "38 of 88 registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; 50 claims tracked (0 human-reviewed, 10 unverified)",
+   "evidence": "52 of 88 registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; 58 claims tracked (0 human-reviewed, 10 unverified)",
    "blocker": "Qualified human review; 76 modules still outline-only"
   },
   {

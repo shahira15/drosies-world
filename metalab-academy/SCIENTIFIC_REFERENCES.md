@@ -82,3 +82,20 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `assink2016`: Assink et al. Fitting three-level meta-analytic models in R: A step-by-step tutorial. The Quantitative Methods for Psychology 2016;12, 154-174. DOI: 10.20982/tqmp.12.3.p154 · PMID None
 - `cheung2014`: Cheung Modeling dependent effect sizes with three-level meta-analyses: A structural equation modeling approach.. Psychological Methods 2014;19, 211-229. DOI: 10.1037/a0032968 · PMID None
 - `borenstein2009book`: Borenstein et al. Introduction to Meta‐Analysis.  2009. DOI: 10.1002/9780470743386 · PMID None
+- `hurlbert1984`: Hurlbert Pseudoreplication and the Design of Ecological Field Experiments. Ecological Monographs 1984;54, 187-211. DOI: 10.2307/1942661 · PMID None
+- `lazic2010`: Lazic The problem of pseudoreplication in neuroscientific studies: is it affecting your analysis?. BMC Neuroscience 2010;11. DOI: 10.1186/1471-2202-11-5 · PMID None
+- `lazic2018`: Lazic et al. What exactly is ‘N’ in cell culture and animal experiments?. PLOS Biology 2018;16, e2005282. DOI: 10.1371/journal.pbio.2005282 · PMID None
+- `guyot2012`: Guyot et al. Enhanced secondary analysis of survival data: reconstructing the data from published Kaplan-Meier survival curves. BMC Medical Research Methodology 2012;12. DOI: 10.1186/1471-2288-12-9 · PMID None
+- `parmar1998`: Parmar et al. Extracting summary statistics to perform meta-analyses of the published literature for survival endpoints. Statistics in Medicine 1998;17, 2815-2834. DOI: 10.1002/(sici)1097-0258(19981230)17:24<2815::aid-sim110>3.0.co;2-8 · PMID None
+- `tierney2007`: Tierney et al. Practical methods for incorporating summary time-to-event data into meta-analysis. Trials 2007;8. DOI: 10.1186/1745-6215-8-16 · PMID None
+- `beery2011`: Beery et al. Sex bias in neuroscience and biomedical research. Neuroscience &amp; Biobehavioral Reviews 2011;35, 565-572. DOI: 10.1016/j.neubiorev.2010.07.002 · PMID None
+- `garciasifuentes2021`: Garcia-Sifuentes et al. Reporting and misreporting of sex differences in the biological sciences. eLife 2021;10. DOI: 10.7554/elife.70817 · PMID None
+- `hedges2010rve`: Hedges et al. Robust variance estimation in meta‐regression with dependent effect size estimates. Research Synthesis Methods 2010;1, 39-65. DOI: 10.1002/jrsm.5 · PMID None
+- `vesterinen2014`: Vesterinen et al. Meta-analysis of data from animal studies: A practical guide. Journal of Neuroscience Methods 2014;221, 92-102. DOI: 10.1016/j.jneumeth.2013.09.010 · PMID None
+- `hedges2007cluster`: Hedges Effect Sizes in Cluster-Randomized Designs. Journal of Educational and Behavioral Statistics 2007;32, 341-370. DOI: 10.3102/1076998606298043 · PMID None
+- `ioannidis2005`: Ioannidis Why Most Published Research Findings Are False. PLoS Medicine 2005;2, e124. DOI: 10.1371/journal.pmed.0020124 · PMID None
+- `booth2012`: Booth et al. The nuts and bolts of PROSPERO: an international prospective register of systematic reviews. Systematic Reviews 2012;1. DOI: 10.1186/2046-4053-1-2 · PMID None
+- `pieper2022`: Pieper et al. Where to prospectively register a systematic review. Systematic Reviews 2022;11. DOI: 10.1186/s13643-021-01877-1 · PMID None
+- `arksey2005`: Arksey et al. Scoping studies: towards a methodological framework. International Journal of Social Research Methodology 2005;8, 19-32. DOI: 10.1080/1364557032000119616 · PMID None
+- `levac2010`: Levac et al. Scoping studies: advancing the methodology. Implementation Science 2010;5. DOI: 10.1186/1748-5908-5-69 · PMID None
+- `peters2015`: Peters et al. Guidance for conducting systematic scoping reviews. International Journal of Evidence-Based Healthcare 2015;13, 141-146. DOI: 10.1097/xeb.0000000000000050 · PMID None

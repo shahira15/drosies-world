@@ -1,14 +1,14 @@
 # Curriculum map (generated)
 
-84 modules from the master specification + 4 proposed additions = 88 registered; **38 have a lesson**; 50 are outlines (title/level only, no lesson).
+84 modules from the master specification + 4 proposed additions = 88 registered; **52 have a lesson**; 36 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
 
 | # | Module | Part | Status |
 |---|---|---|---|
-| 1 | Scientific reasoning | Foundations of science and evidence | outline |
-| 2 | Research study designs | Foundations of science and evidence | outline |
+| 1 | Scientific reasoning | Foundations of science and evidence | drafted |
+| 2 | Research study designs | Foundations of science and evidence | drafted |
 | 24 | Mathematical foundations | Statistics from first principles | outline |
 | 69 | R programming from scratch | Programming | outline |
 
@@ -21,7 +21,7 @@
 | 5 | Novelty and research gap identification | Research question development | drafted |
 | 6 | Feasibility and project planning | Research question development | drafted |
 | 7 | Protocol development | Protocols and registration | drafted |
-| 8 | Registration and open protocols | Protocols and registration | outline |
+| 8 | Registration and open protocols | Protocols and registration | drafted |
 | 25 | Descriptive and inferential statistics | Statistics from first principles | outline |
 | 88 | Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage | Research question development | outline |
 
@@ -44,9 +44,9 @@
 | 21 | Bias fundamentals | Risk of bias and appraisal | drafted |
 | 22 | Critical appraisal instruments | Risk of bias and appraisal | drafted |
 | 23 | Risk-of-bias visualization | Risk of bias and appraisal | drafted |
-| 53 | Synthesis without meta-analysis | Non-quantitative synthesis | outline |
-| 55 | Scoping reviews and evidence maps | Non-quantitative synthesis | outline |
-| 85 | Units of analysis, pseudoreplication and hierarchical data in laboratory biology | Data extraction and management | outline |
+| 53 | Synthesis without meta-analysis | Non-quantitative synthesis | drafted |
+| 55 | Scoping reviews and evidence maps | Non-quantitative synthesis | drafted |
+| 85 | Units of analysis, pseudoreplication and hierarchical data in laboratory biology | Data extraction and management | drafted |
 
 ## Level 3: Quantitative meta-analysis
 
@@ -76,7 +76,7 @@
 
 | # | Module | Part | Status |
 |---|---|---|---|
-| 38 | Dependent effect sizes | Advanced meta-analysis | outline |
+| 38 | Dependent effect sizes | Advanced meta-analysis | drafted |
 | 39 | Multilevel and multivariate meta-analysis | Advanced meta-analysis | outline |
 | 40 | Robust variance estimation | Advanced meta-analysis | outline |
 | 41 | Bayesian meta-analysis | Advanced meta-analysis | outline |
@@ -92,19 +92,19 @@
 | 56 | Umbrella, rapid, living and realist reviews | Non-quantitative synthesis | outline |
 | 57 | Clinical medicine and healthcare | Discipline academies | outline |
 | 58 | Public health and epidemiology | Discipline academies | outline |
-| 59 | Preclinical and animal research | Discipline academies | outline |
+| 59 | Preclinical and animal research | Discipline academies | drafted |
 | 60 | Molecular biology, genetics and biotechnology | Discipline academies | outline |
-| 61 | Plant biology and agriculture | Discipline academies | outline |
-| 62 | Microbiology and infectious disease | Discipline academies | outline |
-| 63 | Ecology, evolution and environmental science | Discipline academies | outline |
+| 61 | Plant biology and agriculture | Discipline academies | drafted |
+| 62 | Microbiology and infectious disease | Discipline academies | drafted |
+| 63 | Ecology, evolution and environmental science | Discipline academies | drafted |
 | 64 | Psychology and behavioral science | Discipline academies | outline |
-| 65 | Education and social science | Discipline academies | outline |
+| 65 | Education and social science | Discipline academies | drafted |
 | 66 | Nutrition, food science and exercise | Discipline academies | outline |
 | 67 | Economics, business and policy | Discipline academies | outline |
 | 68 | Engineering and computer science | Discipline academies | outline |
 | 72 | Advanced computational reproducibility | Programming | outline |
-| 86 | Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction | Effect sizes | outline |
-| 87 | Sex as a biological variable in evidence synthesis | Effect sizes | outline |
+| 86 | Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction | Effect sizes | drafted |
+| 87 | Sex as a biological variable in evidence synthesis | Effect sizes | drafted |
 
 ## Level 5: Independent researcher & publication mastery
 
