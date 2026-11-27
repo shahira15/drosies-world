@@ -1,6 +1,6 @@
 # Known limitations register (v0.2, 2026-11-26)
 **Curriculum**
-1. 12 of 88 registered modules have lessons (AI-drafted, NOT expert-reviewed). 76 are outlines. Core first-researcher pathway: 12 of its 13 modules have lessons (Module 15, screening, does not yet).
+1. See CURRICULUM_MAP.md for exact counts: roughly 52 of 88 registered modules have lessons (AI-drafted, NOT expert-reviewed); the rest are outlines. Core first-researcher pathway: 12 of its 13 modules have lessons (Module 15, screening, does not yet).
 2. Curriculum coverage audit is against the chapter structure of handbooks *as recalled*, not re-read.
 3. Lesson claims: 30 tracked; 6 unverified (RoB domain lists, evidence-based-research claim); most others verified at abstract/title level only. Cochrane Handbook, JBI Manual, GRADE guidance not re-read.
 4. Coding Lab runs code locally in a subprocess (not a security sandbox; not in-browser); R tutorials need Rscript + metafor. No video content.

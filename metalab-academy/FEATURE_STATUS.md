@@ -48,7 +48,7 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Universal search across lessons, formulas, glossary, resources, claims, calculators, workflows | **tested** | Simple token scoring |  |
 | Virtual Research Lab: 6 fully simulated scenarios (preclinical, clinical, plant, microbiology, ecology, education) with planted traps, simulated 2nd reviewer, graders | **tested** | Perfect solver 100% and empty work low for every scenario; all material FICTIONAL, separate teaching projects |  |
 | Downloadable lesson notes + formula cheat sheet | **tested** |  |  |
-| Interactive coding tutorials (Python and R) with hidden checks in an isolated subprocess | **tested** | 12 tutorials; reference solutions executed in tests; NOT a security sandbox (runs with user privileges) | Not in-browser; R needs local Rscript+metafor |
+| Interactive coding tutorials (Python and R) with hidden checks in an isolated subprocess | **tested** | 11 tutorials; reference solutions executed in tests; NOT a security sandbox (runs with user privileges) | Not in-browser; R needs local Rscript+metafor |
 | Bookmarks and weekly goal | **implemented** |  |  |
 | Resource recommender per module (tag-based) | **tested** | Not personalised; tags assigned by author |  |
 | Local collaborator manager (manual contacts, interactions, follow-ups) + CRediT tracking | **tested** | Contacts local only; details never copied to audit log; CRediT requires a described contribution |  |

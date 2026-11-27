@@ -271,7 +271,7 @@
    "id": "academy.interactive_coding",
    "name": "Interactive coding tutorials (Python and R) with hidden checks in an isolated subprocess",
    "status": "tested",
-   "evidence": "12 tutorials; reference solutions executed in tests; NOT a security sandbox (runs with user privileges)",
+   "evidence": "11 tutorials; reference solutions executed in tests; NOT a security sandbox (runs with user privileges)",
    "blocker": "Not in-browser; R needs local Rscript+metafor"
   },
   {
