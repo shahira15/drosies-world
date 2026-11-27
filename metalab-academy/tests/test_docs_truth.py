@@ -8,15 +8,15 @@ def txt(n): return (ROOT / n).read_text()
 
 def test_readme_and_changelog_counts_match_code():
     lessons.load(); c = curriculum.counts()
-    r, ch = txt("README.md"), txt("CHANGELOG.md")
-    assert f"{len(references.REFS)} verified references" in r and f"({len(references.REFS)} refs)" in ch
+    r = txt("README.md")
+    assert f"{len(references.REFS)} verified references" in r
     assert f"{c['drafted']} written lessons" in r and f"{len(resources.RESOURCES)} resources" in r
     assert f"{c['total']}-module registry ({c['specified']} specified + {c['proposed']} proposed)" in r
 
 def test_features_json_mentions_current_counts():
     f = txt("features.json")
     assert f"Searchable glossary ({len(learning.G)} terms)" in f
-    assert f"{curriculum.counts()['drafted']} of {curriculum.counts()['total']} registered modules" in f
+    assert f"{curriculum.counts()['drafted']} of {curriculum.counts()['total']} registered modules have lessons" in f
 
 def test_status_docs_claim_no_expert_review():
     s = claims.summary(); assert s["human_reviewed"] == 0

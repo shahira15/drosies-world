@@ -2,7 +2,7 @@
 BIBLIOGRAPHIC verification only: confirms the DOI exists and that first-author family name and year match
 what was intended. It does NOT confirm that the paper supports any claim (see claims registry).
 Output: metalab/refs_verified.json (merged, idempotent). Failures are printed and NOT written."""
-import json, sys, time, urllib.error, urllib.parse, urllib.request, datetime
+import html, re, json, sys, time, urllib.error, urllib.parse, urllib.request, datetime
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 wanted = json.loads((ROOT / "metalab" / "refs_wanted.json").read_text())
@@ -27,7 +27,7 @@ for w in wanted:
     if (w["author"] and w["author"].lower() not in fa.lower()) or yr != w["year"]:
         bad.append((w["key"], f"mismatch: expected {w['author']} {w['year']}, registry says {fa} {yr} | {m['title'][0][:80]}")); continue
     authors = [a.get("family", "") for a in m.get("author", [])]
-    have[w["key"]] = dict(doi=m["DOI"], title=" ".join(m["title"][0].split()), first_author=fa, n_authors=len(authors),
+    have[w["key"]] = dict(doi=m["DOI"], title=re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", html.unescape(re.sub(r"&lt;/?SUBTITLE&gt;", ": ", m["title"][0])))), first_author=fa, n_authors=len(authors),
         year=w.get("cite_year", yr), year_registry=yr, note=w.get("note", ""), journal=(m.get("container-title") or [""])[0], volume=m.get("volume", ""), pages=m.get("page", ""), pmid=w.get("pmid"),
         verification="bibliographic", verified_via="Crossref DOI registry", verified_on=today)
     print("OK ", w["key"], yr, fa, "|", have[w["key"]]["title"][:90])

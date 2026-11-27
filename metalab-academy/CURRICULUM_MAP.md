@@ -1,6 +1,6 @@
 # Curriculum map (generated)
 
-84 modules from the master specification + 4 proposed additions = 88 registered; **12 have a lesson**; 76 are outlines (title/level only, no lesson).
+84 modules from the master specification + 4 proposed additions = 88 registered; **23 have a lesson**; 65 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
@@ -19,7 +19,7 @@
 | 3 | Introduction to evidence synthesis | Foundations of science and evidence | drafted |
 | 4 | Formulating research questions | Research question development | drafted |
 | 5 | Novelty and research gap identification | Research question development | drafted |
-| 6 | Feasibility and project planning | Research question development | outline |
+| 6 | Feasibility and project planning | Research question development | drafted |
 | 7 | Protocol development | Protocols and registration | drafted |
 | 8 | Registration and open protocols | Protocols and registration | outline |
 | 25 | Descriptive and inferential statistics | Statistics from first principles | outline |
@@ -29,21 +29,21 @@
 
 | # | Module | Part | Status |
 |---|---|---|---|
-| 9 | Bibliographic databases | Information retrieval | outline |
+| 9 | Bibliographic databases | Information retrieval | drafted |
 | 10 | Advanced search strategies | Information retrieval | drafted |
 | 11 | Supplementary searching | Information retrieval | outline |
 | 12 | Literature search reproducibility | Information retrieval | outline |
-| 13 | Reference management | References and study selection | outline |
-| 14 | Deduplication | References and study selection | outline |
-| 15 | Study screening | References and study selection | outline |
-| 16 | PRISMA flow diagrams | References and study selection | outline |
-| 17 | Extraction framework | Data extraction and management | outline |
+| 13 | Reference management | References and study selection | drafted |
+| 14 | Deduplication | References and study selection | drafted |
+| 15 | Study screening | References and study selection | drafted |
+| 16 | PRISMA flow diagrams | References and study selection | drafted |
+| 17 | Extraction framework | Data extraction and management | drafted |
 | 18 | Quantitative data extraction | Data extraction and management | drafted |
-| 19 | Graph digitization and unavailable data | Data extraction and management | outline |
+| 19 | Graph digitization and unavailable data | Data extraction and management | drafted |
 | 20 | Data quality and provenance | Data extraction and management | drafted |
 | 21 | Bias fundamentals | Risk of bias and appraisal | drafted |
 | 22 | Critical appraisal instruments | Risk of bias and appraisal | drafted |
-| 23 | Risk-of-bias visualization | Risk of bias and appraisal | outline |
+| 23 | Risk-of-bias visualization | Risk of bias and appraisal | drafted |
 | 53 | Synthesis without meta-analysis | Non-quantitative synthesis | outline |
 | 55 | Scoping reviews and evidence maps | Non-quantitative synthesis | outline |
 | 85 | Units of analysis, pseudoreplication and hierarchical data in laboratory biology | Data extraction and management | outline |
@@ -54,10 +54,10 @@
 |---|---|---|---|
 | 26 | Statistical estimation and uncertainty | Statistics from first principles | outline |
 | 27 | Continuous outcome effect sizes | Effect sizes | drafted |
-| 28 | Binary and categorical outcomes | Effect sizes | outline |
+| 28 | Binary and categorical outcomes | Effect sizes | drafted |
 | 29 | Correlation and regression effects | Effect sizes | outline |
 | 30 | Count, rate and survival outcomes | Effect sizes | outline |
-| 31 | Effect-size transformations | Effect sizes | outline |
+| 31 | Effect-size transformations | Effect sizes | drafted |
 | 32 | Principles of quantitative pooling | Core meta-analysis | drafted |
 | 33 | Common-effect models | Core meta-analysis | outline |
 | 34 | Random-effects models | Core meta-analysis | outline |

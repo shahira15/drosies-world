@@ -124,6 +124,15 @@ def se_from_ci(lower, upper, n=None, level=0.95):
     return (upper - lower) / (2 * crit)
 
 
+def se_from_p(estimate, p, df=None):
+    """SE from an estimate and its EXACT two-sided p-value: SE = |estimate| / z (or t with df). Invalid for inequalities ('p<0.05'), rounded
+    p-values near 0/1, one-sided tests, or tests that are not a Wald/t test of that estimate. Treat results as estimated (label them)."""
+    if not 0 < p < 1: raise ValueError("p must be strictly between 0 and 1 (an exact two-sided p-value).")
+    if estimate == 0: raise ValueError("SE cannot be recovered when the estimate is 0.")
+    q = stats.t.isf(p / 2, df) if df else stats.norm.isf(p / 2)
+    return abs(estimate) / q
+
+
 def combine_groups(n1, m1, sd1, n2, m2, sd2):
     """Combine two groups into one (Cochrane Handbook Table 6.5.a)."""
     _pos(n1, n2)

@@ -177,3 +177,11 @@ def test_smd_variance_types_documented_difference():
     assert gL == gB and vL == pytest.approx(1 / 2 + 1 / 2 + gL**2 / 8) and vB != pytest.approx(vL, rel=1e-3)
     with pytest.raises(ValueError):
         S.smd(5, 1, 20, 4, 1, 20, vtype="x")
+
+
+def test_se_from_p():
+    assert S.se_from_p(0.5, 0.05) == pytest.approx(0.5 / 1.959964, rel=1e-6)
+    assert S.se_from_p(0.5, 0.05, df=9) == pytest.approx(0.5 / 2.262157, rel=1e-6)
+    for bad in (0.0, 1.0, -0.1):
+        with pytest.raises(ValueError): S.se_from_p(0.5, bad)
+    with pytest.raises(ValueError): S.se_from_p(0, 0.05)

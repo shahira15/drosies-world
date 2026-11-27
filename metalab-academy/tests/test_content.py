@@ -1,12 +1,9 @@
 import importlib, numpy as np, pytest
 from metalab import curriculum, references, resources, stats as S
 
-import pkgutil
 from pathlib import Path as _Pth
-LESSONS = {}
-for _m in pkgutil.iter_modules([str(_Pth(__file__).parent.parent / "content")]):
-    if _m.name.startswith("lesson_"):
-        _L = importlib.import_module(f"content.{_m.name}").LESSON; LESSONS[_L["id"]] = _L
+from metalab import lessons as _lessons
+LESSONS = dict(_lessons.load())
 REQUIRED = ["objectives","prerequisites","why","plain","intermediate","advanced","assumptions","worked_example",
             "examples","mistakes","misconceptions","controversies","decision_tree","exercises","integrity",
             "further","application","checklist","quiz","time_min","version","last_verified","status"]
@@ -132,3 +129,17 @@ def test_lesson_r_code_runs(n):
 def test_lesson_python_code_runs(n):
     code = LESSONS[n]["coding"]["python"]
     exec(compile(code, f"lesson{n}", "exec"), {})
+
+
+def test_batch1_numbers_match_code():
+    import math
+    from metalab import stats as S, workflow as W
+    assert S.log_risk_ratio(15, 100, 25, 100) == pytest.approx((math.log(0.6), 1/15 - 1/100 + 1/25 - 1/100))
+    y, v = S.log_odds_ratio(15, 100, 25, 100); assert math.exp(y) == pytest.approx(0.5294, abs=1e-4) and v == pytest.approx(0.1318, abs=1e-4)
+    assert S.risk_difference(15, 100, 25, 100)[0] == pytest.approx(-0.10) and 1 / 0.10 == pytest.approx(10)
+    assert S.log_odds_ratio(0, 20, 3, 20, cc=0.5)[0] == pytest.approx(-2.104, abs=1e-3)
+    r1 = ["y"] * 25 + ["n"] * 25; r2 = ["y"] * 20 + ["n"] * 5 + ["y"] * 10 + ["n"] * 15
+    assert W.cohens_kappa(["y"]*20+["y"]*5+["n"]*10+["n"]*15, ["y"]*20+["n"]*5+["y"]*10+["n"]*15)["kappa"] == pytest.approx(0.4)
+    assert S.se_from_p(0.5, 0.05) == pytest.approx(0.2551, abs=1e-4) and S.se_from_p(0.5, 0.05, df=18) == pytest.approx(0.2380, abs=1e-4)
+    assert 1.9 * math.sqrt(8) == pytest.approx(5.374, abs=1e-3) and 1176 / 24 == 49 and 1.2 * math.sqrt(8) == pytest.approx(3.394, abs=1e-3)
+    assert 0.22 * 900 == pytest.approx(198)

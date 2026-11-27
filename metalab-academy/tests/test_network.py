@@ -36,7 +36,7 @@ def test_resource_registry_honesty_and_filters():
 
 def test_recommender_links_modules_to_resources_and_verified_refs():
     r = resources.recommend(32); assert r["resources"] and any(x["key"] == "borenstein2010" for x in r["references"])
-    assert resources.recommend(19)["resources"] and resources.recommend(19)["references"] == []      # outline module: resources only, no invented refs
+    assert resources.recommend(41)["references"] == []; assert resources.recommend(19)["references"]      # outline module: resources only, no invented refs
     lv = resources.verification_levels(resources.RESOURCES[0]); assert lv["full_text"] == "not examined"
 
 def test_no_fake_community_content():

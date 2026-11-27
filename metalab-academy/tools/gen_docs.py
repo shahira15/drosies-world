@@ -22,3 +22,20 @@ r = [f"# Scientific references (generated)\n\nVerified against {references.SOURC
 for k, v in references.REFS.items():
     r.append(f"- `{k}`: {v['cite']} DOI: {v['doi'] or 'none recorded'} · PMID {v['pmid']}")
 (ROOT / "SCIENTIFIC_REFERENCES.md").write_text("\n".join(r) + "\n")
+
+# ---- keep human-facing counts in README / features.json truthful (tests/test_docs_truth.py verifies)
+import re, json
+from metalab import resources, learning, claims
+c = curriculum.counts()
+rd = (ROOT / "README.md").read_text()
+rd = re.sub(r"\d+ verified references", f"{len(references.REFS)} verified references", rd)
+rd = re.sub(r"\*\*\d+ written lessons\*\*", f"**{c['drafted']} written lessons**", rd)
+rd = re.sub(r"\d+ resources \(links unchecked\)", f"{len(resources.RESOURCES)} resources (links unchecked)", rd)
+rd = re.sub(r"\d+-module registry \(\d+ specified \+ \d+ proposed\)", f"{c['total']}-module registry ({c['specified']} specified + {c['proposed']} proposed)", rd)
+(ROOT / "README.md").write_text(rd)
+fj = json.loads((ROOT / "features.json").read_text())
+for x in fj["features"]:
+    if x["id"] == "academy.glossary": x["name"] = f"Searchable glossary ({len(learning.G)} terms) linked to modules"
+    if x["id"] == "academy.lessons":
+        x["evidence"] = f"{c['drafted']} of {c['total']} registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; {claims.summary()['total']} claims tracked ({claims.summary()['human_reviewed']} human-reviewed, {claims.summary()['unverified']} unverified)"
+(ROOT / "features.json").write_text(json.dumps(fj, indent=1))

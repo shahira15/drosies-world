@@ -35,7 +35,7 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `sterne2016robinsi`: Sterne et al. ROBINS-I: a tool for assessing risk of bias in non-randomised studies of interventions. BMJ 2016;i4919. DOI: 10.1136/bmj.i4919 · PMID 27733354
 - `mchugh2012`: McHugh Interrater reliability: the kappa statistic. Biochemia Medica 2012;276-282. DOI: 10.11613/bm.2012.031 · PMID 23092060
 - `sterne2001`: Sterne et al. Investigating and dealing with publication and other biases in meta-analysis. BMJ 2001;323, 101-105. DOI: 10.1136/bmj.323.7304.101 · PMID 11451790
-- `viechtbauer2010`: Viechtbauer Conducting Meta-Analyses in <i>R</i> with the <b>metafor</b> Package. Journal of Statistical Software 2010;36. DOI: 10.18637/jss.v036.i03 · PMID None
+- `viechtbauer2010`: Viechtbauer Conducting Meta-Analyses in R with the metafor Package. Journal of Statistical Software 2010;36. DOI: 10.18637/jss.v036.i03 · PMID None
 - `viechtbauer2005`: Viechtbauer Bias and Efficiency of Meta-Analytic Variance Estimators in the Random-Effects Model. Journal of Educational and Behavioral Statistics 2005;30, 261-293. DOI: 10.3102/10769986030003261 · PMID None
 - `hedges1981`: Hedges Distribution Theory for Glass's Estimator of Effect size and Related Estimators. Journal of Educational Statistics 1981;6, 107-128. DOI: 10.3102/10769986006002107 · PMID None
 - `hedges1999`: Hedges et al. THE META-ANALYSIS OF RESPONSE RATIOS IN EXPERIMENTAL ECOLOGY. Ecology 1999;80, 1150-1156. DOI: 10.1890/0012-9658(1999)080[1150:tmaorr]2.0.co;2 · PMID None
@@ -54,3 +54,31 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `landis1977`: Landis et al. The Measurement of Observer Agreement for Categorical Data. Biometrics 1977;33, 159. DOI: 10.2307/2529310 · PMID None
 - `higgins2011rob`: Higgins et al. The Cochrane Collaboration's tool for assessing risk of bias in randomised trials. BMJ 2011;343, d5928-d5928. DOI: 10.1136/bmj.d5928 · PMID None
 - `haddaway2018roses`: Haddaway et al. ROSES RepOrting standards for Systematic Evidence Syntheses: pro forma, flow-diagram and descriptive summary of the plan and conduct of environmental systematic reviews and systematic maps. Environmental Evidence 2018;7. DOI: 10.1186/s13750-018-0121-7 · PMID None
+- `haddaway2018time`: Haddaway et al. Predicting the time needed for environmental systematic reviews and systematic maps. Conservation Biology 2018;33, 434-443. DOI: 10.1111/cobi.13231 · PMID None
+- `bramer2017`: Bramer et al. Optimal database combinations for literature searches in systematic reviews: a prospective exploratory study. Systematic Reviews 2017;6. DOI: 10.1186/s13643-017-0644-y · PMID None
+- `gusenbauer2020`: Gusenbauer et al. Which academic search systems are suitable for systematic reviews or meta‐analyses? Evaluating retrieval qualities of Google Scholar, PubMed, and 26 other resources. Research Synthesis Methods 2020;11, 181-217. DOI: 10.1002/jrsm.1378 · PMID None
+- `bramer2016dedup`: Bramer et al. De-duplication of database search results for systematic reviews in EndNote. Journal of the Medical Library Association 2016;104. DOI: 10.5195/jmla.2016.24 · PMID None
+- `drevon2016`: Drevon et al. Intercoder Reliability and Validity of WebPlotDigitizer in Extracting Graphed Data. Behavior Modification 2016;41, 323-339. DOI: 10.1177/0145445516673998 · PMID None
+- `mcguinness2020`: McGuinness et al. Risk‐of‐bias VISualization (robvis): An R package and Shiny web app for visualizing risk‐of‐bias assessments. Research Synthesis Methods 2020;12, 55-61. DOI: 10.1002/jrsm.1411 · PMID None
+- `sweeting2004`: J. Sweeting et al. What to add to nothing? Use and avoidance of continuity corrections in meta‐analysis of sparse data. Statistics in Medicine 2004;23, 1351-1375. DOI: 10.1002/sim.1761 · PMID None
+- `bradburn2007`: Bradburn et al. Much ado about nothing: a comparison of the performance of meta‐analytical methods with rare events. Statistics in Medicine 2006;26, 53-77. DOI: 10.1002/sim.2528 · PMID None
+- `oxman1992`: Oxman et al. A Consumer's Guide to Subgroup Analyses. Annals of Internal Medicine 1992;116, 78-84. DOI: 10.7326/0003-4819-116-1-78 · PMID None
+- `baker2009`: Baker et al. Understanding heterogeneity in meta-analysis: the role of meta-regression. International Journal of Clinical Practice 2009;63, 1426-1434. DOI: 10.1111/j.1742-1241.2009.02168.x · PMID None
+- `sterne2011funnel`: Sterne et al. Recommendations for examining and interpreting funnel plot asymmetry in meta-analyses of randomised controlled trials. BMJ 2011;343, d4002-d4002. DOI: 10.1136/bmj.d4002 · PMID None
+- `page2020bias`: Page et al. Investigating and dealing with publication bias and other reporting biases in meta‐analyses of health research: A review. Research Synthesis Methods 2020;12, 248-259. DOI: 10.1002/jrsm.1468 · PMID None
+- `viechtbauer2010outlier`: Viechtbauer et al. Outlier and influence diagnostics for meta-analysis. Research Synthesis Methods 2010;1, 112-125. DOI: 10.1002/jrsm.11 · PMID None
+- `balshem2011`: Balshem et al. GRADE guidelines: 3. Rating the quality of evidence. Journal of Clinical Epidemiology 2011;64, 401-406. DOI: 10.1016/j.jclinepi.2010.07.015 · PMID None
+- `inthout2016`: IntHout et al. Plea for routinely presenting prediction intervals in meta-analysis. BMJ Open 2016;6, e010247. DOI: 10.1136/bmjopen-2015-010247 · PMID None
+- `stroup2000`: Stroup Meta-analysis of Observational Studies in Epidemiology: A Proposal for Reporting. JAMA 2000;283, 2008. DOI: 10.1001/jama.283.15.2008 · PMID None
+- `mcgrath2019dta`: McGrath et al. Steps toward more complete reporting of systematic reviews of diagnostic test accuracy: Preferred Reporting Items for Systematic Reviews and Meta-Analyses of Diagnostic Test Accuracy (PRISMA-DTA). Systematic Reviews 2019;8. DOI: 10.1186/s13643-019-1090-9 · PMID None
+- `hutton2015`: Hutton et al. The PRISMA Extension Statement for Reporting of Systematic Reviews Incorporating Network Meta-analyses of Health Care Interventions: Checklist and Explanations. Annals of Internal Medicine 2015;162, 777-784. DOI: 10.7326/m14-2385 · PMID None
+- `stewart2015`: Stewart et al. Preferred Reporting Items for a Systematic Review and Meta-analysis of Individual Participant Data. JAMA 2015;313, 1657. DOI: 10.1001/jama.2015.3656 · PMID None
+- `tong2012`: Tong et al. Enhancing transparency in reporting the synthesis of qualitative research: ENTREQ. BMC Medical Research Methodology 2012;12. DOI: 10.1186/1471-2288-12-181 · PMID None
+- `wilkinson2016`: Wilkinson et al. The FAIR Guiding Principles for scientific data management and stewardship. Scientific Data 2016;3. DOI: 10.1038/sdata.2016.18 · PMID None
+- `cukier2020`: Cukier et al. Defining predatory journals and responding to the threat they pose: a modified Delphi consensus process. BMJ Open 2020;10, e035561. DOI: 10.1136/bmjopen-2019-035561 · PMID None
+- `nakagawa2017meta`: Nakagawa et al. Meta-evaluation of meta-analysis: ten appraisal questions for biologists. BMC Biology 2017;15. DOI: 10.1186/s12915-017-0357-7 · PMID None
+- `tipton2015`: Tipton et al. Small-Sample Adjustments for Tests of Moderators and Model Fit Using Robust Variance Estimation in Meta-Regression. Journal of Educational and Behavioral Statistics 2015;40, 604-634. DOI: 10.3102/1076998615606099 · PMID None
+- `pustejovsky2021`: Pustejovsky et al. Meta-analysis with Robust Variance Estimation: Expanding the Range of Working Models. Prevention Science 2021;23, 425-438. DOI: 10.1007/s11121-021-01246-3 · PMID None
+- `assink2016`: Assink et al. Fitting three-level meta-analytic models in R: A step-by-step tutorial. The Quantitative Methods for Psychology 2016;12, 154-174. DOI: 10.20982/tqmp.12.3.p154 · PMID None
+- `cheung2014`: Cheung Modeling dependent effect sizes with three-level meta-analyses: A structural equation modeling approach.. Psychological Methods 2014;19, 211-229. DOI: 10.1037/a0032968 · PMID None
+- `borenstein2009book`: Borenstein et al. Introduction to Meta‐Analysis.  2009. DOI: 10.1002/9780470743386 · PMID None

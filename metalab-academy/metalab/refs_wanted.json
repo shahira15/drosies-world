@@ -222,5 +222,173 @@
   "doi": "10.1186/s13750-018-0121-7",
   "author": "Haddaway",
   "year": 2018
+ },
+ {
+  "key": "haddaway2018time",
+  "doi": "10.1111/cobi.13231",
+  "author": "Haddaway",
+  "year": 2018
+ },
+ {
+  "key": "bramer2017",
+  "doi": "10.1186/s13643-017-0644-y",
+  "author": "Bramer",
+  "year": 2017
+ },
+ {
+  "key": "gusenbauer2020",
+  "doi": "10.1002/jrsm.1378",
+  "author": "Gusenbauer",
+  "year": 2020
+ },
+ {
+  "key": "bramer2016dedup",
+  "doi": "10.5195/jmla.2016.24",
+  "author": "Bramer",
+  "year": 2016
+ },
+ {
+  "key": "drevon2016",
+  "doi": "10.1177/0145445516673998",
+  "author": "Drevon",
+  "year": 2016
+ },
+ {
+  "key": "mcguinness2020",
+  "doi": "10.1002/jrsm.1411",
+  "author": "McGuinness",
+  "year": 2020
+ },
+ {
+  "key": "sweeting2004",
+  "doi": "10.1002/sim.1761",
+  "author": "Sweeting",
+  "year": 2004
+ },
+ {
+  "key": "bradburn2007",
+  "doi": "10.1002/sim.2528",
+  "author": "Bradburn",
+  "year": 2006
+ },
+ {
+  "key": "oxman1992",
+  "doi": "10.7326/0003-4819-116-1-78",
+  "author": "Oxman",
+  "year": 1992
+ },
+ {
+  "key": "baker2009",
+  "doi": "10.1111/j.1742-1241.2009.02168.x",
+  "author": "Baker",
+  "year": 2009
+ },
+ {
+  "key": "sterne2011funnel",
+  "doi": "10.1136/bmj.d4002",
+  "author": "Sterne",
+  "year": 2011
+ },
+ {
+  "key": "page2020bias",
+  "doi": "10.1002/jrsm.1468",
+  "author": "Page",
+  "year": 2020
+ },
+ {
+  "key": "viechtbauer2010outlier",
+  "doi": "10.1002/jrsm.11",
+  "author": "Viechtbauer",
+  "year": 2010
+ },
+ {
+  "key": "balshem2011",
+  "doi": "10.1016/j.jclinepi.2010.07.015",
+  "author": "Balshem",
+  "year": 2011
+ },
+ {
+  "key": "inthout2016",
+  "doi": "10.1136/bmjopen-2015-010247",
+  "author": "IntHout",
+  "year": 2016
+ },
+ {
+  "key": "stroup2000",
+  "doi": "10.1001/jama.283.15.2008",
+  "author": "Stroup",
+  "year": 2000
+ },
+ {
+  "key": "mcgrath2019dta",
+  "doi": "10.1186/s13643-019-1090-9",
+  "author": "McGrath",
+  "year": 2019
+ },
+ {
+  "key": "hutton2015",
+  "doi": "10.7326/m14-2385",
+  "author": "Hutton",
+  "year": 2015
+ },
+ {
+  "key": "stewart2015",
+  "doi": "10.1001/jama.2015.3656",
+  "author": "Stewart",
+  "year": 2015
+ },
+ {
+  "key": "tong2012",
+  "doi": "10.1186/1471-2288-12-181",
+  "author": "Tong",
+  "year": 2012
+ },
+ {
+  "key": "wilkinson2016",
+  "doi": "10.1038/sdata.2016.18",
+  "author": "Wilkinson",
+  "year": 2016
+ },
+ {
+  "key": "cukier2020",
+  "doi": "10.1136/bmjopen-2019-035561",
+  "author": "Cukier",
+  "year": 2020
+ },
+ {
+  "key": "nakagawa2017meta",
+  "doi": "10.1186/s12915-017-0357-7",
+  "author": "Nakagawa",
+  "year": 2017
+ },
+ {
+  "key": "tipton2015",
+  "doi": "10.3102/1076998615606099",
+  "author": "Tipton",
+  "year": 2015
+ },
+ {
+  "key": "pustejovsky2021",
+  "doi": "10.1007/s11121-021-01246-3",
+  "author": "Pustejovsky",
+  "year": 2021
+ },
+ {
+  "key": "assink2016",
+  "doi": "10.20982/tqmp.12.3.p154",
+  "author": "Assink",
+  "year": 2016
+ },
+ {
+  "key": "cheung2014",
+  "doi": "10.1037/a0032968",
+  "author": "Cheung",
+  "year": 2014
+ },
+ {
+  "key": "borenstein2009book",
+  "doi": "10.1002/9780470743386",
+  "author": "Borenstein",
+  "year": 2009
  }
 ]
