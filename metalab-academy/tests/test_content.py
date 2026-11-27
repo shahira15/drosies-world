@@ -182,7 +182,7 @@ def test_batch3_numbers_match_code():
     d, sd = 0.08, math.hypot(0.04, 0.05); z = d / sd; assert sd == pytest.approx(0.064, abs=1e-3) and z == pytest.approx(1.25, abs=0.01) and 2 * st.norm.sf(z) == pytest.approx(0.21, abs=0.005)
     assert 2 * st.norm.sf(0.10 / 0.04) == pytest.approx(0.012, abs=5e-4) and 2 * st.norm.sf(0.02 / 0.05) == pytest.approx(0.69, abs=0.01)
     assert 9 / 60 + 9 / 60 == pytest.approx(0.30) and 9 / 60 + 9 / 30 == pytest.approx(0.45)
-    y, v = S.log_response_ratio(4.8, 0.7, 6, 4.1, 0.6, 6); assert y == pytest.approx(0.1573, abs=1e-4) and v == pytest.approx(0.0071, abs=1e-4)
+    y, v = S.log_response_ratio(4.8, 0.7, 6, 4.1, 0.6, 6); assert y == pytest.approx(0.1576, abs=1e-4) and v == pytest.approx(0.0071, abs=1e-4)
     assert math.log10(5.0e6) - math.log10(1.0e4) == pytest.approx(2.699, abs=1e-3) and A.design_effect(25, 0.10) == pytest.approx(3.4) and 100 / 3.4 == pytest.approx(29.41, abs=0.01)
     ans = lambda n, i: LESSONS[n]["quiz"][i]["opts"][LESSONS[n]["quiz"][i]["ans"]]
-    assert ans(85, 0) == "2.9" and ans(86, 0) == "0.1145" and ans(87, 0) == "1.25" and ans(61, 0) == "0.157" and ans(62, 0) == "2.70" and ans(65, 0) == "3.4" and ans(38, 1) == "30"
+    assert ans(85, 0) == "2.9" and ans(86, 0) == "0.1145" and ans(87, 0) == "1.25" and ans(61, 0) == "0.158" and ans(62, 0) == "2.70" and ans(65, 0) == "3.4" and ans(38, 1) == "30"

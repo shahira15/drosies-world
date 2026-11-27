@@ -124,5 +124,12 @@
   "what": "axe-core found low-contrast captions (15 views) and skipped heading levels (4 views).",
   "fix": "Global accessible CSS; real h2 headings.",
   "found_by": "axe-core audit"
+ },
+ {
+  "date": "2026-11-27",
+  "where": "content/lessons_b3.py (lesson 61)",
+  "what": "lnRR for 4.8 vs 4.1 was written as 0.1573 (mental arithmetic); the value is 0.1576.",
+  "fix": "Corrected; test compares lesson numbers with code. Also: a batch commit was made while two tests were failing (command-chaining error); fixed in the next commit.",
+  "found_by": "tests/test_content.py"
  }
 ]
