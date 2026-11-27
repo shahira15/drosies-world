@@ -361,6 +361,96 @@
    "name": "Topic Explorer: 30 logged PubMed searches across aging, metabolism, neuroscience, biotechnology, plant science (signals only; no topic chosen)",
    "status": "implemented",
    "evidence": "S1-S18 (2026-11-26), S19-S30 (2026-11-27); education/public health need other databases (not scanned)"
+  },
+  {
+   "id": "stats.trim_fill",
+   "name": "Trim-and-fill (L0/R0/Q0) with mandatory warnings",
+   "status": "benchmarked",
+   "evidence": "k0, side and the imputed data identical to metafor::trimfill (5 datasets x L0,R0); estimate agrees to ~3e-4 relative (metafor's own refit tolerance)",
+   "blocker": "Sensitivity analysis only; expert review of the warnings wording"
+  },
+  {
+   "id": "stats.pet_peese",
+   "name": "PET / PEESE regression",
+   "status": "benchmarked",
+   "evidence": "Identical to base R lm(weights=1/vi) on 5 datasets",
+   "blocker": "Both estimators are biased in many realistic settings; sensitivity use only; expert review"
+  },
+  {
+   "id": "stats.cr2",
+   "name": "CR2 cluster-robust variance with Satterthwaite df",
+   "status": "benchmarked",
+   "evidence": "Matches clubSandwich 0.5.10 coef_test(vcov='CR2') for intercept and moderator models (Konstantopoulos 2011); a first implementation omitted the D_j factor in B_j and was caught by this benchmark",
+   "blocker": "Expert review; only multilevel/univariate working models are wired into the UI"
+  },
+  {
+   "id": "stats.multivariate",
+   "name": "Multivariate meta-analysis, unstructured between-study covariance (any #outcomes, missing outcomes allowed)",
+   "status": "benchmarked",
+   "evidence": "Matches metafor rma.mv(struct='UN') on Berkey 1998: coefficients, SEs, tau2, rho, REML log-likelihood",
+   "blocker": "Boundary correlations are flagged, not repaired; expert review"
+  },
+  {
+   "id": "stats.dta",
+   "name": "Bivariate (Reitsma-type) DTA meta-analysis: summary sens/spec, DOR, LRs",
+   "status": "benchmarked",
+   "evidence": "Matches metafor rma.mv bivariate model on a SYNTHETIC table; NOT compared with mada (not installable here)",
+   "blocker": "No HSROC/SROC curve; compare with mada::reitsma on your machine; expert review (dedicated reference package not installable in build environment)"
+  },
+  {
+   "id": "stats.nma",
+   "name": "Frequentist contrast-based network meta-analysis (common/random, multi-arm, league table, P-scores)",
+   "status": "benchmarked",
+   "evidence": "Matches metafor rma.mv on contrasts built from Hasselblad (1998) (common & random effects); league table invariant to reference choice (property test); direct-only network reduces to pairwise MA",
+   "blocker": "No consistency tests (node-splitting/design-by-treatment), no component NMA; NOT compared with netmeta (not installable here); expert review (dedicated reference package not installable in build environment)"
+  },
+  {
+   "id": "stats.phylo",
+   "name": "Phylogenetic multilevel meta-analysis (phylogeny + species + observation effects)",
+   "status": "benchmarked",
+   "evidence": "Matches metafor rma.mv(R=list(species=A)) on a 150-effect subset of Moura et al. (2021)",
+   "blocker": "Brownian-motion assumption; tree is supplied by the user; expert review"
+  },
+  {
+   "id": "stats.bayes",
+   "name": "Bayesian normal-normal random-effects meta-analysis (half-normal/half-Cauchy prior on tau, flat mu) by exact quadrature",
+   "status": "benchmarked",
+   "evidence": "Matches independent R integrate()/uniroot reference to ~2e-5; NOT compared with bayesmeta/brms (not installable here)",
+   "blocker": "Prior sensitivity is the user's responsibility; no MCMC; expert review (dedicated reference package not installable in build environment)"
+  },
+  {
+   "id": "stats.power",
+   "name": "Power / required k for meta-analysis (Hedges & Pigott style) and Q-test power",
+   "status": "tested",
+   "evidence": "Closed-form formulas + Monte Carlo agreement within tolerance",
+   "blocker": "No external software benchmark; assumes known tau2, equal-sized studies"
+  },
+  {
+   "id": "stats.ipd_two_stage",
+   "name": "IPD two-stage meta-analysis",
+   "status": "benchmarked",
+   "evidence": "Matches base R lm per study + metafor REML pooling",
+   "blocker": "One-stage mixed models not implemented (tested lme4 workflow in lesson)"
+  },
+  {
+   "id": "stats.rare_cc",
+   "name": "Continuity-correction sensitivity for rare events",
+   "status": "benchmarked",
+   "evidence": "Matches metafor escalc(add=, to='only0') + rma for OR and RR (bcg, Niel-Weise)",
+   "blocker": "GLMM / beta-binomial / Bayesian rare-event models are external workflows"
+  },
+  {
+   "id": "stats.survival_extract",
+   "name": "log HR extraction from HR+CI or log-rank O-E/V",
+   "status": "tested",
+   "evidence": "Hand-calculated checks",
+   "blocker": "Guyot IPD reconstruction and RMST are external workflows"
+  },
+  {
+   "id": "ui.stats_lab_advanced2",
+   "name": "Statistics Lab 'Advanced methods II' tab (10 methods, each with warnings and an external R workflow)",
+   "status": "tested",
+   "evidence": "tests/test_app.py renders every method without exception/error"
   }
  ]
 }

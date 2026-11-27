@@ -116,3 +116,13 @@ def test_assessment_tab_and_pathway_tab_render(tmp_path, monkeypatch):
     at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
     for pg in ("Practice", "Learning Academy"):
         at.run(); at.sidebar.radio[0].set_value(pg).run(); assert not at.exception, (pg, [e.value for e in at.exception])
+
+
+def test_statistics_lab_advanced2_all_methods_run(tmp_path, monkeypatch):
+    """Every method in the 'Advanced methods II' tab renders without an exception or error banner."""
+    monkeypatch.chdir(tmp_path); monkeypatch.setenv("METALAB_DB", str(tmp_path / "t.sqlite"))
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90).run(); at.session_state["nav"] = "Statistics Lab"; at.run()
+    sb = [s for s in at.selectbox if s.key == "adv2"][0]; opts = list(sb.options)
+    for opt in opts:
+        sb = [s for s in at.selectbox if s.key == "adv2"][0]; sb.select(opt).run()
+        assert not at.exception, (opt, [e.value for e in at.exception]); assert not at.error, (opt, [e.value for e in at.error])

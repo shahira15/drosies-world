@@ -826,7 +826,7 @@ elif page == "First Paper Plan":
 elif page == "Statistics Lab":
     st.title("Statistics Lab")
     st.caption("All data here are SIMULATED or published example data and are clearly labelled. Never mixed with project data.")
-    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Subgroups & meta-regression", "Effect-size calculators", "Advanced methods"])
+    tabs = st.tabs(["SD vs SE & CIs (simulation)", "Meta-analysis", "Subgroups & meta-regression", "Effect-size calculators", "Advanced methods", "Advanced methods II (v0.4)"])
     with tabs[0]:
         st.markdown("**Mechanism.** The SD describes spread of individuals and does not shrink with n; the SE = SD/√n describes precision of the mean and does. "
                     "A 95% CI procedure captures the true mean in ~95% of repeated experiments.")
@@ -1062,6 +1062,67 @@ elif page == "Statistics Lab":
                 st.caption("Freeman-Tukey back-transformation depends on one 'n' and can mislead; logit/GLMM approaches are often preferred (not implemented here).")
             except ValueError as e: st.error(str(e))
             m_c = st.number_input("cluster size m", 1, value=10); icc = st.number_input("ICC", 0.0, 1.0, 0.1); st.write(f"Design effect = {AD.design_effect(int(m_c), icc):.2f}; effective n = n / DEFF (equal clusters only)")
+    with tabs[5]:
+        from metalab import advanced2 as AD2, datasets as DS
+        st.markdown("**Advanced methods II - benchmarked against R/metafor 4.4.0, clubSandwich and base R where noted (see VALIDATION.md).** They need specialist judgement; several are *sensitivity analyses*, not corrections. Nothing here is expert-reviewed. Methods whose dedicated R package could not be installed in the build environment (netmeta, mada, bayesmeta, dosresmeta, selection models) were benchmarked against metafor `rma.mv` or independent numerical integration instead - re-run the R workflow in the lesson before relying on them.")
+        sub2 = st.selectbox("Method", ["Trim-and-fill (sensitivity only)", "PET / PEESE", "Cluster-robust CR2 (few clusters)", "Network meta-analysis (Hasselblad smoking data)", "Bivariate DTA meta-analysis (synthetic data)", "Multivariate meta-analysis (Berkey data)", "Bayesian random-effects (prior sensitivity)", "Power & number of studies", "Rare events: continuity-correction sensitivity", "Survival: log HR from published results"], key="adv2")
+        from metalab.datasets import BCG
+        bcg_y, bcg_v = zip(*[S.log_risk_ratio(a_, a_ + b_, c_, c_ + d_, cc=0.5) for a_, b_, c_, d_ in BCG])
+        try:
+            if sub2.startswith("Trim"):
+                dd_ = st.data_editor(pd.DataFrame({"yi": bcg_y, "vi": bcg_v}), num_rows="dynamic", key="tf_ed"); est_ = st.radio("Estimator", ["L0", "R0", "Q0"], horizontal=True)
+                r_ = AD2.trim_fill(dd_["yi"].to_numpy(float), dd_["vi"].to_numpy(float), est_)
+                st.write(f"Missing studies imputed (k0) = **{r_['k0']}** on the {r_['side']} side · adjusted estimate {r_['est']:.4f} (95% CI {r_['ci'][0]:.4f} to {r_['ci'][1]:.4f}) vs unadjusted {r_['est_unadjusted']:.4f} ({r_['ci_unadjusted'][0]:.4f} to {r_['ci_unadjusted'][1]:.4f})")
+                fg = go.Figure(); fg.add_scatter(x=dd_["yi"], y=np.sqrt(dd_["vi"]), mode="markers", name="observed"); fg.add_scatter(x=r_["filled_y"], y=np.sqrt(r_["filled_v"]), mode="markers", marker=dict(symbol="circle-open", size=11), name="imputed (filled)")
+                fg.update_yaxes(autorange="reversed", title="standard error"); fg.update_layout(xaxis_title="effect size", title="Funnel plot with trim-and-fill"); st.plotly_chart(fg, width="stretch")
+                for n_ in r_["notes"]: st.warning(n_)
+                st.code("library(metafor)\nres <- rma(yi, vi, data = dat, method = 'REML')\ntrimfill(res, estimator = 'L0')", "r")
+            elif sub2.startswith("PET"):
+                dd_ = st.data_editor(pd.DataFrame({"yi": bcg_y, "vi": bcg_v}), num_rows="dynamic", key="pp_ed"); r_ = AD2.pet_peese(dd_["yi"].to_numpy(float), dd_["vi"].to_numpy(float))
+                st.dataframe(pd.DataFrame([{"model": m_.upper(), "intercept (bias-adjusted effect)": r_[m_]["coef"][0], "SE": r_[m_]["se"][0], "p": r_[m_]["p"][0], "slope": r_[m_]["coef"][1], "slope p": r_[m_]["p"][1]} for m_ in ("pet", "peese")]), hide_index=True); st.warning(r_["warning"])
+                st.code("pet <- lm(yi ~ sqrt(vi), data = dat, weights = 1/vi)\npeese <- lm(yi ~ vi, data = dat, weights = 1/vi)", "r")
+            elif sub2.startswith("Cluster"):
+                from metalab.datasets import KON_YI, KON_VI, KON_DISTRICT
+                r_ = AD2.multilevel_cr2(KON_YI, KON_VI, KON_DISTRICT); f_ = r_["fit"]
+                st.write(f"Konstantopoulos (2011) example, 11 districts. Mean = {f_['beta'][0]:.4f}; model-based SE {f_['se'][0]:.4f}; **CR2 SE {r_['se'][0]:.4f}, Satterthwaite df = {r_['df'][0]:.2f}, p = {r_['p'][0]:.4f}**")
+                for w_ in r_["warnings"]: st.warning(w_)
+                st.caption("Check: the CR2/Satterthwaite step reproduces clubSandwich::coef_test(vcov='CR2') on the same fitted covariance (see tests).")
+                st.code("library(clubSandwich)\nres <- rma.mv(yi, vi, random = ~ 1 | district/school, data = dat.konstantopoulos2011)\ncoef_test(res, vcov = 'CR2', cluster = dat.konstantopoulos2011$district)", "r")
+            elif sub2.startswith("Network"):
+                ar_ = DS.HASSELBLAD; st_ = [a[0] for a in ar_]; tr_ = [a[1] for a in ar_]; x_ = np.array([a[2] for a in ar_], float); n_ = np.array([a[3] for a in ar_], float)
+                mdl = st.radio("Model", ["random", "common"], horizontal=True); ref_ = st.selectbox("Reference treatment", ["no_contact", "ind_counseling", "grp_counseling", "self_help"])
+                r_ = AD2.nma(st_, tr_, np.log((x_ + .5) / (n_ - x_ + .5)), 1 / (x_ + .5) + 1 / (n_ - x_ + .5), reference=ref_, model=mdl)
+                T_ = r_["treatments"]; lg = pd.DataFrame(np.exp(r_["league"]), index=T_, columns=T_).round(3); st.markdown("**League table: odds ratio of ROW vs COLUMN** (cessation; >1 favours the row treatment)"); st.dataframe(lg)
+                st.write(f"tau² = {r_['tau2']:.4f} · global Q = {r_['Q']:.1f} (df {r_['Q_df']}, p = {r_['Q_p']:.3g}) · P-scores: " + ", ".join(f"{k}: {v:.2f}" for k, v in r_["pscore"].items()))
+                for w_ in r_["warnings"]: st.warning(w_)
+                st.code("library(netmeta)  # run on your own machine - not available in the build sandbox\npw <- pairwise(treat = trt, event = xi, n = ni, studlab = study, data = dat, sm = 'OR')\nnm <- netmeta(pw, reference.group = 'no_contact', common = FALSE)\nnetsplit(nm); decomp.design(nm)", "r")
+            elif sub2.startswith("Bivariate"):
+                t_ = DS.DTA_SYNTHETIC; r_ = AD2.dta_bivariate([x[0] for x in t_], [x[1] for x in t_], [x[2] for x in t_], [x[3] for x in t_])
+                st.warning("SYNTHETIC teaching data - not real studies.")
+                st.write(f"Summary sensitivity **{r_['sens']:.3f}** ({r_['sens_ci'][0]:.3f}-{r_['sens_ci'][1]:.3f}) · specificity **{r_['spec']:.3f}** ({r_['spec_ci'][0]:.3f}-{r_['spec_ci'][1]:.3f}) · DOR {r_['dor']:.1f} · LR+ {r_['lr_pos']:.2f} · LR- {r_['lr_neg']:.3f} · between-study correlation (logit scale) {r_['rho']:.2f}")
+                for w_ in r_["warnings"]: st.warning(w_)
+                st.code("library(mada)  # run locally\nfit <- reitsma(dat)  # data frame with TP, FN, FP, TN\nsummary(fit)", "r")
+            elif sub2.startswith("Multivariate"):
+                yy = np.array(DS.BERKEY_YI); oc = np.array([0 if o == "AL" else 1 for o in DS.BERKEY_OUTCOME]); r_ = AD2.multivariate_meta(yy, {int(k): np.array(v) for k, v in DS.BERKEY_V.items()}, oc, np.array(DS.BERKEY_TRIAL), 2)
+                st.write(f"Berkey et al. (1998): pooled AL change {r_['beta'][0]:.4f} (SE {r_['se'][0]:.4f}); PD change {r_['beta'][1]:.4f} (SE {r_['se'][1]:.4f}); tau² = {r_['tau2'][0]:.4f}, {r_['tau2'][1]:.4f}; between-trial correlation {r_['rho']:.3f}")
+                for w_ in r_["warnings"]: st.warning(w_)
+                st.code("rma.mv(yi, V, mods = ~ 0 + outcome, random = ~ outcome | trial, struct = 'UN', data = dat.berkey1998)", "r")
+            elif sub2.startswith("Bayesian"):
+                pr = st.radio("Prior on tau", ["halfnormal", "halfcauchy"], horizontal=True); sc = st.slider("Prior scale", 0.05, 2.0, 0.5, 0.05)
+                r_ = AD2.bayes_meta(bcg_y, bcg_v, pr, sc)
+                st.write(f"BCG log RR: posterior mean mu {r_['mu_mean']:.3f} (95% CrI {r_['mu_ci'][0]:.3f} to {r_['mu_ci'][1]:.3f}); tau median {r_['tau_median']:.3f} (95% CrI {r_['tau_ci'][0]:.3f} to {r_['tau_ci'][1]:.3f})"); st.warning(r_["warning"])
+                st.code("library(bayesmeta)  # run locally\nbayesmeta(y = yi, sigma = sqrt(vi), mu.prior.mean = 0, mu.prior.sd = 4, tau.prior = function(t) dhalfnormal(t, scale = 0.5))", "r")
+            elif sub2.startswith("Power"):
+                c1, c2, c3, c4 = st.columns(4); th = c1.number_input("True effect (e.g. SMD)", value=0.3); n1 = c2.number_input("n per group per study", 2, value=30); tau2 = c3.number_input("tau² (assumed known)", 0.0, value=0.02); k = c4.number_input("Number of studies", 1, value=10)
+                vt = AD2.smd_variance(n1, n1, th); st.write(f"Typical SMD variance {vt:.4f}; power with k = {int(k)}: **{AD2.power_meta(th, vt, int(k), tau2):.3f}**; studies needed for 80% power: **{AD2.k_for_power(th, vt, tau2)}**; Q-test power for this tau²: {AD2.power_Q_test(int(k), vt, tau2):.3f}")
+                st.warning("Assumes equal-sized studies, a KNOWN tau² and a normal approximation. Realised power is lower when tau² is estimated (especially with Hartung-Knapp and few studies). Post-hoc power from an observed effect is meaningless and not offered.")
+            elif sub2.startswith("Rare"):
+                st.caption("BCG trial tables used for illustration. Rare-event data: sparse zero cells make the continuity correction drive the result - compare, and prefer Mantel-Haenszel/Peto or a binomial GLMM (R workflow in the lesson).")
+                a_, b_, c_, d_ = zip(*DS.BCG); r_ = AD2.cc_sensitivity(a_, b_, c_, d_, st.radio("Measure", ["OR", "RR"], horizontal=True)); st.dataframe(pd.DataFrame([{"correction": k, **v} for k, v in r_.items()]), hide_index=True)
+            else:
+                c1, c2, c3 = st.columns(3); hr = c1.number_input("HR", 0.01, value=0.80); lo = c2.number_input("lower 95% limit", 0.001, value=0.64); hi = c3.number_input("upper 95% limit", 0.001, value=1.00)
+                lh, se_ = AD2.loghr_from_ci(hr, lo, hi); st.write(f"ln HR = {lh:.4f}, SE = {se_:.4f} -> pool with generic inverse-variance (Statistics Lab > Meta-analysis). Check proportional hazards and that CIs are not from robust/exact methods; where only Kaplan-Meier curves are published, reconstruct IPD (Guyot 2012; external R workflow in the lesson).")
+        except (ValueError, S.ConvergenceError, np.linalg.LinAlgError) as e: st.error(f"Cannot compute: {e}")
 # ------------------------------------------------------ KNOWLEDGE UNIVERSE
 elif page == "Knowledge Universe":
     st.title("Knowledge Universe")

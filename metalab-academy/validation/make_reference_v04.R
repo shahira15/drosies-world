@@ -22,7 +22,7 @@ ref$trimfill <- list()
 for (n in names(sets)) {
   y <- sets[[n]]$yi; v <- sets[[n]]$vi; res <- rma(y, v, method = "REML", control = CTRL); e <- list(yi = y, vi = v)
   for (est in c("L0", "R0")) {
-    tf <- tryCatch(trimfill(res, estimator = est, control = CTRL), error = function(e) e)
+    tf <- tryCatch(trimfill(res, estimator = est), error = function(e) e)
     e[[est]] <- if (inherits(tf, "condition")) list(error = conditionMessage(tf)) else list(k0 = tf$k0, side = tf$side, est = as.numeric(tf$beta), se = tf$se, ci = c(tf$ci.lb, tf$ci.ub), tau2 = tf$tau2, fill = tf$fill, yi_f = as.numeric(tf$yi), vi_f = as.numeric(tf$vi))
   }
   ref$trimfill[[n]] <- e
@@ -45,7 +45,7 @@ mv1 <- rma.mv(yi, vi, mods = ~ year, random = ~ 1 | district/school, data = kon,
 ct1 <- coef_test(mv1, vcov = "CR2", cluster = kon$district)
 ref$cr2 <- list(yi = kon$yi, vi = kon$vi, district = kon$district, school = kon$school, year = kon$year,
   intercept = list(beta = ct0$beta, se = ct0$SE, tstat = ct0$tstat, df = ct0$df_Satt, p = ct0$p_Satt, sigma2 = as.numeric(mv0$sigma2)),
-  year = list(beta = ct1$beta, se = ct1$SE, tstat = ct1$tstat, df = ct1$df_Satt, p = ct1$p_Satt, sigma2 = as.numeric(mv1$sigma2)))
+  mod_year = list(beta = ct1$beta, se = ct1$SE, tstat = ct1$tstat, df = ct1$df_Satt, p = ct1$p_Satt, sigma2 = as.numeric(mv1$sigma2)))
 
 ## ---- multivariate (Berkey 1998): bivariate unstructured random effects --------------------------
 b <- dat.berkey1998; Vl <- lapply(split(b[, c("v1i", "v2i")], b$trial), as.matrix); V <- bldiag(Vl)
@@ -53,10 +53,11 @@ mvb <- rma.mv(yi, V, mods = ~ 0 + outcome, random = ~ outcome | trial, struct = 
 ref$multivariate <- list(trial = b$trial, outcome = as.character(b$outcome), yi = b$yi, V = lapply(Vl, function(m) as.numeric(m)), beta = as.numeric(mvb$beta), se = mvb$se, tau2 = as.numeric(mvb$tau2), rho = as.numeric(mvb$rho), ll = as.numeric(logLik(mvb)))
 
 ## ---- diagnostic test accuracy (bivariate logit sens/spec) on a synthetic table ---------------------
-dta <- data.frame(study = 1:8, TP = c(45, 30, 62, 20, 80, 15, 50, 38), FN = c(5, 10, 8, 4, 20, 5, 12, 7), FP = c(8, 6, 15, 3, 30, 2, 9, 12), TN = c(92, 64, 115, 77, 170, 58, 129, 143))
+# SYNTHETIC teaching data (simulated, seed 1; not from any real study). Chosen so REML has an interior optimum (rho not at -1).
+dta <- data.frame(study = 1:12, TP = c(70,95,106,160,55,127,118,107,96,40,67,65), FN = c(12,5,26,25,17,57,73,39,45,10,6,3), FP = c(42,32,24,13,25,24,27,23,29,12,13,16), TN = c(258,171,302,226,285,373,175,306,350,136,276,104))
 sens <- (dta$TP + 0.5) / (dta$TP + dta$FN + 1); spec <- (dta$TN + 0.5) / (dta$TN + dta$FP + 1)
 yi <- c(qlogis(sens), qlogis(spec)); vi <- c(1 / (dta$TP + 0.5) + 1 / (dta$FN + 0.5), 1 / (dta$TN + 0.5) + 1 / (dta$FP + 0.5))
-dd <- data.frame(study = rep(dta$study, 2), outcome = factor(rep(c("sens", "spec"), each = 8)), yi = yi, vi = vi)
+dd <- data.frame(study = rep(dta$study, 2), outcome = factor(rep(c("sens", "spec"), each = 12)), yi = yi, vi = vi)
 dd <- dd[order(dd$study, dd$outcome), ]
 mvd <- rma.mv(yi, vi, mods = ~ 0 + outcome, random = ~ outcome | study, struct = "UN", data = dd, method = "REML")
 ref$dta <- list(table = dta, beta = as.numeric(mvd$beta), se = mvd$se, tau2 = as.numeric(mvd$tau2), rho = as.numeric(mvd$rho), ll = as.numeric(logLik(mvd)),
