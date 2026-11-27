@@ -3,7 +3,7 @@ import json, os, time, datetime
 from pathlib import Path
 import numpy as np, pandas as pd, streamlit as st
 import plotly.graph_objects as go
-from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, stats as S
+from metalab import curriculum, lessons, references, resources, learning as LRN, vlab, coding as CODE, manuscript as MS, stats as S
 from metalab.store import Store, DECISIONS
 from metalab.plan import WEEKS, all_tasks
 
@@ -17,7 +17,7 @@ db = get_store()
 LES = lessons.load()
 PROFILE = db.profile()
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 with st.sidebar.expander("🔎 Search everything", expanded=False):
     uq = st.text_input("Lessons, formulas, glossary, resources, claims, calculators...", key="usearch")
@@ -270,31 +270,39 @@ elif page == "Coding Lab":
 
 # -------------------------------------------------------------- VIRTUAL LAB
 elif page == "Virtual Lab":
+    from metalab import scenarios as SC
     st.title("Virtual Research Laboratory")
-    st.error(f"**{vlab.BANNER}.** Compound 'Nx-7', all journals, authors, studies and numbers are FICTIONAL. The simulation lives in a separate teaching project and is never mixed with real projects.")
-    st.markdown("Complete an entire systematic review before touching real data: import → deduplicate → screen (with a simulated second reviewer and conflicts) → extract (with planted errors) → appraise risk of bias → compute effect sizes → check your work.")
-    if st.button("Create / open the simulated project"):
-        pid = vlab.load(db); st.success(f"Simulated project ready (id {pid}). Choose it in the Research Workspace project picker.")
-    sims = [p for p in db.projects() if p["is_teaching"] and p["name"].startswith("SIMULATED")]
+    st.error(f"**{vlab.BANNER}.** All compounds, trials, journals, authors, studies and numbers are FICTIONAL. Each simulation lives in a separate teaching project and is never mixed with real projects.")
+    st.markdown("Complete an entire systematic review before touching real data: import → deduplicate → screen (with a simulated second reviewer and conflicts) → extract (with planted errors) → appraise risk of bias → compute effect sizes → check your work. Choose a discipline:")
+    class _Pre:   # adapter for the original preclinical simulation
+        id = "preclinical"; discipline = "Preclinical"; intro = "Drosophila lifespan, vial-level units, SEM, hours, shared controls, missing SD."; workflow = "preclinical"; measure = "lnRR"; rob_tool = "SYRCLE"
+        studies = vlab.STUDIES; planted = vlab.planted_errors()
+        load = staticmethod(vlab.load); fulltext = staticmethod(vlab.fulltext); grade = staticmethod(vlab.grade); add_simulated_reviewer = staticmethod(vlab.add_simulated_reviewer); title = "Nx-7 and Drosophila lifespan"
+    scen = {"preclinical": _Pre, **SC.ALL}
+    sk = st.selectbox("Scenario", list(scen), format_func=lambda k: f"{scen[k].discipline}: {scen[k].title}")
+    sc = scen[sk]; st.markdown(f"**{sc.discipline} scenario.** {sc.intro}  \nSuggested workflow in the Extraction tab: *{sc.workflow}* · effect measure: *{sc.measure}* · appraisal tool: *{sc.rob_tool}*")
+    if st.button("Create / open this simulated project"):
+        pid = sc.load(db); st.success(f"Simulated project ready (id {pid}). Choose it in the Research Workspace project picker.")
+    name_part = f"[{sc.discipline}]" if sk != "preclinical" else "SIMULATED review: Nx-7"
+    sims = [p for p in db.projects() if p["is_teaching"] and p["name"].startswith("SIMULATED") and (name_part in p["name"] or (sk == "preclinical" and "Nx-7" in p["name"]))]
     if sims:
         pid = sims[0]["id"]
         tabs = st.tabs(["Guide", "Full-text excerpts", "Simulated reviewer", "Check my work"])
         with tabs[0]:
-            st.markdown("1. **Research Workspace → References**: records are already imported; run deduplication.  2. **Screening**: title/abstract then full text (exclusions need reasons).  3. **Extraction**: choose *Preclinical* workflow, create studies named like `SIM-S001 Aldrin 2019`, enter values from the excerpts with source/page/table. Watch for traps!  4. **Risk of bias** (SYRCLE) for SIM-S001..S003.  5. **Effect sizes & analysis**: build lnRR and save.  6. Come back to *Check my work*.")
+            st.markdown("1. **Research Workspace → References**: records are imported; run deduplication.  2. **Screening**: title/abstract then full text (exclusions need reasons).  3. **Extraction**: create studies named like the labels in the excerpts (e.g. `SIM-S101 Alvarez 2018`), choose the workflow above and enter values with source/page/table. Watch for traps!  4. **Risk of bias** with the listed tool.  5. **Effect sizes & analysis**: build the measure and save.  6. Return to *Check my work*.")
             with st.expander("Spoilers: the planted problems (open only after trying)"):
-                for e in vlab.planted_errors(): st.markdown("- " + e)
+                for e in sc.planted: st.markdown("- " + e)
         with tabs[1]:
-            for sid in list(vlab.STUDIES) + ["SIM-S006"]:
-                with st.expander(sid): st.code(vlab.fulltext(sid))
+            for sid in list(sc.studies) + (["SIM-S006"] if sk == "preclinical" else []):
+                with st.expander(sid): st.code(sc.fulltext(sid))
         with tabs[2]:
             st.caption("Adds decisions from a FICTIONAL second reviewer who disagrees with the key on some records so you can practise conflict resolution and kappa (Screening tab).")
             if st.button("Add simulated reviewer B decisions"):
-                try: st.success(f"{vlab.add_simulated_reviewer(db, pid)} simulated decisions added")
-                except ValueError as e: st.error(str(e))
+                try: st.success(f"{sc.add_simulated_reviewer(db, pid)} simulated decisions added")
+                except ValueError as e_: st.error(str(e_))
         with tabs[3]:
-            g = vlab.grade(db, pid)
-            for k, (score, fb) in g.items():
-                st.progress(score, text=f"{k}: {score:.0%}")
+            for k_, (score, fb) in sc.grade(db, pid).items():
+                st.progress(score, text=f"{k_}: {score:.0%}")
                 for f_ in fb[:6]: st.caption("• " + f_)
             st.caption("Feedback shows what to re-check, including what to do about missing data. Scores are for practice only.")
 
@@ -615,6 +623,80 @@ elif page == "Research Workspace":
             st.download_button("Reproducibility package (ZIP: all stages, R script, SAP draft, PRISMA, audit log, SHA-256 manifest)", WF.export_package(db, p["id"], p["name"]), f"{p['name']}_package.zip")
             st.download_button("References (CSV)", db.to_csv(db.refs(p["id"])), "references.csv")
             st.download_button("Audit log (CSV)", db.to_csv(db.audit_rows(p["id"])), "audit.csv")
+
+# --------------------------------------------------------- MANUSCRIPT STUDIO
+elif page == "Manuscript Studio":
+    st.title("Manuscript Studio")
+    st.info("A living manuscript tied to your stored outputs. Numbers appear only through `{{tokens}}` that resolve to **human-verified** results; anything unverified, stale or missing stays visibly flagged. Nothing is invented, and the studio never submits anything.")
+    p = project_picker("ms")
+    if p:
+        if p["is_teaching"]: st.warning("Teaching project: do not use this for a real manuscript.")
+        t_ed, t_res, t_qc, t_claims, t_chk, t_fig, t_exp = st.tabs(["Write", "Results store & verification", "Quality checks", "Claims", "PRISMA 2020 checklist", "Tables & figures", "Export"])
+        with t_ed:
+            key = st.selectbox("Section", [k for k, _ in MS.SECTIONS], format_func=lambda k: dict(MS.SECTIONS)[k])
+            cur = db.section(p["id"], key); txt = st.text_area("Text (Markdown). Tokens: {{analysis.est}}, {{prisma.included}}, ... Citations: [@refKEY] for verified registry keys or [@ref<ID>] for project references.", cur if cur is not None else MS.TEMPLATES[key], height=320, key=f"ms_{p['id']}_{key}")
+            c1, c2 = st.columns(2)
+            if c1.button("Save section (new version)"): db.save_section(p["id"], key, txt); st.success("Saved (previous versions kept).")
+            prev, pr = MS.render(db, p["id"], txt, final=False)
+            with st.expander("Preview with current results (unverified values are marked)", expanded=True): st.markdown(prev)
+            hist = db.section_history(p["id"], key)
+            if hist: st.caption(f"{len(hist)} saved version(s); latest {datetime.datetime.fromtimestamp(hist[0]['ts']):%Y-%m-%d %H:%M}")
+            st.caption("AI drafting assistance (if you use any) must be edited and owned by you, verified against sources, and disclosed per the journal's policy in Declarations.")
+        with t_res:
+            st.caption("Compute traceable values from your stored PRISMA counts, Search Log and saved effect sizes (Research Workspace → Effect sizes & analysis).")
+            c1, c2, c3 = st.columns(3); mdl = c1.selectbox("Model", ["random", "common"]); est_ = c2.selectbox("τ² estimator", ["REML", "PM", "DL"]); hk = c3.checkbox("Hartung-Knapp CI", True)
+            bt = st.checkbox("Also store exp()-transformed estimate (for ln ratios)")
+            if st.button("Compute / refresh results"):
+                try: st.success(f"{len(MS.compute_results(db, p['id'], mdl, est_, hk, 'exp' if bt else None))} values stored. Changed values lose their verification.")
+                except (ValueError, S.ConvergenceError) as e_: st.error(str(e_))
+            rs = db.results(p["id"])
+            if rs:
+                st.dataframe(pd.DataFrame([{"key": r["key"], "value": r["value"], "verified": "✓ " + r["verified_by"] if r["verified_by"] else "NO", "source": r["source"], "how verified": r["verify_note"] or ""} for r in rs]), hide_index=True, width="stretch")
+                with st.form("vr"):
+                    k1, k2, k3 = st.columns(3); kk = k1.selectbox("Result", [r["key"] for r in rs]); who = k2.text_input("Verifier (human)", "human:self"); how = k3.text_input("How you verified it (required)")
+                    if st.form_submit_button("Mark verified"):
+                        try: db.verify_result(p["id"], kk, who, how); st.rerun()
+                        except ValueError as e_: st.error(str(e_))
+                st.caption("Verify by reproducing the number independently, e.g. run the generated R code (Export) in R/metafor and compare. A value you did not check should not be verified.")
+            else: st.info("No results stored yet.")
+        with t_qc:
+            issues = MS.qc(db, p["id"])
+            for i in issues: (st.error if i["severity"] == "error" else st.warning if i["severity"] == "warning" else st.info)(f"[{i['check']}] {i['message']}")
+            if not issues: st.success("No prompts. (Automated checks are prompts for human review, not guarantees.)")
+        with t_claims:
+            cl = st.text_input("Add a claim you make in the manuscript that needs evidence")
+            if st.button("Add claim") and cl.strip(): db.add_ms_claim(p["id"], cl.strip()); st.rerun()
+            for c_ in db.ms_claims(p["id"]):
+                col1, col2 = st.columns([3, 2]); col1.write(("✅ " if c_["status"] == "resolved" else "⚠️ ") + c_["claim"] + (f"  → evidence: {c_['evidence_key']}" if c_["evidence_key"] else ""))
+                if c_["status"] != "resolved":
+                    ev = col2.text_input("Evidence key (result key or verified reference key)", key=f"ev{c_['id']}")
+                    if col2.button("Resolve", key=f"rc{c_['id']}"):
+                        try: db.resolve_ms_claim(c_["id"], ev); st.rerun()
+                        except ValueError as e_: st.error(str(e_))
+        with t_chk:
+            st.caption("Short paraphrased item labels; use the official PRISMA 2020 checklist for exact wording (Page et al. 2021). Mark where each item is reported, or 'not applicable' with a reason.")
+            cur = db.checklist(p["id"]); done = sum(1 for it in MS.PRISMA_ITEMS if cur.get(it, {}).get("status") in ("reported", "not applicable")); st.progress(done / 27, text=f"{done}/27")
+            for it in MS.PRISMA_ITEMS:
+                r_ = cur.get(it, {"location": "", "status": "open"})
+                c1, c2, c3 = st.columns([3, 2, 2]); c1.write(it); loc = c2.text_input("Location / reason", r_["location"], key=f"loc{p['id']}{it}", label_visibility="collapsed"); stt = c3.selectbox("Status", ["open", "reported", "not applicable"], ["open", "reported", "not applicable"].index(r_["status"]), key=f"st{p['id']}{it}", label_visibility="collapsed")
+                if (loc, stt) != (r_["location"], r_["status"]): db.set_checklist(p["id"], it, loc, stt)
+        with t_fig:
+            tbl = MS.study_table(db, p["id"]); st.markdown("**Study characteristics (from verified extraction records)**")
+            if tbl: st.dataframe(pd.DataFrame(tbl), hide_index=True, width="stretch"); st.download_button("Download table (CSV)", db.to_csv(tbl), "study_characteristics.csv")
+            else: st.info("Extract data first.")
+            eff = db.effects(p["id"])
+            if len(eff) >= 2:
+                r_ = S.meta_analyze([e["yi"] for e in eff], [e["vi"] for e in eff], "random", "REML", True); bt = "exp" if eff[0]["measure"] in ("lnRR", "lnOR", "lnRR_binary") else None
+                svg = MS.forest_svg([e["effect_id"] for e in eff], [e["yi"] for e in eff], [e["vi"] for e in eff], r_.est, r_.ci, "Forest plot", eff[0]["measure"], bt)
+                import streamlit.components.v1 as components; components.html(svg, height=120 + 30 * len(eff)); st.download_button("Download forest plot (SVG)", svg, "forest.svg", "image/svg+xml")
+                st.caption("Plot shows REML + Hartung-Knapp pooled estimate; the plot is not a verified result until you verify the numbers.")
+        with t_exp:
+            final = st.checkbox("Final export (only verified values render; otherwise flagged)", True)
+            md, pr = MS.to_markdown(db, p["id"], final)
+            if pr: st.warning(f"{len(pr)} unresolved value(s): the export carries a DRAFT banner.")
+            st.download_button("Markdown", md, "manuscript.md"); st.download_button("Quarto (.qmd)", MS.to_quarto(db, p["id"], final)[0], "manuscript.qmd")
+            st.download_button("LaTeX (.tex)", MS.to_latex(db, p["id"], final)[0], "manuscript.tex"); st.download_button("Word (.docx)", MS.to_docx(db, p["id"], final)[0], "manuscript.docx")
+            st.caption("PDF export is not implemented (render the Quarto or LaTeX file yourself). Reproducibility ZIP: Research Workspace → Backup & export.")
 
 # ------------------------------------------------------ FIRST PAPER PLAN
 elif page == "First Paper Plan":

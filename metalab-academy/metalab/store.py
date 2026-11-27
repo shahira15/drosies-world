@@ -40,6 +40,10 @@ CREATE TABLE IF NOT EXISTS cards(card_key TEXT PRIMARY KEY, ease REAL, interval 
 CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY, name TEXT, role TEXT, org TEXT, discipline TEXT, expertise TEXT, how_met TEXT, contact_ok TEXT, notes TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS interactions(id INTEGER PRIMARY KEY, contact_id INT, date TEXT, kind TEXT, summary TEXT, followup_due TEXT, followup_done INT DEFAULT 0, ts REAL);
 CREATE TABLE IF NOT EXISTS credit(id INTEGER PRIMARY KEY, project_id INT, person TEXT, role TEXT, note TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS results(project_id INT, key TEXT, value TEXT, source TEXT, input_hash TEXT, computed_by TEXT, ts REAL, verified_by TEXT, verified_at REAL, verify_note TEXT, PRIMARY KEY(project_id, key));
+CREATE TABLE IF NOT EXISTS manuscript_versions(id INTEGER PRIMARY KEY, project_id INT, section TEXT, text TEXT, author TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS ms_claims(id INTEGER PRIMARY KEY, project_id INT, claim TEXT, evidence_key TEXT, status TEXT DEFAULT 'unresolved', ts REAL);
+CREATE TABLE IF NOT EXISTS ms_checklist(project_id INT, item TEXT, location TEXT, status TEXT, PRIMARY KEY(project_id, item));
 CREATE TABLE IF NOT EXISTS bookmarks(kind TEXT, ref TEXT, ts REAL, PRIMARY KEY(kind, ref));
 CREATE TABLE IF NOT EXISTS dup_candidates(id INTEGER PRIMARY KEY, project_id INT, ref_a INT, ref_b INT, score REAL, reasons TEXT,
   relation TEXT, status TEXT DEFAULT 'pending', decided_by TEXT, ts REAL);
@@ -453,9 +457,51 @@ class Store:
 
     def credits(self, pid): return self.q("SELECT * FROM credit WHERE project_id=? ORDER BY person, role", (pid,))
 
+    # ------------------------------------------------------ manuscript studio
+    def set_result(self, pid, key, value, source, input_hash="", computed_by="system"):
+        """Store a computed result. Re-computing a value resets its verification (a changed number must be re-checked)."""
+        old = self.q("SELECT value, input_hash FROM results WHERE project_id=? AND key=?", (pid, key))
+        keep = old and old[0]["value"] == str(value) and old[0]["input_hash"] == input_hash
+        if keep:
+            return
+        self.x("INSERT INTO results(project_id,key,value,source,input_hash,computed_by,ts) VALUES(?,?,?,?,?,?,?) ON CONFLICT(project_id,key) DO UPDATE SET value=excluded.value, source=excluded.source, input_hash=excluded.input_hash, computed_by=excluded.computed_by, ts=excluded.ts, verified_by=NULL, verified_at=NULL, verify_note=NULL",
+               (pid, key, str(value), source, input_hash, computed_by, time.time()))
+
+    def verify_result(self, pid, key, verifier, note=""):
+        if verifier.lower().startswith(("ai", "llm", "model", "system")):
+            raise ValueError("Only a human can verify a result (AI/system cannot).")
+        if not note.strip():
+            raise ValueError("State how you verified it (e.g. 'reproduced in R/metafor', 'checked against table 2').")
+        if not self.q("SELECT 1 FROM results WHERE project_id=? AND key=?", (pid, key)):
+            raise ValueError("No such result.")
+        self.x("UPDATE results SET verified_by=?, verified_at=?, verify_note=? WHERE project_id=? AND key=?", (verifier, time.time(), note, pid, key))
+        self.audit("result_verified", f"{key}: {note}", pid, actor=verifier)
+
+    def results(self, pid): return self.q("SELECT * FROM results WHERE project_id=? ORDER BY key", (pid,))
+
+    def save_section(self, pid, section, text, author="human:self"):
+        if author.lower().startswith(("ai", "llm", "model")):
+            author = "human:self"  # AI-assisted drafting must be edited and owned by a human author; record disclosure separately
+        self.x("INSERT INTO manuscript_versions(project_id,section,text,author,ts) VALUES(?,?,?,?,?)", (pid, section, text, author, time.time()))
+
+    def section(self, pid, section):
+        r = self.q("SELECT text FROM manuscript_versions WHERE project_id=? AND section=? ORDER BY id DESC LIMIT 1", (pid, section)); return r[0]["text"] if r else None
+
+    def section_history(self, pid, section):
+        return self.q("SELECT id, ts, author, length(text) AS chars FROM manuscript_versions WHERE project_id=? AND section=? ORDER BY id DESC", (pid, section))
+
+    def add_ms_claim(self, pid, claim): return self.x("INSERT INTO ms_claims(project_id,claim,ts) VALUES(?,?,?)", (pid, claim, time.time()))
+    def resolve_ms_claim(self, claim_id, evidence_key):
+        if not evidence_key.strip(): raise ValueError("A claim is resolved only by citing evidence (a result key or verified reference key).")
+        self.x("UPDATE ms_claims SET evidence_key=?, status='resolved' WHERE id=?", (evidence_key, claim_id))
+    def ms_claims(self, pid): return self.q("SELECT * FROM ms_claims WHERE project_id=? ORDER BY id", (pid,))
+    def set_checklist(self, pid, item, location, status):
+        self.x("INSERT INTO ms_checklist VALUES(?,?,?,?) ON CONFLICT(project_id,item) DO UPDATE SET location=excluded.location, status=excluded.status", (pid, item, location, status))
+    def checklist(self, pid): return {r["item"]: r for r in self.q("SELECT * FROM ms_checklist WHERE project_id=?", (pid,))}
+
     # ----------------------------------------------------------- export/backup
     def backup_json(self):
-        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit"]
+        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist"]
         return json.dumps({"format": "metalab-backup", "version": 1,
                            "tables": {t: self.q(f"SELECT * FROM {t}") for t in tables}}, indent=1)
 
@@ -464,7 +510,7 @@ class Store:
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
         cur = self.db.cursor()
-        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit"):
+        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist"):
             cur.execute(f"DELETE FROM {t}")
             valid = {r[1] for r in cur.execute(f"PRAGMA table_info({t})")}
             for row in d["tables"].get(t, []):

@@ -257,9 +257,9 @@
   },
   {
    "id": "academy.virtual_lab",
-   "name": "Virtual Research Lab: fully simulated review with planted errors, simulated 2nd reviewer, grader",
+   "name": "Virtual Research Lab: 6 fully simulated scenarios (preclinical, clinical, plant, microbiology, ecology, education) with planted traps, simulated 2nd reviewer, graders",
    "status": "tested",
-   "evidence": "Perfect solver scores 100%; empty learner low; traps verified; all material labelled FICTIONAL; separate teaching project"
+   "evidence": "Perfect solver 100% and empty work low for every scenario; all material FICTIONAL, separate teaching projects"
   },
   {
    "id": "academy.study_notes",
@@ -268,9 +268,10 @@
   },
   {
    "id": "academy.interactive_coding",
-   "name": "Interactive coding tutorials (in-browser R/Python execution)",
-   "status": "planned",
-   "evidence": "Code is shown and tested but cannot be run inside the app"
+   "name": "Interactive coding tutorials (Python and R) with hidden checks in an isolated subprocess",
+   "status": "tested",
+   "evidence": "12 tutorials; reference solutions executed in tests; NOT a security sandbox (runs with user privileges)",
+   "blocker": "Not in-browser; R needs local Rscript+metafor"
   },
   {
    "id": "academy.bookmarks_goals",
@@ -304,9 +305,10 @@
   },
   {
    "id": "manuscript.studio",
-   "name": "Manuscript studio and export",
-   "status": "planned",
-   "evidence": "Reproducibility ZIP and SAP/PRISMA exports exist; no manuscript editor yet"
+   "name": "Manuscript Studio: tokenised living manuscript, human-verified results store with stale detection, claim tracker, PRISMA 2020 checklist, QC prompts, exports (Markdown, Quarto, LaTeX, DOCX), forest SVG, study table",
+   "status": "tested",
+   "evidence": "tests/test_manuscript.py; unverified/stale/missing values never render as verified; AI cannot verify; hard-coded numbers flagged",
+   "blocker": "No PDF export; no reference-style formatting; no collaborative editing; expert review pending"
   },
   {
    "id": "stats.advanced",

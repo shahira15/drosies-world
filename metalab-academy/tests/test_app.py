@@ -9,7 +9,7 @@ def _fresh_cache():
     st.cache_resource.clear(); yield; st.cache_resource.clear()
 
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 
 @pytest.mark.parametrize("page", PAGES)
@@ -78,6 +78,8 @@ def test_virtual_lab_page_with_simulation_and_universal_search(tmp_path, monkeyp
     at.run(); at.sidebar.radio[0].set_value("Virtual Lab").run()
     assert not at.exception, [e.value for e in at.exception]
     assert any("FICTIONAL" in e.value for e in at.error)
+    for sk in ("clinical", "plant", "micro", "eco", "edu"):
+        at.selectbox[[x.label for x in at.selectbox].index("Scenario")].set_value(sk).run(); assert not at.exception, (sk, [e.value for e in at.exception])
     at.sidebar.text_input(key="usearch").set_value("pseudoreplication").run()
     assert not at.exception
 
@@ -89,4 +91,19 @@ def test_advanced_stats_tab_every_method_renders(sub, tmp_path, monkeypatch):
     at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
     at.run(); at.sidebar.radio[0].set_value("Statistics Lab").run()
     at.selectbox[[s.label for s in at.selectbox].index("Method")].set_value(sub).run()
+    assert not at.exception, [e.value for e in at.exception]
+
+
+def test_manuscript_studio_renders_with_populated_project(tmp_path, monkeypatch):
+    from metalab.store import Store
+    from metalab import manuscript as M, workflow as W
+    dbp = str(tmp_path / "m.sqlite"); monkeypatch.setenv("METALAB_DB", dbp)
+    s = Store(dbp); pid = s.create_project("MS", "Bio", "Systematic review + meta-analysis")
+    for i in range(3):
+        sid = s.new_study(pid, f"S{i}")
+        for f, v in dict(treat_n=10, treat_mean=12 + i, treat_sd=3, ctrl_n=10, ctrl_mean=10, ctrl_sd=2.5).items(): s.extract(pid, sid, f, v, "days", "x.pdf", "2", "T1")
+    for e in W.build_effects(s.current_extracted(pid), "lnRR")[0]: s.save_effect(pid, e["study_id"], e["experiment_id"], e["measure"], e["yi"], e["vi"])
+    M.compute_results(s, pid); s.save_section(pid, "results", "Estimate {{analysis.est}}")
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=90)
+    at.run(); at.sidebar.radio[0].set_value("Manuscript Studio").run()
     assert not at.exception, [e.value for e in at.exception]

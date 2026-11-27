@@ -8,7 +8,7 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Common-effect and random-effects pooling (DL, PM, REML), HKSJ, prediction interval, Q/I2/H2, leave-one-out | **benchmarked** | Common/random effects (REML, DL, PM), HKSJ, Q, tau2, I2, PI, leave-one-out match metafor 4.4.0 on 10 datasets + 9 edge cases (242 tests). See VALIDATION.md | Expert review pending; rare-event/dependence methods not implemented |
 | Simulations: SD vs SE, CI coverage | **tested** | Statistical property tests (coverage ~95%, SE matches empirical SD) |  |
 | 88-module registry (84 specified + 4 proposed) | **implemented** | Lesson availability computed from files; coverage audit vs recalled Handbook structure (not re-read) |  |
-| Full lessons | **requires_expert_review** | 23 of 88 registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; 40 claims tracked (0 human-reviewed, 8 unverified) | Qualified human review; 76 modules still outline-only |
+| Full lessons | **requires_expert_review** | 38 of 88 registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; 50 claims tracked (0 human-reviewed, 10 unverified) | Qualified human review; 76 modules still outline-only |
 | Quizzes with explanations and scoring | **tested** | Structure + numeric answers verified vs code; conceptual answers need expert review |  |
 | Onboarding, diagnostic, pathway recommendation | **implemented** | Rule-based; diagnostic not psychometrically validated |  |
 | Flashcards with SM-2-style spaced repetition (glossary + misconceptions) | **tested** | Scheduling properties tested; SM-2 is a heuristic, not validated |  |
@@ -46,13 +46,13 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Core first-researcher pathway + extensions + specialist pathways | **implemented** | Availability computed; 13 core modules (12 written/available count computed in UI) |  |
 | Method-selection wizard (rule-based, assumptions shown, flags unsupported methods) | **tested** | Scenario tests; rules not expert-reviewed | Expert review; does not cover many designs |
 | Universal search across lessons, formulas, glossary, resources, claims, calculators, workflows | **tested** | Simple token scoring |  |
-| Virtual Research Lab: fully simulated review with planted errors, simulated 2nd reviewer, grader | **tested** | Perfect solver scores 100%; empty learner low; traps verified; all material labelled FICTIONAL; separate teaching project |  |
+| Virtual Research Lab: 6 fully simulated scenarios (preclinical, clinical, plant, microbiology, ecology, education) with planted traps, simulated 2nd reviewer, graders | **tested** | Perfect solver 100% and empty work low for every scenario; all material FICTIONAL, separate teaching projects |  |
 | Downloadable lesson notes + formula cheat sheet | **tested** |  |  |
-| Interactive coding tutorials (in-browser R/Python execution) | **planned** | Code is shown and tested but cannot be run inside the app |  |
+| Interactive coding tutorials (Python and R) with hidden checks in an isolated subprocess | **tested** | 12 tutorials; reference solutions executed in tests; NOT a security sandbox (runs with user privileges) | Not in-browser; R needs local Rscript+metafor |
 | Bookmarks and weekly goal | **implemented** |  |  |
 | Resource recommender per module (tag-based) | **tested** | Not personalised; tags assigned by author |  |
 | Local collaborator manager (manual contacts, interactions, follow-ups) + CRediT tracking | **tested** | Contacts local only; details never copied to audit log; CRediT requires a described contribution |  |
 | Open-source readiness docs, issue templates, CI workflow, dependency inventory | **implemented** | CONTRIBUTING, DEVELOPER, SECURITY, ACCESSIBILITY, LICENSE_DECISION (open), DEPENDENCIES; CI workflow not yet run on GitHub | Licence choice (owner); security/accessibility audits |
 | Visual inspection in Chromium (desktop + 390px mobile) | **tested** | Home/Academy/First Paper/Stats Lab/Method Wizard screenshots reviewed 2026-11-26; no keyboard/screen-reader audit |  |
-| Manuscript studio and export | **planned** | Reproducibility ZIP and SAP/PRISMA exports exist; no manuscript editor yet |  |
+| Manuscript Studio: tokenised living manuscript, human-verified results store with stale detection, claim tracker, PRISMA 2020 checklist, QC prompts, exports (Markdown, Quarto, LaTeX, DOCX), forest SVG, study table | **tested** | tests/test_manuscript.py; unverified/stale/missing values never render as verified; AI cannot verify; hard-coded numbers flagged | No PDF export; no reference-style formatting; no collaborative editing; expert review pending |
 | Advanced methods: MH, Peto, Egger/Begg, cumulative, Q-profile tau2 CI, influence, three-level REML + CR1, IRR, prevalence transforms, design effect | **benchmarked** | 30+ benchmarks vs metafor 4.4.0 (VALIDATION.md addendum) | Expert review; trim-and-fill/selection models/CR2/NMA/DTA/dose-response/Bayesian not implemented |
