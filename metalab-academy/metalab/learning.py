@@ -113,6 +113,10 @@ def _index():
     for k, tl in rob_tools.TOOLS.items(): docs.append(dict(type="Appraisal tool", title=tl["name"], text=" ".join([tl["name"], tl["design"], " ".join(tl["domains"]), tl["note"]]), where="Research Workspace", ref=k))
     docs += [dict(type="Template", title=t, text=t, where="Research Workspace", ref=t) for t in ["Statistical analysis plan (SAP) draft", "Protocol skeleton", "Search log CSV", "Extraction form per review type", "PRISMA flow diagram (SVG)", "PRISMA 2020 checklist tracker", "Reproducibility package (ZIP)", "Manuscript skeleton with verified-result tokens", "Study characteristics table", "Forest plot (SVG)"]]
     for nm, where, txt in METHODS: docs.append(dict(type="Statistical method", title=nm, text=nm + " " + txt, where=where, ref=nm))
+    from . import encyclopedia
+    for e in encyclopedia.entries():
+        if e["kind"] in ("Effect size", "Method comparison", "Reporting guideline", "Troubleshooting", "Command (R/Python)", "Risk-of-bias instrument"):
+            docs.append(dict(type="Encyclopedia: " + e["kind"], title=e["title"], text=e["title"] + " " + e["body"], where="Reference Encyclopedia", ref=e["id"]))
     return docs
 
 METHODS = [
@@ -128,6 +132,12 @@ METHODS = [
  ("Design effect and effective sample size", "Statistics Lab → Advanced methods", "cluster ICC classroom"), ("Fisher z transformation of correlations", "Statistics Lab → Effect-size calculators", "correlation"),
  ("Standardised mean difference (Hedges' g)", "Statistics Lab → Effect-size calculators", "exact J small sample LS Borenstein variance"), ("Log response ratio", "Statistics Lab → Effect-size calculators", "ratio of means ecology"),
  ("Cohen's kappa", "Research Workspace → Screening", "inter-rater agreement"), ("p-value to standard error conversion", "Statistics Lab → Effect-size calculators", "exact two-sided p z"),
+ ("Trim-and-fill (sensitivity analysis)", "Statistics Lab → Advanced methods II", "funnel asymmetry L0 R0 imputed studies"), ("PET and PEESE", "Statistics Lab → Advanced methods II", "small-study effects regression intercept"),
+ ("Cluster-robust CR2 with Satterthwaite df", "Statistics Lab → Advanced methods II", "clubSandwich few clusters robust variance"), ("Network meta-analysis (contrast-based)", "Statistics Lab → Advanced methods II", "league table P-score multi-arm indirect"),
+ ("Bivariate diagnostic test accuracy model", "Statistics Lab → Advanced methods II", "sensitivity specificity Reitsma DOR likelihood ratio"), ("Multivariate meta-analysis (unstructured)", "Statistics Lab → Advanced methods II", "correlated outcomes Berkey"),
+ ("Bayesian random-effects meta-analysis", "Statistics Lab → Advanced methods II", "prior tau half-normal credible interval"), ("Power and number of studies for meta-analysis", "Statistics Lab → Advanced methods II", "Hedges Pigott heterogeneity"),
+ ("Rare events continuity-correction sensitivity", "Statistics Lab → Advanced methods II", "zero cells 0.5 correction MH Peto"), ("Log hazard ratio from a confidence interval", "Statistics Lab → Advanced methods II", "survival time-to-event"),
+ ("Phylogenetic multilevel meta-analysis", "advanced2.phylogenetic_meta", "species tree Brownian ape"), ("Individual participant data two-stage", "advanced2.ipd_two_stage", "IPD stratified"),
 ]
 
 def search(q, limit=25):

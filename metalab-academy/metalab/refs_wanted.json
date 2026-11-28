@@ -736,5 +736,35 @@
   "doi": "10.1186/s13012-017-0552-5",
   "author": "Pfadenhauer",
   "year": 2017
+ },
+ {
+  "key": "hasselblad1998",
+  "doi": "10.1177/0272989X9801800110",
+  "author": "Hasselblad",
+  "year": 1998
+ },
+ {
+  "key": "berkey1998",
+  "doi": "10.1002/(sici)1097-0258(19981130)17:22<2537::aid-sim953>3.0.co;2-c",
+  "author": "Berkey",
+  "year": 1998
+ },
+ {
+  "key": "konstantopoulos2011",
+  "doi": "10.1002/jrsm.35",
+  "author": "Konstantopoulos",
+  "year": 2011
+ },
+ {
+  "key": "moura2021",
+  "doi": "10.1111/ele.13690",
+  "author": "Moura",
+  "year": 2021
+ },
+ {
+  "key": "nielweise2007",
+  "doi": "10.1007/s00134-007-0897-3",
+  "author": "Weise",
+  "year": 2007
  }
 ]

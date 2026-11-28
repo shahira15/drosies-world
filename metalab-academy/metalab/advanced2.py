@@ -451,6 +451,13 @@ def cc_sensitivity(a, b, c, d, measure="OR", adds=(0.01, 0.1, 0.5, 1.0), method=
     return out
 
 
+def log_variability_ratio(sd1, n1, sd2, n2):
+    """lnVR (log ratio of SDs with small-sample bias correction; metafor measure 'VR'; Nakagawa et al. variability effect sizes): yi = ln(sd1/sd2) + 1/(2(n1-1)) - 1/(2(n2-1)); vi = 1/(2(n1-1)) + 1/(2(n2-1)).
+    Questions about VARIABILITY (not means). Only meaningful when SDs are comparable (same scale) and not mechanically tied to the mean (use lnCVR when they are)."""
+    if min(n1, n2) < 2 or sd1 <= 0 or sd2 <= 0: raise ValueError("Need n >= 2 and positive SDs.")
+    return math.log(sd1 / sd2) + 1 / (2 * (n1 - 1)) - 1 / (2 * (n2 - 1)), 1 / (2 * (n1 - 1)) + 1 / (2 * (n2 - 1))
+
+
 def loghr_from_ci(hr, lo, hi, level=0.95):
     """log HR and its SE from a published HR with CI (CI assumed symmetric on the log scale; check that the reported CI is not from a robust/ Firth/ exact method)."""
     if not (lo > 0 and hi > lo and lo <= hr <= hi): raise ValueError("Need 0 < lo <= hr <= hi.")

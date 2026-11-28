@@ -46,6 +46,12 @@ CREATE TABLE IF NOT EXISTS ms_claims(id INTEGER PRIMARY KEY, project_id INT, cla
 CREATE TABLE IF NOT EXISTS ms_checklist(project_id INT, item TEXT, location TEXT, status TEXT, PRIMARY KEY(project_id, item));
 CREATE TABLE IF NOT EXISTS resource_verifications(id INTEGER PRIMARY KEY, url TEXT, verifier TEXT, verified_on TEXT, page_title_seen TEXT, matches_description TEXT, access_cost_seen TEXT, version_or_date_seen TEXT, notes TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS bookmarks(kind TEXT, ref TEXT, ts REAL, PRIMARY KEY(kind, ref));
+CREATE TABLE IF NOT EXISTS collab_interests(id INTEGER PRIMARY KEY, topic TEXT, discipline TEXT, i_offer TEXT, i_seek TEXT, status TEXT DEFAULT 'idea', notes TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS meetings(id INTEGER PRIMARY KEY, contact_id INT, date TEXT, agenda TEXT, notes TEXT, decisions TEXT, next_steps TEXT, followup_due TEXT DEFAULT '', followup_done INT DEFAULT 0, ts REAL);
+CREATE TABLE IF NOT EXISTS authorship_discussions(id INTEGER PRIMARY KEY, project_id INT, contact_id INT, date TEXT, topic TEXT, proposed_position TEXT, proposed_roles TEXT, status TEXT DEFAULT 'open', notes TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS opp_bookmarks(id INTEGER PRIMARY KEY, name TEXT, url TEXT, kind TEXT, status TEXT DEFAULT 'interested', next_check TEXT DEFAULT '', notes TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS mentor_candidates(contact_id INTEGER PRIMARY KEY, status TEXT DEFAULT 'considering', what_i_hope TEXT, ask_date TEXT DEFAULT '', notes TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS outreach_drafts(id INTEGER PRIMARY KEY, contact_id INT, template TEXT, text TEXT, status TEXT DEFAULT 'draft', ts REAL);
 CREATE TABLE IF NOT EXISTS dup_candidates(id INTEGER PRIMARY KEY, project_id INT, ref_a INT, ref_b INT, score REAL, reasons TEXT,
   relation TEXT, status TEXT DEFAULT 'pending', decided_by TEXT, ts REAL);
 """
@@ -438,7 +444,8 @@ class Store:
     def contacts(self): return self.q("SELECT * FROM contacts ORDER BY name")
 
     def delete_contact(self, cid):
-        self.x("DELETE FROM interactions WHERE contact_id=?", (cid,)); self.x("DELETE FROM contacts WHERE id=?", (cid,)); self.audit("contact_deleted", f"contact {cid}")
+        for t in ("interactions", "meetings", "mentor_candidates", "outreach_drafts"): self.x(f"DELETE FROM {t} WHERE contact_id=?", (cid,))
+        self.x("UPDATE authorship_discussions SET contact_id=NULL WHERE contact_id=?", (cid,)); self.x("DELETE FROM contacts WHERE id=?", (cid,)); self.audit("contact_deleted", f"contact {cid}")
 
     def log_interaction(self, contact_id, date, kind, summary, followup_due=""):
         if not self.q("SELECT 1 FROM contacts WHERE id=?", (contact_id,)): raise ValueError("No such contact.")
@@ -452,6 +459,90 @@ class Store:
         return self.q("SELECT i.*, c.name FROM interactions i JOIN contacts c ON c.id=i.contact_id WHERE i.followup_due!='' AND i.followup_due<=? AND i.followup_done=0 ORDER BY i.followup_due", (today,))
 
     def complete_followup(self, interaction_id): self.x("UPDATE interactions SET followup_done=1 WHERE id=?", (interaction_id,))
+
+    # ------------------------------------------------ personal networking dashboard (all local; the app never contacts anyone)
+    INTEREST_STATUS = ("idea", "exploring", "active", "paused", "done")
+    MENTOR_STATUS = ("considering", "to ask", "asked by me", "agreed", "declined", "not now")
+    AUTHORSHIP_STATUS = ("open", "agreed in principle", "agreed in writing", "to revisit", "declined")
+    OPP_STATUS = ("interested", "checking details", "preparing", "submitted by me", "declined", "expired", "not relevant")
+    DRAFT_STATUS = ("draft", "sent by me", "not sent")
+
+    def _need(self, text, what):
+        if not str(text).strip(): raise ValueError(f"{what} is required.")
+
+    @staticmethod
+    def _iso(d, what, optional=False):
+        if optional and not d: return ""
+        try: datetime.date.fromisoformat(d)
+        except (ValueError, TypeError): raise ValueError(f"{what} must be an ISO date (YYYY-MM-DD).")
+        return d
+
+    def add_interest(self, topic, discipline="", i_offer="", i_seek="", status="idea", notes=""):
+        self._need(topic, "Topic")
+        if status not in self.INTEREST_STATUS: raise ValueError("Unknown interest status.")
+        i = self.x("INSERT INTO collab_interests(topic,discipline,i_offer,i_seek,status,notes,ts) VALUES(?,?,?,?,?,?,?)", (topic.strip(), discipline, i_offer, i_seek, status, notes, time.time()))
+        self.audit("collab_interest_added", f"interest {i} (details not logged)"); return i
+    def interests(self, status=None): return self.q("SELECT * FROM collab_interests" + (" WHERE status=?" if status else "") + " ORDER BY id DESC", (status,) if status else ())
+    def set_interest_status(self, iid, status):
+        if status not in self.INTEREST_STATUS: raise ValueError("Unknown interest status.")
+        self.x("UPDATE collab_interests SET status=? WHERE id=?", (status, iid))
+
+    def add_meeting(self, contact_id, date, agenda="", notes="", decisions="", next_steps="", followup_due=""):
+        if not self.q("SELECT 1 FROM contacts WHERE id=?", (contact_id,)): raise ValueError("No such contact.")
+        self._iso(date, "Meeting date"); self._iso(followup_due, "Follow-up date", optional=True)
+        if not (agenda.strip() or notes.strip()): raise ValueError("Record an agenda or notes (what was discussed).")
+        m = self.x("INSERT INTO meetings(contact_id,date,agenda,notes,decisions,next_steps,followup_due,ts) VALUES(?,?,?,?,?,?,?,?)", (contact_id, date, agenda, notes, decisions, next_steps, followup_due, time.time()))
+        self.audit("meeting_recorded", f"meeting {m} (details not logged)"); return m
+    def meetings(self, contact_id=None): return self.q("SELECT m.*, c.name FROM meetings m JOIN contacts c ON c.id=m.contact_id" + (" WHERE m.contact_id=?" if contact_id else "") + " ORDER BY m.date DESC", (contact_id,) if contact_id else ())
+    def meeting_followups_due(self, today=None):
+        today = (today or datetime.date.today()).isoformat()
+        return self.q("SELECT m.*, c.name FROM meetings m JOIN contacts c ON c.id=m.contact_id WHERE m.followup_due!='' AND m.followup_due<=? AND m.followup_done=0 ORDER BY m.followup_due", (today,))
+    def complete_meeting_followup(self, mid): self.x("UPDATE meetings SET followup_done=1 WHERE id=?", (mid,))
+
+    def add_authorship_discussion(self, topic, contact_id=None, project_id=None, date=None, proposed_position="", proposed_roles="", status="open", notes=""):
+        self._need(topic, "Topic")
+        if status not in self.AUTHORSHIP_STATUS: raise ValueError("Unknown authorship-discussion status.")
+        if contact_id is not None and not self.q("SELECT 1 FROM contacts WHERE id=?", (contact_id,)): raise ValueError("No such contact.")
+        date = self._iso(date or datetime.date.today().isoformat(), "Date")
+        a = self.x("INSERT INTO authorship_discussions(project_id,contact_id,date,topic,proposed_position,proposed_roles,status,notes,ts) VALUES(?,?,?,?,?,?,?,?,?)", (project_id, contact_id, date, topic, proposed_position, proposed_roles, status, notes, time.time()))
+        self.audit("authorship_discussion_recorded", f"discussion {a} (details not logged)", project_id); return a
+    def authorship_discussions(self, project_id=None): return self.q("SELECT a.*, c.name AS contact_name FROM authorship_discussions a LEFT JOIN contacts c ON c.id=a.contact_id" + (" WHERE a.project_id=?" if project_id else "") + " ORDER BY a.date DESC, a.id DESC", (project_id,) if project_id else ())
+    def set_authorship_status(self, aid, status, note=""):
+        if status not in self.AUTHORSHIP_STATUS: raise ValueError("Unknown authorship-discussion status.")
+        self.x("UPDATE authorship_discussions SET status=?, notes=notes||?, ts=? WHERE id=?", (status, ("\n" + note) if note else "", time.time(), aid))
+
+    def add_opp_bookmark(self, name, url="", kind="", status="interested", next_check="", notes=""):
+        self._need(name, "Name")
+        if status not in self.OPP_STATUS: raise ValueError("Unknown opportunity status.")
+        if url and not url.startswith("https://"): raise ValueError("Use an https:// link to the OFFICIAL page.")
+        self._iso(next_check, "Next-check date", optional=True)
+        o = self.x("INSERT INTO opp_bookmarks(name,url,kind,status,next_check,notes,ts) VALUES(?,?,?,?,?,?,?)", (name.strip(), url, kind, status, next_check, notes, time.time()))
+        self.audit("opportunity_bookmarked", f"opportunity {o}"); return o
+    def opp_bookmarks(self, status=None): return self.q("SELECT * FROM opp_bookmarks" + (" WHERE status=?" if status else "") + " ORDER BY COALESCE(NULLIF(next_check,''),'9999-12-31'), id DESC", (status,) if status else ())
+    def set_opp_status(self, oid, status, next_check=""):
+        if status not in self.OPP_STATUS: raise ValueError("Unknown opportunity status.")
+        self._iso(next_check, "Next-check date", optional=True); self.x("UPDATE opp_bookmarks SET status=?, next_check=? WHERE id=?", (status, next_check, oid))
+    def opp_checks_due(self, today=None):
+        today = (today or datetime.date.today()).isoformat()
+        return self.q("SELECT * FROM opp_bookmarks WHERE next_check!='' AND next_check<=? AND status IN ('interested','checking details','preparing') ORDER BY next_check", (today,))
+
+    def set_mentor_candidate(self, contact_id, status="considering", what_i_hope="", ask_date="", notes=""):
+        if not self.q("SELECT 1 FROM contacts WHERE id=?", (contact_id,)): raise ValueError("No such contact.")
+        if status not in self.MENTOR_STATUS: raise ValueError("Unknown mentor status.")
+        self._iso(ask_date, "Ask date", optional=True)
+        self.x("INSERT INTO mentor_candidates(contact_id,status,what_i_hope,ask_date,notes,ts) VALUES(?,?,?,?,?,?) ON CONFLICT(contact_id) DO UPDATE SET status=excluded.status, what_i_hope=excluded.what_i_hope, ask_date=excluded.ask_date, notes=excluded.notes, ts=excluded.ts",
+               (contact_id, status, what_i_hope, ask_date, notes, time.time()))
+        self.audit("mentor_candidate_set", f"contact {contact_id}: {status}")
+    def mentor_candidates(self): return self.q("SELECT m.*, c.name, c.expertise, c.org FROM mentor_candidates m JOIN contacts c ON c.id=m.contact_id ORDER BY m.status, c.name")
+
+    def save_outreach_draft(self, template, text, contact_id=None):
+        self._need(template, "Template name"); self._need(text, "Text")
+        if contact_id is not None and not self.q("SELECT 1 FROM contacts WHERE id=?", (contact_id,)): raise ValueError("No such contact.")
+        d = self.x("INSERT INTO outreach_drafts(contact_id,template,text,status,ts) VALUES(?,?,?,?,?)", (contact_id, template, text, "draft", time.time())); self.audit("outreach_draft_saved", f"draft {d} (NOT sent: the app never sends messages)"); return d
+    def outreach_drafts(self, status=None): return self.q("SELECT d.*, c.name FROM outreach_drafts d LEFT JOIN contacts c ON c.id=d.contact_id" + (" WHERE d.status=?" if status else "") + " ORDER BY d.id DESC", (status,) if status else ())
+    def mark_outreach(self, did, status):
+        if status not in self.DRAFT_STATUS: raise ValueError("Unknown draft status.")
+        self.x("UPDATE outreach_drafts SET status=? WHERE id=?", (status, did))
 
     def add_credit(self, pid, person, role, note=""):
         from .templates_lib import CREDIT_ROLES
@@ -531,11 +622,11 @@ class Store:
         return self.q("SELECT * FROM resource_verifications" + (" WHERE url=?" if url else "") + " ORDER BY id DESC", (url,) if url else ())
 
     # ----------------------------------------------------------- export/backup
-    PERSONAL_TABLES = ("contacts", "interactions", "credit", "profile", "notes")
+    PERSONAL_TABLES = ("contacts", "interactions", "credit", "profile", "notes", "collab_interests", "meetings", "authorship_discussions", "opp_bookmarks", "mentor_candidates", "outreach_drafts")
 
     def backup_json(self, include_personal=True):
         """include_personal=False omits contacts, interactions, CRediT person names, profile and notes (safer for sharing with an expert/mentor)."""
-        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications"]
+        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications","collab_interests","meetings","authorship_discussions","opp_bookmarks","mentor_candidates","outreach_drafts"]
         return json.dumps({"format": "metalab-backup", "version": 1, "personal_data_included": include_personal,
                            "tables": {t: ([] if (not include_personal and t in self.PERSONAL_TABLES) else self.q(f"SELECT * FROM {t}")) for t in tables}}, indent=1)
 
@@ -545,7 +636,7 @@ class Store:
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
         cur = self.db.cursor()
-        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications"):
+        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications","collab_interests","meetings","authorship_discussions","opp_bookmarks","mentor_candidates","outreach_drafts"):
             cur.execute(f"DELETE FROM {t}")
             valid = {r[1] for r in cur.execute(f"PRAGMA table_info({t})")}
             for row in d["tables"].get(t, []):

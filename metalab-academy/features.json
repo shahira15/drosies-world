@@ -471,6 +471,33 @@
    "status": "tested",
    "evidence": "tests/test_learning.py; tests/test_lesson_audit.py",
    "blocker": "Chapter-to-module mapping is the author's judgement; depth audit is mechanical; no expert review"
+  },
+  {
+   "id": "library.encyclopedia",
+   "name": "Reference Encyclopedia: searchable effect-size definitions, formulas, assumptions, mistakes, decision trees, method comparisons, reporting guidelines, RoB instruments, troubleshooting and R/Python command reference, linked to lessons",
+   "status": "benchmarked",
+   "evidence": "tests/test_encyclopedia.py: 14 command entries executed in Python and R/metafor with identical expected numbers",
+   "blocker": "AI-drafted; not expert-reviewed"
+  },
+  {
+   "id": "library.reading_lists",
+   "name": "Curated reading list for every module (verified core references + candidate guidance/courses/tutorials/datasets/events), filters by format/discipline/level/cost/objective",
+   "status": "tested",
+   "evidence": "tests/test_knowledge.py: all 90 modules have >=3 verified references and >=1 candidate resource",
+   "blocker": "Candidate resources are unverified until a human opens the pages (tools/verify_batch.py)"
+  },
+  {
+   "id": "library.batch_verification",
+   "name": "Batch verification helper for the owner's machine (opens pages, records what the human saw)",
+   "status": "tested",
+   "evidence": "tests/test_verify_batch.py",
+   "blocker": "Must be run by a human; never verified automatically"
+  },
+  {
+   "id": "network.personal_dashboard",
+   "name": "Personal networking dashboard (local): collaboration interests, meeting records, authorship discussions, mentor shortlist, opportunity bookmarks, outreach drafts, contribution tracking; no automatic contact, no fabricated people",
+   "status": "tested",
+   "evidence": "tests/test_network_hub.py; personal tables excluded from shareable backups; names never written to the audit log"
   }
  ]
 }

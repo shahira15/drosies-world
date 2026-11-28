@@ -9,7 +9,7 @@ def _fresh_cache():
     st.cache_resource.clear(); yield; st.cache_resource.clear()
 
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Reference Encyclopedia", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 
 @pytest.mark.parametrize("page", PAGES)
@@ -133,3 +133,12 @@ def test_workspace_readiness_tab_and_simulated_review_button(tmp_path, monkeypat
     at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=120).run(); at.session_state["nav"] = "Research Workspace"; at.run()
     assert not at.exception; b = [x for x in at.button if x.label == "Run simulated review"]; assert b
     b[0].click().run(); assert not at.exception and not at.error and any("Simulated review completed" in x.value for x in at.success)
+
+
+def test_networking_dashboard_sections_render_and_save(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path); monkeypatch.setenv("METALAB_DB", str(tmp_path / "t.sqlite"))
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=120).run(); at.session_state["nav"] = "Network & Collaboration"; at.run()
+    sb = [x for x in at.selectbox if x.key == "nh_sec"][0]
+    for opt in list(sb.options):
+        [x for x in at.selectbox if x.key == "nh_sec"][0].select(opt).run(); assert not at.exception, (opt, [e.value for e in at.exception])
+    assert any("Nothing is sent by the app" in x.value for x in at.info) and {m.label for m in at.metric} >= {"Contacts", "Open authorship", "Unsent drafts"}

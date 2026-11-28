@@ -252,3 +252,19 @@ CATEGORIES = {"Free online textbook": "Textbooks", "Free online book": "Textbook
  "Research repository": "Repositories & datasets", "Research repository / project tool": "Repositories & datasets", "Code hosting": "Repositories & datasets", "Public datasets": "Repositories & datasets", "Data repository": "Repositories & datasets", "Data repository / tool": "Repositories & datasets", "Model organism database": "Repositories & datasets", "Model organism data portal": "Repositories & datasets", "Database": "Repositories & datasets", "Phylogeny resource": "Repositories & datasets", "Biodiversity data": "Repositories & datasets", "Trait database": "Repositories & datasets",
  "Ethics resources": "Integrity & ethics", "Authorship criteria": "Integrity & ethics", "Taxonomy": "Integrity & ethics", "Researcher identifier": "Integrity & ethics", "Policy resource": "Integrity & ethics", "Policy database": "Integrity & ethics", "Checklist": "Journals & publishing", "Journal directory": "Journals & publishing", "Scientific journal": "Journals & publishing", "Research group": "Organisations"}
 def category(d): return CATEGORIES.get(d["type"], "Other")
+
+
+# ======================= v0.4 expansion (see _resources_v04.py): CANDIDATES, never verified automatically =======================
+from . import _resources_v04 as _v4
+def _extend():
+    have = {d["url"] for d in RESOURCES}
+    for d in _v4.NEW_RESOURCES:
+        if d["url"] not in have: d.setdefault("verified_on", None); d.setdefault("cost", "not verified"); d.setdefault("membership", "not verified"); RESOURCES.append(d); have.add(d["url"])
+    for d in RESOURCES:
+        extra = _v4.EXTRA_MODULES.get(d["url"])
+        if extra: d["modules"] = sorted(set(d["modules"]) | set(extra))
+    for lst, new, key in ((ORGS, _v4.NEW_ORGS, "name"), (COMMUNITIES, _v4.NEW_COMMUNITIES, "name"), (OPPORTUNITY_DIRECTORIES, _v4.NEW_OPPS, "name")):
+        seen = {x["url"] for x in lst}
+        for d in new:
+            if d["url"] not in seen: d.setdefault("verified_on", None); d.setdefault("cost", "not verified"); d.setdefault("membership", "not verified"); lst.append(d); seen.add(d["url"])
+_extend()

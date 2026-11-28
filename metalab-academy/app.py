@@ -24,7 +24,7 @@ db = get_store()
 LES = lessons.load()
 PROFILE = db.profile()
 
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Reference Encyclopedia", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
 with st.sidebar.expander("🔎 Search everything", expanded=False):
     uq = st.text_input("Lessons, formulas, glossary, resources, claims, calculators...", key="usearch")
@@ -32,7 +32,7 @@ with st.sidebar.expander("🔎 Search everything", expanded=False):
         for d in LRN.search(uq, 8):
             st.markdown(f"**{d['title']}**  \n*{d['type']}* · open **{d['where']}**")
         if not LRN.search(uq, 1): st.caption("No matches. Try another word.")
-AREAS = {"Home": "Start", "Onboarding": "Learn", "Learning Academy": "Learn", "Practice": "Learn", "Coding Lab": "Learn", "Virtual Lab": "Learn", "Method Wizard": "Learn",
+AREAS = {"Home": "Start", "Onboarding": "Learn", "Learning Academy": "Learn", "Reference Encyclopedia": "Learn", "Practice": "Learn", "Coding Lab": "Learn", "Virtual Lab": "Learn", "Method Wizard": "Learn",
          "First Paper Plan": "Research", "Research Workspace": "Research", "Manuscript Studio": "Research", "Statistics Lab": "Research",
          "Knowledge Universe": "Library & people", "Network & Collaboration": "Library & people", "Quality & Expert Review": "Trust", "Status & Limitations": "Trust"}
 ICONS = {"Start": "🏠", "Learn": "📚", "Research": "🔬", "Library & people": "🌐", "Trust": "✅"}
@@ -237,6 +237,24 @@ elif page == "Learning Academy":
             st.caption(datetime.datetime.fromtimestamp(x["ts"]).strftime("%Y-%m-%d %H:%M")); st.write(x["body"])
 
 # ------------------------------------------------------------------ PRACTICE
+elif page == "Reference Encyclopedia":
+    from metalab import encyclopedia as ENC
+    st.title("Reference Encyclopedia")
+    st.caption(ENC.STATUS + ". Every entry links to the lesson(s) and app area that teach or implement it. Command entries are executed in the test-suite against R/metafor.")
+    c1_, c2_ = st.columns([3, 2]); q_ = c1_.text_input("Search formulas, definitions, assumptions, mistakes, comparisons, commands, troubleshooting...", key="enc_q")
+    kinds_ = c2_.multiselect("Type", ENC.KINDS, key="enc_k")
+    res_ = ENC.search(q_, kinds_ or None, 40) if q_ else [e for e in ENC.entries() if (not kinds_ or e["kind"] in kinds_)][:40]
+    st.write(f"{len(res_)} shown (of {len(ENC.entries())} entries)")
+    for e_ in res_:
+        with st.expander(f"{e_['kind']} · {e_['title']}"):
+            if e_.get("tex"): st.latex(e_["tex"])
+            tb_ = e_.get("table")
+            if tb_: st.dataframe(pd.DataFrame(tb_["rows"], columns=tb_["columns"]), hide_index=True, width="stretch")
+            else: st.markdown(e_["body"].replace("\n", "  \n") if e_["kind"] != "Command (R/Python)" else "")
+            if e_["kind"] == "Command (R/Python)":
+                c_ = next(c for c in ENC.COMMANDS if c["id"] == e_["command"]); st.code((c_.get("setup_r", "") + "\n" if c_.get("setup_r") else "") + c_["r"], "r"); st.code(c_["py"].replace("; ", "\n"), "python"); st.caption(f"Expected output: {c_['expected']} (checked against R/metafor in the tests)")
+            st.caption("Lessons: " + (", ".join(f"Module {n} ({curriculum.BY_ID[n]['title'][:50]})" for n in e_["lessons"]) or "-") + (f" · Where: {e_['where']}" if e_["where"] else ""))
+
 elif page == "Practice":
     st.title("Practice")
     t1, t2, t3, t4 = st.tabs(["Flashcards (spaced repetition)", "Glossary", "Bookmarks & goals", "Assessments"])
@@ -1163,15 +1181,30 @@ elif page == "Knowledge Universe":
                      hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
         st.caption("Not yet listed (nothing verified, nothing invented): specific YouTube channels, named recorded lectures, specific fellowships/grant calls/summer schools. Use the SEARCH entries and the Opportunities directory in Network & Collaboration.")
     with t2:
+        from metalab import knowledge as KN
         mid = st.selectbox("Module", [m["id"] for m in curriculum.MODULES], format_func=lambda i: f"{i}. {curriculum.BY_ID[i]['title']}")
-        rec = resources.recommend(mid)
-        st.markdown(f"**Resources tagged to Module {mid}** ({'lesson available' if mid in LES else 'outline only'})")
-        for r in rec["resources"]: st.markdown(f"- [{r['title']}]({r['url']}) - {resources.category(r)} · {r['access']} · *{r['why']}* · `{VER.status(r['url'], db)['level']}`")
-        if not rec["resources"]: st.caption("No resource tagged yet for this module.")
-        if rec["references"]:
-            st.markdown("**Verified references cited by the lesson**")
-            for r in rec["references"]: st.markdown("- " + references.link(r["key"]))
-        st.caption("Recommendations are tag-based (modules assigned by the author), not personalised or evaluated.")
+        rl = KN.reading_list(mid)
+        st.markdown(f"**Reading list for Module {mid}: {rl['title']}** ({'lesson available - AI-drafted' if mid in LES else 'outline only'})")
+        if rl["objectives"]: st.markdown("Learning objectives: " + " · ".join(rl["objectives"]))
+        st.markdown("**1. Core reading - bibliographically verified records** (cited by the lesson)")
+        for r in rl["core_verified_references"]: st.markdown("- " + references.link(r["key"]))
+        for title_, key_ in (("2. Official guidance, handbooks, textbooks, reporting and appraisal tools", "guidance"), ("3. Courses, training and video/lecture searches", "courses_videos"), ("4. Tutorials, software and package documentation", "tutorials_software"),
+                             ("5. Databases and registries", "databases_registries"), ("6. Repositories and datasets", "repositories_datasets"), ("7. Integrity, ethics and publishing", "integrity_publishing")):
+            if rl[key_]:
+                st.markdown(f"**{title_}** (candidates: not verified unless the badge says otherwise)")
+                for r in rl[key_]: st.markdown(f"- [{r['title']}]({r['url']}) · {r['level']} · {r['access']} · *{r['why']}* · `{VER.status(r['url'], db)['level']}`")
+        if rl["example_reviews"]:
+            st.markdown("**8. Example reviews / meta-research to read (verified records; not endorsements of conclusions)**")
+            for r in rl["example_reviews"]: st.markdown("- " + references.link(r["key"]) + f" - *{r['why']}*")
+        if rl["built_in_datasets"]:
+            st.markdown("**9. Practice datasets built into MetaLab**")
+            for d in rl["built_in_datasets"]: st.markdown(f"- **{d['name']}** - {d['note']} (`{d['where']}`)" + (f" · source: {references.link(d['source_ref'])}" if d["source_ref"] else " · SIMULATED"))
+        if rl["communities_events"]:
+            st.markdown("**10. Events, workshops and training directories (not opportunities; nothing asserted about dates or eligibility)**")
+            for o in rl["communities_events"]: st.markdown(f"- [{o['name']}]({o['url']}) · {o['kind']} · {o['note']}")
+        st.caption("Reading lists are tag-based (assigned by the author), not personalised or evaluated. Candidates are checked only when you verify them (tab 'Verify resources').")
+        with st.expander("Coverage audit: every module's list"):
+            st.dataframe(pd.DataFrame(KN.coverage()), hide_index=True, width="stretch")
     with t3:
         st.caption(f"{len(references.REFS)} papers. Bibliographic verification only (title/authors/journal/DOI matched in PubMed or Crossref); abstract/full-text examination is tracked per claim in Quality & Expert Review.")
         pq = st.text_input("Filter papers")
@@ -1199,7 +1232,7 @@ elif page == "Network & Collaboration":
     st.title("Network & Collaboration")
     st.info("There are no platform users, profiles, posts, matches or opportunities, and none are simulated. Real community features need authentication, moderation and hosting (see FUTURE_COMMUNITY_ARCHITECTURE.md). "
             "Below: a directory of real external organisations/communities (unverified links), a LOCAL collaborator manager for people you add yourself, CRediT tracking and templates. MetaLab never contacts anyone.")
-    tabs = st.tabs(["Directory", "My collaborators (local)", "CRediT & authorship", "Templates", "Opportunities"])
+    tabs = st.tabs(["Directory", "My collaborators (local)", "CRediT & authorship", "Templates", "Opportunities", "My networking dashboard"])
     with tabs[0]:
         st.markdown("**Organisations and societies**")
         st.dataframe(pd.DataFrame([{**{k: o.get(k, "") for k in ("name", "focus", "discipline", "url", "membership", "cost")}, "status": VER.status(o["url"], db)["level"]} for o in resources.ORGS]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
@@ -1248,6 +1281,75 @@ elif page == "Network & Collaboration":
         st.dataframe(pd.DataFrame([{**o, "status": VER.status(o["url"], db)["level"]} for o in resources.OPPORTUNITY_DIRECTORIES]), hide_index=True, width="stretch", column_config={"url": st.column_config.LinkColumn("url")})
         st.caption("Filters you will want when you add verified opportunities yourself: discipline, country, remote participation, career stage, cost, deadline, funding, eligibility - the verification ledger records the date and what you saw.")
 
+    with tabs[5]:
+        from metalab import network_hub as NH, templates_lib
+        st.info("Your private, local networking workspace. " + " ".join(NH.PRINCIPLES))
+        d_ = NH.dashboard(db); n_ = d_["counts"]; cc_ = st.columns(7)
+        for c_, (lab_, key_) in zip(cc_, (("Contacts", "contacts"), ("Interests", "interests"), ("Meetings", "meetings"), ("Open authorship", "authorship_open"), ("Mentor pipeline", "mentors_active"), ("Opportunities tracked", "opportunities_tracked"), ("Unsent drafts", "drafts_unsent"))): c_.metric(lab_, n_[key_])
+        if d_["followups_due"] or d_["opportunity_checks_due"]:
+            st.warning("Due now: " + "; ".join([f"follow-up with {f['name']} ({f['followup_due']})" for f in d_["followups_due"]] + [f"check '{o['name']}' ({o['next_check']})" for o in d_["opportunity_checks_due"]]))
+        sub_ = st.selectbox("Section", ["Collaboration interests", "Meeting records", "Authorship discussions", "Mentor shortlist", "Opportunity bookmarks", "Outreach drafts (never sent by the app)", "Contribution tracking (CRediT)"], key="nh_sec")
+        ppl_ = db.contacts(); pl_ = {c["id"]: c["name"] for c in ppl_}
+        if sub_ == "Collaboration interests":
+            with st.form("ci_f"):
+                tp_ = st.text_input("Topic / question"); ds_ = st.text_input("Discipline"); of_ = st.text_input("What I can offer"); sk_ = st.text_input("What I am looking for"); stt_ = st.selectbox("Status", db.INTEREST_STATUS); nt_ = st.text_area("Notes")
+                if st.form_submit_button("Add interest"):
+                    try: db.add_interest(tp_, ds_, of_, sk_, stt_, nt_); st.rerun()
+                    except ValueError as e_: st.error(str(e_))
+            for i_ in db.interests(): st.markdown(f"**{i_['topic']}** · {i_['discipline']} · *{i_['status']}* - offer: {i_['i_offer']} · seek: {i_['i_seek']}")
+        elif sub_ == "Meeting records":
+            if not ppl_: st.info("Add a contact first (My collaborators).")
+            else:
+                with st.form("mt_f"):
+                    cid_ = st.selectbox("Contact", list(pl_), format_func=pl_.get); dt_ = st.text_input("Date (YYYY-MM-DD)", str(datetime.date.today())); ag_ = st.text_area("Agenda"); nt_ = st.text_area("Notes"); dc_ = st.text_area("Decisions"); ns_ = st.text_area("Next steps"); fu_ = st.text_input("Follow-up due (YYYY-MM-DD, optional)")
+                    if st.form_submit_button("Record meeting"):
+                        try: db.add_meeting(cid_, dt_, ag_, nt_, dc_, ns_, fu_); st.rerun()
+                        except ValueError as e_: st.error(str(e_))
+                for m_ in db.meetings()[:30]: st.markdown(f"**{m_['date']}** · {m_['name']} - {m_['agenda'][:80]} → decisions: {m_['decisions'][:80]} · next: {m_['next_steps'][:80]}" + (f" · follow-up {m_['followup_due']}" if m_["followup_due"] and not m_["followup_done"] else ""))
+        elif sub_ == "Authorship discussions":
+            st.caption("A memory aid, not an agreement. Agree authorship in writing with the people involved (ICMJE/journal criteria).")
+            with st.form("au_f"):
+                tp_ = st.text_input("Topic (e.g. author order for review 1)"); cid_ = st.selectbox("Contact (optional)", [None] + list(pl_), format_func=lambda x: "-" if x is None else pl_[x]); pr_ = db.projects()
+                pj_ = st.selectbox("Project (optional)", [None] + [p["id"] for p in pr_], format_func=lambda x: "-" if x is None else next(p["name"] for p in pr_ if p["id"] == x))
+                pp_ = st.text_input("Proposed position"); rl_ = st.text_input("Proposed CRediT roles"); stt_ = st.selectbox("Status", db.AUTHORSHIP_STATUS); nt_ = st.text_area("Notes")
+                if st.form_submit_button("Record discussion"):
+                    try: db.add_authorship_discussion(tp_, cid_, pj_, None, pp_, rl_, stt_, nt_); st.rerun()
+                    except ValueError as e_: st.error(str(e_))
+            for a_ in db.authorship_discussions(): st.markdown(f"**{a_['date']}** · {a_['topic']} · with {a_['contact_name'] or '-'} · *{a_['status']}* - {a_['proposed_position']} / {a_['proposed_roles']}")
+        elif sub_ == "Mentor shortlist":
+            if not ppl_: st.info("Add a contact first.")
+            else:
+                with st.form("mn_f"):
+                    cid_ = st.selectbox("Contact", list(pl_), format_func=pl_.get); stt_ = st.selectbox("Status", db.MENTOR_STATUS); hp_ = st.text_input("What I hope to learn"); ad_ = st.text_input("Date I asked (optional)"); nt_ = st.text_area("Notes")
+                    if st.form_submit_button("Save"):
+                        try: db.set_mentor_candidate(cid_, stt_, hp_, ad_, nt_); st.rerun()
+                        except ValueError as e_: st.error(str(e_))
+                for m_ in db.mentor_candidates(): st.markdown(f"**{m_['name']}** ({m_['org']}) · *{m_['status']}* - hope: {m_['what_i_hope']}")
+        elif sub_ == "Opportunity bookmarks":
+            st.caption("Bookmarks to OFFICIAL pages you will check yourself. The app asserts no dates, fees or eligibility and never submits anything.")
+            with st.form("op_f"):
+                nm_ = st.text_input("Name"); ur_ = st.text_input("Official page (https://...)"); kd_ = st.text_input("Kind (conference, funder, training...)"); stt_ = st.selectbox("Status", db.OPP_STATUS); nc_ = st.text_input("Next check (YYYY-MM-DD, optional)"); nt_ = st.text_area("What I saw / notes")
+                if st.form_submit_button("Bookmark"):
+                    try: db.add_opp_bookmark(nm_, ur_, kd_, stt_, nc_, nt_); st.rerun()
+                    except ValueError as e_: st.error(str(e_))
+            for o_ in db.opp_bookmarks(): st.markdown(f"[{o_['name']}]({o_['url']}) · {o_['kind']} · *{o_['status']}*" + (f" · next check {o_['next_check']}" if o_["next_check"] else ""))
+        elif sub_.startswith("Outreach"):
+            tn_ = st.selectbox("Template", list(templates_lib.T), key="nh_tpl"); import re as _re
+            ph_ = sorted(set(_re.findall(r"\[([^\[\]]+)\]", templates_lib.T[tn_]))); vals_ = {k_: st.text_input(k_, key=f"ph_{tn_}_{k_}") for k_ in ph_[:8]}
+            txt_ = NH.fill_template(tn_, **vals_); st.text_area("Draft (copy it; send it yourself)", txt_, height=220, key=f"dr_{tn_}")
+            if NH.unfilled(txt_): st.caption("Still to fill: " + ", ".join(NH.unfilled(txt_)))
+            cid_ = st.selectbox("For contact (optional)", [None] + list(pl_), format_func=lambda x: "-" if x is None else pl_[x], key="dr_c")
+            if st.button("Save as draft"):
+                try: db.save_outreach_draft(tn_, txt_, cid_); st.success("Saved as a draft. The app does not send messages.")
+                except ValueError as e_: st.error(str(e_))
+            for d2_ in db.outreach_drafts(): st.markdown(f"**{d2_['template']}** · {d2_['name'] or '-'} · *{d2_['status']}*")
+        else:
+            pj_ = project_picker("nh_p")
+            if pj_:
+                cs_ = NH.contribution_summary(db, pj_["id"]); st.write(f"{cs_['n_entries']} CRediT entries")
+                if cs_["by_person"]: st.dataframe(pd.DataFrame([{"person": p, "roles": ", ".join(r)} for p, r in cs_["by_person"].items()]), hide_index=True)
+                st.caption("Add entries in the 'CRediT & authorship' tab; roles must describe what was actually done.")
+
 # ------------------------------------------------------ QUALITY / EXPERT REVIEW
 elif page == "Quality & Expert Review":
     from metalab import claims as CL, expert as EX
@@ -1291,7 +1393,7 @@ else:
 
 
 # ------------------------------------------------------- cross-page "what next" links (consistent footer)
-NEXT = {"Home": ["Onboarding", "Learning Academy", "First Paper Plan"], "Onboarding": ["Method Wizard", "Learning Academy"], "Learning Academy": ["Practice", "Coding Lab", "First Paper Plan"],
+NEXT = {"Home": ["Onboarding", "Learning Academy", "First Paper Plan"], "Onboarding": ["Method Wizard", "Learning Academy"], "Learning Academy": ["Reference Encyclopedia", "Practice", "Coding Lab", "First Paper Plan"], "Reference Encyclopedia": ["Learning Academy", "Statistics Lab", "Coding Lab"],
         "Practice": ["Learning Academy", "Virtual Lab"], "Coding Lab": ["Statistics Lab", "Learning Academy"], "Virtual Lab": ["Research Workspace", "Coding Lab"],
         "Method Wizard": ["Learning Academy", "Statistics Lab"], "First Paper Plan": ["Research Workspace", "Learning Academy", "Knowledge Universe"],
         "Research Workspace": ["Manuscript Studio", "Statistics Lab", "Virtual Lab"], "Manuscript Studio": ["Research Workspace", "Quality & Expert Review"],

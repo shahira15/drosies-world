@@ -139,3 +139,8 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `welch2012`: Welch et al. PRISMA-Equity 2012 Extension: Reporting Guidelines for Systematic Reviews with a Focus on Health Equity. PLoS Medicine 2012;9, e1001333. DOI: 10.1371/journal.pmed.1001333 · PMID None
 - `skivington2021`: Skivington et al. A new framework for developing and evaluating complex interventions: update of Medical Research Council guidance. BMJ 2021;n2061. DOI: 10.1136/bmj.n2061 · PMID None
 - `pfadenhauer2017`: Pfadenhauer et al. Making sense of complexity in context and implementation: the Context and Implementation of Complex Interventions (CICI) framework. Implementation Science 2017;12. DOI: 10.1186/s13012-017-0552-5 · PMID None
+- `hasselblad1998`: Hasselblad Meta-analysis of Multitreatment Studies. Medical Decision Making 1998;18, 37-43. DOI: 10.1177/0272989x9801800110 · PMID None
+- `berkey1998`: Berkey et al. Meta-analysis of multiple outcomes by regression with random effects. Statistics in Medicine 1998;17, 2537-2550. DOI: 10.1002/(sici)1097-0258(19981130)17:22<2537::aid-sim953>3.0.co;2-c · PMID None
+- `konstantopoulos2011`: Konstantopoulos Fixed effects and variance components estimation in three-level meta-analysis. Research Synthesis Methods 2011;2, 61-76. DOI: 10.1002/jrsm.35 · PMID None
+- `moura2021`: Rios Moura et al. Assortative mating in space and time: patterns and biases. Ecology Letters 2021;24, 1089-1102. DOI: 10.1111/ele.13690 · PMID None
+- `nielweise2007`: Niël-Weise et al. Anti-infective-treated central venous catheters: a systematic review of randomized controlled trials. Intensive Care Medicine 2007;33, 2058-2068. DOI: 10.1007/s00134-007-0897-3 · PMID None

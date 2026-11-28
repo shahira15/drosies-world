@@ -89,7 +89,7 @@ MetaLab never deletes: duplicates are flagged and reversible, and every decision
  controversies=["Acceptable similarity thresholds.","Whether to screen preprints separately."],
  decision_tree=[("Same DOI/PMID?","Exact duplicate."),("Similar title, close year, same author?","Candidate: human review."),("Different versions of one work?","Link as reports of one study.")],
  exercises=["In the Virtual Lab, run exact then fuzzy dedup and explain each decision.","Find a preprint/article pair in your field and link them.","Draft your dedup methods paragraph."],
- integrity="Never discard records silently; report counts at each step.", further=["bramer2016dedup","page2021ee"],
+ integrity="Never discard records silently; report counts at each step.", further=["bramer2016dedup","page2021ee", "gusenbauer2020"],
  application="**Milestone 6:** document the dedup procedure and counts for PRISMA.", checklist=["Exact then fuzzy with human review","Reports linked to studies","Counts recorded","Audit trail kept"],
  quiz=[dict(q="A preprint and its published article should be...", opts=["Both counted as separate studies","Linked as reports of one study","Deleted","Merged without a record"], ans=1, why="One study, two reports."),
   dict(q="Fuzzy matches are...", opts=["Merged automatically","Candidates requiring human confirmation","Ignored","Always wrong"], ans=1, why="Risk of false positives."),
