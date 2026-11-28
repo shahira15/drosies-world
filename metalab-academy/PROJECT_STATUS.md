@@ -4,5 +4,5 @@
 - **Research readiness:** end-to-end fictional review passes with independent R and exported-CSV cross-checks; readiness checker and trace report in the Workspace.
 - **Learning:** Coding Lab (11 tutorials), 6 Virtual Lab scenarios + fictional Nx-7 review, drills/method/interpretation banks, final assessment, capstone rubric, 789 flashcards, formula sheets, practice datasets, internal learning record (not a certificate).
 - **Library/network:** reading lists for all modules; 151 candidate resources, 28 orgs, 17 communities, 17 opportunity directories (all unverified; batch verification tool provided); 142 bibliographically verified papers; personal networking dashboard (local, nothing is ever sent).
-- **Quality:** 824 tests; axe-core 28 views (1 minor third-party violation); security/privacy tests; expert packages for 8 areas.
+- **Quality:** 846 tests; axe-core 28 views (1 minor third-party violation); security/privacy tests; expert packages for 8 areas.
 - **First paper:** 14 milestones + 32-search Topic Explorer (no topic chosen).

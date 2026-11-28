@@ -9,7 +9,7 @@
 - **Networking:** personal local dashboard (interests, meetings, authorship discussions, mentor shortlist, opportunity bookmarks, outreach drafts, contribution tracking); no automatic contact; personal tables excluded from shareable backups; names never written to the audit log.
 - **Expert review:** eight area packages (statistics, searching, SR methodology, risk of bias, education, disciplines, usability/accessibility, integrity/privacy) + per-lesson packages + ZIP with INDEX.
 - **Verification records:** 142 bibliographically verified references (+45); 72 tracked claims (abstract-level where stated); 21 logged corrections including defects found by the benchmarks.
-- **Quality:** 824 tests; browser audit (axe-core in Chromium) of 28 page/tab views: 1 minor violation in Streamlit's own file-uploader component; keyboard walk unchanged.
+- **Quality:** 846 tests; browser audit (axe-core in Chromium) of 28 page/tab views: 1 minor violation in Streamlit's own file-uploader component; keyboard walk unchanged.
 ## 0.3.0 (2026-11-27)
 - Statistics: advanced methods benchmarked vs R/metafor (Mantel-Haenszel, Peto, Egger/Begg, cumulative, Q-profile CI, influence diagnostics, three-level REML + CR1, IRR, prevalence transforms, design effect); Statistics Lab "Advanced methods" tab; p-value-to-SE conversion.
 - Academy: lessons expanded from 12 to 52 (milestone-critical modules, discipline modules, proposed modules 85-87); Coding Lab (11 Python/R tutorials); Virtual Lab scenarios for clinical, plant, microbiology, ecology, education (+ preclinical); assessments, personal/discipline pathways, notes bundles.
