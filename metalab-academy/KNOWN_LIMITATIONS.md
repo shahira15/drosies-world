@@ -1,6 +1,6 @@
 # Known limitations register (v0.4, 2026-11-28)
 **Curriculum**
-1. All 90 registered modules have lessons, but they are AI-drafted and NOT expert-reviewed; a mechanical depth audit rates 47 as substantive drafts and 43 as thin drafts (see Quality & Expert Review). 'Written' does not mean complete, correct or sufficient.
+1. All 90 registered modules have lessons, but they are AI-drafted and NOT expert-reviewed; all 90 pass a deliberately low mechanical depth audit (>= 450 words, numbers, quiz, code, references; see Quality & Expert Review). 'Written' and 'passes the audit' do not mean complete, correct or sufficient.
 2. The Cochrane Handbook v6 coverage audit uses chapter TITLES verified in Crossref; chapter content was not read and the chapter-to-module mapping is the author's judgement. Uncovered or thin: patient-reported outcomes (ch. 18), economic evidence (ch. 20), prospective meta-analysis (ch. 22).
 3. Lesson claims: 72 tracked; 44 abstract-supported, 18 partial (title-level), 10 unverified; most cited papers were checked bibliographically only. No lesson, question or claim has human expert review.
 4. Coding Lab runs code locally in a subprocess (not a security sandbox; not in-browser); R tutorials need Rscript + metafor. No video content.

@@ -10,16 +10,22 @@ def test_tier_is_consistent_with_failing_criteria():
         assert (r["tier"] == "substantive draft") == (r["failing"] == "-")
         for f in ([] if r["failing"] == "-" else r["failing"].split(", ")): assert f in A.CRITERIA
 
-def test_new_v04_lessons_are_substantive():
+def test_all_lessons_pass_the_mechanical_criteria_after_v04_deepening():
     got = {r["module"]: r for r in A.audit()}
-    for n in (24, 25, 26, 29, 30, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 54, 56, 57, 58, 60, 64, 66, 67, 68, 69, 70, 71, 72, 73, 79, 80, 81, 83, 84, 88, 89, 90):
-        if n in (31,): continue
-        assert got[n]["tier"] == "substantive draft", (n, got[n]["failing"])
+    for n, r in got.items(): assert r["tier"] == "substantive draft", (n, r["failing"])
+    assert any(r["not_applicable"] != "-" for r in got.values())          # process/concept lessons have waived numeric criteria, shown explicitly
 
-def test_thin_lessons_are_reported_not_hidden():
-    assert A.summary()["thin"] > 0          # the backlog is visible; if it reaches 0 this test should be revisited deliberately, not silently passed
+def test_audit_is_a_low_bar_and_says_so():
+    s = A.summary(); assert "not that it is correct" in s["note"] and s["expert_reviewed"] == 0
+    assert A.CRITERIA["length"].endswith(">= 450 words")          # the thresholds are explicit and modest; passing them proves little about quality
 
 def test_a_trivial_lesson_fails_the_audit():
     L = dict(id=999, title="t", plain="x", intermediate="y", advanced="z", worked_example="none", why="w", integrity="i", application="a", mistakes=["m"], exercises=["e"], checklist=["c"], controversies=["c"],
-             quiz=[dict(q="q", opts=["a", "b"], ans=0, why="")], misconceptions=[("a", "b")], assumptions=[], further=[], coding=None)
+             quiz=[dict(q="q", opts=["a", "b"], ans=0, why="")], misconceptions=[("a", "b")], assumptions=[], further=[], coding=None, formulas=[dict(name="f", tex="x", symbols={})])
     r = A.audit_lesson(999, L, set()); assert r["tier"] == "thin draft" and "length" in r["failing"] and "numeric_check" in r["failing"] and "code" in r["failing"]
+
+
+def test_conceptual_lessons_waive_numeric_criteria_explicitly():
+    L = dict(id=998, title="t", plain="x " * 600, intermediate="y", advanced="z", worked_example="no numbers", why="w", integrity="i", application="a", mistakes=["m1", "m2", "m3"], exercises=["e1", "e2", "e3"], checklist=["c"], controversies=["c"],
+             quiz=[dict(q="q", opts=["a", "b"], ans=0, why="w")] * 5, misconceptions=[("a", "b"), ("c", "d")], assumptions=["a1", "a2"], further=["page2021", "higgins2002", "viechtbauer2010"], coding=None, formulas=[])
+    r = A.audit_lesson(998, L, {998}); assert r["tier"] == "substantive draft" and set(r["not_applicable"].split(", ")) == {"worked_numbers", "numeric_check", "code"}

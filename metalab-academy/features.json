@@ -469,7 +469,7 @@
    "id": "curriculum.handbook_audit",
    "name": "Curriculum coverage audit against the 26 Cochrane Handbook v6 chapters (titles verified in Crossref; content not read) + mechanical lesson-depth audit",
    "status": "tested",
-   "evidence": "tests/test_learning.py; tests/test_lesson_audit.py",
+   "evidence": "tests/test_learning.py; tests/test_lesson_audit.py; tests/test_lessons_ext.py (29 thin lessons deepened with code-verified numbers)",
    "blocker": "Chapter-to-module mapping is the author's judgement; depth audit is mechanical; no expert review"
   },
   {

@@ -7,12 +7,12 @@ from . import lessons, claims, references
 
 CRITERIA = {
     "length": "all lesson text (explanations, worked example, mistakes, exercises, quiz) >= 450 words",
-    "worked_numbers": "worked example contains >= 3 numbers",
-    "numeric_check": ">= 1 quiz item flagged numeric (answer recomputed by a test)",
+    "worked_numbers": "worked example contains >= 3 numbers (waived for lessons without formulas)",
+    "numeric_check": ">= 1 quiz item flagged numeric (answer recomputed by a test); waived for lessons without formulas (process/concept lessons)",
     "quiz": ">= 5 quiz items, each with an explanation",
     "assumptions": ">= 2 stated assumptions or an explicit 'none' reason",
     "mistakes": ">= 3 common mistakes and >= 2 misconceptions",
-    "code": "runnable coding snippet (Python is executed by the test-suite)",
+    "code": "runnable coding snippet (Python is executed by the test-suite); waived for lessons without formulas",
     "references": ">= 3 verified references",
     "claim_record": ">= 1 registered claim OR every reference is a bibliographic-only record (stated)",
     "exercises": ">= 3 exercises and a research-application note",
@@ -28,18 +28,19 @@ def _words(L):
 def audit_lesson(n, L, claim_ids):
     c = {}
     c["length"] = _words(L) >= 450
-    c["worked_numbers"] = len(_num.findall(L["worked_example"])) >= 3
-    c["numeric_check"] = any(q.get("numeric") for q in L["quiz"])
+    quantitative = bool(L.get("formulas"))                      # lessons that teach a formula must show numbers, a numeric check and code; process/concept lessons are waived
+    c["worked_numbers"] = (len(_num.findall(L["worked_example"])) >= 3) if quantitative else None
+    c["numeric_check"] = any(q.get("numeric") for q in L["quiz"]) if quantitative else None          # None = not applicable (conceptual lesson)
     c["quiz"] = len(L["quiz"]) >= 5 and all(q.get("why") for q in L["quiz"])
     c["assumptions"] = len(L["assumptions"]) >= 2 or n in (24,)
     c["mistakes"] = len(L["mistakes"]) >= 3 and len(L["misconceptions"]) >= 2
-    c["code"] = bool(L.get("coding"))
+    c["code"] = bool(L.get("coding")) if quantitative else None
     c["references"] = sum(1 for r in L["further"] if r in references.REFS and references.REFS[r].get("verified")) >= 3
     c["claim_record"] = n in claim_ids or all(references.REFS[r].get("verification") == "bibliographic" for r in L["further"] if r in references.REFS)
     c["exercises"] = len(L["exercises"]) >= 3 and bool(L.get("application"))
-    failing = [k for k, v in c.items() if not v]
+    failing = [k for k, v in c.items() if v is False]; waived = [k for k, v in c.items() if v is None]
     return dict(module=n, title=L["title"], words=_words(L), refs=len(L["further"]), quiz_items=len(L["quiz"]), numeric_quiz=sum(bool(q.get("numeric")) for q in L["quiz"]),
-                tier="substantive draft" if not failing else "thin draft", failing=", ".join(failing) or "-", expert_reviewed=False)
+                tier="substantive draft" if not failing else "thin draft", failing=", ".join(failing) or "-", not_applicable=", ".join(waived) or "-", expert_reviewed=False)
 
 def audit():
     L = lessons.load(); claim_ids = {c["lesson"] for c in claims.CLAIMS}

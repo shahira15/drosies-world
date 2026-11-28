@@ -7,7 +7,7 @@
 4. Send **one area package** (Quality & Expert Review > Expert review packages, or the ZIP) to a suitable expert per area; nothing is expert-reviewed yet.
 5. Licence choice (LICENSE_DECISION.md); public deployment, registration, submission, contacting anyone remain yours.
 **Development queue (independent work):**
-- **Deepen the 43 thin lessons** (list in Quality & Expert Review > Curriculum coverage audit): priority = 34, 36, 37, 50, 51, 52, 53, 74-78 (needed for the first paper), then the rest.
+- **Deepen lessons further after expert feedback**: the mechanical audit is passed by all 90, but the shortest (check word counts in Quality & Expert Review) remain brief; expert reviewers will say where depth is really missing.
 - Statistics: node-splitting/design-by-treatment inconsistency tests, HSROC, shared-control V-matrix builder, selection models, GLMM rare-event, Guyot reconstruction (all currently external-only); cross-check against `meta`, `netmeta`, `mada`, `bayesmeta` once installable.
 - Handbook chapters with no module: 18 (patient-reported outcomes), 20 (economic evidence), 22 (prospective meta-analysis).
 - Manuscript Studio: PDF export, citation styles, GRADE/SoF builder, journal comparison, peer-review response workspace.
