@@ -6,8 +6,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent; sys.path.insert(0, str(ROOT))
 from playwright.sync_api import sync_playwright
 from axe_playwright_python.sync_playwright import Axe
-PAGES = ["Home", "Onboarding", "Learning Academy", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
+PAGES = ["Home", "Onboarding", "Learning Academy", "Reference Encyclopedia", "Practice", "Coding Lab", "Virtual Lab", "Method Wizard", "Research Workspace", "Manuscript Studio", "First Paper Plan",
          "Statistics Lab", "Knowledge Universe", "Network & Collaboration", "Quality & Expert Review", "Status & Limitations"]
+# tabs that contain v0.4 views (axe only scans the visible tab, so each is opened and scanned separately)
+EXTRA_TABS = {"Statistics Lab": ["Advanced methods II (v0.4)"], "Research Workspace": ["Readiness & traceability"], "Network & Collaboration": ["My networking dashboard"],
+              "Practice": ["Drills & exercises", "Final assessment", "Capstone & learning record", "Datasets & formula sheets"], "Knowledge Universe": ["Recommended for a lesson/task", "Verify resources (local workflow)"]}
 def chromium():
     c = glob.glob("/opt/pw-browsers/chromium-*/chrome-linux*/chrome") + glob.glob("/opt/pw-browsers/chromium_headless_shell-*/chrome-linux*/headless_shell")
     return c[0] if c else None
@@ -41,6 +44,15 @@ def main(out):
                     if os.environ.get("AUDIT_SHOTS") and name in ("Home", "Manuscript Studio", "Research Workspace"): pg.screenshot(path=str(ROOT / "audit" / f"shot_{vp_name}_{name.replace(' ', '_')}.png"))
                     try: pass
                     except Exception as e: report["pages"][f"{vp_name}:{name}"] = {"error": "could not open: " + str(e)[:80]}; continue
+                    for tab in ([None] + (EXTRA_TABS.get(name, []) if vp_name == "desktop" else [])):
+                        if tab:
+                            try: pg.get_by_role("tab", name=tab).first.click(timeout=4000); pg.wait_for_timeout(1800)
+                            except Exception as e: report["pages"][f"{vp_name}:{name} > {tab}"] = {"error": "could not open tab: " + str(e)[:80]}; continue
+                        label = f"{vp_name}:{name}" + (f" > {tab}" if tab else "")
+                        if os.environ.get("AUDIT_SHOTS") and tab: pg.screenshot(path=str(ROOT / "audit" / f"shot_{label.replace(' ', '_').replace(':', '_').replace('>', '').replace('&', 'and').replace('(', '').replace(')', '').replace('/', '_')}.png"), full_page=False)
+                        res = axe.run(pg); v = res.response["violations"]
+                        report["pages"][label] = dict(violations=[dict(id=x["id"], impact=x["impact"], help=x["help"], nodes=len(x["nodes"]), example=(x["nodes"][0]["html"][:140] if x["nodes"] else "")) for x in v], passes=len(res.response["passes"]))
+                    continue
                     res = axe.run(pg); v = res.response["violations"]
                     report["pages"][f"{vp_name}:{name}"] = dict(violations=[dict(id=x["id"], impact=x["impact"], help=x["help"], nodes=len(x["nodes"]), example=(x["nodes"][0]["html"][:140] if x["nodes"] else "")) for x in v], passes=len(res.response["passes"]))
                 if vp_name == "desktop":   # keyboard walk on Home

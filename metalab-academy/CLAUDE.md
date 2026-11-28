@@ -17,3 +17,10 @@ Source of truth: the master specification given by the user (MetaLab Academy). R
 - Claims: add to `metalab/claims.json`; corrections to `metalab/corrections.json`; regenerate docs with `tools/gen_docs.py` and `tools/gen_deps.py`.
 - Virtual Lab data is FICTIONAL (metalab/vlab.py) and must stay labelled; never mix with real projects.
 - Do not choose a licence, deploy publicly, register, submit, or contact anyone without the owner's explicit approval.
+
+## v0.4 additions
+- New modules: `advanced2.py` (advanced methods, benchmarked via `validation/make_reference_v04.R`), `pipeline.py` (end-to-end review, readiness, trace), `encyclopedia.py`, `knowledge.py` (+ `_resources_v04.py`), `network_hub.py`, `learning_lab.py`, `lesson_audit.py`, `expert.py` area packages, `tools/verify_batch.py`.
+- **Audit reference scripts before trusting them**: v0.4 found silent errors in the R reference itself (trimfill `control` clash, DTA boundary, name collision). Assert every reference section is non-error.
+- Lesson numbers must come from code or the R reference (tests/test_lessons_b4-b6); abstract-level claims go to `claims.json`; new references via `refs_wanted.json` + `tools/verify_refs.py` (Crossref) and PubMed MCP.
+- Keep verification levels separate; candidates stay `verified_on=None`; the app never contacts anyone; the learning record is never a certificate; the simulation verifier is always labelled fictional.
+- NMA `higher_is_better` is a REQUIRED argument (a default once ranked the wrong way).

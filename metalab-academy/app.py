@@ -40,7 +40,7 @@ def goto(p): st.session_state["nav"] = p
 page = st.sidebar.radio("MetaLab Academy", PAGES, key="nav", format_func=lambda p: f"{ICONS[AREAS[p]]} {p}")
 st.caption(f"{ICONS[AREAS[page]]} {AREAS[page]}  ›  {page}")
 st.sidebar.markdown("<p style='color:#3d434d;font-size:0.85rem'>Learn. Discover. Analyze. Collaborate. Publish.</p>", unsafe_allow_html=True)
-st.sidebar.info("v0.3 · local-first · no accounts, no network calls. Lessons are AI-drafted, not expert-reviewed; statistics are benchmarked vs R/metafor but not expert-validated. See Status & Limitations.")
+st.sidebar.info("v0.4 · local-first · no accounts, no network calls. Lessons are AI-drafted, not expert-reviewed; statistics are benchmarked vs R/metafor but not expert-validated. See Status & Limitations.")
 DISCLAIM = "AI-drafted educational content; verify against primary sources. Not accredited instruction."
 
 def project_picker(key="proj"):
@@ -257,7 +257,7 @@ elif page == "Reference Encyclopedia":
 
 elif page == "Practice":
     st.title("Practice")
-    t1, t2, t3, t4 = st.tabs(["Flashcards (spaced repetition)", "Glossary", "Bookmarks & goals", "Assessments"])
+    t1, t2, t3, t4, t5, t6, t7, t8 = st.tabs(["Flashcards (spaced repetition)", "Glossary", "Bookmarks & goals", "Assessments", "Drills & exercises", "Final assessment", "Capstone & learning record", "Datasets & formula sheets"])
     with t1:
         allc = {c["key"]: c for c in LRN.cards()}
         due, new = db.cards_due(list(allc))
@@ -309,6 +309,55 @@ elif page == "Practice":
                     for f_ in AS.feedback(qs, ans):
                         st.markdown(f"{'✅' if f_['correct'] else '❌'} Module {f_['module']}: right answer **{f_['right']}** - {f_['why']}")
         else: st.info("Pick at least one module with a written lesson.")
+
+    from metalab import learning_lab as LLB
+    with t5:
+        st.caption("Seeded, auto-graded exercises. Numeric answers are computed by code; distractors are typical mistakes (explained after you answer). Self-assessment only.")
+        ex_kind = st.radio("Type", ["Calculation drill", "Method selection", "Interpretation (BCG results)"], horizontal=True, key="ex_kind")
+        if ex_kind == "Calculation drill":
+            dk = st.selectbox("Drill", LLB.DRILLS, key="dk"); dseed = st.number_input("Seed", 1, 99999, 1, key="dseed"); items_ = [LLB.drill(dk, int(dseed) + i) for i in range(3)]
+        elif ex_kind == "Method selection":
+            items_ = [LLB.method_item(i, 1) for i in range(len(LLB.METHOD_ITEMS))]
+        else: items_ = LLB.interpretation_items()
+        with st.form(f"exf_{ex_kind}_{len(items_)}"):
+            pk_ = [st.radio(f"{i+1}. {q['q']}", q["opts"], index=None, key=f"exq_{ex_kind}_{dk if ex_kind.startswith('Calc') else ''}_{i}") for i, q in enumerate(items_)]
+            if st.form_submit_button("Check answers"):
+                for q, p_ in zip(items_, pk_): st.markdown(f"{'✅' if p_ == q['opts'][q['ans']] else '❌'} right answer **{q['opts'][q['ans']]}** - {q['why']} (Module {q.get('lesson')})")
+    with t6:
+        st.warning("**Final comprehensive assessment** (self-administered, unproctored; internal 80% benchmark in every section). " + LLB.NOT_A_CERTIFICATE)
+        fseed = st.number_input("Exam seed (same seed = same exam)", 1, 99999, 1, key="fseed"); fq = LLB.final_exam(int(fseed)); st.write(f"**{len(fq)} questions** across {len(LLB.SECTIONS)} sections and all 18 curriculum parts.")
+        with st.form(f"final_{fseed}"):
+            fp = [st.radio(f"{i+1}. [{q['section']}] {q['q']}", q["opts"], index=None, key=f"fq{fseed}_{i}") for i, q in enumerate(fq)]
+            if st.form_submit_button("Submit final assessment"):
+                fa = [q["opts"].index(p_) if p_ is not None else None for q, p_ in zip(fq, fp)]; fr = LLB.score_final(fq, fa)
+                db.record_exam("final", int(fseed), fr["total"], fr["correct"], {k: list(v) for k, v in fr["by_section"].items()})
+                (st.success if fr["passed_internal_benchmark"] else st.warning)(f"Score {fr['correct']}/{fr['total']} ({fr['pct']:.0%}). " + ("Internal benchmark reached in every section." if fr["passed_internal_benchmark"] else "Below the internal benchmark in: " + (", ".join(fr["weak_sections"]) or "overall") + "."))
+                st.dataframe(pd.DataFrame([{"section": k, "correct": v[0], "of": v[1]} for k, v in fr["by_section"].items()]), hide_index=True)
+                st.dataframe(pd.DataFrame([{"curriculum part": k, "correct": v[0], "of": v[1]} for k, v in fr["by_part"].items()]), hide_index=True)
+                if fr["weak_modules"]: st.markdown("Review: " + ", ".join(f"Module {m}" for m in fr["weak_modules"][:30]))
+        hist = db.exam_history("final")
+        if hist: st.dataframe(pd.DataFrame([{"seed": h["seed"], "correct": h["correct"], "total": h["total"], "when": datetime.datetime.fromtimestamp(h["ts"]).strftime("%Y-%m-%d %H:%M")} for h in hist]), hide_index=True)
+    with t7:
+        st.warning(LLB.NOT_A_CERTIFICATE)
+        st.markdown("**Simulated capstone rubric** (13 items x 0-2; self-scored with a note naming your evidence). Complete the fictional end-to-end review first (Research Workspace > Readiness & traceability), then score your own real review.")
+        cur_ = db.capstone_items()
+        with st.form("cap_f"):
+            sc_ = {k: (st.selectbox(lab + (" [blocker]" if b else ""), [0, 1, 2], index=int(cur_.get(k, {}).get("score", 0)), key=f"cs_{k}"), st.text_input("Evidence / note", cur_.get(k, {}).get("note", ""), key=f"cn_{k}")) for k, lab, b in LLB.RUBRIC}
+            if st.form_submit_button("Save scores"):
+                try:
+                    for k, (v_, n_) in sc_.items():
+                        if k in cur_ or v_ or n_: db.set_capstone(k, int(v_), n_)
+                    st.rerun()
+                except ValueError as e_: st.error(str(e_))
+        cs_ = LLB.capstone_status(db.capstone_items()); st.metric("Capstone self-score", f"{cs_['total']}/{cs_['max']}")
+        if cs_["blockers"]: st.error("Blockers (score 0): " + "; ".join(cs_["blockers"]))
+        st.caption(cs_["note"])
+        st.download_button("Download internal learning record (Markdown)", LLB.learning_record(db), "metalab_learning_record.md")
+        with st.expander("Preview"): st.markdown(LLB.learning_record(db))
+    with t8:
+        st.download_button("Practice datasets (ZIP, with provenance README)", LLB.datasets_zip(), "metalab_practice_datasets.zip")
+        tr_ = st.selectbox("Formula sheet for", ["All modules"] + list(AS.DISCIPLINE_TRACKS), key="fs_tr"); sheet_ = LLB.formula_sheet(None if tr_ == "All modules" else tr_)
+        st.download_button("Download formula sheet (Markdown)", sheet_, "formula_sheet.md"); st.markdown(sheet_[:6000])
 
 # --------------------------------------------------------------- CODING LAB
 elif page == "Coding Lab":
@@ -381,7 +430,7 @@ elif page == "Method Wizard":
     st.title("Method-selection wizard")
     st.warning("Rule-based prompts with explicit assumptions. **Not a substitute for scientific judgement or statistical advice.** They tell you what to read and discuss, and what MetaLab cannot do.")
     c1, c2 = st.columns(2)
-    design = c1.selectbox("Main study design of the evidence", ["randomised experiments", "observational", "diagnostic accuracy", "qualitative", "mixed/other"])
+    design = c1.selectbox("Main study design of the evidence", ["randomised experiments", "observational", "diagnostic accuracy", "network of several interventions", "qualitative", "mixed/other"])
     outcome = c2.selectbox("Outcome type", ["continuous (same scale)", "continuous (different scales)", "continuous ratio-scale, positive (e.g. lifespan, biomass)", "binary", "count / rate", "time-to-event", "correlation", "proportion / prevalence"])
     c3, c4, c5 = st.columns(3)
     k = c3.number_input("Expected number of studies (k)", 0, 500, 8)
@@ -393,6 +442,7 @@ elif page == "Method Wizard":
     st.markdown("**Effect measure(s):** " + "; ".join(w["measures"]))
     if w["models"]: st.markdown("**Analytic options:**\n" + "\n".join(f"- {m}" for m in w["models"]))
     for c_ in w["cautions"]: st.warning(c_)
+    for a_ in w["available"]: st.success("Available in MetaLab: " + a_)
     for n_ in w["not_supported"]: st.error("Not supported by MetaLab: " + n_)
     st.markdown("**Learn first:** " + ", ".join(f"Module {i} ({'lesson available' if i in LES else 'outline only'})" for i in w["lessons"]))
     with st.expander("Assumptions behind this suggestion"):
@@ -1285,7 +1335,7 @@ elif page == "Network & Collaboration":
         from metalab import network_hub as NH, templates_lib
         st.info("Your private, local networking workspace. " + " ".join(NH.PRINCIPLES))
         d_ = NH.dashboard(db); n_ = d_["counts"]; cc_ = st.columns(7)
-        for c_, (lab_, key_) in zip(cc_, (("Contacts", "contacts"), ("Interests", "interests"), ("Meetings", "meetings"), ("Open authorship", "authorship_open"), ("Mentor pipeline", "mentors_active"), ("Opportunities tracked", "opportunities_tracked"), ("Unsent drafts", "drafts_unsent"))): c_.metric(lab_, n_[key_])
+        for c_, (lab_, key_) in zip(cc_, (("Contacts", "contacts"), ("Interests", "interests"), ("Meetings", "meetings"), ("Open authorship", "authorship_open"), ("Mentor pipeline", "mentors_active"), ("Opps tracked", "opportunities_tracked"), ("Unsent drafts", "drafts_unsent"))): c_.metric(lab_, n_[key_])
         if d_["followups_due"] or d_["opportunity_checks_due"]:
             st.warning("Due now: " + "; ".join([f"follow-up with {f['name']} ({f['followup_due']})" for f in d_["followups_due"]] + [f"check '{o['name']}' ({o['next_check']})" for o in d_["opportunity_checks_due"]]))
         sub_ = st.selectbox("Section", ["Collaboration interests", "Meeting records", "Authorship discussions", "Mentor shortlist", "Opportunity bookmarks", "Outreach drafts (never sent by the app)", "Contribution tracking (CRediT)"], key="nh_sec")
@@ -1366,6 +1416,8 @@ elif page == "Quality & Expert Review":
         st.caption("Every error found so far is kept here, including ones the verification tools caught.")
         st.dataframe(pd.DataFrame(CL.CORRECTIONS), hide_index=True, width="stretch")
     with t3:
+        st.markdown("**Eight area packages** (statistics, searching, SR methodology, risk of bias, education, disciplines, usability/accessibility, integrity/privacy) + one package per lesson. Pick ONE that matches an expert you know; they can review it without installing anything.")
+        st.download_button("Download ALL expert packages (ZIP with INDEX.md)", EX.expert_zip(), "metalab_expert_review_packages.zip")
         pk = EX.available(); sel = st.selectbox("Package", list(pk))
         md = pk[sel](); st.download_button("Download package (Markdown)", md, file_name=sel.split(":")[0].replace(" ", "_") + "_review_package.md")
         with st.expander("Preview"): st.markdown(md)

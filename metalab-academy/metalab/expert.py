@@ -65,7 +65,124 @@ def workflow_package():
            "## Questions\n1. What PRISMA 2020 / PRISMA-S items does the workflow fail to capture? 2. Is single-reviewer screening adequately flagged? 3. Is the dedup rule set unsafe in any case? 4. What is missing for preclinical (SYRCLE/ARRIVE) reviews?\n", SIGNOFF]
     return "\n".join(out)
 
+# ===================================================================== v0.4: one package per expert AREA (easy for an individual expert to review one slice)
+import io, json, zipfile
+
+def _feat(prefixes):
+    f = json.load(open(ROOT / "features.json"))["features"]
+    return [x for x in f if x["id"].startswith(prefixes)]
+
+def _lesson_digest(ids):
+    L = lessons.load(); out = []
+    for n in ids:
+        if n not in L: continue
+        l = L[n]
+        out += [f"### Module {n}: {l['title']}  ({l['status']})", "**Objectives:** " + " / ".join(l["objectives"]),
+                *([f"**Formula - {f['name']}:** `{f['tex']}`" for f in l["formulas"]]), "**Assumptions:** " + "; ".join(l["assumptions"]), "**Worked example:** " + l["worked_example"].replace("\n", " "),
+                "**Common mistakes:** " + "; ".join(l["mistakes"]), "**References cited:** " + "; ".join(references.REFS[r]["cite"][:110] for r in l["further"] if r in references.REFS), ""]
+    return out
+
+def _area(title, reviewer, scope, ids, materials, questions, extra=None):
+    out = [f"# Expert review package - {title}", f"**Who should review:** {reviewer}", f"**Scope:** {scope}",
+           "\n## Ground rules\n- Nothing in MetaLab is currently expert-reviewed; 'AI-drafted' is the honest status of every lesson and question.\n- Numerical agreement with R/metafor (where stated) is NOT the same as methodological suitability: your job is the latter.\n"
+           "- Be harsh and specific: quote text, say what is wrong, give the correct statement and a source.\n- You can review this package alone; the full lesson packages for the modules below are in the ZIP (lessons/).",
+           "\n## Materials in this package", *[f"- {m}" for m in materials], "\n## Questions for you", *[f"{i}. {q}" for i, q in enumerate(questions, 1)]]
+    if extra: out += ["", *extra]
+    out += ["", "## Lesson digests", *_lesson_digest(ids), "", SIGNOFF]
+    return "\n".join(out)
+
+def area_statistics():
+    v = (ROOT / "VALIDATION.md").read_text(); feats = _feat(("stats.",)); rows = [f"| {x['name']} | {x['status']} | {x.get('evidence','')} | {x.get('blocker','')} |" for x in feats]
+    return _area("Statistical methods", "Statistician / meta-analysis methodologist", "metalab/stats.py, advanced.py, advanced2.py and the lessons that teach them (Modules 24-49, 50-52).",
+                 [24, 25, 26, 29, 30, 32, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51],
+                 ["VALIDATION.md (full record below)", "validation/make_reference.R, make_reference_v04.R and the JSON references", "validation/external_workflows/*.R (NOT executed by the developer: netmeta, mada, bayesmeta, dosresmeta, metasens/selmodel, lme4 one-stage IPD)", "tests/test_validation_r.py, test_advanced_r.py, test_advanced2_r.py"],
+                 ["Are the defaults (REML, Riley PI, HKSJ option, LS variance for SMD) defensible for first-time users?", "Is each model assumption stated correctly in the lessons (NMA transitivity, CR2 df, phylogenetic Brownian motion, Bayesian prior sensitivity, PET-PEESE bias)?",
+                  "Are warnings on trim-and-fill, PET-PEESE, P-scores and boundary correlations adequate and not over- or under-stated?", "Which implemented method is dangerous without expert supervision? Which should be removed or labelled differently?",
+                  "Do the external R workflows (not run here) look correct? Please run them and report discrepancies.", "What important methods are missing for the intended use (preclinical lifespan meta-analysis)?"],
+                 ["## Feature status (statistics)", "| feature | status | evidence | blocker |", "|---|---|---|---|", *rows, "", "## Validation record", v])
+
+def area_searching():
+    from . import topic_scan as T
+    srch = [f"- {s[0]} ({s[1]}): {s[4]} hits - {s[5][:160]}" for s in T.SEARCHES]
+    return _area("Literature searching", "Information specialist / medical librarian", "Lessons on databases, strategies, supplementary searching, reproducibility, deduplication and the topic-scan lesson; the logged topic scan.",
+                 [9, 10, 11, 12, 13, 14, 88], ["Search-log template and the real topic scan below (32 searches on PubMed, 2026-11-26/27)", "Deduplication rules (metalab/workflow.py, store.py) with tests", "Resource registry entries for databases (candidates, unverified)"],
+                 ["Are the lessons accurate about Boolean logic, field tags, MeSH/Emtree, truncation, filters and database differences?", "Does the lesson on peer review of search strategies (PRESS) and PRISMA-S reporting capture what is needed?", "Is the dedup logic (exact + fuzzy + reversible flags) safe? Where can it wrongly merge records?",
+                  "Is the topic-scan guidance (88) appropriate, and are the query-translation warnings correct for PubMed?", "What search sources are missing for lab biology (Embase, Web of Science, Scopus, bioRxiv, CAB Abstracts, grey literature)?"],
+                 ["## Logged topic scan (PubMed only; signals, not systematic searches)", *srch])
+
+def area_methodology():
+    from . import pipeline
+    return _area("Systematic review methodology", "Systematic-review methodologist", "Protocol, registration, screening, extraction, effect-size choice, synthesis without meta-analysis, certainty, interpretation, the end-to-end simulated review and the curriculum coverage audit.",
+                 [3, 4, 5, 6, 7, 8, 15, 16, 17, 18, 19, 20, 52, 53, 54, 55, 56, 74, 84, 89, 90], ["metalab/pipeline.py + tests/test_pipeline_e2e.py (fictional review, independent R cross-check)", "Curriculum audit vs the 26 Cochrane Handbook chapters (metalab/handbook_toc.json; titles only, mapping is the author's judgement)", "Readiness stage checker (14 stages)"],
+                 ["Does the 14-stage readiness checker reflect good practice? What stages or safeguards are missing?", "Is the Cochrane Handbook coverage mapping fair? Which chapters are inadequately served by the corresponding modules?", "Are the review variants (umbrella, rapid, living, realist, scoping) described accurately and with the right cautions?",
+                  "Is single-reviewer screening/extraction flagged strongly enough? Is the independent second-extractor verification design sound?", "Which parts of PRISMA 2020/PRISMA-S would a user still fail to report with this workflow?"],
+                 ["## Readiness stages", *[f"- {x}" for x in ("Question", "Protocol / decisions", "Search log", "Records imported", "Deduplication", "Screening", "Extraction", "Risk of bias", "Effect sizes", "Analysis", "Verification", "Manuscript", "Quality checks", "Reproducibility package")]])
+
+def area_rob():
+    from . import rob_tools
+    tools = [f"- **{t['name']}** ({t['design']}): domains - " + "; ".join(t["domains"]) + f". Note: {t['note']}" for t in rob_tools.TOOLS.values()]
+    return _area("Risk of bias and appraisal", "Methodologist experienced with RoB 2 / ROBINS-I / SYRCLE / QUADAS-2 / PROBAST", "Bias fundamentals, appraisal instruments, visualisation, the SYRCLE adaptation for invertebrate work, and the Virtual Lab RoB key.",
+                 [21, 22, 23, 59, 44, 45], ["metalab/rob_tools.py (domain NAMES only; official guidance must be used)", "Virtual Lab ROB key and texts (fictional) in metalab/vlab.py", "RoB visualisation code in the app"],
+                 ["Are the registered domain names exactly those of the published tools, and are the cautions about using official guidance sufficient?", "Is the claim that SYRCLE items map imperfectly to Drosophila vials/cages accurate and is the suggested handling reasonable?", "Are lessons 21-23 correct about outcome-level assessment, selective reporting and blinding?",
+                  "Is the traffic-light/summary visualisation misleading in any way (e.g. implied scores)?", "What risk-of-bias guidance is missing for in-vitro, plant and ecological studies?"], ["## Registered tools", *tools])
+
+def area_education():
+    from . import lesson_audit
+    s = lesson_audit.summary(); rows = [f"| {r['module']} | {r['title'][:60]} | {r['words']} | {r['numeric_quiz']} | {r['tier']} | {r['failing']} |" for r in lesson_audit.audit()]
+    return _area("Educational content and assessment", "Educator / learning scientist with research-methods teaching experience", "Lesson structure, depth, quizzes, exercise banks, the final assessment, the capstone rubric, flashcards and pathways.",
+                 [3, 24, 32, 35, 84], ["Mechanical lesson-depth audit below", "metalab/learning_lab.py (drills, method-selection and interpretation banks, final assessment, rubric)", "metalab/assessments.py (module exams, pathways)", "metalab/learning.py (cards, SM-2, glossary)"],
+                 ["Is the 3-level (plain/intermediate/advanced) structure effective? Which lessons are too dense or too shallow?", "Are quiz items valid (unambiguous, one best answer, plausible distractors)? Please sample at least 20.", "Is the 80%-in-every-section internal benchmark and the 13-item capstone rubric sensible for self-assessment?",
+                  "Is the language about 'internal learning record, not a certificate' clear enough to prevent misuse?", "Where does the curriculum order create unnecessary prerequisites or gaps for a PhD biologist new to evidence synthesis?"],
+                 [f"## Lesson depth audit ({s['substantive']} substantive, {s['thin']} thin of {s['total']}; mechanical criteria only)", "| module | title | words | numeric quiz items | tier | failing criteria |", "|---|---|---|---|---|---|", *rows])
+
+def area_disciplines():
+    from . import scenarios, assessments
+    sc = [f"- {x.discipline}: {x.title}" for x in scenarios.ALL.values()]; tr = [f"- {k}: modules {v['core'][:3]}... + {v['extra']} - {v['note']}" for k, v in assessments.DISCIPLINE_TRACKS.items()]
+    return _area("Discipline-specific applications", "Domain scientists: Drosophila/aging biology, clinical research, plant science, microbiology, ecology/evolution, public health, psychology/education", "Discipline lessons (57-68, 59-63, 85-87), discipline tracks and the Virtual Lab scenarios.",
+                 [57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 85, 86, 87], ["Virtual Lab scenarios (fictional data with planted errors)", "Discipline pathways", "Domain claims registry entries"],
+                 ["Are field-specific statements correct (e.g. experimental units for flies/plants/microbes, lifespan metrics, sex as a biological variable)?", "Do the scenarios' planted errors reflect real problems in your field? Which common ones are missing?", "Which effect sizes and moderators would your field insist on that are not mentioned?",
+                  "Are there field conventions the lessons contradict?"], ["## Virtual Lab scenarios", *sc, "", "## Discipline tracks", *tr])
+
+def area_usability():
+    acc = (ROOT / "ACCESSIBILITY.md").read_text(); lim = (ROOT / "KNOWN_LIMITATIONS.md").read_text()[:5000]
+    tasks = ["Install and start the app from README only (note every point of confusion).", "Complete Onboarding and read the recommended path.", "Open Lesson 32 and run the worked-example calculation in the Statistics Lab.", "Create a TEACHING project, import the simulated RIS file and complete screening of five records.",
+             "Find the formula for I\u00b2 using Search everything and the Reference Encyclopedia.", "Run the simulated end-to-end review and read the traceability table.", "Add a contact, record a meeting and a follow-up in the networking dashboard; confirm nothing is sent.", "Use Knowledge Universe to find a reading list for Module 42 and mark one resource verified with what you actually saw.",
+             "Download a backup WITHOUT personal data and open it - is anything personal inside?"]
+    return _area("Software usability and accessibility", "Usability specialist / accessibility specialist / a PhD student who has never seen the app", "The Streamlit interface, navigation, error messages, accessibility and data-safety affordances.",
+                 [], ["tools/audit_ui.py results (axe-core in Chromium), keyboard walk", "ACCESSIBILITY.md and KNOWN_LIMITATIONS.md (below)", "Usability task script below (please time each task and note errors)"],
+                 ["Which tasks failed or took unexpectedly long, and why?", "Where does the interface imply certainty or endorsement it should not (statuses, badges, warnings)?", "Can a screen-reader user complete the core path? (Not tested by the developer.)", "Are destructive actions (delete project, restore backup) sufficiently protected?", "What would stop you trusting the numbers on a page?"],
+                 ["## Usability task script", *[f"{i}. {t}" for i, t in enumerate(tasks, 1)], "", "## ACCESSIBILITY.md", acc, "", "## Known limitations (excerpt)", lim])
+
+def area_integrity():
+    from . import claims
+    sm = claims.summary(); corr = claims.CORRECTIONS; sec = (ROOT / "SECURITY.md").read_text()[:3500]; ri = (ROOT / "RESEARCH_INTEGRITY.md").read_text()
+    return _area("Research integrity, ethics, privacy and security", "Research-integrity officer / ethicist / data-protection or security reviewer", "Integrity rules, AI policy, claims registry, correction history, privacy design (no names in audit log, personal data excluded from shareable backups), security notes and licence/deployment decisions left to the owner.",
+                 [1, 8, 80, 81, 82, 83, 89, 79], ["RESEARCH_INTEGRITY.md (below)", f"Claims registry: {sm['total']} claims ({sm['supported']} abstract-supported, {sm['partial']} partial, {sm['unverified']} unverified, {sm['human_reviewed']} human-reviewed)", "Correction history (every error found, including by the tools)", "SECURITY.md excerpt; tests/test_security_privacy.py"],
+                 ["Are the hard rules (no fabricated data/users/opportunities, no AI reviewer/verifier, no automatic contact) sufficient and enforced in code?", "Is the AI-use policy in Lesson 81 responsible and current? What is missing?", "Does the corrections log read as honest rather than reassuring?", "Privacy: could contacts, notes or personal data leak through backups, exports, the audit log or the learning record?",
+                  "Which decisions must remain with the owner (licence, public deployment, registration, data sharing) and are they clearly flagged?"],
+                 ["## Research integrity rules", ri, "", "## Corrections so far", *[f"- {c['date']} {c['where']}: {c['what']} -> {c['fix']}" for c in corr], "", "## Security notes (excerpt)", sec])
+
+AREAS = {"Statistical methods": area_statistics, "Literature searching": area_searching, "Systematic review methodology": area_methodology, "Risk of bias and appraisal": area_rob,
+         "Educational content and assessment": area_education, "Discipline-specific applications": area_disciplines, "Software usability and accessibility": area_usability, "Research integrity, ethics, privacy and security": area_integrity}
+
+INDEX = """# MetaLab Academy - expert review packages
+Thank you for considering a review. Each package is **self-contained**: you do not need to install the app. Pick the ONE area that matches your expertise, read the questions, comment on the digests, complete the sign-off and return the file.
+Nothing is labelled 'expert-reviewed' until a maintainer records your outcome. Please do not feel you must review everything; partial, specific feedback is valuable. Reviewing is voluntary and unpaid unless the owner arranges otherwise; the app never contacts reviewers.
+
+| Area | Typical reviewer | Approx. reading |
+|---|---|---|
+""" + "\n".join(f"| {k} | see package header | 1-3 h |" for k in AREAS) + "\n\n`lessons/` contains one package per lesson for anyone who wants to review a specific module.\n"
+
+def expert_zip():
+    buf = io.BytesIO(); ls = lessons.load()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("INDEX.md", INDEX)
+        for k, fn in AREAS.items(): z.writestr(f"areas/{k.replace(' ', '_').replace(',', '').replace('/', '-')}.md", fn())
+        for n in sorted(ls): z.writestr(f"lessons/lesson_{n:02d}.md", lesson_package(n))
+        z.writestr("statistics_engine_core.md", stats_package()); z.writestr("review_workflow.md", workflow_package())
+    return buf.getvalue()
+
 def available():
     ls = lessons.load()
-    return {**{f"Lesson {n}: {ls[n]['title']}": (lambda n=n: lesson_package(n)) for n in sorted(ls)},
-            "Statistics engine": stats_package, "Review workflow": workflow_package}
+    return {**{f"AREA - {k}": fn for k, fn in AREAS.items()}, **{f"Lesson {n}: {ls[n]['title']}": (lambda n=n: lesson_package(n)) for n in sorted(ls)},
+            "Statistics engine (core)": stats_package, "Review workflow": workflow_package}

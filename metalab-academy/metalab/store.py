@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS authorship_discussions(id INTEGER PRIMARY KEY, projec
 CREATE TABLE IF NOT EXISTS opp_bookmarks(id INTEGER PRIMARY KEY, name TEXT, url TEXT, kind TEXT, status TEXT DEFAULT 'interested', next_check TEXT DEFAULT '', notes TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS mentor_candidates(contact_id INTEGER PRIMARY KEY, status TEXT DEFAULT 'considering', what_i_hope TEXT, ask_date TEXT DEFAULT '', notes TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS outreach_drafts(id INTEGER PRIMARY KEY, contact_id INT, template TEXT, text TEXT, status TEXT DEFAULT 'draft', ts REAL);
+CREATE TABLE IF NOT EXISTS exam_results(id INTEGER PRIMARY KEY, kind TEXT, seed INT, total INT, correct INT, by_section TEXT, ts REAL);
+CREATE TABLE IF NOT EXISTS capstone(item_key TEXT PRIMARY KEY, score INT, note TEXT, ts REAL);
 CREATE TABLE IF NOT EXISTS dup_candidates(id INTEGER PRIMARY KEY, project_id INT, ref_a INT, ref_b INT, score REAL, reasons TEXT,
   relation TEXT, status TEXT DEFAULT 'pending', decided_by TEXT, ts REAL);
 """
@@ -460,6 +462,18 @@ class Store:
 
     def complete_followup(self, interaction_id): self.x("UPDATE interactions SET followup_done=1 WHERE id=?", (interaction_id,))
 
+    # ------------------------------------------------ assessments and capstone (self-assessment records; never qualifications)
+    def record_exam(self, kind, seed, total, correct, by_section):
+        if not 0 <= correct <= total: raise ValueError("correct must be between 0 and total.")
+        return self.x("INSERT INTO exam_results(kind,seed,total,correct,by_section,ts) VALUES(?,?,?,?,?,?)", (kind, seed, total, correct, json.dumps(by_section), time.time()))
+    def exam_history(self, kind=None): return self.q("SELECT * FROM exam_results" + (" WHERE kind=?" if kind else "") + " ORDER BY id DESC", (kind,) if kind else ())
+    def set_capstone(self, item_key, score, note=""):
+        if score not in (0, 1, 2): raise ValueError("Score must be 0 (absent), 1 (partial) or 2 (complete).")
+        if score and not str(note).strip(): raise ValueError("Say what evidence supports this score (a note is required for scores above 0).")
+        self.x("INSERT INTO capstone(item_key,score,note,ts) VALUES(?,?,?,?) ON CONFLICT(item_key) DO UPDATE SET score=excluded.score, note=excluded.note, ts=excluded.ts", (item_key, score, note, time.time()))
+        self.audit("capstone_scored", f"{item_key}={score}")
+    def capstone_items(self): return {r["item_key"]: r for r in self.q("SELECT * FROM capstone")}
+
     # ------------------------------------------------ personal networking dashboard (all local; the app never contacts anyone)
     INTEREST_STATUS = ("idea", "exploring", "active", "paused", "done")
     MENTOR_STATUS = ("considering", "to ask", "asked by me", "agreed", "declined", "not now")
@@ -626,7 +640,7 @@ class Store:
 
     def backup_json(self, include_personal=True):
         """include_personal=False omits contacts, interactions, CRediT person names, profile and notes (safer for sharing with an expert/mentor)."""
-        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications","collab_interests","meetings","authorship_discussions","opp_bookmarks","mentor_candidates","outreach_drafts"]
+        tables = ["profile","progress","quiz_attempts","notes","projects","decisions","audit_log","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications","collab_interests","meetings","authorship_discussions","opp_bookmarks","mentor_candidates","outreach_drafts","exam_results","capstone"]
         return json.dumps({"format": "metalab-backup", "version": 1, "personal_data_included": include_personal,
                            "tables": {t: ([] if (not include_personal and t in self.PERSONAL_TABLES) else self.q(f"SELECT * FROM {t}")) for t in tables}}, indent=1)
 
@@ -636,7 +650,7 @@ class Store:
         if d.get("format") != "metalab-backup":
             raise ValueError("Not a MetaLab backup file.")
         cur = self.db.cursor()
-        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications","collab_interests","meetings","authorship_discussions","opp_bookmarks","mentor_candidates","outreach_drafts"):
+        for t in ("profile","progress","quiz_attempts","notes","projects","decisions","search_log","refs","screening","plan_tasks","extraction","studies","reports","project_forms","extracted","effect_sizes","rob","dup_candidates","cards","bookmarks","contacts","interactions","credit","results","manuscript_versions","ms_claims","ms_checklist","resource_verifications","collab_interests","meetings","authorship_discussions","opp_bookmarks","mentor_candidates","outreach_drafts","exam_results","capstone"):
             cur.execute(f"DELETE FROM {t}")
             valid = {r[1] for r in cur.execute(f"PRAGMA table_info({t})")}
             for row in d["tables"].get(t, []):

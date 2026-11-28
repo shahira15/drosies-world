@@ -1,5 +1,5 @@
 # Security and privacy
-MetaLab Academy v0.3 is a **local, single-user** app: no accounts, **no network calls from the app or core package** (enforced by a static test), data in one local unencrypted SQLite file. Do not expose the Streamlit port publicly. No professional penetration test has been done.
+MetaLab Academy v0.4 is a **local, single-user** app: no accounts, **no network calls from the app or core package** (enforced by a static test), data in one local unencrypted SQLite file. Do not expose the Streamlit port publicly. No professional penetration test has been done.
 ## Tested safeguards (tests/test_security_privacy.py)
 Parameterised SQL (injection strings stored literally) · CSV formula-injection neutralised in all CSV exports · user text escaped in generated SVG/LaTeX · `unsafe_allow_html` only ever receives constant strings (AST test) · import/restore size limits and malformed-file robustness · backup restore validates column names · append-only audit log · AI/LLM/system labels refused for human-only records (extraction, RoB, verification, results) · contact names never enter the audit log (a leak found and fixed during testing) · shareable backup WITHOUT contacts/profile/notes · irreversible project deletion with typed confirmation.
 ## Dependency audit

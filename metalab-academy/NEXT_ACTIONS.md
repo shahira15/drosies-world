@@ -1,14 +1,16 @@
-# Next actions (after v0.3.0)
-**You (learner), now:** `./run.sh` → Home → Onboarding → Method Wizard → Learning Academy → *My pathway* → Lessons 3, 4, 5 → Practice → Assessments → Virtual Lab (try your discipline) → create your real project → First Paper Plan → Topic Explorer (30 logged PubMed searches) → Milestones 1-3. Re-run two scan queries yourself and log them. **You choose the topic.**
+# Next actions (after v0.4.0)
+**You (learner), now:** `./run.sh` -> Home -> Onboarding -> Method Wizard -> Learning Academy -> *My pathway* -> Lessons 3, 4, 5 -> Practice (drills, final assessment) -> Virtual Lab -> Research Workspace > *Readiness & traceability* (run the fictional end-to-end review once) -> create your real project -> First Paper Plan -> Topic Explorer. You can start your real review without finishing anything else.
 **Needs YOUR action/decision (only these):**
 1. Choose the topic after Milestone 3 (never chosen for you).
-2. Run on your Mac: `./validation/run_validation.sh` (confirms the R reference), `python3 tools/check_links.py`, then the *Verify resources* workflow in Knowledge Universe (the sandbox could not verify any resource page).
-3. Share per-lesson/statistics packages (Quality & Expert Review) with a statistician/librarian; nothing is expert-reviewed yet.
-4. Licence choice (LICENSE_DECISION.md); public deployment/registration/submission remain yours.
-**Development queue (independent work, continuing):**
-- 36 modules still outline-only (see CURRICULUM_MAP.md): 24-26 (maths/statistics foundations), 29-30 (correlation, rate/survival effect sizes), 39-49 (advanced methods; Bayesian, network, DTA, dose-response, IPD, rare events), 54, 56-58, 60, 64, 66-71, 72, 73, 79-81, 83-84 and proposed 88. Prioritise by pathway use; verify references first (tools/verify_refs.py).
-- Statistics: trim-and-fill/selection models, CR2 robust variance, covariance-matrix shared controls, HR/IRR helpers, `meta` package cross-check (needs newer R).
-- Manuscript Studio: PDF export, citation styles; journal comparison and peer-review response workspaces.
-- Coding Lab: more tutorials per discipline; in-browser execution (WebR/Pyodide) if desired.
-- UI: screen-reader/zoom audit (manual); alt text for charts.
+2. On your Mac run `./validation/run_validation.sh` (R reference + all benchmarks), then **run the six scripts in `validation/external_workflows/`** (netmeta, mada, bayesmeta, dosresmeta, selection models, lme4 one-stage IPD) which the developer could not execute, and report mismatches.
+3. Verify Knowledge-Universe candidates yourself: `python3 tools/check_links.py` then `python3 tools/verify_batch.py run --verifier "human:Your Name"` (see KNOWLEDGE_VERIFICATION.md). Nothing is verified until you do.
+4. Send **one area package** (Quality & Expert Review > Expert review packages, or the ZIP) to a suitable expert per area; nothing is expert-reviewed yet.
+5. Licence choice (LICENSE_DECISION.md); public deployment, registration, submission, contacting anyone remain yours.
+**Development queue (independent work):**
+- **Deepen the 43 thin lessons** (list in Quality & Expert Review > Curriculum coverage audit): priority = 34, 36, 37, 50, 51, 52, 53, 74-78 (needed for the first paper), then the rest.
+- Statistics: node-splitting/design-by-treatment inconsistency tests, HSROC, shared-control V-matrix builder, selection models, GLMM rare-event, Guyot reconstruction (all currently external-only); cross-check against `meta`, `netmeta`, `mada`, `bayesmeta` once installable.
+- Handbook chapters with no module: 18 (patient-reported outcomes), 20 (economic evidence), 22 (prospective meta-analysis).
+- Manuscript Studio: PDF export, citation styles, GRADE/SoF builder, journal comparison, peer-review response workspace.
+- UI: manual screen-reader/zoom audit; alt text for Plotly charts.
 - Education/public-health topic scans need ERIC/Scopus/Web of Science access.
+- Community features (accounts, moderation, hosting) only after the curriculum and research tooling are expert-reviewed and the owner approves (FUTURE_COMMUNITY_ARCHITECTURE.md).

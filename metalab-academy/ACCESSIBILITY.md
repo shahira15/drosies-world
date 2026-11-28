@@ -1,5 +1,8 @@
 # Accessibility
 Target: WCAG 2.2 AA. **Status: partially tested, not certified.**
+## v0.4 re-audit (2026-11-28)
+- tools/audit_ui.py now scans 28 views (every page, plus the v0.4 tabs: Advanced methods II, Readiness & traceability, networking dashboard, drills, final assessment, capstone, datasets, reading lists, verification): **1 minor violation type** (`presentation-role-conflict` on Streamlit's own file-uploader dropzone, third-party component), 0 serious/critical. Screenshots of the new views were inspected. No screen-reader test.
+
 ## What was tested (2026-11-27)
 - **axe-core in real Chromium** (tools/audit_ui.py): 18 page views (15 pages at 1366 px + 3 at 390 px). Initial run found 2 rule types (serious `color-contrast` on 15 views; moderate `heading-order` on 4). Fixed (stronger caption colour, real h2 headings). Re-run: **0 violations** (audit/ui_audit_v0.3_after.json; before-state kept in audit/ui_audit_v0.3_before.json).
 - **Keyboard walk** (40 Tab presses on Home): focus moves through distinct real controls (20 distinct targets), no keyboard trap, visible focus ring (global 3 px outline added).

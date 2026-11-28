@@ -249,3 +249,16 @@ def test_nma_ranking_direction_is_explicit_and_reverses_pscores():
     up = B.nma(st_, tr, y, v, reference="no_contact", higher_is_better=True)["pscore"]; dn = B.nma(st_, tr, y, v, reference="no_contact", higher_is_better=False)["pscore"]
     for t in up: close(up[t] + dn[t], 1.0, rtol=1e-9)
     assert up["no_contact"] < 0.1 and max(up, key=up.get) in ("ind_counseling", "grp_counseling")
+
+
+def test_reference_file_contains_no_silent_r_errors():
+    """The v0.4 reference script once swallowed an R error (trimfill 'control' clash) and wrote it into the JSON; every section must now be error-free and non-degenerate."""
+    def walk(o, path=""):
+        if isinstance(o, dict):
+            assert "error" not in o, f"R error recorded at {path}: {o.get('error')}"
+            for k, v in o.items(): walk(v, f"{path}/{k}")
+        elif isinstance(o, list):
+            for i, v in enumerate(o[:50]): walk(v, f"{path}[{i}]")
+    walk(REF)
+    assert REF["dta"]["rho"] > -0.99 and min(REF["dta"]["tau2"]) > 0.05          # interior optimum, not a boundary solution
+    assert REF["meta"]["metafor"] == "4.4.0" and REF["meta"]["clubSandwich"] == "0.5.10"

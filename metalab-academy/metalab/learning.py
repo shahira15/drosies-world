@@ -68,6 +68,15 @@ def cards():
     for n, L in lessons.load().items():
         for i, (mis, cor) in enumerate(L["misconceptions"]):
             out.append(dict(key=f"mis:{n}:{i}", front=f"Misconception to correct: {mis}", back=cor, module=n))
+        for i, f in enumerate(L.get("formulas", [])):
+            out.append(dict(key=f"fm:{n}:{i}", front=f"Formula (Module {n}): {f['name']}", back=f"{f['tex']}  where " + "; ".join(f"{k} = {v}" for k, v in f["symbols"].items()), module=n))
+        for i, (q, a) in enumerate(L.get("decision_tree", [])):
+            out.append(dict(key=f"dt:{n}:{i}", front=f"Decision ({L['title'][:60]}): {q}", back=a, module=n))
+        if L.get("assumptions"): out.append(dict(key=f"as:{n}", front=f"State the assumptions of: {L['title']}", back="; ".join(L["assumptions"]), module=n))
+        out.append(dict(key=f"wx:{n}", front=f"Reproduce the worked example: {L['title']}", back=L["worked_example"], module=n))
+    from . import encyclopedia
+    for e in encyclopedia.EFFECT_SIZES:
+        out.append(dict(key=f"es:{e['id']}", front=f"Effect size {e['id']}: formula, scale, when to use?", back=f"{e['name']}: {e['tex']} | scale: {e['scale']} | use: {e['use']} | avoid: {e['avoid']}", module=e["lessons"][0]))
     return out
 
 def sm2(ease, interval, reps, quality, today=None):
@@ -156,35 +165,49 @@ def search(q, limit=25):
 
 # --------------------------------------------------------------- method wizard
 def wizard(design, outcome, k, dependence, objective, comparable):
-    """Rule-based suggestions with explicit assumptions. NOT a substitute for scientific judgement or statistical advice."""
-    rec = dict(review_types=[], measures=[], models=[], cautions=[], lessons=[], not_supported=[], assumptions=[
+    """Rule-based suggestions with explicit assumptions. NOT a substitute for scientific judgement or statistical advice.
+    Returns also `available` (what MetaLab implements for this situation, with its benchmark status) and `not_supported` (what it does NOT do)."""
+    rec = dict(review_types=[], measures=[], models=[], cautions=[], lessons=[], not_supported=[], available=[], assumptions=[
         "Recommendations assume the inputs you gave are accurate and pre-specified.", "They are prompts for discussion with a methodologist/statistician, not decisions."])
     if objective == "map the evidence":
         rec["review_types"] = ["Scoping review / evidence map (PRISMA-ScR)"]; rec["lessons"] += [3, 55]; rec["measures"] = ["None (charting)"]; return rec
     if design == "qualitative":
-        rec["review_types"] = ["Qualitative evidence synthesis (thematic/framework; ENTREQ)"]; rec["lessons"] += [54]; rec["not_supported"].append("Qualitative synthesis tools beyond note-taking forms."); return rec
+        rec["review_types"] = ["Qualitative evidence synthesis (thematic/framework; ENTREQ)"]; rec["lessons"] += [54]; rec["not_supported"].append("Qualitative synthesis tools beyond note-taking forms and the kappa calculator are not implemented.")
+        rec["available"].append("Extraction/notes forms; Cohen's kappa for screening agreement (Research Workspace)."); return rec
     if design == "diagnostic accuracy":
-        rec["review_types"] = ["Systematic review of diagnostic accuracy (PRISMA-DTA)"]; rec["measures"] = ["Sensitivity/specificity (bivariate or HSROC models)"]; rec["lessons"] += [44]
-        rec["not_supported"].append("Bivariate/HSROC models are NOT implemented in MetaLab; use R packages with a statistician."); return rec
+        rec["review_types"] = ["Systematic review of diagnostic accuracy (PRISMA-DTA)"]; rec["measures"] = ["Sensitivity/specificity (bivariate model)"]; rec["lessons"] += [44, 22]
+        rec["available"].append("Bivariate (Reitsma-type) summary sensitivity/specificity, DOR and likelihood ratios (Statistics Lab > Advanced methods II); benchmarked vs metafor rma.mv on a synthetic table, NOT vs mada.")
+        rec["not_supported"].append("HSROC/SROC curves, comparisons of tests and covariate models are NOT implemented: use mada with a statistician (validation/external_workflows/02_mada_dta.R)."); return rec
+    if design == "network of several interventions":
+        rec["review_types"] = ["Systematic review with network meta-analysis (PRISMA-NMA)"]; rec["measures"] = ["Choose per outcome (e.g. log OR); ranking direction must be stated"]; rec["lessons"] += [42, 38, 52]
+        rec["available"].append("Contrast-based NMA (common/random effects, multi-arm), league table, P-scores (Statistics Lab > Advanced methods II); benchmarked vs metafor rma.mv, NOT netmeta.")
+        rec["not_supported"].append("Node-splitting / design-by-treatment inconsistency tests and component NMA are NOT implemented: use netmeta (validation/external_workflows/01_netmeta.R).")
+        rec["cautions"].append("Transitivity (similar effect modifiers across comparisons) must be argued and consistency tested before ranks are interpreted."); return rec
     if not comparable:
-        rec["review_types"] = ["Systematic review with structured synthesis without meta-analysis (SWiM)"]; rec["cautions"].append("If studies do not estimate comparable quantities, pooling would average unlike things.")
+        rec["review_types"] = ["Systematic review with structured synthesis without meta-analysis (SWiM)"]; rec["cautions"].append("If studies do not estimate comparable quantities, pooling would average unlike things; present effect directions and magnitudes per study with a transparent grouping rule.")
         rec["lessons"] += [3, 53]; return rec
-    rec["review_types"] = ["Systematic review ± meta-analysis (PRISMA 2020)"]
-    m = {"continuous (same scale)": ["Mean difference"], "continuous (different scales)": ["SMD (Hedges' g)"], "continuous ratio-scale, positive (e.g. lifespan, biomass)": ["Log response ratio (lnRR)", "SMD (sensitivity)"],
-         "binary": ["Risk ratio / odds ratio / risk difference (log scale for RR/OR)"], "count / rate": ["Incidence rate ratio (not implemented)"], "time-to-event": ["Log hazard ratio; reconstructed survival data if needed (not implemented)"],
-         "correlation": ["Fisher's z"], "proportion / prevalence": ["Logit/Freeman-Tukey/GLMM (NOT implemented)"]}
+    rec["review_types"] = ["Systematic review \u00b1 meta-analysis (PRISMA 2020)"]
+    m = {"continuous (same scale)": ["Mean difference"], "continuous (different scales)": ["SMD (Hedges' g)"], "continuous ratio-scale, positive (e.g. lifespan, biomass)": ["Log response ratio (lnRR)"],
+         "binary": ["Risk ratio / odds ratio / risk difference (log scale for RR/OR); Mantel-Haenszel/Peto if events are rare"], "count / rate": ["Incidence rate ratio (log scale)"], "time-to-event": ["Log hazard ratio (from HR + CI); or medians/lnRR if HRs are unavailable"],
+         "correlation": ["Fisher's z"], "proportion / prevalence": ["Logit or Freeman-Tukey double arcsine (compare); GLMM if many zeros"]}
     rec["measures"] = m.get(outcome, ["Choose an effect measure suited to the outcome"]); rec["lessons"] += [27, 28, 31, 32, 35]
-    if outcome in ("count / rate", "time-to-event", "proportion / prevalence"): rec["not_supported"].append(f"Effect sizes for '{outcome}' are not implemented in the calculators.")
+    if outcome == "count / rate": rec["available"].append("Log incidence rate ratio and variance (Statistics Lab > Advanced methods > Rates).")
+    if outcome == "proportion / prevalence": rec["available"].append("PR/PLO/PFT/PAS transformations (benchmarked vs escalc); no GLMM."); rec["not_supported"].append("Binomial GLMM for proportions is NOT implemented (metafor rma.glmm / meta::metaprop).")
+    if outcome == "time-to-event":
+        rec["available"].append("log HR and SE from a reported HR with CI; log HR from logrank O-E/V (advanced2)."); rec["not_supported"].append("Reconstruction of individual data from Kaplan-Meier curves (Guyot) is not implemented; RMST and non-proportional-hazards models are not implemented.")
+    if outcome == "binary" and k >= 2: rec["available"].append("Mantel-Haenszel and Peto (rare events), continuity-correction sensitivity (Statistics Lab > Advanced methods / II); benchmarked vs metafor.")
     if dependence != "none":
-        rec["cautions"].append(f"Dependence ({dependence}): the simple random-effects model assumes independent effect sizes. Use a dependence-aware approach (multilevel/multivariate/robust variance) - NOT implemented in MetaLab; seek statistical support. Module 38 is an outline only.")
-        rec["not_supported"].append("Multilevel / RVE / multivariate models"); rec["lessons"] += [38, 39, 40]
+        rec["cautions"].append(f"Dependence ({dependence}): the simple random-effects model assumes independent effect sizes. Use a dependence-aware approach; shared-control sampling covariances are NOT implemented as a V-matrix builder (split or combine the control, or supply your own V).")
+        rec["available"].append("Three-level REML with CR1/CR2 cluster-robust variance, multivariate unstructured model, phylogenetic multilevel model (advanced/advanced2; benchmarked vs metafor and clubSandwich).")
+        rec["not_supported"].append("Automatic construction of sampling covariance (V) for shared controls or repeated measures; component/ meta-regression extensions of the multivariate model"); rec["lessons"] += [38, 39, 40]
     else:
         rec["models"] = ["Random-effects (REML default; pre-specify; sensitivity with PM)", "Hartung-Knapp CI", "Prediction interval", "Common-effect only if one true effect is plausible a priori"]
     if k < 3: rec["cautions"].append("Fewer than 3 studies: a prediction interval is not estimable; heterogeneity is not assessable. Consider narrative synthesis or presenting studies individually.")
-    elif k < 5: rec["cautions"].append("k < 5: τ² and I² are very imprecise; prefer HKSJ and report this limitation.")
+    elif k < 5: rec["cautions"].append("k < 5: \u03c4\u00b2 and I\u00b2 are very imprecise; prefer HKSJ or a Bayesian analysis with a justified prior and report this limitation (Modules 35, 41).")
+    elif k < 10: rec["cautions"].append("k < 10: funnel-plot tests and trim-and-fill/PET-PEESE are unreliable; treat any small-study analysis as exploratory (Modules 36, 49, 50).")
     if objective == "explore heterogeneity" and k < 10: rec["cautions"].append("Subgroup/meta-regression with <10 studies per moderator is unstable and prone to false findings; pre-specify few moderators.")
     if objective == "explore heterogeneity": rec["models"].append("Pre-specified subgroup analysis / meta-regression (Statistics Lab)"); rec["lessons"] += [36, 37]
-    if design == "observational": rec["cautions"].append("Observational estimates are confounded; pool adjusted estimates consistently and appraise with ROBINS-I or similar.")
+    if design == "observational": rec["cautions"].append("Observational estimates are confounded; pool adjusted estimates consistently and appraise with ROBINS-I or similar."); rec["lessons"] += [58]
     rec["lessons"] = sorted(set(rec["lessons"])); return rec
 
 # ----------------------------------------------------------------- pathways

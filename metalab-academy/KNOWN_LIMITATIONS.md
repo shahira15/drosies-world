@@ -1,22 +1,24 @@
-# Known limitations register (v0.2, 2026-11-26)
+# Known limitations register (v0.4, 2026-11-28)
 **Curriculum**
-1. See CURRICULUM_MAP.md for exact counts: roughly 52 of 88 registered modules have lessons (AI-drafted, NOT expert-reviewed); the rest are outlines. Core first-researcher pathway: 12 of its 13 modules have lessons (Module 15, screening, does not yet).
-2. Curriculum coverage audit is against the chapter structure of handbooks *as recalled*, not re-read.
-3. Lesson claims: 30 tracked; 6 unverified (RoB domain lists, evidence-based-research claim); most others verified at abstract/title level only. Cochrane Handbook, JBI Manual, GRADE guidance not re-read.
+1. All 90 registered modules have lessons, but they are AI-drafted and NOT expert-reviewed; a mechanical depth audit rates 47 as substantive drafts and 43 as thin drafts (see Quality & Expert Review). 'Written' does not mean complete, correct or sufficient.
+2. The Cochrane Handbook v6 coverage audit uses chapter TITLES verified in Crossref; chapter content was not read and the chapter-to-module mapping is the author's judgement. Uncovered or thin: patient-reported outcomes (ch. 18), economic evidence (ch. 20), prospective meta-analysis (ch. 22).
+3. Lesson claims: 72 tracked; 44 abstract-supported, 18 partial (title-level), 10 unverified; most cited papers were checked bibliographically only. No lesson, question or claim has human expert review.
 4. Coding Lab runs code locally in a subprocess (not a security sandbox; not in-browser); R tutorials need Rscript + metafor. No video content.
 **Statistics**
-5. Benchmarked vs R/metafor 4.4.0 (not expert-validated). `meta` package could not be installed (cross-check missing). Methods implemented: effect sizes (MD, SMD, lnRR, lnOR, lnRR-binary, RD, Fisher z), common/random-effects (REML, DL, PM, HKSJ), PI, Q/I²/H², leave-one-out, subgroup, meta-regression.
-6. NOT implemented: hazard-ratio effect-size helpers beyond log-scale CI conversion, medians→mean estimators, GLMM/Bayesian/network/DTA/dose-response, trim-and-fill/selection models/PET-PEESE, CR2 robust variance, shared-control covariance matrices, trial sequential analysis, certainty tools, sample-size calculators. (MH, Peto, Egger/Begg, cumulative, Q-profile CI, influence, three-level REML+CR1, IRR, prevalence, design effect ARE implemented and benchmarked.)
-7. Riley t(k-2) prediction interval checked against our own formula (not independent software).
+5. Benchmarked vs R/metafor 4.4.0, clubSandwich 0.5.10 and base R; not expert-validated. The field-standard packages netmeta, mada, bayesmeta, dosresmeta, metasens and `meta` could not be installed (CRAN needs a newer R): NMA, DTA and Bayesian meta-analysis are benchmarked against metafor `rma.mv` / independent integration only, and six external R workflows (validation/external_workflows/) have NEVER been executed by the developer.
+6. NOT implemented (lesson + external workflow, or absent): dose-response meta-analysis, selection models, one-stage IPD GLMMs, binomial GLMM for rare events/proportions, Kaplan-Meier curve reconstruction, RMST, NMA inconsistency tests (node-splitting, design-by-treatment) and component NMA, HSROC/SROC, automatic shared-control covariance (V) construction, trial sequential analysis, lnCVR.
+7. Trim-and-fill and PET/PEESE are sensitivity analyses with mandatory warnings; they are known to perform poorly under heterogeneity and with few studies. P-scores ignore certainty of evidence.
+8. DTA reference table is synthetic; the first DTA benchmark attempt gave a boundary solution (rho = -1) and was replaced; boundary correlations are flagged by the code, not repaired.
 **Workflow**
-8. Extraction: no automatic unit conversion; effect builder handles two-group continuous and 2x2 binary only. Dependence is flagged, not modelled.
-9. Screening: no blinding mode, no active-learning prioritisation, no AI-assisted screening. Fuzzy dedup not tuned on real exports; RIS/NBIB parsers cover common tags only.
-10. PRISMA: simplified template, SVG only; 'reports not retrieved' not tracked; records/reports/studies linked only via the Extraction tab.
-11. Risk of bias: domain names only; official guidance must be used; NOS/JBI/CASP/MMAT/other tools not included; no signalling-question algorithms.
-12. Manuscript Studio exists (tokens, verification, QC, exports) but: no PDF export, no citation-style formatting, no collaborative editing; no journal-comparison workspace, peer-review response manager or GRADE/SoF table builder yet.
+9. The end-to-end pipeline test uses fictional data and a labelled simulated verifier; it proves the software connects the stages and that independent recomputation agrees, not that a real review will be sound. Real reviews need real human verifiers.
+10. Extraction: no automatic unit conversion; effect builder handles two-group continuous and 2x2 binary. Dependence is flagged and can be modelled with the advanced functions, but V matrices for shared controls must be supplied by you.
+11. Screening: no blinding mode, no active-learning prioritisation, no AI-assisted screening. Fuzzy dedup not tuned on real exports; RIS/NBIB parsers cover common tags only.
+12. Risk of bias: domain names only; official guidance must be used; NOS/JBI/CASP/MMAT not included; no signalling-question algorithms.
+13. Manuscript Studio: no PDF export, citation-style formatting, collaborative editing, GRADE/SoF builder, journal comparison or peer-review response manager.
 **Knowledge / network**
-13. Resources: links NOT verified (1 URL checked; sandbox blocks hosts); costs/versions/licences not verified; no videos, courses, conferences, funding, fellowships, summer schools, workshops listed (none verified, none invented). No university centres, librarians, consultation services or mentorship programmes listed.
-14. No community features (profiles, matching, forums, messaging, journal clubs); local contact manager only.
+14. All resources, organisations, communities, conference/funding directories are CANDIDATES (unverified; costs, dates, eligibility not stated). Only a human running tools/verify_batch.py (or the app form) changes that. No fabricated users, collaborators, opportunities or activity exist; the personal networking dashboard is local and never sends anything.
+15. No community features (profiles, matching, forums, messaging); see FUTURE_COMMUNITY_ARCHITECTURE.md.
+**Learning**
+16. Questions, drills, the 65-question final assessment and the 13-item capstone rubric are AI-drafted and not psychometrically validated; the 80%-in-every-section benchmark is arbitrary; the learning record is NOT a certificate and is not accredited.
 **Platform**
-15. Single local user; no authentication; SQLite unencrypted; no security or accessibility audit; Plotly charts lack alt text; CI workflow untested on GitHub; no PNG/PDF figure export; no mobile testing beyond one screenshot.
-16. Diagnostic quiz and pathway recommendations are rule-based, not psychometrically validated. SM-2 scheduling is a heuristic.
+17. Single local user; no authentication; SQLite unencrypted. axe-core audit of 28 views (desktop) found 1 minor issue in Streamlit's own file-uploader; NOT done: screen-reader, zoom/reflow, other browsers. Plotly charts lack text alternatives. CI workflow not yet run on GitHub.

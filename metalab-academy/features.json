@@ -498,6 +498,32 @@
    "name": "Personal networking dashboard (local): collaboration interests, meeting records, authorship discussions, mentor shortlist, opportunity bookmarks, outreach drafts, contribution tracking; no automatic contact, no fabricated people",
    "status": "tested",
    "evidence": "tests/test_network_hub.py; personal tables excluded from shareable backups; names never written to the audit log"
+  },
+  {
+   "id": "learning.lab",
+   "name": "Learning lab: seeded calculation drills, method-selection and interpretation banks, final comprehensive assessment (65 questions), 13-item capstone rubric, practice-dataset ZIP, pathway formula sheets, internal learning record",
+   "status": "tested",
+   "evidence": "tests/test_learning_lab.py (drill answers vs independent formulas; keyed method answers agree with the wizard; interpretation items computed from BCG results)",
+   "blocker": "AI-drafted, not psychometrically validated; the learning record is NOT a certificate and not accredited"
+  },
+  {
+   "id": "learning.wizard_v04",
+   "name": "Method wizard reports what v0.4 implements vs what is external-only (NMA, DTA, survival, dependence, k < 10)",
+   "status": "tested",
+   "evidence": "tests/test_learning.py, tests/test_learning_lab.py"
+  },
+  {
+   "id": "quality.expert_area_packages",
+   "name": "Eight expert-review area packages (statistics, searching, SR methodology, risk of bias, education, disciplines, usability/accessibility, integrity/privacy) + per-lesson packages + ZIP",
+   "status": "tested",
+   "evidence": "tests/test_expert_areas.py",
+   "blocker": "No expert has reviewed anything yet"
+  },
+  {
+   "id": "ui.audit_v04",
+   "name": "Browser audit of 28 page/tab views (axe-core + keyboard) with screenshots inspected",
+   "status": "tested",
+   "evidence": "tools/audit_ui.py 2026-11-28: 1 minor violation in Streamlit's own file-uploader; no screen-reader test"
   }
  ]
 }

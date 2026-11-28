@@ -1,0 +1,204 @@
+{
+ "pages": {
+  "desktop:Home": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Onboarding": {
+   "violations": [],
+   "passes": 42
+  },
+  "desktop:Learning Academy": {
+   "violations": [],
+   "passes": 49
+  },
+  "desktop:Reference Encyclopedia": {
+   "violations": [],
+   "passes": 42
+  },
+  "desktop:Practice": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Practice > Drills & exercises": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Practice > Final assessment": {
+   "violations": [],
+   "passes": 43
+  },
+  "desktop:Practice > Capstone & learning record": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Practice > Datasets & formula sheets": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Coding Lab": {
+   "violations": [],
+   "passes": 43
+  },
+  "desktop:Virtual Lab": {
+   "violations": [],
+   "passes": 47
+  },
+  "desktop:Method Wizard": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Research Workspace": {
+   "violations": [],
+   "passes": 47
+  },
+  "desktop:Research Workspace > Readiness & traceability": {
+   "violations": [],
+   "passes": 48
+  },
+  "desktop:Manuscript Studio": {
+   "violations": [],
+   "passes": 45
+  },
+  "desktop:First Paper Plan": {
+   "violations": [],
+   "passes": 46
+  },
+  "desktop:Statistics Lab": {
+   "violations": [],
+   "passes": 48
+  },
+  "desktop:Statistics Lab > Advanced methods II (v0.4)": {
+   "violations": [],
+   "passes": 48
+  },
+  "desktop:Knowledge Universe": {
+   "violations": [],
+   "passes": 49
+  },
+  "desktop:Knowledge Universe > Recommended for a lesson/task": {
+   "violations": [],
+   "passes": 47
+  },
+  "desktop:Knowledge Universe > Verify resources (local workflow)": {
+   "violations": [
+    {
+     "id": "presentation-role-conflict",
+     "impact": "minor",
+     "help": "Elements marked as presentational should be consistently ignored",
+     "nodes": 1,
+     "example": "<section role=\"presentation\" tabindex=\"-1\" data-testid=\"stFileUploaderDropzone\" aria-label=\"Upload filled queue\" aria-disabled=\"false\" class"
+    }
+   ],
+   "passes": 44
+  },
+  "desktop:Network & Collaboration": {
+   "violations": [],
+   "passes": 48
+  },
+  "desktop:Network & Collaboration > My networking dashboard": {
+   "violations": [],
+   "passes": 44
+  },
+  "desktop:Quality & Expert Review": {
+   "violations": [],
+   "passes": 48
+  },
+  "desktop:Status & Limitations": {
+   "violations": [],
+   "passes": 47
+  },
+  "mobile:Home": {
+   "violations": [],
+   "passes": 44
+  },
+  "mobile:Learning Academy": {
+   "violations": [],
+   "passes": 49
+  },
+  "mobile:Research Workspace": {
+   "violations": [],
+   "passes": 47
+  }
+ },
+ "keyboard": {
+  "tab_presses": 40,
+  "distinct_focus_targets": 20,
+  "reached_body_only": false,
+  "sample": [
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Deploy",
+    "outline": "solid 3px rgba(38, 39, 48, 0.2) 0px 0px "
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Main menu",
+    "outline": "solid 3px rgba(38, 39, 48, 0.2) 0px 0px "
+   },
+   {
+    "tag": "MAIN",
+    "role": null,
+    "label": "\ud83c\udfe0 Start \u203a Home\n\n\ud83e\uddea MetaLab Academy\n\nMod",
+    "outline": "solid 3px none"
+   },
+   {
+    "tag": "A",
+    "role": null,
+    "label": "Link to heading",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Help for Modules registered",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "Help for Lessons actually written",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "A",
+    "role": null,
+    "label": "Link to heading",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "A",
+    "role": null,
+    "label": "Link to heading",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "1 Learn",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "2 Practise",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "3 Plan",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   },
+   {
+    "tag": "BUTTON",
+    "role": null,
+    "label": "4 Review",
+    "outline": "solid 3px rgba(197, 57, 72, 0.5) 0px 0px"
+   }
+  ],
+  "focus_style_missing": []
+ }
+}
