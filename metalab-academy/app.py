@@ -383,7 +383,7 @@ elif page == "Method Wizard":
 # ---------------------------------------------------- RESEARCH WORKSPACE
 elif page == "Research Workspace":
     st.title("Research Workspace")
-    t = st.tabs(["Projects", "Question Builder", "Search Log", "References & Dedup", "Screening", "PRISMA", "Extraction", "Risk of bias", "Effect sizes & analysis", "Decisions", "Audit log", "Backup & export"])
+    t = st.tabs(["Projects", "Question Builder", "Search Log", "References & Dedup", "Screening", "PRISMA", "Extraction", "Risk of bias", "Effect sizes & analysis", "Decisions", "Audit log", "Backup & export", "Readiness & traceability"])
     with t[0]:
         with st.form("np"):
             nm = st.text_input("Project name"); dc = st.text_input("Discipline")
@@ -681,6 +681,26 @@ elif page == "Research Workspace":
             st.download_button("Reproducibility package (ZIP: all stages, R script, SAP draft, PRISMA, audit log, SHA-256 manifest)", WF.export_package(db, p["id"], p["name"]), f"{p['name']}_package.zip")
             st.download_button("References (CSV)", db.to_csv(db.refs(p["id"])), "references.csv")
             st.download_button("Audit log (CSV)", db.to_csv(db.audit_rows(p["id"])), "audit.csv")
+
+    with t[12]:
+        from metalab import pipeline as PL
+        st.caption("Stage-by-stage check of the whole chain, question to reproducibility package. It never blocks or edits anything: it shows what is done, what is partial and what to do next.")
+        p = project_picker("rd")
+        if p:
+            rd = PL.readiness(db, p["id"]); icon = {"done": "✅", "partial": "🟡", "todo": "⬜"}
+            st.dataframe(pd.DataFrame([dict(stage=r["stage"], status=icon[r["status"]] + " " + r["status"], detail=r["detail"], next_step=r["next"] if r["status"] != "done" else "") for r in rd]), hide_index=True, width="stretch")
+            st.markdown("**Traceability of manuscript numbers** (token -> stored result -> verifier -> freshness -> source documents)")
+            tr = PL.trace_report(db, p["id"])
+            if tr: st.dataframe(pd.DataFrame(tr).fillna(""), hide_index=True, width="stretch"); st.write("All manuscript numbers traceable to verified, fresh inputs: **" + ("yes" if PL.traceable(tr) else "no") + "**")
+            else: st.info("No tokens used in the manuscript yet.")
+        with st.expander("Run the fictional end-to-end simulated review (teaching only)"):
+            st.warning("Creates (or reuses) the clearly-labelled SIMULATED teaching project and runs every stage on fictional data, cross-checking with R/metafor when R is installed. The verifier is a labelled simulation; in a real review a qualified human performs these checks.")
+            if st.button("Run simulated review"):
+                try:
+                    rep = PL.run_simulated_review(db); st.success("Simulated review completed.")
+                    for sg in rep["stages"]: st.write(f"**{sg['stage']}** - " + ", ".join(f"{k}: {v}" for k, v in sg.items() if k not in ("stage", "counts", "mine", "r")))
+                    st.write("Traceable end to end: **" + ("yes" if rep["traceable"] else "no (R/metafor not available, so analysis results remain unverified)") + "**"); st.markdown(rep["manuscript"])
+                except Exception as e_: st.error(f"Simulation stopped: {e_}")
 
 # --------------------------------------------------------- MANUSCRIPT STUDIO
 elif page == "Manuscript Studio":

@@ -126,3 +126,10 @@ def test_statistics_lab_advanced2_all_methods_run(tmp_path, monkeypatch):
     for opt in opts:
         sb = [s for s in at.selectbox if s.key == "adv2"][0]; sb.select(opt).run()
         assert not at.exception, (opt, [e.value for e in at.exception]); assert not at.error, (opt, [e.value for e in at.error])
+
+
+def test_workspace_readiness_tab_and_simulated_review_button(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path); monkeypatch.setenv("METALAB_DB", str(tmp_path / "t.sqlite"))
+    at = AppTest.from_file("/home/user/drosies-world/metalab-academy/app.py", default_timeout=120).run(); at.session_state["nav"] = "Research Workspace"; at.run()
+    assert not at.exception; b = [x for x in at.button if x.label == "Run simulated review"]; assert b
+    b[0].click().run(); assert not at.exception and not at.error and any("Simulated review completed" in x.value for x in at.success)

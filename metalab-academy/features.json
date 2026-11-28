@@ -451,6 +451,26 @@
    "name": "Statistics Lab 'Advanced methods II' tab (10 methods, each with warnings and an external R workflow)",
    "status": "tested",
    "evidence": "tests/test_app.py renders every method without exception/error"
+  },
+  {
+   "id": "pipeline.e2e_simulated_review",
+   "name": "End-to-end simulated systematic review (fictional Virtual Lab data): protocol, search log, import, dedup, screening + agreement, extraction + independent second-extractor verification, RoB, effects, sensitivity, stored results, manuscript tokens, export package",
+   "status": "tested",
+   "evidence": "tests/test_pipeline_e2e.py; PRISMA recounted from the exported CSV; analysis independently reproduced in R/metafor; every manuscript token traced to a verified, fresh result",
+   "blocker": "The verifier in the simulation is a labelled fictional human; a real review needs a qualified human verifier. Needs R + metafor for the analysis cross-check."
+  },
+  {
+   "id": "pipeline.readiness_traceability",
+   "name": "Research Workspace 'Readiness & traceability': 14-stage status checker and token-to-source trace report",
+   "status": "tested",
+   "evidence": "tests/test_pipeline_e2e.py; tests/test_app.py"
+  },
+  {
+   "id": "curriculum.handbook_audit",
+   "name": "Curriculum coverage audit against the 26 Cochrane Handbook v6 chapters (titles verified in Crossref; content not read) + mechanical lesson-depth audit",
+   "status": "tested",
+   "evidence": "tests/test_learning.py; tests/test_lesson_audit.py",
+   "blocker": "Chapter-to-module mapping is the author's judgement; depth audit is mechanical; no expert review"
   }
  ]
 }
