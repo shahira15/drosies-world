@@ -1,7 +1,8 @@
 """Glossary, flashcards (SM-2 style scheduling), universal search, method wizard, pathways, coverage audit, study notes.
 All definitions are original educational summaries (AI-drafted, not expert-reviewed)."""
 from __future__ import annotations
-import datetime, re
+import datetime, re, json as _json
+from pathlib import Path as _Path
 from . import curriculum, lessons, references, resources, claims, workflows
 
 # ------------------------------------------------------------------ glossary
@@ -187,39 +188,54 @@ def pathway(ids):
     return [dict(id=i, title=curriculum.BY_ID[i]["title"], available=i in L, minutes=L[i]["time_min"] if i in L else None) for i in ids]
 
 # ---------------------------------------------------------- coverage audit
-AUDIT_NOTE = ("SELF-AUDIT against the chapter structure of the Cochrane Handbook (as recalled by the author - NOT re-read or verified this session), "
-              "the PRISMA 2020 item list (partly verified via abstracts) and the master specification. A proper audit requires opening each handbook; "
-              "this table shows where MetaLab's own curriculum is thin so that effort goes to the right places.")
-COVERAGE = [  # (topic area, source-structure area, modules, notes)
- ("Starting a review, scope, question", "Handbook early chapters", [3, 4, 5, 6], "L3,L4,L5 written; M6 outline"),
- ("Searching and selecting studies", "Handbook search chapter; PRISMA-S; PRESS", [9, 10, 11, 12, 15, 14, 13], "L10 written; others outline"),
- ("Collecting data", "Handbook data collection chapter", [17, 18, 19, 20], "L18,L20 written"),
- ("Choosing effect measures", "Handbook effect-measure chapter", [27, 28, 29, 30, 31], "Only continuous (L27) written"),
- ("Risk of bias", "Handbook RoB chapters", [21, 22, 23], "L21,L22 written; visualisation in app"),
- ("Analysing data / meta-analysis", "Handbook analysis chapter", [32, 33, 34, 35, 36, 37], "L32,L35 written; M33,M34,M36,M37 outline"),
- ("Network meta-analysis", "Handbook NMA chapter", [42], "outline only"),
- ("Synthesis without meta-analysis", "SWiM", [53], "outline only (SWiM referenced in L3)"),
- ("Reporting bias / missing results", "Handbook reporting-bias chapter", [50, 51], "outline only"),
- ("Certainty of evidence (GRADE)", "Handbook GRADE chapter", [52], "outline only"),
- ("Interpreting results, conclusions", "Handbook interpretation chapter", [74], "outline only"),
- ("Qualitative / mixed evidence", "Handbook qualitative chapter; ENTREQ", [54], "outline only"),
- ("Reporting and publication", "PRISMA 2020; journals", [75, 76, 77, 78], "outline only"),
- ("Ethics, integrity, AI, open science", "Specification parts XVIII", [80, 81, 82], "outline only"),
- ("Programming/reproducibility", "Specification part XV", [69, 70, 71, 72], "outline only; app generates R code"),
-]
+AUDIT_NOTE = ("COVERAGE AUDIT against the Cochrane Handbook v6. The 26 chapter TITLES come from the Crossref DOI registry (metalab/handbook_toc.json, verified 2026-11-28); "
+              "the chapter CONTENT was not read, and the mapping of chapters to MetaLab modules is the author's judgement. 'Covered' means a lesson exists, not that it equals the chapter's depth; "
+              "see the lesson depth audit (metalab/lesson_audit.py) for what each lesson actually contains. No lesson is expert-reviewed.")
+_TOC = _json.loads((_Path(__file__).with_name("handbook_toc.json")).read_text())
+# Handbook chapter -> (modules that address it, honest gap note)
+COVERAGE = {
+ 1: ([3, 7, 8], "Overview of the review process; planning is split across Modules 3, 7, 8."),
+ 2: ([4, 5, 6], "Scope and questions."),
+ 3: ([4, 7, 53], "Eligibility criteria and grouping for synthesis (grouping is touched in 53, 35)."),
+ 4: ([9, 10, 11, 12, 13, 14, 15, 88], "Searching and selecting; librarian involvement is advised, not replaced."),
+ 5: ([17, 18, 19, 20], "Collecting data."),
+ 6: ([27, 28, 29, 30, 31], "Effect measures; MetaLab has calculators for continuous, binary, rate, correlation."),
+ 7: ([89, 80, 21], "Conflicts of interest among included studies: added as Module 89 after this audit."),
+ 8: ([21, 22, 23], "RoB 2 is described and templated, but domain-level judgement practice needs a second human reviewer."),
+ 9: ([53, 17, 35], "Summarising study characteristics: partly within extraction and Module 53."),
+ 10: ([32, 33, 34, 35, 36, 37, 38, 51], "Core analysis; benchmarked against metafor."),
+ 11: ([42], "NMA: estimation benchmarked against metafor; node-splitting/design-by-treatment not implemented."),
+ 12: ([53], "Synthesis without meta-analysis (SWiM)."),
+ 13: ([50, 49], "Missing results/publication bias; trim-and-fill and PET-PEESE are sensitivity analyses only."),
+ 14: ([52], "GRADE: explained and templated; certainty ratings need human judgement."),
+ 15: ([74], "Interpreting results."),
+ 16: ([90, 87], "Equity and specific populations: added Module 90 after this audit; sex as a biological variable is Module 87."),
+ 17: ([90, 56], "Intervention complexity: added Module 90; realist reviews in Module 56."),
+ 18: ([], "Patient-reported outcomes: clinical-specific; NOT covered (low priority for laboratory biology)."),
+ 19: ([48, 57], "Adverse effects: rare-event methods in Module 48."),
+ 20: ([67], "Economic evidence: only touched through Module 67; no health-economics module (NOT covered in depth)."),
+ 21: ([54], "Qualitative evidence."),
+ 22: ([56], "Prospective approaches (living reviews in 56); prospective meta-analysis NOT covered."),
+ 23: ([38, 85], "Variants on randomised trials (cluster, crossover, multi-arm)."),
+ 24: ([58, 21], "Non-randomised studies of interventions."),
+ 25: ([22, 23], "RoB in non-randomised studies (ROBINS-I is described, not practised)."),
+ 26: ([46], "IPD: two-stage helper implemented; one-stage in the lesson/R workflow."),
+}
+def coverage_table():
+    L = lessons.load(); rows = []
+    for ch, (mods, note) in COVERAGE.items():
+        have = [m for m in mods if m in L]
+        rows.append(dict(chapter=ch, title=_TOC["chapters"][str(ch)], modules=", ".join(map(str, mods)) or "-", with_lessons=len(have), total=len(mods),
+                         status=("not covered" if not mods else "covered" if len(have) == len(mods) else "partial"), note=note))
+    return rows
 PROPOSED_NEW_MODULES = [
  (85, 3, "Units of analysis, pseudoreplication and hierarchical data in laboratory biology", "Repeatedly critical during this build (vial vs fly; shared controls) but only touched inside Modules 18/21."),
  (86, 4, "Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction", "Central to the founder's candidate topics; Module 30 is generic and outline-only."),
  (87, 3, "Sex as a biological variable in evidence synthesis", "Candidate topic B and a known weakness of many primary studies; not in the 84-module list."),
  (88, 2, "Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage", "Developed from the real scan run on 2026-11-26; partly covered by Modules 5/10."),
+ (89, 4, "Funding, sponsorship and conflicts of interest: among included studies and in your own review", "Cochrane Handbook v6 chapter 7 (conflicts of interest among included studies) had no module; found by the v0.4 coverage audit."),
+ (90, 4, "Complex interventions, context and equity: applicability beyond the average effect", "Cochrane Handbook v6 chapters 16 (equity) and 17 (intervention complexity) had no module; relevant to laboratory heterogeneity (strain, sex, husbandry); found by the v0.4 coverage audit."),
 ]
-
-def coverage_table():
-    L = lessons.load(); rows = []
-    for area, src, mods, note in COVERAGE:
-        have = [m for m in mods if m in L]
-        rows.append(dict(area=area, source_structure=src, modules=", ".join(map(str, mods)), with_lessons=len(have), total=len(mods), coverage=f"{100*len(have)/len(mods):.0f}%", note=note))
-    return rows
 
 # ---------------------------------------------------------------- notes
 def lesson_notes(n):

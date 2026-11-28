@@ -712,5 +712,29 @@
   "doi": "10.3102/0034654319877153",
   "author": "Pigott",
   "year": 2019
+ },
+ {
+  "key": "lundh2017",
+  "doi": "10.1002/14651858.mr000033.pub3",
+  "author": "Lundh",
+  "year": 2017
+ },
+ {
+  "key": "welch2012",
+  "doi": "10.1371/journal.pmed.1001333",
+  "author": "Welch",
+  "year": 2012
+ },
+ {
+  "key": "skivington2021",
+  "doi": "10.1136/bmj.n2061",
+  "author": "Skivington",
+  "year": 2021
+ },
+ {
+  "key": "pfadenhauer2017",
+  "doi": "10.1186/s13012-017-0552-5",
+  "author": "Pfadenhauer",
+  "year": 2017
  }
 ]

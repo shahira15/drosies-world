@@ -992,5 +992,19 @@
   "verified_on": "2026-11-27",
   "human_review": "none",
   "status": "abstract-supported"
+ },
+ {
+  "id": "C072",
+  "lesson": 89,
+  "claim": "Lundh et al. (2017): industry-sponsored drug/device studies more often had favourable efficacy results (RR 1.27, 95% CI 1.17-1.37; 25 papers; moderate quality) and favourable conclusions (RR 1.34, 1.19-1.51; 29 papers; low quality); the authors conclude the association is not explained by standard risk-of-bias assessments.",
+  "source_key": "lundh2017",
+  "source_type": "paper (PubMed abstract)",
+  "locator": "abstract",
+  "examined": "abstract (PubMed)",
+  "supports_directly": "yes",
+  "limitations": "Abstract only; clinical drug/device studies - not transferable in magnitude to laboratory biology.",
+  "verified_on": "2026-11-28",
+  "human_review": "none",
+  "status": "abstract-supported"
  }
 ]

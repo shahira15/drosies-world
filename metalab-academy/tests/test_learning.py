@@ -58,9 +58,18 @@ def test_pathways_reference_real_modules_and_report_availability():
 
 def test_coverage_audit_is_computed_not_asserted():
     rows = LRN.coverage_table(); L = lessons.load()
-    for r, (area, src, mods, note) in zip(rows, LRN.COVERAGE):
-        assert r["with_lessons"] == sum(m in L for m in mods)
-    assert "NOT re-read" in LRN.AUDIT_NOTE and all(len(x) == 4 for x in LRN.PROPOSED_NEW_MODULES)
+    assert [r["chapter"] for r in rows] == list(range(1, 27)) == [int(k) for k in LRN._TOC["chapters"]]
+    for r in rows:
+        mods = LRN.COVERAGE[r["chapter"]][0]
+        assert r["with_lessons"] == sum(m in L for m in mods) and r["total"] == len(mods)
+        assert r["status"] == ("not covered" if not mods else "covered" if r["with_lessons"] == r["total"] else "partial")
+    assert "chapter CONTENT was not read" in LRN.AUDIT_NOTE and all(len(x) == 4 for x in LRN.PROPOSED_NEW_MODULES)
+    assert LRN._TOC["verified_via"].startswith("Crossref") and "Searching" in LRN._TOC["chapters"]["4"]
+    assert {r["chapter"] for r in rows if r["status"] == "not covered"} == {18}               # honest gap: patient-reported outcomes
+    assert all(m in curriculum.BY_ID for _, (mods, _n) in LRN.COVERAGE.items() for m in mods)
+
+def test_proposed_modules_match_curriculum():
+    ids = {x[0] for x in LRN.PROPOSED_NEW_MODULES}; assert ids == {m["id"] for m in curriculum.MODULES if m.get("proposed")} == set(range(85, 91))
 
 def test_study_notes_and_cheat_sheet():
     assert "Objectives" in LRN.lesson_notes(32) and "Hedges" in LRN.cheat_sheet()

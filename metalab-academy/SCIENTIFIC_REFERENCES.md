@@ -135,3 +135,7 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `brand2015`: Brand et al. Beyond authorship: attribution, contribution, collaboration, and credit. Learned Publishing 2015;28, 151-155. DOI: 10.1087/20150211 · PMID None
 - `allen2019`: Allen et al. How can we ensure visibility and diversity in research contributions? How the Contributor Role Taxonomy (CRediT) is helping the shift from authorship to contributorship. Learned Publishing 2019;32, 71-74. DOI: 10.1002/leap.1210 · PMID None
 - `pigott2019`: Pigott et al. Methodological Guidance Paper: High-Quality Meta-Analysis in a Systematic Review. Review of Educational Research 2019;90, 24-46. DOI: 10.3102/0034654319877153 · PMID None
+- `lundh2017`: Lundh et al. Industry sponsorship and research outcome. Cochrane Database of Systematic Reviews 2017;2017. DOI: 10.1002/14651858.mr000033.pub3 · PMID None
+- `welch2012`: Welch et al. PRISMA-Equity 2012 Extension: Reporting Guidelines for Systematic Reviews with a Focus on Health Equity. PLoS Medicine 2012;9, e1001333. DOI: 10.1371/journal.pmed.1001333 · PMID None
+- `skivington2021`: Skivington et al. A new framework for developing and evaluating complex interventions: update of Medical Research Council guidance. BMJ 2021;n2061. DOI: 10.1136/bmj.n2061 · PMID None
+- `pfadenhauer2017`: Pfadenhauer et al. Making sense of complexity in context and implementation: the Context and Implementation of Complex Interventions (CICI) framework. Implementation Science 2017;12. DOI: 10.1186/s13012-017-0552-5 · PMID None

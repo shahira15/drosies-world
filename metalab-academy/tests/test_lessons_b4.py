@@ -85,3 +85,17 @@ def test_lessons_cite_only_verified_refs_and_are_labelled_ai_drafted():
     for n in (24, 25, 26, 29, 30, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49):
         assert "AI-drafted" in LES[n]["status"]
         for r in LES[n]["further"]: assert r in references.REFS and references.REFS[r]["verified"]
+
+
+def test_89_90_numbers():
+    import math
+    from scipy import stats as st
+    L = lessons.load(); L = dict(L)
+    se = (math.log(1.37) - math.log(1.17)) / (2 * 1.959964); z = math.log(1.27) / se
+    t = L[89]["worked_example"].replace("**", "")
+    for x in (f"{se:.4f}", f"{math.log(1.27):.4f}", f"{z:.2f}"): assert x in t
+    se2 = (math.log(2.93) - math.log(.64)) / (2 * 1.959964); assert f"{se2:.3f}" in t and f"{math.log(1.37)/se2:.2f}" in t and f"{2*st.norm.sf(math.log(1.37)/se2):.2f}" in t
+    assert float(L[89]["quiz"][0]["opts"][0]) == pytest.approx(se, abs=5e-5)
+    t90 = L[90]["worked_example"].replace("**", ""); assert "0.02" in t90 and "0.06" in t90 and "50" in t90 and "16.7" in t90 and round(1 / .06, 1) == 16.7
+    from metalab import claims
+    assert any(c["lesson"] == 43 and c["source_key"] == "orsini2012" for c in claims.CLAIMS)

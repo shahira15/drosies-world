@@ -1,6 +1,6 @@
 # Curriculum map (generated)
 
-84 modules from the master specification + 4 proposed additions = 88 registered; **88 have a lesson**; 0 are outlines (title/level only, no lesson).
+84 modules from the master specification + 6 proposed additions = 90 registered; **90 have a lesson**; 0 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
@@ -105,6 +105,8 @@
 | 72 | Advanced computational reproducibility | Programming | drafted |
 | 86 | Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction | Effect sizes | drafted |
 | 87 | Sex as a biological variable in evidence synthesis | Effect sizes | drafted |
+| 89 | Funding, sponsorship and conflicts of interest: among included studies and in your own review | Risk of bias and appraisal | drafted |
+| 90 | Complex interventions, context and equity: applicability beyond the average effect | Bias, robustness, certainty | drafted |
 
 ## Level 5: Independent researcher & publication mastery
 

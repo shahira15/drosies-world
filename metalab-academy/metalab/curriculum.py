@@ -103,7 +103,9 @@ for line in _M.splitlines():
 _PROPOSED = [(85, 6, 2, "Units of analysis, pseudoreplication and hierarchical data in laboratory biology"),
              (86, 9, 4, "Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction"),
              (87, 9, 4, "Sex as a biological variable in evidence synthesis"),
-             (88, 2, 1, "Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage")]
+             (88, 2, 1, "Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage"),
+             (89, 7, 4, "Funding, sponsorship and conflicts of interest: among included studies and in your own review"),
+             (90, 12, 4, "Complex interventions, context and equity: applicability beyond the average effect")]
 for i, p, l, t in _PROPOSED:
     MODULES.append(dict(id=i, part=p, part_name=PARTS[p], level=l, level_name=LEVELS[l], title=t, status="outline", proposed=True))
 BY_ID = {m["id"]: m for m in MODULES}

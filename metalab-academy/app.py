@@ -1249,7 +1249,13 @@ elif page == "Quality & Expert Review":
         with st.expander("Preview"): st.markdown(md)
     with t4:
         st.warning(LRN.AUDIT_NOTE)
+        st.markdown("**Cochrane Handbook v6 chapters vs MetaLab modules**")
         st.dataframe(pd.DataFrame(LRN.coverage_table()), hide_index=True, width="stretch")
+        from metalab import lesson_audit as LA
+        sm_ = LA.summary(); st.markdown("**Lesson depth audit (mechanical criteria; text existing is not the same as a lesson being complete)**")
+        c1_, c2_, c3_ = st.columns(3); c1_.metric("Lessons audited", sm_["total"]); c2_.metric("Substantive drafts", sm_["substantive"]); c3_.metric("Thin drafts (deepening backlog)", sm_["thin"])
+        st.caption(sm_["note"] + " Criteria: " + "; ".join(f"{k}: {v}" for k, v in LA.CRITERIA.items()))
+        st.dataframe(pd.DataFrame(LA.audit()).drop(columns=["expert_reviewed"]), hide_index=True, width="stretch")
         st.markdown("**Proposed additional modules (justified by gaps found while building)**")
         st.dataframe(pd.DataFrame(LRN.PROPOSED_NEW_MODULES, columns=["id", "level", "title", "justification"]), hide_index=True, width="stretch")
 

@@ -8,7 +8,7 @@ Statuses: planned | in_development | implemented | tested (unit tests) | benchma
 | Common-effect and random-effects pooling (DL, PM, REML), HKSJ, prediction interval, Q/I2/H2, leave-one-out | **benchmarked** | Common/random effects (REML, DL, PM), HKSJ, Q, tau2, I2, PI, leave-one-out match metafor 4.4.0 on 10 datasets + 9 edge cases (242 tests). See VALIDATION.md | Expert review pending; rare-event/dependence methods not implemented |
 | Simulations: SD vs SE, CI coverage | **tested** | Statistical property tests (coverage ~95%, SE matches empirical SD) |  |
 | 88-module registry (84 specified + 4 proposed) | **implemented** | Lesson availability computed from files; coverage audit vs recalled Handbook structure (not re-read) |  |
-| Full lessons | **requires_expert_review** | 77 of 88 registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; 70 claims tracked (0 human-reviewed, 10 unverified) | Qualified human review; 76 modules still outline-only |
+| Full lessons | **requires_expert_review** | 88 of 88 registered modules have lessons (see CURRICULUM_MAP.md). AI-drafted; numeric content machine-checked; R snippets executed in tests; 71 claims tracked (0 human-reviewed, 10 unverified) | Qualified human review; 76 modules still outline-only |
 | Quizzes with explanations and scoring | **tested** | Structure + numeric answers verified vs code; conceptual answers need expert review |  |
 | Onboarding, diagnostic, pathway recommendation | **implemented** | Rule-based; diagnostic not psychometrically validated |  |
 | Flashcards with SM-2-style spaced repetition (glossary + misconceptions) | **tested** | Scheduling properties tested; SM-2 is a heuristic, not validated |  |

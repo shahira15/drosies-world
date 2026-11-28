@@ -30,9 +30,9 @@ def test_numeric_quiz_answers_match_code():
 
 def test_curriculum_counts_truthful():
     c = curriculum.counts()
-    assert c["specified"] == 84 and c["proposed"] == 4 and c["total"] == 88 and c["drafted"] + c["outline"] == 88
+    assert c["specified"] == 84 and c["proposed"] == 6 and c["total"] == 90 and c["drafted"] + c["outline"] == 90
     ids = [m["id"] for m in curriculum.MODULES]
-    assert ids == list(range(1, 89))
+    assert ids == list(range(1, 91))
     assert all(m.get("proposed") for m in curriculum.MODULES if m["id"] > 84)
 
 def test_references_verified_fields():

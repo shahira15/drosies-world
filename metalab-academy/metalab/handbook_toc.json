@@ -1,0 +1,33 @@
+{
+ "source": "Cochrane Handbook for Systematic Reviews of Interventions, version 6 - chapter titles as registered in the Crossref DOI registry (10.1002/9781119536604.chN)",
+ "verified_on": "2026-11-28",
+ "verified_via": "Crossref DOI registry (titles only; chapter CONTENT was not read)",
+ "chapters": {
+  "1": "Starting a review",
+  "2": "Determining the scope of the review and the questions it will address",
+  "3": "Defining the criteria for including studies and how they will be grouped for the synthesis",
+  "4": "Searching for and selecting studies",
+  "5": "Collecting data",
+  "6": "Choosing effect measures and computing estimates of effect",
+  "7": "Considering bias and conflicts of interest among the included studies",
+  "8": "Assessing risk of bias in a randomized trial",
+  "9": "Summarizing study characteristics and preparing for synthesis",
+  "10": "Analysing data and undertaking meta‐analyses",
+  "11": "Undertaking network meta‐analyses",
+  "12": "Synthesizing and presenting findings using other methods",
+  "13": "Assessing risk of bias due to missing results in a synthesis",
+  "14": "Completing ‘Summary of findings’ tables and grading the certainty of the evidence",
+  "15": "Interpreting results and drawing conclusions",
+  "16": "Equity and specific populations",
+  "17": "Intervention complexity",
+  "18": "Patient‐reported outcomes",
+  "19": "Adverse effects",
+  "20": "Economic evidence",
+  "21": "Qualitative evidence",
+  "22": "Prospective approaches to accumulating evidence",
+  "23": "Including variants on randomized trials",
+  "24": "Including non‐randomized studies on intervention effects",
+  "25": "Assessing risk of bias in a non‐randomized study",
+  "26": "Individual participant data"
+ }
+}
