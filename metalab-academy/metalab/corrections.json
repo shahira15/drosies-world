@@ -131,5 +131,19 @@
   "what": "lnRR for 4.8 vs 4.1 was written as 0.1573 (mental arithmetic); the value is 0.1576.",
   "fix": "Corrected; test compares lesson numbers with code. Also: a batch commit was made while two tests were failing (command-chaining error); fixed in the next commit.",
   "found_by": "tests/test_content.py"
+ },
+ {
+  "date": "2026-11-27",
+  "where": "metalab/advanced2.py (CR2, DTA reference, NMA)",
+  "what": "Benchmark audit found: CR2 omitted the D_j factor in B_j (SE 0.049 vs clubSandwich 0.0845); the trim-and-fill reference silently errored (control argument passed twice); the first DTA reference table hit rho=-1 (boundary) and was replaced; a name collision (year) corrupted the CR2 moderator reference.",
+  "fix": "All fixed; the benchmark now asserts every reference section is non-error and tests the CR2 moderator model.",
+  "found_by": "tests/test_advanced2_r.py"
+ },
+ {
+  "date": "2026-11-27",
+  "where": "metalab/advanced2.py nma() / app.py",
+  "what": "P-score ranking direction defaulted to 'lower is better', so the app ranked 'no contact' best for smoking cessation (higher OR is better).",
+  "fix": "higher_is_better is now a required keyword argument with no default; the UI passes True for cessation; property test checks P-scores reverse.",
+  "found_by": "manual review while writing lesson 42 numbers"
  }
 ]

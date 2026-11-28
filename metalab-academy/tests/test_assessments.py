@@ -21,7 +21,7 @@ def test_every_written_lesson_can_be_examined():
 def test_personal_pathway_from_profile_and_honesty_about_outlines():
     p = AS.personal_pathway(dict(discipline="Biological sciences (Drosophila aging, metabolism)", pathway="Preclinical researcher", stats_exp="basic", sr_fam="none"))
     assert "Preclinical / model organisms" in p["tracks"] and p["core"] == learning.CORE_PATH and 85 in p["extra"] and 60 in p["extra"]
-    L = lessons.load(); assert set(p["outline_only"]) == {m for m in p["core"] + p["extra"] if m not in L} and 60 in p["outline_only"] and 85 in p["available_extra"]
+    L = lessons.load(); assert set(p["outline_only"]) == {m for m in p["core"] + p["extra"] if m not in L} and 60 in p["available_extra"] and 85 in p["available_extra"]
     combo = AS.personal_pathway(dict(discipline="plant microbiology and ecology")); assert {"Plant science & agriculture", "Microbiology", "Ecology & evolution"} <= set(combo["tracks"])
     assert AS.personal_pathway(dict(stats_exp="advanced", sr_fam="done one", discipline="clinical"))["notes"][0].startswith("You reported experience")
     assert all(m in curriculum.BY_ID for t in AS.DISCIPLINE_TRACKS.values() for m in t["core"] + t["extra"])

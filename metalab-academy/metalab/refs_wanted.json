@@ -688,5 +688,29 @@
   "doi": "10.1007/s11065-019-09415-6",
   "author": "Cheung",
   "year": 2019
+ },
+ {
+  "key": "pieper2014",
+  "doi": "10.1016/j.jclinepi.2013.11.007",
+  "author": "Pieper",
+  "year": 2014
+ },
+ {
+  "key": "brand2015",
+  "doi": "10.1087/20150211",
+  "author": "Brand",
+  "year": 2015
+ },
+ {
+  "key": "allen2019",
+  "doi": "10.1002/leap.1210",
+  "author": "Allen",
+  "year": 2019
+ },
+ {
+  "key": "pigott2019",
+  "doi": "10.3102/0034654319877153",
+  "author": "Pigott",
+  "year": 2019
  }
 ]

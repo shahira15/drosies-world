@@ -131,3 +131,7 @@ Verified against PubMed (NCBI) record metadata on 2026-11-26 (title, authors, jo
 - `kvarven2019`: Kvarven et al. Comparing meta-analyses and preregistered multiple-laboratory replication projects. Nature Human Behaviour 2019;4, 423-434. DOI: 10.1038/s41562-019-0787-z · PMID None
 - `cheung2019`: Cheung A Guide to Conducting a Meta-Analysis with Non-Independent Effect Sizes. Neuropsychology Review 2019;29, 387-396. DOI: 10.1007/s11065-019-09415-6 · PMID None
 - `orsini2012`: Orsini et al. Meta-Analysis for Linear and Nonlinear Dose-Response Relations: Examples, an Evaluation of Approximations, and Software. American Journal of Epidemiology 2012;175, 66-73. DOI: 10.1093/aje/kwr265 · PMID 22135359
+- `pieper2014`: Pieper et al. Systematic review finds overlapping reviews were not mentioned in every other overview. Journal of Clinical Epidemiology 2014;67, 368-375. DOI: 10.1016/j.jclinepi.2013.11.007 · PMID None
+- `brand2015`: Brand et al. Beyond authorship: attribution, contribution, collaboration, and credit. Learned Publishing 2015;28, 151-155. DOI: 10.1087/20150211 · PMID None
+- `allen2019`: Allen et al. How can we ensure visibility and diversity in research contributions? How the Contributor Role Taxonomy (CRediT) is helping the shift from authorship to contributorship. Learned Publishing 2019;32, 71-74. DOI: 10.1002/leap.1210 · PMID None
+- `pigott2019`: Pigott et al. Methodological Guidance Paper: High-Quality Meta-Analysis in a Systematic Review. Review of Educational Research 2019;90, 24-46. DOI: 10.3102/0034654319877153 · PMID None

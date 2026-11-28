@@ -1,6 +1,6 @@
 # Curriculum map (generated)
 
-84 modules from the master specification + 4 proposed additions = 88 registered; **68 have a lesson**; 20 are outlines (title/level only, no lesson).
+84 modules from the master specification + 4 proposed additions = 88 registered; **88 have a lesson**; 0 are outlines (title/level only, no lesson).
 
 
 ## Level 0: Research foundations
@@ -10,7 +10,7 @@
 | 1 | Scientific reasoning | Foundations of science and evidence | drafted |
 | 2 | Research study designs | Foundations of science and evidence | drafted |
 | 24 | Mathematical foundations | Statistics from first principles | drafted |
-| 69 | R programming from scratch | Programming | outline |
+| 69 | R programming from scratch | Programming | drafted |
 
 ## Level 1: Systematic review fundamentals
 
@@ -23,7 +23,7 @@
 | 7 | Protocol development | Protocols and registration | drafted |
 | 8 | Registration and open protocols | Protocols and registration | drafted |
 | 25 | Descriptive and inferential statistics | Statistics from first principles | drafted |
-| 88 | Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage | Research question development | outline |
+| 88 | Scanning the literature before committing: topic scans, query translation pitfalls and feasibility triage | Research question development | drafted |
 
 ## Level 2: Applied evidence synthesis
 
@@ -67,9 +67,9 @@
 | 50 | Publication bias and missing evidence | Bias, robustness, certainty | drafted |
 | 51 | Sensitivity and influence analysis | Bias, robustness, certainty | drafted |
 | 52 | Certainty of evidence | Bias, robustness, certainty | drafted |
-| 70 | Meta-analysis in R | Programming | outline |
-| 71 | Python for evidence synthesis | Programming | outline |
-| 73 | Scientific visualization | Visualization and communication | outline |
+| 70 | Meta-analysis in R | Programming | drafted |
+| 71 | Python for evidence synthesis | Programming | drafted |
+| 73 | Scientific visualization | Visualization and communication | drafted |
 | 74 | Interpretation and communication | Visualization and communication | drafted |
 
 ## Level 4: Advanced & specialized methods
@@ -88,21 +88,21 @@
 | 47 | Prevalence and incidence meta-analysis | Advanced meta-analysis | drafted |
 | 48 | Rare-event meta-analysis | Advanced meta-analysis | drafted |
 | 49 | Additional specialized quantitative methods | Advanced meta-analysis | drafted |
-| 54 | Qualitative evidence synthesis | Non-quantitative synthesis | outline |
-| 56 | Umbrella, rapid, living and realist reviews | Non-quantitative synthesis | outline |
-| 57 | Clinical medicine and healthcare | Discipline academies | outline |
-| 58 | Public health and epidemiology | Discipline academies | outline |
+| 54 | Qualitative evidence synthesis | Non-quantitative synthesis | drafted |
+| 56 | Umbrella, rapid, living and realist reviews | Non-quantitative synthesis | drafted |
+| 57 | Clinical medicine and healthcare | Discipline academies | drafted |
+| 58 | Public health and epidemiology | Discipline academies | drafted |
 | 59 | Preclinical and animal research | Discipline academies | drafted |
-| 60 | Molecular biology, genetics and biotechnology | Discipline academies | outline |
+| 60 | Molecular biology, genetics and biotechnology | Discipline academies | drafted |
 | 61 | Plant biology and agriculture | Discipline academies | drafted |
 | 62 | Microbiology and infectious disease | Discipline academies | drafted |
 | 63 | Ecology, evolution and environmental science | Discipline academies | drafted |
-| 64 | Psychology and behavioral science | Discipline academies | outline |
+| 64 | Psychology and behavioral science | Discipline academies | drafted |
 | 65 | Education and social science | Discipline academies | drafted |
-| 66 | Nutrition, food science and exercise | Discipline academies | outline |
-| 67 | Economics, business and policy | Discipline academies | outline |
-| 68 | Engineering and computer science | Discipline academies | outline |
-| 72 | Advanced computational reproducibility | Programming | outline |
+| 66 | Nutrition, food science and exercise | Discipline academies | drafted |
+| 67 | Economics, business and policy | Discipline academies | drafted |
+| 68 | Engineering and computer science | Discipline academies | drafted |
+| 72 | Advanced computational reproducibility | Programming | drafted |
 | 86 | Survival data and lifespan synthesis: hazard ratios, medians and curve reconstruction | Effect sizes | drafted |
 | 87 | Sex as a biological variable in evidence synthesis | Effect sizes | drafted |
 
@@ -114,9 +114,9 @@
 | 76 | Reporting guidelines | Manuscript and publication | drafted |
 | 77 | Journal selection | Manuscript and publication | drafted |
 | 78 | Submission and peer review | Manuscript and publication | drafted |
-| 79 | Research dissemination and impact | Manuscript and publication | outline |
-| 80 | Research integrity | Ethics, AI, open science | outline |
-| 81 | Responsible AI-assisted evidence synthesis | Ethics, AI, open science | outline |
+| 79 | Research dissemination and impact | Manuscript and publication | drafted |
+| 80 | Research integrity | Ethics, AI, open science | drafted |
+| 81 | Responsible AI-assisted evidence synthesis | Ethics, AI, open science | drafted |
 | 82 | Open science and data governance | Ethics, AI, open science | drafted |
-| 83 | Research collaboration and leadership | Ethics, AI, open science | outline |
-| 84 | Independent evidence synthesis mastery (capstone) | Ethics, AI, open science | outline |
+| 83 | Research collaboration and leadership | Ethics, AI, open science | drafted |
+| 84 | Independent evidence synthesis mastery (capstone) | Ethics, AI, open science | drafted |
